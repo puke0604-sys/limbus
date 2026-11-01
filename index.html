@@ -895,6 +895,54 @@ label.use input{flex:none;margin-top:2px}
 /* 결정 권한이 없는 사람에게는 대응 조작을 잠근다 */
 .nd-note{margin:0 0 8px;padding:6px 10px;border:1px dashed #8a6a2a;background:#2a1c0e;color:#ffcf6a;font-size:13px}.nd-note.gm{border-color:#6a4a8a;background:#1e1428;color:#d8b8ff}
 #btHud .nd{opacity:.45;cursor:not-allowed!important;filter:grayscale(.5)}
+
+/* 스탠딩 연출 */
+#tkFx{position:absolute;inset:0;pointer-events:none}
+.tk-tint{position:absolute;inset:0;z-index:3;opacity:0;transition:opacity .8s,background .8s}
+.tk-tint.on{opacity:1}.tk-tint.sepia{background:rgba(112,74,30,.38);mix-blend-mode:color}.tk-tint.gray{background:#888;mix-blend-mode:saturation}
+.tk-tint.red{background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(170,10,10,.55) 100%);animation:tkred 2.4s ease-in-out infinite}
+.tk-tint.blue{background:rgba(40,80,150,.42);mix-blend-mode:color}.tk-tint.dream{background:radial-gradient(ellipse at 50% 45%,rgba(255,240,220,.18),rgba(160,120,200,.35));mix-blend-mode:screen;animation:tkdream 4s ease-in-out infinite}
+@keyframes tkred{50%{opacity:.6}}@keyframes tkdream{50%{opacity:.7}}
+.tk-black{position:absolute;inset:0;z-index:4;background:#000;opacity:0;transition:opacity .9s}.tk-black.on{opacity:1}
+.tk-cine i{position:absolute;left:0;right:0;height:0;z-index:4;background:#000;transition:height .6s cubic-bezier(.3,0,.2,1)}.tk-cine i:first-child{top:0}.tk-cine i:last-child{bottom:0}.tk-cine.on i{height:11%}
+.tk-flash{position:absolute;inset:0;z-index:9;opacity:0;background:#fff}.tk-flash.go{animation:tkflash .45s ease-out}
+@keyframes tkflash{0%{opacity:.95}100%{opacity:0}}
+.tk-tr{position:absolute;inset:0;z-index:4;opacity:0}.tk-tr.go{animation:tktr var(--d,1.3s) ease-in-out forwards}
+@keyframes tktr{0%{opacity:0}40%,60%{opacity:1}100%{opacity:0}}
+.tk-old{position:absolute;inset:0;z-index:0;background:#0c0908 center/cover no-repeat;filter:brightness(.5) contrast(1.08) saturate(.68) sepia(.16);animation:tkold 1s ease-in forwards}
+@keyframes tkold{to{opacity:0}}
+.tk-title{position:absolute;inset:0;z-index:7;display:grid;place-content:center;text-align:center;opacity:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.75),rgba(0,0,0,.2) 70%,transparent)}
+.tk-title.go{animation:tktitle var(--d,3.2s) ease-in-out forwards}.tk-title b{display:block;font:400 clamp(28px,4.4vw,64px) var(--fk);color:#f1e3c8;letter-spacing:.06em;text-shadow:0 0 18px #000,0 0 40px rgba(226,58,46,.35)}
+.tk-title small{display:block;margin-top:10px;font:400 clamp(14px,1.5vw,22px) var(--fb);color:#c9a878;letter-spacing:.3em}.tk-title b::after{content:"";display:block;height:2px;margin:12px auto 0;width:0;background:linear-gradient(90deg,transparent,#e23a2e,transparent);animation:tkline 1.2s .3s ease-out forwards}
+@keyframes tkline{to{width:120%;margin-left:-10%}}
+@keyframes tktitle{0%{opacity:0;transform:scale(1.04)}15%,80%{opacity:1;transform:none}100%{opacity:0}}
+#tkStage.shake1{animation:tkshake .35s linear}#tkStage.shake2{animation:tkshake2 .5s linear}#tkStage.shake3{animation:tkshake3 .8s linear}
+@keyframes tkshake{20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,-1px)}80%{transform:translate(2px,1px)}}
+@keyframes tkshake2{10%{transform:translate(-9px,4px)}25%{transform:translate(8px,-5px)}40%{transform:translate(-7px,-3px)}55%{transform:translate(6px,4px)}70%{transform:translate(-4px,2px)}85%{transform:translate(2px,-1px)}}
+@keyframes tkshake3{8%{transform:translate(-16px,8px) rotate(-.6deg)}18%{transform:translate(15px,-9px) rotate(.5deg)}30%{transform:translate(-13px,-6px)}42%{transform:translate(12px,8px) rotate(.4deg)}55%{transform:translate(-9px,4px)}68%{transform:translate(7px,-4px)}82%{transform:translate(-4px,2px)}}
+/* 스탠딩 움직임 */
+.fig.enter{animation:figin2 .45s cubic-bezier(.2,.8,.3,1)}
+@keyframes figin2{from{opacity:0;transform:translateX(-50%) translateY(18px)}}
+.fig.leave{opacity:0;transform:translateX(-50%) translateY(14px);transition:opacity .4s,transform .4s}
+.fig .ghost-ex{position:absolute;bottom:0;left:50%;transform:translateX(-50%);max-width:100%;max-height:100%;object-fit:contain;animation:exout .32s ease-out forwards;pointer-events:none}
+@keyframes exout{to{opacity:0}}
+.fig.swap img:first-child{animation:exin .32s ease-out}@keyframes exin{from{opacity:.2;transform:scale(.985)}}
+.fig.talk img:first-child{animation:talkhop .32s ease-out}@keyframes talkhop{40%{transform:translateY(-1.6%)}}
+.fig.a-jump img:first-child{animation:ajump .5s cubic-bezier(.3,1.6,.5,1)}@keyframes ajump{30%{transform:translateY(-7%)}60%{transform:translateY(0)}75%{transform:translateY(-2%)}}
+.fig.a-tremble img:first-child{animation:atrem .09s linear 9}@keyframes atrem{25%{transform:translateX(-.8%)}75%{transform:translateX(.8%)}}
+.fig.a-nod img:first-child{animation:anod .55s ease-in-out}@keyframes anod{30%{transform:translateY(2.4%)}60%{transform:translateY(0)}80%{transform:translateY(1.2%)}}
+.fig.a-near{transition:filter .25s,left .35s,opacity .4s,transform .5s}.fig.near img:first-child{transform:scale(1.14);transform-origin:50% 100%;transition:transform .5s}
+.fig.far img:first-child{transform:scale(.88);transform-origin:50% 100%;filter:brightness(.8);transition:transform .5s,filter .5s}
+.fig img:first-child{transition:transform .5s,filter .5s}
+/* 연출 패널 */
+.dir{position:absolute;right:16px;bottom:100%;margin-bottom:8px;z-index:30;width:min(620px,calc(100vw - 32px));max-height:min(560px,70vh);overflow:auto;padding:10px 12px;background:rgba(18,11,7,.97);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;font-size:13px}
+.dir h4{margin:8px 0 4px;font:700 13px var(--fk);color:#e8c48a}.dir h4:first-child{margin-top:0}.dir .row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dir .btn{padding:4px 9px;font-size:12px}.dir .btn.on{border-color:#ffc23b;color:#ffcf6a}.dir select,.dir input[type=text]{height:28px;font-size:12px;padding:2px 6px;min-width:0}
+.dir .row>select,.dir .row>input{width:auto;flex:1 1 140px}.dir .row>select#dirFig,.dir .row>select#dirAType{flex:0 1 auto}
+.dir .note{color:var(--mute);font-size:11px;margin-top:4px}.dir .sep{width:1px;height:20px;background:#4a3626;margin:0 4px}
+.talk{position:relative}.bar{grid-template-columns:150px 110px minmax(0,1fr) auto auto auto auto!important;position:relative}
+#tkDir{display:contents}
+.log-row.fx{color:#8a7a62;font-size:12px;font-style:italic;padding:4px 0}
 </style>
 </head>
 <body>
@@ -1023,9 +1071,9 @@ function renderNav(){queueMicrotask(paintNet);$('#nav').innerHTML=`<div class="b
  <div class="acts"><button class="btn dk-tg ${DOCK.open?'on':''}" id="dkTg" data-a="dockToggle" title="채팅 · 주사위 기록">채팅${dockUnread()?`<em>${dockUnread()}</em>`:''}</button><button class="btn" data-a="openSheet">시트</button>${NET.on?`<button class="btn net-b" id="netBadge" data-a="netPanel" title="멤버 관리 · 초대"><i></i>…</button>`:''}${!NET.on||NET.gm?`<button class="btn ${UI.master?'on':''}" data-a="master" aria-pressed="${UI.master}">마스터 모드</button>`:''}<button class="btn" data-a="backup">백업</button></div>`}
 const PAGES={
  battle:()=>battlePage(),
- talk:()=>`<section class="talk"><div class="stage film" id="tkStage"><div class="film-bg" id="tkBg"></div><div id="tkFigs"></div><div class="film-fx"></div><div id="tkUI"></div><div class="typing" id="tkTyping" aria-live="polite"></div></div>
+ talk:()=>`<section class="talk"><div class="stage film" id="tkStage"><div class="film-bg" id="tkBg"></div><div id="tkFigs"></div><div class="film-fx"></div><div id="tkFx"><div class="tk-tint"></div><div class="tk-black"></div><div class="tk-tr"></div><div class="tk-cine"><i></i><i></i></div><div class="tk-title"></div><div class="tk-flash"></div></div><div id="tkUI"></div><div class="typing" id="tkTyping" aria-live="polite"></div></div>
 
-  <div class="bar"><select id="tkSp" aria-label="화자"></select><select id="tkEx" aria-label="표정"></select><textarea id="tkTxt" maxlength="400" placeholder="대사 입력 · Enter 전송 · *문장*은 지문" aria-label="대사"></textarea><button class="btn pri" data-a="talkSend">전송</button><button class="btn" id="tkFig" data-a="figToggle">등장</button><button class="btn" data-a="rollOpen">판정</button></div></section>`,
+  <div class="bar"><select id="tkSp" aria-label="화자"></select><select id="tkEx" aria-label="표정"></select><textarea id="tkTxt" maxlength="400" placeholder="대사 입력 · Enter 전송 · *문장*은 지문" aria-label="대사"></textarea><button class="btn pri" data-a="talkSend">전송</button><button class="btn" id="tkFig" data-a="figToggle">등장</button><button class="btn" data-a="rollOpen">판정</button><span id="tkDirB"></span><div id="tkDir"></div></div></section>`,
  inv:()=>`<section class="inv"><div class="inv-top row" id="invTop"></div><div class="inv-stage film" id="invStage" data-a="invStage"><div class="film-bg" id="invBg"></div><div class="film-fx"></div><div id="invPts"></div><div id="invDlg"></div></div></section>`,
  rail:()=>railPage()
 };
@@ -1052,11 +1100,11 @@ const dlgHTML=({name,sub,nar,box,act,hint})=>`<div class="dlg ${nar?'nar':''}" $
 const placeHTML=n=>n?`<div class="plank place"><svg class="orn" viewBox="0 0 66 20" aria-hidden="true"><path d="M2 19h62M16 19l5-6h24l5 6M27 13l6-10 6 10" fill="none" stroke="#b8895a" stroke-width="2"/><circle cx="33" cy="9" r="2" fill="#b8895a"/></svg>${esc(n)}</div>`:'';
 const dlgType=makeTyper('#tkBox',dlgHold);
 const dlgActive=()=>UI.tab==='talk'&&!document.hidden&&!UI.log;
-function dlgPresent(m){clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=false;DLG.cur=m;DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);dlgType.done=false;paintTalkStage();dlgType.start(m.txt)}
+function dlgPresent(m){if(m.kind==='fx')return dirPresent(m);clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=false;DLG.cur=m;DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);dlgType.done=false;paintTalkStage();dlgType.start(m.txt)}
 function dlgNext(){if(!DLG.pending.length)return false;dlgPresent(DLG.pending.shift());return true}
 function dlgHold(){if(!dlgActive()||DLG.hold)return;if(DLG.holdDone){dlgNext();return}DLG.hold=setTimeout(()=>{DLG.hold=null;DLG.holdDone=true;if(dlgActive())dlgNext()},1500)}
-function dlgNew(m){DLG.pending.push(m);if(!DLG.cur||(dlgType.done&&DLG.holdDone&&dlgActive()))dlgNext()}
-function dlgSeed(){const l=talkList();DLG.shown=l.slice(-60);DLG.cur=l.at(-1)||null;DLG.holdDone=true;dlgType.chars=Array.from(String(DLG.cur?.txt||''));dlgType.i=dlgType.chars.length;dlgType.done=true}
+function dlgNew(m){if(m.kind==='fx'&&m.fx==='bgm'){DLG.shown=[...DLG.shown,m].slice(-60);dirRun(m);return}if(DLG.pending.some(x=>x.k&&x.k===m.k)||(m.k&&DLG.shown.some(x=>x.k===m.k)))return;DLG.pending.push(m);if(!DLG.fxBusy&&(!DLG.cur||(dlgType.done&&DLG.holdDone&&dlgActive())))dlgNext()}
+function dlgSeed(){const l=talkList();DLG.shown=l.slice(-60);DLG.cur=l.filter(m=>m.kind!=='fx').at(-1)||null;DLG.pending=[];DLG.scene=null;DLG.st={...(Store.get('play/stagefx')||{})};dirApplyState(false);BGM.want(DLG.st.bgm||null);DLG.holdDone=true;dlgType.chars=Array.from(String(DLG.cur?.txt||''));dlgType.i=dlgType.chars.length;dlgType.done=true}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&UI.tab==='talk')dlgHold()});
 const spKey=m=>m.sp||'nar';
 function speaker(m){const sp=spKey(m);
@@ -1066,13 +1114,13 @@ function speaker(m){const sp=spKey(m);
 function slotsFor(list){const N=stageN(),P=STAGE[N],stage=Array(N).fill(null),last={};list.forEach((m,t)=>{const k=spKey(m);if(k==='nar')return;last[k]=t;if(stage.includes(k))return;let at=P.pref.find(i=>!stage[i]);if(at==null){at=0;stage.forEach((x,i)=>{if(last[x]<last[stage[at]])at=i})}stage[at]=k});const slots={};stage.forEach((k,i)=>{if(k)slots[k]=i});return{slots,order:stage.filter(Boolean),P}}
 function paintTalkStage(){
  const st=$('#tkStage');if(!st)return;
- const sc=Store.get('play/scene')||{},bg=pImg(sc.bg),last=DLG.cur;
- $('#tkBg').style.backgroundImage=bg?`url('${bg}')`:'';
+ const sc=DLG.scene||Store.get('play/scene')||{},bg=pImg(sc.bg),last=DLG.cur;
+ $('#tkBg').style.backgroundImage=bg?`url('${bg}')`:'';dirApplyState(false);paintDirBar();
  paintFigs();
- const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog">${talkList().map(m=>{const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(m.txt)}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
+ const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog">${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(m.txt)}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu">${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu">${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="bgmVol" value="${FXSET.bgm??.45}"></label></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -1089,7 +1137,9 @@ function paintFigs(){
   const s=speaker([...list].reverse().find(x=>spKey(x)===k));if(!s.img)return;
   let f=$$('.fig',box).find(x=>x.dataset.k===k&&!x.classList.contains('leave'));
   if(!f){f=document.createElement('div');f.className='fig enter';f.dataset.k=k;f.innerHTML='<img alt="">';box.append(f)}
-  const img=f.firstChild;if(img.getAttribute('src')!==s.img)img.src=s.img;img.alt=s.name;
+  const img=f.firstChild,old=img.getAttribute('src');if(old!==s.img){if(old&&!f.classList.contains('enter')){const g=document.createElement('img');g.className='ghost-ex';g.src=old;g.alt='';f.append(g);setTimeout(()=>g.remove(),340);f.classList.remove('swap');void f.offsetWidth;f.classList.add('swap')}img.src=s.img}img.alt=s.name;
+  if(k===cur&&DLG.cur?.k&&f._line!==DLG.cur.k){const was=f._line;f._line=DLG.cur.k;if(was&&!f.classList.contains('enter')){f.classList.remove('talk');void f.offsetWidth;f.classList.add('talk')}}
+  const pos=DLG.st?.pos?.[k];f.classList.toggle('near',pos==='near');f.classList.toggle('far',pos==='far');
   f.style.setProperty('--x',P.x[slots[k]]+'%');f.style.setProperty('--w',P.w+'%');
   f.classList.toggle('on',k===cur);f.classList.toggle('dim',k!==cur&&cur!=='nar');keep.add(k)});
  $$('.fig',box).forEach(f=>{if(!keep.has(f.dataset.k)&&!f.classList.contains('leave')){f.classList.add('leave');setTimeout(()=>f.remove(),450)}});
@@ -1309,7 +1359,7 @@ const A={
   let sp=$('#tkSp').value||'nar',ex=+($('#tkEx').value||0);const nar=raw.match(/^\*(.+)\*$/s);if(nar)sp='nar';
   const m={t:Date.now(),uid:ME,sp,ex,name:sp==='nar'?'':speaker({sp}).name,txt:(nar?nar[1]:raw).slice(0,400)};
   const k=Store.push('play/talk',m);dlgNew({...m,k});inp.value='';UI.draft='';clearTimeout(typeIdle);typingWrite(false);inp.focus()},
- talkSkip(){if(dlgNext())return;if(!dlgType.done)dlgType.finish();else{clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=true}},
+ talkSkip(){if(DLG.fxBusy){clearTimeout(DLG.fxT);DLG.fxBusy=false;DLG.holdDone=true}if(dlgNext())return;if(!dlgType.done)dlgType.finish();else{clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=true}},
  figToggle(){const sp=$('#tkSp').value,ex=+($('#tkEx').value||0);if(!sp||sp==='nar')return;
   if(slotsFor(stageList()).order.includes(sp))return Store.set('play/fig/'+sp,{off:Date.now()});
   if(!speaker({sp,ex}).img)return toast('스탠딩 이미지가 없어요. 시트에서 먼저 넣어 주세요',1);
@@ -1318,8 +1368,8 @@ const A={
  talkLog(){UI.log=!UI.log;UI.talkMenu=false;paintTalkStage();if(!UI.log)dlgHold()},
  sceneOpen(){openModal('배경',sceneModal)},
  sceneAdd(){pickImg(1920,bg=>{const id=Store.push('play/scenes',{name:'',bg});openForm('장소 이름',[{k:'name',label:'이름',v:''}],o=>{Store.set(`play/scenes/${id}/name`,o.name);Store.set('play/scene',{id,name:o.name,bg});openModal('배경',sceneModal)})})},
- sceneUse(e){const s=Store.get('play/scenes/'+e.dataset.v);if(s)Store.set('play/scene',{id:e.dataset.v,name:s.name||'',bg:s.bg})},
- sceneOff(){Store.set('play/scene',{id:'',name:'',bg:''})},
+ sceneUse(e){const s=Store.get('play/scenes/'+e.dataset.v);if(s)dirSend({fx:'scene',id:e.dataset.v,name:s.name||'',bg:s.bg,mode:UI.dirMode||'fade'})},
+ sceneOff(){dirSend({fx:'scene',id:'',name:'',bg:'',mode:UI.dirMode||'fade'})},
  sceneDel(e){const id=e.dataset.v;if(!confirm('이 배경을 삭제할까요?'))return;if(Store.get('play/scene/id')===id)A.sceneOff();Store.set('play/scenes/'+id,null)},
  npcOpen(){openModal('NPC',npcModal)},
  npcAdd(){Store.push('play/npc',{name:''})},
@@ -1444,8 +1494,14 @@ function reach(ctx,k,maxStep,done={}){
     else if(old.d===c.d+1&&ex.length<old.ex.length){old.ex=ex;old.prev=c}}}
   layer=next}
  for(const[kk,n]of M)n.end=n.d>0&&!occ[kk];                           // 다른 캐릭터 칸에서는 끝낼 수 없다
+ // 화면·실제 이동 경로: 같은 걸음 수로 갈 수 있으면 출발→도착을 잇는 곧은 선을 쓴다 (이탈 피해가 늘지 않을 때만)
+ for(const n of M.values()){if(!n.end||n.d<2)continue;const sx=+me.x,sy=+me.y,D=n.d,p=[];let ok=true,a={x:sx,y:sy};const seen={...done},ex=[];
+  for(let i=1;i<=D&&ok;i++){const x=sx+Math.round((n.x-sx)*i/D),y=sy+Math.round((n.y-sy)*i/D),dx=x-a.x,dy=y-a.y,c=M.get(wkey(x,y));
+   if(!c||Math.max(Math.abs(dx),Math.abs(dy))!==1||(dx&&dy&&wall(a.x+dx,a.y)&&wall(a.x,a.y+dy))){ok=false;break}
+   const e=stepExits(ctx,me,a,{x,y},seen);e.forEach(k=>{seen[k]=1;ex.push(k)});p.push({x,y});a={x,y}}
+  if(ok&&ex.length<=n.ex.length){n.path=p;n.ex=ex}}
  return M}
-const pathOf=n=>{const p=[];for(;n?.prev;n=n.prev)p.unshift({x:n.x,y:n.y});return p};
+const pathOf=n=>{if(n?.path)return n.path.map(c=>({...c}));const p=[];for(;n?.prev;n=n.prev)p.unshift({x:n.x,y:n.y});return p};
 
 /* 8장 신속·속박과 7.2 이니셔티브 */
 function rollInit(u){const net=clamp(+u.haste||0,0,2)-clamp(+u.bind||0,0,2),n=1+Math.max(0,net),dice=Array.from({length:n},()=>d6());
@@ -2208,7 +2264,8 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
  apply(p,k,v){if(this.quiet||k==='_o'||k==='_a')return;let box=Store.data;for(const x of p.split('/'))box=box[x]??={};let val=v==null?undefined:dec(v);
   if(val!==undefined&&p==='chars')val={...fixChar(val),id:k};
   if(canon(val)===canon(box[k]))return;
-  if(val===undefined)delete box[k];else box[k]=val;
+  const fresh=box[k]===undefined;if(val===undefined)delete box[k];else box[k]=val;
+  if(p==='play/talk'&&fresh&&val&&typeof val==='object')queueMicrotask(()=>dlgNew({...val,k}));   // 다른 사람이 보낸 대사·연출도 같은 순서로 재생
   if(p.startsWith('play/battle')&&UI.bt.sel&&!unitRaw(UI.bt.sel))UI.bt.sel='';
   paintSoon()},
  // Store.set 한 번 = update 한 번. 바뀐 칸만 올리고, 배열에서 지울 때만 배열 통째로
@@ -2240,7 +2297,7 @@ function parseNetCfg(txt){txt=String(txt||'').trim();if(!txt)return null;
  return cfg.apiKey&&cfg.databaseURL?{cfg}:cfg.apiKey?{cfg,noUrl:true}:null}
 
 /* 권한: 온라인에서 마스터가 아니면 자기 캐릭터의 결정만 내릴 수 있다 */
-const NET_GM=new Set(['dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
+const NET_GM=new Set(['dirFx','dirScene','dirTitle','dirAct','dirBgm','dirSfx','dirWait','dirAudioAdd','dirAudioDel','dirOpen','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
  'dbgAtkKill','dbgDone','dbgMain','dbgOpp','dbgOrd','dbgResort','dbgRules','dbgSettle','dbgSt','dbgTurn','importAll']);
 const NET_GM_C=new Set(['stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
 const NET_DECIDE=new Set(['atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
@@ -2283,6 +2340,143 @@ function netBlocked(n,el,isC){if(!NET.on||NET.gm)return false;
  if(n==='mMode'||n==='mPush'||n==='mOpt'||n==='mdUse'){const e=ATK()?.T?.[+el.dataset.i];return e&&mineU(e.k)?false:netDeny(`${atkName(e?.k)}의 주인만 고를 수 있어요`)}
  if(isC?NET_DECIDE_C.has(n):NET_DECIDE.has(n))return canDecide()?false:wait();
  return false}
+
+
+/* ---------- 스탠딩 연출 (비디오게임 스토리 컷씬풍) ----------
+   연출은 play/talk에 kind:'fx' 메시지로 올라가 대사와 같은 순서로 모두에게 재생된다.
+   계속 남는 상태(암전·시네마 바·색조·BGM·스탠딩 거리)는 play/stagefx에도 적어 새로 들어온 사람도 같은 화면을 본다 */
+const TINTS=[['','없음'],['sepia','회상'],['gray','흑백'],['red','경고'],['blue','냉기'],['dream','몽환']];
+const TR_MODES=[['fade','페이드'],['black','암전'],['white','섬광'],['cut','즉시']];
+const FIG_ACTS=[['jump','놀람'],['tremble','떨림'],['nod','끄덕'],['near','다가서기'],['far','물러서기'],['mid','제자리']];
+const STORY_SFX=[['boom','쾅'],['hit','타격'],['slash','베기'],['whoosh','휘익'],['knock','노크'],['door','문 삐걱'],['step','발소리'],['heart','심장박동'],['glass','유리 깨짐'],['bell','종소리'],['static','잡음'],['clang','쇳소리']];
+const BGM_BUILTIN=[['calm','고요한 밤'],['tense','긴장'],['uneasy','불안'],['battle','긴박'],['sad','애수'],['mystery','수수께끼']];
+DLG.st={};DLG.scene=null;
+function dirLabel(m){const L=(a,v)=>(a.find(x=>x[0]===v)||[0,v])[1];switch(m.fx){
+ case'shake':return`흔들림 ${['','약','중','강'][m.pow]||''}`;case'flash':return`섬광${m.color==='red'?' (붉은)':''}`;case'black':return m.on?'암전':'암전 해제';case'cine':return m.on?'시네마 바':'시네마 바 해제';
+ case'tint':return'색조: '+L(TINTS,m.tint||'');case'scene':return`장면 전환 → ${m.name||(m.bg?'배경':'배경 없음')} (${L(TR_MODES,m.mode)})`;case'title':return`제목: ${m.title||''}`;
+ case'act':return`${atkNameSp(m.sp)} ${L(FIG_ACTS,m.act)}`;case'bgm':return m.bgm?`BGM: ${m.bgm.name||''}`:'BGM 끄기';case'sfx':return'효과음: '+L(STORY_SFX,m.sfx)+(m.name&&!STORY_SFX.some(x=>x[0]===m.sfx)?m.name:'');case'wait':return`${(m.ms/1000)}초 대기`;default:return m.fx}}
+const atkNameSp=sp=>speaker({sp}).name||'?';
+// 보내기: 메시지 + 지속 상태 저장. 보낸 사람 화면에서도 대기열 순서대로 재생
+function dirSend(o){const m={t:Date.now(),uid:ME,kind:'fx',...o},st={...(Store.get('play/stagefx')||{})};
+ if(o.fx==='black')st.black=!!o.on;if(o.fx==='cine')st.cine=!!o.on;if(o.fx==='tint')st.tint=o.tint||'';if(o.fx==='bgm')st.bgm=o.bgm||null;
+ if(o.fx==='act'&&['near','far','mid'].includes(o.act)){st.pos={...(st.pos||{})};st.pos[o.sp]=o.act==='mid'?null:o.act}
+ if(o.fx!=='scene'&&o.fx!=='title'&&o.fx!=='sfx'&&o.fx!=='wait'&&o.fx!=='shake'&&o.fx!=='flash')Store.set('play/stagefx',st);
+ if(o.fx==='scene')Store.set('play/scene',{id:o.id||'',name:o.name||'',bg:o.bg||''});
+ const k=Store.push('play/talk',m);dlgNew({...m,k})}
+function dirApplyState(anim){const st=DLG.st||{},q=s=>$('#tkFx .'+s);if(!q('tk-black'))return;
+ q('tk-black').classList.toggle('on',!!st.black);q('tk-cine').classList.toggle('on',!!st.cine);
+ const t=q('tk-tint');t.className='tk-tint'+(st.tint?' on '+st.tint:'')}
+// 대기열에서 차례가 된 연출: 실행하고 걸리는 시간 뒤 다음으로
+function dirPresent(m){clearTimeout(DLG.hold);DLG.hold=null;if(!dlgType.done)dlgType.finish();DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);
+ const ms=dirRun(m);DLG.holdDone=false;DLG.fxBusy=true;clearTimeout(DLG.fxT);DLG.fxT=setTimeout(()=>{DLG.fxBusy=false;DLG.holdDone=true;if(dlgActive()||!DLG.cur)dlgNext()},ms)}
+function reFx(el,c){if(!el)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)}
+function dirRun(m){const st=DLG.st=DLG.st||{},stage=$('#tkStage'),q=s=>$('#tkFx .'+s);
+ switch(m.fx){
+  case'shake':{const p=clamp(+m.pow||2,1,3);stage&&['shake1','shake2','shake3'].forEach(c=>stage.classList.remove(c));if(stage){void stage.offsetWidth;stage.classList.add('shake'+p);setTimeout(()=>stage.classList.remove('shake'+p),900)}if(p>=2)SFX.play(p===3?'heavy':'hit');return p===3?650:350}
+  case'flash':{const f=q('tk-flash');if(f){f.style.background=m.color==='red'?'#d0201a':'#fff';reFx(f,'go')}return 300}
+  case'black':st.black=!!m.on;dirApplyState(true);return 950;
+  case'cine':st.cine=!!m.on;dirApplyState(true);return 650;
+  case'tint':st.tint=m.tint||'';dirApplyState(true);return 700;
+  case'title':{const el=q('tk-title');if(el){el.innerHTML=`<div><b>${esc(m.title||'')}</b>${m.sub?`<small>${esc(m.sub)}</small>`:''}</div>`;reFx(el,'go')}SFX.play('bell');return 3300}
+  case'act':{const f=$$('#tkFigs .fig').find(x=>x.dataset.k===m.sp&&!x.classList.contains('leave'));
+   if(['near','far','mid'].includes(m.act)){st.pos={...(st.pos||{})};st.pos[m.sp]=m.act==='mid'?null:m.act;paintFigs();return 500}
+   if(f){f.classList.remove('a-'+m.act);void f.offsetWidth;f.classList.add('a-'+m.act);setTimeout(()=>f.classList.remove('a-'+m.act),1000)}if(m.act==='jump')STORY.play('whoosh');return m.act==='tremble'?500:450}
+  case'sfx':STORY.play(m.sfx,m.url);return 150;
+  case'bgm':st.bgm=m.bgm||null;BGM.want(st.bgm);return 0;
+  case'wait':return clamp(+m.ms||1000,200,8000);
+  case'scene':{const tr=q('tk-tr'),mode=m.mode||'fade',swap=()=>{DLG.scene={id:m.id||'',name:m.name||'',bg:m.bg||''};paintTalkStage()};
+   if(mode==='cut'||!tr){swap();return 100}
+   if(mode==='fade'){const bg=$('#tkBg'),old=bg?.style.backgroundImage;swap();if(old&&bg){const o=document.createElement('div');o.className='tk-old';o.style.backgroundImage=old;bg.after(o);setTimeout(()=>o.remove(),1100)}return 1000}
+   tr.style.background=mode==='white'?'#fff':'#000';tr.style.setProperty('--d','1.4s');reFx(tr,'go');setTimeout(swap,600);if(mode==='white')SFX.play('crit');return 1400}}
+ return 0}
+
+/* 연출 패널 (마스터 전용) */
+const dirCan=()=>!NET.on||NET.gm;
+UI.dir=false;UI.dirMode='fade';
+function paintDirBar(){const b=$('#tkDirB');if(!b)return;const show=dirCan()&&(UI.master||NET.on);b.innerHTML=show?`<button class="btn ${UI.dir?'on':''}" data-a="dirOpen" title="화면 흔들림·암전·장면 전환·BGM 등">연출</button>`:'';
+ const p=$('#tkDir');if(!p)return;if(!show||!UI.dir){p.innerHTML='';p._html='';return}const keep=p.querySelector('.dir')?.scrollTop||0;
+ const st=DLG.st||{},figs=slotsFor(stageList()).order,scenes=vals(Store.get('play/scenes')),lib=vals(Store.get('play/audio')),bl=lib.filter(a=>a.type==='bgm'),sl=lib.filter(a=>a.type==='sfx'),cb=st.bgm;
+ const B=(a,v,n,extra='',on=false)=>`<button class="btn ${on?'on':''}" data-a="${a}" ${v!=null?`data-v="${esc(String(v))}"`:''} ${extra}>${n}</button>`;
+ const html=`<div class="dir" role="dialog" aria-label="연출">
+  <h4>화면</h4><div class="row">${B('dirFx','shake:1','흔들림 약')}${B('dirFx','shake:2','중')}${B('dirFx','shake:3','강')}<span class="sep"></span>${B('dirFx','flash:w','섬광')}${B('dirFx','flash:red','붉은 섬광')}<span class="sep"></span>${B('dirFx','black:'+(st.black?0:1),st.black?'암전 해제':'암전','',st.black)}${B('dirFx','cine:'+(st.cine?0:1),st.cine?'시네마 바 끄기':'시네마 바','',st.cine)}</div>
+  <h4>색조</h4><div class="row">${TINTS.map(([v,n])=>B('dirFx','tint:'+v,n,'',(st.tint||'')===v)).join('')}</div>
+  <h4>장면 전환</h4><div class="row"><select id="dirScene" aria-label="배경"><option value="">배경 없음</option>${scenes.map(c=>`<option value="${esc(c.k)}" ${c.k===(DLG.scene||Store.get('play/scene')||{}).id?'selected':''}>${esc(c.name||'이름 없는 배경')}</option>`).join('')}</select>${TR_MODES.map(([v,n])=>B('dirMode',v,n,'',UI.dirMode===v)).join('')}${B('dirScene',null,'전환')}<button class="btn" data-a="sceneOpen">배경 관리</button></div>
+  <h4>제목 카드</h4><div class="row"><input type="text" id="dirTitle" maxlength="40" placeholder="제1장 · 녹슨 사슬"><input type="text" id="dirSub" maxlength="40" placeholder="부제 (선택)">${B('dirTitle',null,'표시')}</div>
+  <h4>캐릭터 동작</h4><div class="row">${figs.length?`<select id="dirFig" aria-label="대상">${figs.map(k=>`<option value="${esc(k)}">${esc(atkNameSp(k))}</option>`).join('')}</select>${FIG_ACTS.map(([v,n])=>B('dirAct',v,n)).join('')}`:'<span class="note">무대에 올라온 캐릭터가 없어요</span>'}</div>
+  <h4>BGM <small class="note">${cb?'재생 중: '+esc(cb.name||''):'꺼짐'}</small></h4><div class="row">${BGM_BUILTIN.map(([v,n])=>B('dirBgm','b:'+v,n,'',cb?.id==='b:'+v)).join('')}${bl.map(a=>B('dirBgm','u:'+a.k,esc(a.name||'BGM'),'',cb?.id==='u:'+a.k)).join('')}${B('dirBgm','',  '끄기')}</div>
+  <h4>효과음</h4><div class="row">${STORY_SFX.map(([v,n])=>B('dirSfx',v,n)).join('')}${sl.map(a=>B('dirSfx','u:'+a.k,esc(a.name||'효과음'))).join('')}</div>
+  <h4>대기</h4><div class="row">${B('dirWait',1000,'1초')}${B('dirWait',2000,'2초')}${B('dirWait',3000,'3초')}</div>
+  <h4>음원 추가 <small class="note">mp3·ogg 직접 주소 (예: GitHub 저장소에 올린 파일)</small></h4><div class="row"><input type="text" id="dirAName" maxlength="20" placeholder="이름"><input type="text" id="dirAUrl" placeholder="https://…/track.mp3" style="flex:1"><select id="dirAType"><option value="bgm">BGM</option><option value="sfx">효과음</option></select>${B('dirAudioAdd',null,'추가')}</div>
+  ${lib.length?`<div class="row" style="margin-top:4px">${lib.map(a=>`<span class="note">${a.type==='bgm'?'♪':'♬'} ${esc(a.name||'')}</span><button class="lnk" data-a="dirAudioDel" data-v="${esc(a.k)}" aria-label="삭제">×</button>`).join(' ')}</div>`:''}
+  <p class="note">누르는 즉시 모두에게 재생돼요. 대사가 나오는 중이면 그 대사가 끝난 뒤 순서대로 이어져요. BGM 음량은 ≡ 메뉴에서 각자 조절해요.</p></div>`;
+ if(p._html===html)return;const keepV={};for(const id of['dirTitle','dirSub','dirAName','dirAUrl','dirAType','dirFig'])keepV[id]=$('#'+id)?.value;const foc=document.activeElement?.id;
+ p._html=html;p.innerHTML=html;for(const[id,v]of Object.entries(keepV))if(v!=null&&$('#'+id))$('#'+id).value=v;if(foc&&$('#'+foc))$('#'+foc).focus();const d=p.querySelector('.dir');if(d)d.scrollTop=keep}
+
+Object.assign(A,{
+ dirOpen(){UI.dir=!UI.dir;paintDirBar()},
+ dirFx(e){const[t,v]=e.dataset.v.split(':');if(t==='shake')dirSend({fx:'shake',pow:+v});else if(t==='flash')dirSend({fx:'flash',color:v==='red'?'red':'white'});else if(t==='black'||t==='cine')dirSend({fx:t,on:v==='1'});else if(t==='tint')dirSend({fx:'tint',tint:v||''});setTimeout(paintDirBar,0)},
+ dirMode(e){UI.dirMode=e.dataset.v;paintDirBar()},
+ dirScene(){const id=$('#dirScene')?.value||'',s=id?Store.get('play/scenes/'+id):null;dirSend({fx:'scene',id,name:s?.name||'',bg:s?.bg||'',mode:UI.dirMode||'fade'})},
+ dirTitle(){const t=($('#dirTitle')?.value||'').trim();if(!t)return toast('제목을 입력하세요',1);dirSend({fx:'title',title:t,sub:($('#dirSub')?.value||'').trim()});$('#dirTitle').value='';$('#dirSub').value=''},
+ dirAct(e){const sp=$('#dirFig')?.value;if(!sp)return;dirSend({fx:'act',sp,act:e.dataset.v})},
+ dirBgm(e){const v=e.dataset.v;if(!v)return dirSend({fx:'bgm',bgm:null});let bgm;if(v.startsWith('b:'))bgm={id:v,name:(BGM_BUILTIN.find(x=>'b:'+x[0]===v)||[])[1]||''};else{const a=Store.get('play/audio/'+v.slice(2));if(!a)return;bgm={id:v,name:a.name||'',url:a.url}}dirSend({fx:'bgm',bgm});setTimeout(paintDirBar,0)},
+ dirSfx(e){const v=e.dataset.v;if(v.startsWith('u:')){const a=Store.get('play/audio/'+v.slice(2));if(a)dirSend({fx:'sfx',sfx:v,url:a.url,name:a.name})}else dirSend({fx:'sfx',sfx:v})},
+ dirWait(e){dirSend({fx:'wait',ms:+e.dataset.v})},
+ dirAudioAdd(){const name=($('#dirAName')?.value||'').trim(),url=($('#dirAUrl')?.value||'').trim(),type=$('#dirAType')?.value||'bgm';if(!/^https:\/\/\S+$/i.test(url))return toast('https:// 로 시작하는 음원 주소를 넣어 주세요',1);Store.push('play/audio',{name:name||url.split('/').pop().slice(0,20),url,type});paintDirBar()},
+ dirAudioDel(e){if(confirm('이 음원을 목록에서 지울까요?')){Store.set('play/audio/'+e.dataset.v,null);paintDirBar()}}
+});
+CHANGE.bgmVol=el=>{FXSET.bgm=+el.value;saveFxSet();BGM.vol()};
+
+/* 이야기용 효과음: 기존 합성기를 재료로 */
+const STORY={play(k,url){if(url){if(!FXSET.snd)return;try{const a=new Audio(url);a.volume=Math.min(1,FXSET.vol);a.play().catch(()=>{})}catch{}return}
+ if(['hit','clang','bell'].includes(k))return SFX.play(k);if(k==='whoosh')return SFX.play('miss');if(!SFX.ok())return;const S=SFX,t=S.ctx.currentTime+.01;
+ switch(k){
+  case'boom':S.tone('sine',90,t,1,.9,28);S.band(t,1.2,900,60,.6,.9,'lowpass');break;
+  case'slash':S.band(t,.18,5000,900,1.4,.5);S.tone('triangle',2600,t+.02,.12,.25,1800);break;
+  case'knock':for(let i=0;i<3;i++){S.tone('sine',170,t+i*.2,.6,.09,110);S.band(t+i*.2,.06,700,250,1,.5,'lowpass')}break;
+  case'door':{const c=S.ctx,o=c.createOscillator(),fl=c.createBiquadFilter(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(70,t);o.frequency.linearRampToValueAtTime(140,t+.5);o.frequency.linearRampToValueAtTime(95,t+.9);fl.type='bandpass';fl.frequency.value=900;fl.Q.value=6;S.env(g,t,.08,.35,.9);o.connect(fl);fl.connect(g);g.connect(S.master);o.start(t);o.stop(t+1.1);S.tone('sine',120,t+1,.5,.25,60);break}
+  case'step':for(let i=0;i<4;i++){S.tone('sine',i%2?95:110,t+i*.36,.45,.1,55);S.band(t+i*.36,.07,1200,300,.8,.25,'lowpass')}break;
+  case'heart':for(const d of[0,.22,.9,1.12])S.tone('sine',d%0.9<.1?62:55,t+d,.9,.18,38);break;
+  case'glass':for(let i=0;i<9;i++){S.band(t+i*.025+Math.random()*.03,.08+Math.random()*.15,5000+Math.random()*4000,3000,6,.25,'bandpass');S.tone('sine',3000+Math.random()*3000,t+i*.03,.06,.3)}break;
+  case'static':for(let i=0;i<10;i++)S.band(t+i*.06,.04+Math.random()*.04,3500,2500,.7,.3);break}}};
+
+/* BGM: 내장 곡은 Web Audio로 실시간 합성(파일 없음, 라이선스 걱정 없음), 사용자 곡은 주소로 재생. 바뀔 때 교차 페이드 */
+const BGM={cur:null,id:'',el:null,wantSpec:null,
+ v(){return FXSET.snd?(FXSET.bgm??.45):0},
+ vol(){const v=this.v();if(this.cur?.g&&SFX.ctx)this.cur.g.gain.setTargetAtTime(v*.5,SFX.ctx.currentTime,.3);if(this.el)this.el.volume=Math.min(1,v)},
+ want(spec){this.wantSpec=spec;const id=spec?.id||'';if(id===this.id)return;this.stop();this.id=id;if(!spec)return;
+  if(spec.url){try{const a=new Audio(spec.url);a.loop=true;a.volume=0;this.el=a;const go=()=>a.play().then(()=>{let v=0;const T=setInterval(()=>{v+=.05;if(this.el!==a||v>=this.v()){clearInterval(T);if(this.el===a)a.volume=Math.min(1,this.v());return}a.volume=Math.min(1,v)},80)}).catch(()=>{toast('BGM을 재생하지 못했어요. 화면을 한 번 누르면 시작돼요',1);document.addEventListener('pointerdown',()=>{if(this.el===a)go()},{once:true})});go()}catch{}return}
+  const c=SFX.init();if(!c)return;const start=()=>{if(this.id!==id)return;if(c.state==='suspended')c.resume();const g=c.createGain();g.gain.value=0;g.connect(c.destination);g.gain.setTargetAtTime(this.v()*.5,c.currentTime,.8);const tr=BGM_SYN[id.slice(2)];if(!tr)return;this.cur={g,stop:tr(c,g)}};
+  if(c.state==='suspended'){c.resume().then(start,()=>{});document.addEventListener('pointerdown',()=>{if(!this.cur)start()},{once:true})}else start()},
+ stop(){const c=SFX.ctx;if(this.cur&&c){const{g,stop}=this.cur;g.gain.cancelScheduledValues(c.currentTime);g.gain.setTargetAtTime(0,c.currentTime,.5);setTimeout(()=>{try{stop()}catch{}g.disconnect()},2500)}this.cur=null;
+  if(this.el){const a=this.el;this.el=null;let v=a.volume;const T=setInterval(()=>{v-=.05;if(v<=0){clearInterval(T);a.pause()}else a.volume=v},80)}this.id=''}};
+// 내장 곡 합성기: (ctx, 출력) → 멈춤 함수
+const BGM_SYN=(()=>{const N=n=>440*Math.pow(2,(n-69)/12);
+ const mkDelay=(c,out,time=.38,fb=.35,wet=.35)=>{const d=c.createDelay(2),f=c.createGain(),w=c.createGain(),lp=c.createBiquadFilter();d.delayTime.value=time;f.gain.value=fb;w.gain.value=wet;lp.type='lowpass';lp.frequency.value=2600;d.connect(lp);lp.connect(f);f.connect(d);lp.connect(w);w.connect(out);return d};
+ const pad=(c,out,freqs,amp=.05,cut=900)=>{const g=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=cut;g.gain.value=amp;lp.connect(g);g.connect(out);const os=freqs.flatMap(f=>[-6,6].map(dt=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;o.detune.value=dt;o.connect(lp);o.start();return o}));return{g,lp,set(fs,t){fs.forEach((f,i)=>{os[i*2]?.frequency.setTargetAtTime(f,t,.6);os[i*2+1]?.frequency.setTargetAtTime(f,t,.6)})},stop(){os.forEach(o=>{try{o.stop()}catch{}})}}};
+ const note=(c,dest,type,f,t,amp,dec,att=.01)=>{const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(amp,t+att);g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec);o.connect(g);g.connect(dest);o.start(t);o.stop(t+att+dec+.05)};
+ const noiseBuf=c=>{const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b};
+ const loop=(fn,ms)=>{fn();const T=setInterval(fn,ms);return()=>clearInterval(T)};
+ return{
+  calm(c,out){const P=pad(c,out,[N(57),N(60),N(64)],.035,700),dl=mkDelay(c,out,.45,.4,.4),ch=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]];let i=0;
+   const s1=loop(()=>{P.set(ch[i++%4].map(N),c.currentTime)},8000),pent=[69,72,74,76,79,81,84];
+   const s2=loop(()=>{if(Math.random()<.6)note(c,dl,'sine',N(pent[Math.random()*pent.length|0]),c.currentTime+.05,.06,2.2,.02)},1300);return()=>{s1();s2();P.stop()}},
+  tense(c,out){const P=pad(c,out,[N(33),N(40)],.07,260),lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.08;lg.gain.value=160;lfo.connect(lg);lg.connect(P.lp.frequency);lfo.start();
+   const s1=loop(()=>{const t=c.currentTime+.05;note(c,out,'sine',62,t,.35,.22);note(c,out,'sine',55,t+.28,.25,.25)},1700);
+   const hi=c.createOscillator(),hg=c.createGain();hi.type='sine';hi.frequency.value=N(81);hg.gain.value=0;hi.connect(hg);hg.connect(out);hi.start();
+   const s2=loop(()=>{const t=c.currentTime;hg.gain.setTargetAtTime(Math.random()<.5?.012:0,t,1.5)},4000);return()=>{s1();s2();P.stop();lfo.stop();hi.stop()}},
+  uneasy(c,out){const a=pad(c,out,[N(57)],.03,1200),b=pad(c,out,[N(58)],0,1200),nb=noiseBuf(c),ns=c.createBufferSource(),bp=c.createBiquadFilter(),ng=c.createGain();ns.buffer=nb;ns.loop=true;bp.type='bandpass';bp.Q.value=3;bp.frequency.value=600;ng.gain.value=.05;ns.connect(bp);bp.connect(ng);ng.connect(out);ns.start();let f=0;
+   const s1=loop(()=>{const t=c.currentTime;f=!f;a.g.gain.setTargetAtTime(f?.035:.012,t,1.4);b.g.gain.setTargetAtTime(f?.012:.035,t,1.4);bp.frequency.setTargetAtTime(300+Math.random()*1400,t,1.5)},3500);
+   const dl=mkDelay(c,out,.6,.45,.4),s2=loop(()=>{if(Math.random()<.45){const t=c.currentTime+.05,b0=900+Math.random()*900;[1,2.76,5.4].forEach((m,i)=>note(c,dl,'sine',b0*m,t,.04/(i+1),1.6,.005))}},2600);return()=>{s1();s2();a.stop();b.stop();ns.stop()}},
+  battle(c,out){const P=pad(c,out,[N(45),N(52)],.025,500),nb=noiseBuf(c),bass=[45,45,45,48,45,45,43,40],st=.25;let i=0;
+   const s=loop(()=>{const t=c.currentTime+.05;const n=bass[i%8];
+    const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();o.type='sawtooth';o.frequency.value=N(n-12);lp.type='lowpass';lp.frequency.setValueAtTime(900,t);lp.frequency.exponentialRampToValueAtTime(200,t+.2);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.0001,t+.22);o.connect(lp);lp.connect(g);g.connect(out);o.start(t);o.stop(t+.25);
+    if(i%2===0){note(c,out,'sine',120,t,.5,.16);}else{const h=c.createBufferSource(),hp=c.createBiquadFilter(),hg=c.createGain();h.buffer=nb;hp.type='highpass';hp.frequency.value=7000;hg.gain.setValueAtTime(.06,t);hg.gain.exponentialRampToValueAtTime(.0001,t+.05);h.connect(hp);hp.connect(hg);hg.connect(out);h.start(t,Math.random());h.stop(t+.06)}
+    if(i%16===12)note(c,out,'square',N(69),t,.03,.4);i++},st*1000);return()=>{s();P.stop()}},
+  sad(c,out){const P=pad(c,out,[N(45),N(52)],.02,500),dl=mkDelay(c,out,.5,.38,.45),arp=[[57,60,64,69],[53,57,60,65],[48,52,55,60],[52,55,59,64]];let i=0;
+   const s=loop(()=>{const ch=arp[(i/8|0)%4],n=ch[[0,1,2,3,2,1,2,3][i%8]];const t=c.currentTime+.05;note(c,out,'triangle',N(n),t,.07,1.1,.01);note(c,dl,'sine',N(n+12),t,.02,.8);if(i%8===0)P.set([N(ch[0]-12),N(ch[2]-12)],t);i++},520);return()=>{s();P.stop()}},
+  mystery(c,out){const P=pad(c,out,[N(38),N(45)],.03,400),dl=mkDelay(c,out,.55,.5,.5),wt=[60,62,64,66,68,70,72,74,76];
+   const s=loop(()=>{if(Math.random()<.7){const t=c.currentTime+.05;note(c,dl,'sine',N(wt[Math.random()*wt.length|0]),t,.05,1.8,.01);note(c,out,'triangle',N(wt[Math.random()*wt.length|0]),t,.02,1.2,.01)}},900);return()=>{s();P.stop()}}}})();
 
 /* ---------- 채팅 · 주사위 기록 (전투·스탠딩·조사 공용, 방 전체 공유) ----------
    play/chat: {t,uid,txt}  play/dice: {t,uid,ty,who,lbl,a,r,mode,res,ok,rows}  각각 최근 것만 남긴다 */
@@ -2761,7 +2955,7 @@ function mDeclare(t){const by=uOf(t.by);if(!t.aim)return toast('조준할 칸을
  takeMain(t);if(t.zone)placeZone(t,[...P.c1,...P.c2],t.label);
  Store.set(`${BTP}/atk`,{...t,cand,s2:P.k2,firstK:P.firstK||null,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 — ${areaText(t.area,t.range)}, 후보 ${cand.map(atkName).join(', ')}`,{type:'declare',by:t.by,to:cand[0],kind:t.kind,multi:true});
- const used=BT().cur?.opp||{},q=t.kind==='원거리'?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];   // 7.8.2
+ const used=BT().cur?.opp||{},q=oppTrig(t,cand)?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];   // 7.8.2
  if(q.length)return Store.set(`${BTP}/atk`,{...ATK(),phase:'opp',oppQ:q,oppLog:[]});
  mProtectStart()}
 // 13.1 보호를 먼저 처리해 최종 대상을 확정. 보호자는 한 공격에 한 명만 보호
@@ -2815,7 +3009,8 @@ function mHit(i,items){const t=ATK(),e=t.T[i],sk=skillOf(t.by,t.opt),ctx=mCtx(t,
  if(ctx.skill)runRules('afterHit',ctx);runPassives(t.by,'afterHit',{target:e.k,attacker:t.by,snap:t.snap,roll:t.aRoll,fired:ctx.fired});runPassives(e.k,'onHitTaken',{attacker:t.by})});Store.set(`${BTP}/atk/fired`,ctx.fired,true)}
 function mEnd(){const t=ATK(),ctx=mCtx(t,t.T[0]?.k);withSrc(t.by,()=>{if(ctx.skill)runRules('afterAttack',ctx);runPassives(t.by,'afterAttack',{target:t.T[0]?.k,attacker:t.by,snap:t.snap,roll:t.aRoll,fired:ctx.fired})});
  settleKw([...t.T.map(e=>e.k),t.by],t.label);                                // 15.0
- const cq=t.T.map((e,i)=>e.counterEligible&&!e.cancel?i:-1).filter(i=>i>=0);  // 11.5 원래 대상 순서대로
+ const far=t.T.filter(e=>e.counterEligible&&!e.cancel&&rangedFar(t,e.k));if(far.length)btLog(`반격 불가 — 원거리 공격자가 떨어져 있음: ${far.map(e=>atkName(e.k)).join(', ')}`);
+ const cq=t.T.map((e,i)=>e.counterEligible&&!e.cancel&&!rangedFar(t,e.k)?i:-1).filter(i=>i>=0);  // 11.5 원래 대상 순서대로
  btLog(`${t.label} 처리 끝 — 적중 ${t.T.filter(e=>e.hit).length} / 대상 ${t.T.length}${cq.length?`, 반격 대기 ${cq.length}`:''}`);
  Store.set(`${BTP}/atk`,{...ATK(),fired:ctx.fired,cq,ci:0,phase:cq.length?'mcounter':'done',cn:{opt:'basic',t:1,n:1}})}
 function mCounter(use){const t=ATK(),e=t.T[t.cq[t.ci]],fake={by:t.by,to:e.k},opts=counterOptions(e.k),o={...(opts.find(x=>x.opt===t.cn.opt)||opts[0])};
@@ -2865,7 +3060,7 @@ function mPanel(t){const by=uOf(t.by),head=`<div class="bt-atk-h"><b>${esc(uName
   let act='';
   if(t.phase==='resist')act=`<div class="bt-step">${esc(atkName(t.rs.k))}의 저항 (14.5)</div><p class="small">받을 피해: <b>${esc(itemsText(t.rs.items))}</b></p><label class="f">감소 방식<select data-c="rsMode">${optsKV(RES_L,t.rs.mode||'tierDown')}</select></label>${(t.rs.mode||'tierDown')==='custom'?tierSel('rsCustom','rs/custom',t.rs.custom||{t:1,n:0},'바꿀 피해'):''}
    <p class="small muted">결과: ${esc(itemsText(resistMod(t.rs.items,t.rs.mode||'tierDown',t.rs.custom)))} · 스트레스 7-1d6</p><div class="row"><button class="btn sm pri" data-a="resistAct" data-v="1">저항</button><button class="btn sm" data-a="resistAct" data-v="0">저항 안 함</button></div>`;
-  else if(t.phase==='mcounter'){const e=t.T[t.cq[t.ci]],opts=counterOptions(e.k),co=opts.find(x=>x.opt===t.cn.opt)||opts[0],cb=counterBlock({by:t.by,to:e.k},co);
+  else if(t.phase==='mcounter'){const e=t.T[t.cq[t.ci]],opts=counterOptions(e.k),co=opts.find(x=>x.opt===t.cn.opt)||opts[0],cb=counterBlock({by:t.by,to:e.k,kind:t.kind},co);
    act=`<div class="bt-step">${esc(atkName(e.k))}의 반격 기회 (${t.ci+1}/${t.cq.length})</div><label class="f">반격<select data-c="cnSel">${opts.map(o=>`<option value="${o.opt}" ${o.opt===co.opt?'selected':''}>${esc(o.label)} (${o.kind} ${o.range})</option>`).join('')}</select></label>${co.st?skillSummary(skillOf(e.k,co.opt)):tierSel('atkDmg','cn',t.cn,'반격 피해')}
    ${cb?`<p class="small warn">${esc(cb)}</p>`:''}<div class="row"><button class="btn sm pri" data-a="mCounter" data-v="1" ${cb?'disabled':''}>반격 (확정 적중)</button><button class="btn sm" data-a="mCounter" data-v="0">반격 안 함</button></div>`}
   else act=`<div class="row"><button class="btn sm" data-a="atkClose">닫기</button></div>`;
@@ -2916,6 +3111,8 @@ const bonusDice=o=>(o.push?1:0)+(o.help?1:0);
 function payStress(k,o,what){const u=uOf(k);if(o.push&&u?.char){addStress(u.char,2);btLog(`${uName(u)} 분발 (${what}, 스트레스 +2)`,{type:'stress',k,n:2})}
  if(o.help){const h=uOf(o.help);if(h?.char){addStress(h.char,2);btLog(`${uName(h)} 도움 → ${uName(u)} (${what}, 스트레스 +2)`,{type:'stress',k:o.help,n:2})}}}
 const fmtRoll=j=>`[${j.rawDice.join(',')}] ${j.grade}(${j.compareValue})`;
+// 7.8.2 접전(인접한 적이 있음) 중 원거리 공격을 하거나, 접전 밖(거리 2 이상)의 대상을 공격하면 인접한 적마다 기회공격
+const oppTrig=(t,ks)=>{const me=uOf(t.by);if(!me)return false;return t.kind==='원거리'||ks.some(k=>uOf(k)&&cheb(me,uOf(k))>1)};
 const foesNear=(k)=>{const me=uOf(k);return units().filter(u=>u.side!==me.side&&!isDown(u)&&!stOf(u).행동불능&&cheb(me,u)===1)};
 
 
@@ -2973,7 +3170,7 @@ function atkDeclare(){const t=ATK();if(!t||t.phase!=='declare')return;if(t.multi
  Store.set(`${BTP}/atk`,{...t,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 → ${uName(to)} (${t.kind} · 사거리 ${t.range} · 거리 ${cheb(by,to)})`,{type:'declare',by:t.by,to:t.to,kind:t.kind});
  // 7.8.2 접전 중 원거리 공격: 인접한 적마다 기회공격 기회. 같은 적은 이 캐릭터의 한 턴에 한 번
- const used=BT().cur?.opp||{},q=t.kind==='원거리'?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];
+ const used=BT().cur?.opp||{},q=oppTrig(t,[t.to])?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];
  if(q.length){Store.set(`${BTP}/atk`,{...ATK(),phase:'opp',oppQ:q,oppLog:[]});return}
  atkPreRoll()}
 function oppAct(use){const t=ATK();if(!t||t.phase!=='opp')return;const k=t.oppQ[0],e=uOf(k),log=[...(t.oppLog||[])];
@@ -3020,9 +3217,12 @@ function finishHit(items){const t=ATK(),by=uOf(t.by),sk=skillOf(t.by,t.opt),why=
   if(t.hit)runPassives(t.to,'onHitTaken',{attacker:t.by});
   if(ctx.skill)runRules('afterAttack',ctx);runPassives(t.by,'afterAttack',po)})
  settleKw([t.to,t.by],t.label);                                              // 15.0
- Store.set(`${BTP}/atk`,{...ATK(),fired:ctx.fired,rs:null,phase:t.counterEligible?'counter':'done'})}
+ const far=t.counterEligible&&rangedFar(t,t.to);if(far)btLog(`${atkName(t.to)} 반격 불가 — 원거리 공격자가 떨어져 있음 (거리 ${cheb(uOf(t.by),uOf(t.to))})`);
+ Store.set(`${BTP}/atk`,{...ATK(),fired:ctx.fired,rs:null,...(far?{counterEligible:false}:{}),phase:t.counterEligible&&!far?'counter':'done'})}
 // 11.2 반격을 쓸 수 없는 이유. 없으면 ''
-function counterBlock(t,o){const by=uOf(t.by),to=uOf(t.to);if(!by||isDown(by))return'원래 공격자가 전투 불능';if(!to||isDown(to))return'반격자가 전투 불능';if(noResp(to))return'반격자가 대응·행동 불능 상태';
+// 원거리 공격을 떨어진 곳(거리 2 이상)에서 받았으면 반격할 수 없다
+const rangedFar=(t,k)=>t?.kind==='원거리'&&!!uOf(t.by)&&!!uOf(k)&&cheb(uOf(t.by),uOf(k))>1;
+function counterBlock(t,o){const by=uOf(t.by),to=uOf(t.to);if(rangedFar(t,t.to))return`원거리 공격자가 떨어져 있어 반격 불가 (거리 ${cheb(by,to)})`;if(!by||isDown(by))return'원래 공격자가 전투 불능';if(!to||isDown(to))return'반격자가 전투 불능';if(noResp(to))return'반격자가 대응·행동 불능 상태';
  if(o.kind==='미지정')return'반격 스킬의 공격 종류가 미지정';
  const d=cheb(by,to);return d>o.range?`${o.label} 사거리 밖 (거리 ${d}, 사거리 ${o.range})`:''}
 function atkCounter(use){const t=ATK();if(!t||t.phase!=='counter')return;const o={...(counterOptions(t.to).find(x=>x.opt===t.cn.opt)||counterOptions(t.to)[0])};
@@ -3109,12 +3309,12 @@ function atkPanel(){const t=ATK();if(!t)return'';const by=uOf(t.by),to=t.to&&uOf
  if(t.multi&&t.phase!=='opp')return mPanel(t);
  const head=`<div class="bt-atk-h"><b>${esc(uName(by))}</b><span>${esc(t.label)} ▶</span><b class="foe">${to?esc(uName(to)):'대상 선택'}</b></div><p class="small muted">${esc(t.kind)} · 사거리 ${t.range}${to?` · 거리 ${cheb(by,to)}`:''}${t.st?'':` · 적중 시 ${TIERS[t.dmg.t-1]} ${t.dmg.n}칸`}</p>`;
  let body='';
- if(t.phase==='declare'){const near=t.kind==='원거리'?foesNear(t.by).filter(u=>!(BT().cur?.opp||{})[u.k]):[];
+ if(t.phase==='declare'){const near=t.to&&oppTrig(t,[t.to])?foesNear(t.by).filter(u=>!(BT().cur?.opp||{})[u.k]):[];
   body=`<label class="f">공격<select data-c="atkSel">${atkOptions(t.by).map(o=>`<option value="${o.opt}" ${o.opt===t.opt?'selected':''}>${esc(o.label)}${o.opt.startsWith('s')?` (${o.kind} ${o.range})`:''}</option>`).join('')}</select></label>
   ${t.opt==='custom'?`<div class="f2"><label class="f">종류<select data-c="atkCustom" data-k="kind">${['근접','원거리'].map(v=>`<option ${v===t.kind?'selected':''}>${v}</option>`).join('')}</select></label><label class="f">사거리<input type="number" min="0" max="40" data-c="atkCustom" data-k="range" value="${t.range}"></label></div>`:''}
   ${atkGeo(t)}${t.st?skillSummary(skillOf(t.by,t.opt)):tierSel('atkDmg','dmg',t.dmg)}${t.opt?.startsWith('s')&&srcOf(by)&&!sheetLocked(srcOf(by))?`<button class="lnk" data-a="skOpen" data-v="${t.opt}">✎ 이 스킬 편집</button>`:''}${dashInfo(t)}
   ${t.kind==='미지정'?'<p class="small warn">공격 종류 미지정 — 시트에서 근접·원거리를 정해야 쓸 수 있어요.</p>':''}
-  <p class="small muted">${to?'':'빨간 칸 안의 대상을 누르세요. '}${near.length?`<span class="warn">접전 중 원거리 공격 — ${near.map(u=>esc(uName(u))).join(', ')}의 기회공격을 먼저 처리합니다.</span>`:''}</p>
+  <p class="small muted">${to?'':'빨간 칸 안의 대상을 누르세요. '}${near.length?`<span class="warn">접전 중 ${t.kind==='원거리'?'원거리 공격':'접전 밖 대상 공격'} — ${near.map(u=>esc(uName(u))).join(', ')}의 기회공격을 먼저 받습니다.</span>`:''}</p>
   <div class="bt-step">공격 판정 전 선언</div>${(()=>{const sk=t.st?skillOf(t.by,t.opt):null,uses=sk?.uses||[];
    return`${uses.map((u,i)=>{const ok=t.to&&useOk(u,t.by,t.to),have=+kwOf(uOf(usePayer(u,t.by,t.to)||''))[u.kw]||0;return`<label class="row small use ${ok?'':'off'}"><input type="checkbox" data-c="atkUse" data-i="${i}" ${t.a.uses?.[i]&&ok?'checked':''} ${ok?'':'disabled'}> ${esc(useText(u))} <em>(${u.kw==='침잠'?'대상':'보유'} ${have})</em></label>`}).join('')}
    ${sk?.fx?.some(f=>f.type==='ruptureBurst')?`<label class="f">파열 폭발 (대상 파열 ${t.to?+kwOf(uOf(t.to)).파열||0:'-'})<select data-c="atkRupt">${optsKV({max:`가능한 최대 터뜨리기${t.to?(()=>{const v=+kwOf(uOf(t.to)).파열||0,c=ruptPick(v,'max');return c?` (${c} 소비 → ${RUPT[c].map(([x,y])=>TIERS[x-1]+' '+y+'칸').join(' + ')})`:' (아직 3 미만)'})():''}`,none:'쌓아 두기'},t.a.rupt==='none'?'none':'max')}</select></label>`:''}`})()}${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})}${optRow('a',t.a,t.by,'공격')}
