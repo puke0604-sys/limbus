@@ -916,7 +916,8 @@ label.use input{flex:none;margin-top:2px}
 .tk-title small{display:block;margin-top:10px;font:400 clamp(14px,1.5vw,22px) var(--fb);color:#c9a878;letter-spacing:.3em}.tk-title b::after{content:"";display:block;height:2px;margin:12px auto 0;width:0;background:linear-gradient(90deg,transparent,#e23a2e,transparent);animation:tkline 1.2s .3s ease-out forwards}
 @keyframes tkline{to{width:120%;margin-left:-10%}}
 @keyframes tktitle{0%{opacity:0;transform:scale(1.04)}15%,80%{opacity:1;transform:none}100%{opacity:0}}
-#tkStage.shake1{animation:tkshake .35s linear}#tkStage.shake2{animation:tkshake2 .5s linear}#tkStage.shake3{animation:tkshake3 .8s linear}
+#tkStage.shake1 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake .35s linear}#tkStage.shake2 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake2 .5s linear}#tkStage.shake3 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake3 .8s linear}
+#tkFigs{position:absolute;inset:0;z-index:1}
 @keyframes tkshake{20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,-1px)}80%{transform:translate(2px,1px)}}
 @keyframes tkshake2{10%{transform:translate(-9px,4px)}25%{transform:translate(8px,-5px)}40%{transform:translate(-7px,-3px)}55%{transform:translate(6px,4px)}70%{transform:translate(-4px,2px)}85%{transform:translate(2px,-1px)}}
 @keyframes tkshake3{8%{transform:translate(-16px,8px) rotate(-.6deg)}18%{transform:translate(15px,-9px) rotate(.5deg)}30%{transform:translate(-13px,-6px)}42%{transform:translate(12px,8px) rotate(.4deg)}55%{transform:translate(-9px,4px)}68%{transform:translate(7px,-4px)}82%{transform:translate(-4px,2px)}}
@@ -931,9 +932,9 @@ label.use input{flex:none;margin-top:2px}
 .fig.a-jump img:first-child{animation:ajump .5s cubic-bezier(.3,1.6,.5,1)}@keyframes ajump{30%{transform:translateY(-7%)}60%{transform:translateY(0)}75%{transform:translateY(-2%)}}
 .fig.a-tremble img:first-child{animation:atrem .09s linear 9}@keyframes atrem{25%{transform:translateX(-.8%)}75%{transform:translateX(.8%)}}
 .fig.a-nod img:first-child{animation:anod .55s ease-in-out}@keyframes anod{30%{transform:translateY(2.4%)}60%{transform:translateY(0)}80%{transform:translateY(1.2%)}}
-.fig.a-near{transition:filter .25s,left .35s,opacity .4s,transform .5s}.fig.near img:first-child{transform:scale(1.14);transform-origin:50% 100%;transition:transform .5s}
-.fig.far img:first-child{transform:scale(.88);transform-origin:50% 100%;filter:brightness(.8);transition:transform .5s,filter .5s}
-.fig img:first-child{transition:transform .5s,filter .5s}
+.fig{transition:filter .25s,left .35s,opacity .4s,height .5s,width .5s,bottom .5s}
+.fig.fnear{height:92%;bottom:2%;width:calc(var(--w) * 1.18);z-index:3}
+.fig.ffar{height:64%;bottom:16%;width:calc(var(--w) * .82)}.fig.ffar:not(.on){filter:brightness(.42) saturate(.6)}.fig.ffar.on{filter:brightness(.82)}
 /* 연출 패널 */
 .dir{position:absolute;right:16px;bottom:100%;margin-bottom:8px;z-index:30;width:min(620px,calc(100vw - 32px));max-height:min(560px,70vh);overflow:auto;padding:10px 12px;background:rgba(18,11,7,.97);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;font-size:13px}
 .dir h4{margin:8px 0 4px;font:700 13px var(--fk);color:#e8c48a}.dir h4:first-child{margin-top:0}.dir .row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
@@ -942,6 +943,7 @@ label.use input{flex:none;margin-top:2px}
 .dir .note{color:var(--mute);font-size:11px;margin-top:4px}.dir .sep{width:1px;height:20px;background:#4a3626;margin:0 4px}
 .talk{position:relative}.bar{grid-template-columns:150px 110px minmax(0,1fr) auto auto auto auto!important;position:relative}
 #tkDir{display:contents}
+.dir-bgs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px}.dir-bg{flex:0 0 112px;height:72px;position:relative;border:2px solid #4a3626;background:#0c0908 center/cover no-repeat;cursor:pointer;padding:0;color:#efe3cf}.dir-bg.sel{border-color:#ffc23b;box-shadow:0 0 0 1px #ffc23b}.dir-bg.now::after{content:'현재';position:absolute;top:2px;right:2px;font-size:10px;padding:0 4px;background:#e23a2e}.dir-bg span{position:absolute;left:0;right:0;bottom:0;font-size:11px;padding:1px 4px;background:rgba(0,0,0,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dir-bg.add{display:grid;place-items:center;font-size:22px;border-style:dashed;background:none}.dir-go{font-weight:700}
 .log-row.fx{color:#8a7a62;font-size:12px;font-style:italic;padding:4px 0}
 </style>
 </head>
@@ -1139,7 +1141,7 @@ function paintFigs(){
   if(!f){f=document.createElement('div');f.className='fig enter';f.dataset.k=k;f.innerHTML='<img alt="">';box.append(f)}
   const img=f.firstChild,old=img.getAttribute('src');if(old!==s.img){if(old&&!f.classList.contains('enter')){const g=document.createElement('img');g.className='ghost-ex';g.src=old;g.alt='';f.append(g);setTimeout(()=>g.remove(),340);f.classList.remove('swap');void f.offsetWidth;f.classList.add('swap')}img.src=s.img}img.alt=s.name;
   if(k===cur&&DLG.cur?.k&&f._line!==DLG.cur.k){const was=f._line;f._line=DLG.cur.k;if(was&&!f.classList.contains('enter')){f.classList.remove('talk');void f.offsetWidth;f.classList.add('talk')}}
-  const pos=DLG.st?.pos?.[k];f.classList.toggle('near',pos==='near');f.classList.toggle('far',pos==='far');
+  const pos=DLG.st?.pos?.[k];f.classList.toggle('fnear',pos==='near');f.classList.toggle('ffar',pos==='far');
   f.style.setProperty('--x',P.x[slots[k]]+'%');f.style.setProperty('--w',P.w+'%');
   f.classList.toggle('on',k===cur);f.classList.toggle('dim',k!==cur&&cur!=='nar');keep.add(k)});
  $$('.fig',box).forEach(f=>{if(!keep.has(f.dataset.k)&&!f.classList.contains('leave')){f.classList.add('leave');setTimeout(()=>f.remove(),450)}});
@@ -1367,7 +1369,7 @@ const A={
  talkMenu(){UI.talkMenu=!UI.talkMenu;paintTalkStage()},
  talkLog(){UI.log=!UI.log;UI.talkMenu=false;paintTalkStage();if(!UI.log)dlgHold()},
  sceneOpen(){openModal('배경',sceneModal)},
- sceneAdd(){pickImg(1920,bg=>{const id=Store.push('play/scenes',{name:'',bg});openForm('장소 이름',[{k:'name',label:'이름',v:''}],o=>{Store.set(`play/scenes/${id}/name`,o.name);Store.set('play/scene',{id,name:o.name,bg});openModal('배경',sceneModal)})})},
+ sceneAdd(){pickImg(1920,bg=>{const id=Store.push('play/scenes',{name:'',bg});openForm('장소 이름',[{k:'name',label:'이름',v:''}],o=>{Store.set(`play/scenes/${id}/name`,o.name);dirSend({fx:'scene',id,name:o.name||'',bg,mode:UI.dirMode||'fade'});openModal('배경',sceneModal)})})},
  sceneUse(e){const s=Store.get('play/scenes/'+e.dataset.v);if(s)dirSend({fx:'scene',id:e.dataset.v,name:s.name||'',bg:s.bg,mode:UI.dirMode||'fade'})},
  sceneOff(){dirSend({fx:'scene',id:'',name:'',bg:'',mode:UI.dirMode||'fade'})},
  sceneDel(e){const id=e.dataset.v;if(!confirm('이 배경을 삭제할까요?'))return;if(Store.get('play/scene/id')===id)A.sceneOff();Store.set('play/scenes/'+id,null)},
@@ -2297,7 +2299,7 @@ function parseNetCfg(txt){txt=String(txt||'').trim();if(!txt)return null;
  return cfg.apiKey&&cfg.databaseURL?{cfg}:cfg.apiKey?{cfg,noUrl:true}:null}
 
 /* 권한: 온라인에서 마스터가 아니면 자기 캐릭터의 결정만 내릴 수 있다 */
-const NET_GM=new Set(['dirFx','dirScene','dirTitle','dirAct','dirBgm','dirSfx','dirWait','dirAudioAdd','dirAudioDel','dirOpen','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
+const NET_GM=new Set(['dirFx','dirScene','dirTitle','dirBgm','dirWait','dirAudioAdd','dirAudioDel','dirBgPick','dirBgAdd','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
  'dbgAtkKill','dbgDone','dbgMain','dbgOpp','dbgOrd','dbgResort','dbgRules','dbgSettle','dbgSt','dbgTurn','importAll']);
 const NET_GM_C=new Set(['stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
 const NET_DECIDE=new Set(['atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
@@ -2329,6 +2331,7 @@ const canDecide=()=>!NET.on||NET.gm||deciders().some(mineU);
 function netDeny(msg){if(Date.now()-netDenyT>1500){netDenyT=Date.now();toast(msg,1)}return true}
 function netBlocked(n,el,isC){if(!NET.on||NET.gm)return false;
  if(n==='hudDrawer'&&['gm','dbg'].includes(el.dataset.v))return netDeny('마스터만 쓸 수 있어요');
+ if(n==='dirAct'){const sp=$('#dirFig')?.value||'';if(!spMine(sp))return netDeny('자기 캐릭터만 움직일 수 있어요')}
  if(n==='talkSend'||n==='figToggle'){const sp=$('#tkSp')?.value||'nar';if(!spMine(sp))return netDeny('자기 캐릭터나 지문으로만 말할 수 있어요')}
  if(!isC&&NET_SHEET.has(n)){const id=pathChar(el.dataset.p)||(n==='rollDo'?UI.roll?.id:'')||(el.dataset.p&&!pathChar(el.dataset.p)?'':UI.charId);if(id&&sheetLocked(id))return netDeny(`${CH(id)?.info?.name||'다른 사람'}의 캐릭터는 주인과 마스터만 고칠 수 있어요`)}
  if(isC?NET_GM_C.has(n):NET_GM.has(n))return netDeny('마스터만 할 수 있어요');
@@ -2392,23 +2395,26 @@ function dirRun(m){const st=DLG.st=DLG.st||{},stage=$('#tkStage'),q=s=>$('#tkFx 
 
 /* 연출 패널 (마스터 전용) */
 const dirCan=()=>!NET.on||NET.gm;
+const dirFull=()=>NET.on?NET.gm:true;   // 전체 연출은 마스터, 플레이어는 자기 캐릭터 동작·효과음만
 UI.dir=false;UI.dirMode='fade';
-function paintDirBar(){const b=$('#tkDirB');if(!b)return;const show=dirCan()&&(UI.master||NET.on);b.innerHTML=show?`<button class="btn ${UI.dir?'on':''}" data-a="dirOpen" title="화면 흔들림·암전·장면 전환·BGM 등">연출</button>`:'';
+function paintDirBar(){const b=$('#tkDirB');if(!b)return;const show=true;b.innerHTML=show?`<button class="btn ${UI.dir?'on':''}" data-a="dirOpen" title="화면 흔들림·암전·장면 전환·BGM 등">연출</button>`:'';
  const p=$('#tkDir');if(!p)return;if(!show||!UI.dir){p.innerHTML='';p._html='';return}const keep=p.querySelector('.dir')?.scrollTop||0;
- const st=DLG.st||{},figs=slotsFor(stageList()).order,scenes=vals(Store.get('play/scenes')),lib=vals(Store.get('play/audio')),bl=lib.filter(a=>a.type==='bgm'),sl=lib.filter(a=>a.type==='sfx'),cb=st.bgm;
+ const nowId=(DLG.scene||Store.get('play/scene')||{}).id||'';if(UI.dirBg==null||(UI.dirBg&&!Store.get('play/scenes/'+UI.dirBg)))UI.dirBg=nowId;const selName=UI.dirBg?(Store.get('play/scenes/'+UI.dirBg)?.name||'이름 없는 배경'):'배경 없음';
+ const full=dirFull(),st=DLG.st||{},figs=slotsFor(stageList()).order.filter(k=>full||spMine(k)),scenes=vals(Store.get('play/scenes')),lib=vals(Store.get('play/audio')),bl=lib.filter(a=>a.type==='bgm'),sl=lib.filter(a=>a.type==='sfx'),cb=st.bgm;
  const B=(a,v,n,extra='',on=false)=>`<button class="btn ${on?'on':''}" data-a="${a}" ${v!=null?`data-v="${esc(String(v))}"`:''} ${extra}>${n}</button>`;
- const html=`<div class="dir" role="dialog" aria-label="연출">
+ const html=`<div class="dir" role="dialog" aria-label="연출">${full?`
   <h4>화면</h4><div class="row">${B('dirFx','shake:1','흔들림 약')}${B('dirFx','shake:2','중')}${B('dirFx','shake:3','강')}<span class="sep"></span>${B('dirFx','flash:w','섬광')}${B('dirFx','flash:red','붉은 섬광')}<span class="sep"></span>${B('dirFx','black:'+(st.black?0:1),st.black?'암전 해제':'암전','',st.black)}${B('dirFx','cine:'+(st.cine?0:1),st.cine?'시네마 바 끄기':'시네마 바','',st.cine)}</div>
   <h4>색조</h4><div class="row">${TINTS.map(([v,n])=>B('dirFx','tint:'+v,n,'',(st.tint||'')===v)).join('')}</div>
-  <h4>장면 전환</h4><div class="row"><select id="dirScene" aria-label="배경"><option value="">배경 없음</option>${scenes.map(c=>`<option value="${esc(c.k)}" ${c.k===(DLG.scene||Store.get('play/scene')||{}).id?'selected':''}>${esc(c.name||'이름 없는 배경')}</option>`).join('')}</select>${TR_MODES.map(([v,n])=>B('dirMode',v,n,'',UI.dirMode===v)).join('')}${B('dirScene',null,'전환')}<button class="btn" data-a="sceneOpen">배경 관리</button></div>
-  <h4>제목 카드</h4><div class="row"><input type="text" id="dirTitle" maxlength="40" placeholder="제1장 · 녹슨 사슬"><input type="text" id="dirSub" maxlength="40" placeholder="부제 (선택)">${B('dirTitle',null,'표시')}</div>
-  <h4>캐릭터 동작</h4><div class="row">${figs.length?`<select id="dirFig" aria-label="대상">${figs.map(k=>`<option value="${esc(k)}">${esc(atkNameSp(k))}</option>`).join('')}</select>${FIG_ACTS.map(([v,n])=>B('dirAct',v,n)).join('')}`:'<span class="note">무대에 올라온 캐릭터가 없어요</span>'}</div>
-  <h4>BGM <small class="note">${cb?'재생 중: '+esc(cb.name||''):'꺼짐'}</small></h4><div class="row">${BGM_BUILTIN.map(([v,n])=>B('dirBgm','b:'+v,n,'',cb?.id==='b:'+v)).join('')}${bl.map(a=>B('dirBgm','u:'+a.k,esc(a.name||'BGM'),'',cb?.id==='u:'+a.k)).join('')}${B('dirBgm','',  '끄기')}</div>
-  <h4>효과음</h4><div class="row">${STORY_SFX.map(([v,n])=>B('dirSfx',v,n)).join('')}${sl.map(a=>B('dirSfx','u:'+a.k,esc(a.name||'효과음'))).join('')}</div>
-  <h4>대기</h4><div class="row">${B('dirWait',1000,'1초')}${B('dirWait',2000,'2초')}${B('dirWait',3000,'3초')}</div>
+  <h4>장면 전환 <small class="note">① 배경 고르기 → ② 방식 → ③ 전환</small></h4><div class="dir-bgs">${[{k:'',name:'배경 없음',bg:''},...scenes].map(c=>{const im=pImg(c.bg);return`<button class="dir-bg ${UI.dirBg===c.k?'sel':''} ${c.k===nowId?'now':''}" data-a="dirBgPick" data-v="${esc(c.k)}" ${im?`style="background-image:url('${esc(im)}')"`:''} title="${esc(c.name||'')}"><span>${esc(c.name||'이름 없는 배경')}</span></button>`}).join('')}<button class="dir-bg add" data-a="dirBgAdd" title="배경 이미지 추가">＋</button></div>
+  <div class="row">${TR_MODES.map(([v,n])=>B('dirMode',v,n,'',UI.dirMode===v)).join('')}<span class="sep"></span><button class="btn pri dir-go" data-a="dirScene">전환 → ${esc(selName)}</button><button class="btn" data-a="sceneOpen">배경 관리</button></div>
+  `:''}${full?`<h4>제목 카드</h4><div class="row"><input type="text" id="dirTitle" maxlength="40" placeholder="제1장 · 녹슨 사슬"><input type="text" id="dirSub" maxlength="40" placeholder="부제 (선택)">${B('dirTitle',null,'표시')}</div>
+`:''}  <h4>캐릭터 동작</h4><div class="row">${figs.length?`<select id="dirFig" aria-label="대상">${figs.map(k=>`<option value="${esc(k)}">${esc(atkNameSp(k))}</option>`).join('')}</select>${FIG_ACTS.map(([v,n])=>B('dirAct',v,n)).join('')}`:`<span class="note">${full?'무대에 올라온 캐릭터가 없어요':'무대에 올라온 내 캐릭터가 없어요 — 먼저 대사를 하거나 [등장]'}</span>`}</div>
+  ${full?`<h4>BGM <small class="note">${cb?'재생 중: '+esc(cb.name||''):'꺼짐'}</small></h4><div class="row">${BGM_BUILTIN.map(([v,n])=>B('dirBgm','b:'+v,n,'',cb?.id==='b:'+v)).join('')}${bl.map(a=>B('dirBgm','u:'+a.k,esc(a.name||'BGM'),'',cb?.id==='u:'+a.k)).join('')}${B('dirBgm','',  '끄기')}</div>
+`:''}  <h4>효과음</h4><div class="row">${STORY_SFX.map(([v,n])=>B('dirSfx',v,n)).join('')}${sl.map(a=>B('dirSfx','u:'+a.k,esc(a.name||'효과음'))).join('')}</div>
+  ${full?`<h4>대기</h4><div class="row">${B('dirWait',1000,'1초')}${B('dirWait',2000,'2초')}${B('dirWait',3000,'3초')}</div>
   <h4>음원 추가 <small class="note">mp3·ogg 직접 주소 (예: GitHub 저장소에 올린 파일)</small></h4><div class="row"><input type="text" id="dirAName" maxlength="20" placeholder="이름"><input type="text" id="dirAUrl" placeholder="https://…/track.mp3" style="flex:1"><select id="dirAType"><option value="bgm">BGM</option><option value="sfx">효과음</option></select>${B('dirAudioAdd',null,'추가')}</div>
   ${lib.length?`<div class="row" style="margin-top:4px">${lib.map(a=>`<span class="note">${a.type==='bgm'?'♪':'♬'} ${esc(a.name||'')}</span><button class="lnk" data-a="dirAudioDel" data-v="${esc(a.k)}" aria-label="삭제">×</button>`).join(' ')}</div>`:''}
-  <p class="note">누르는 즉시 모두에게 재생돼요. 대사가 나오는 중이면 그 대사가 끝난 뒤 순서대로 이어져요. BGM 음량은 ≡ 메뉴에서 각자 조절해요.</p></div>`;
+`:''}<p class="note">${full?'':'플레이어는 자기 캐릭터 동작과 효과음만 쓸 수 있어요. '}누르는 즉시 모두에게 재생돼요. 대사가 나오는 중이면 그 대사가 끝난 뒤 순서대로 이어져요. BGM 음량은 ≡ 메뉴에서 각자 조절해요.</p></div>`;
  if(p._html===html)return;const keepV={};for(const id of['dirTitle','dirSub','dirAName','dirAUrl','dirAType','dirFig'])keepV[id]=$('#'+id)?.value;const foc=document.activeElement?.id;
  p._html=html;p.innerHTML=html;for(const[id,v]of Object.entries(keepV))if(v!=null&&$('#'+id))$('#'+id).value=v;if(foc&&$('#'+foc))$('#'+foc).focus();const d=p.querySelector('.dir');if(d)d.scrollTop=keep}
 
@@ -2416,7 +2422,9 @@ Object.assign(A,{
  dirOpen(){UI.dir=!UI.dir;paintDirBar()},
  dirFx(e){const[t,v]=e.dataset.v.split(':');if(t==='shake')dirSend({fx:'shake',pow:+v});else if(t==='flash')dirSend({fx:'flash',color:v==='red'?'red':'white'});else if(t==='black'||t==='cine')dirSend({fx:t,on:v==='1'});else if(t==='tint')dirSend({fx:'tint',tint:v||''});setTimeout(paintDirBar,0)},
  dirMode(e){UI.dirMode=e.dataset.v;paintDirBar()},
- dirScene(){const id=$('#dirScene')?.value||'',s=id?Store.get('play/scenes/'+id):null;dirSend({fx:'scene',id,name:s?.name||'',bg:s?.bg||'',mode:UI.dirMode||'fade'})},
+ dirBgPick(e){UI.dirBg=e.dataset.v;paintDirBar()},
+ dirBgAdd(){pickImg(1920,bg=>openForm('장소 이름',[{k:'name',label:'이름',v:''}],o=>{const id=Store.push('play/scenes',{name:o.name||'',bg});UI.dirBg=id;paintDirBar()}))},
+ dirScene(){const id=UI.dirBg||'',s=id?Store.get('play/scenes/'+id):null;dirSend({fx:'scene',id,name:s?.name||'',bg:s?.bg||'',mode:UI.dirMode||'fade'})},
  dirTitle(){const t=($('#dirTitle')?.value||'').trim();if(!t)return toast('제목을 입력하세요',1);dirSend({fx:'title',title:t,sub:($('#dirSub')?.value||'').trim()});$('#dirTitle').value='';$('#dirSub').value=''},
  dirAct(e){const sp=$('#dirFig')?.value;if(!sp)return;dirSend({fx:'act',sp,act:e.dataset.v})},
  dirBgm(e){const v=e.dataset.v;if(!v)return dirSend({fx:'bgm',bgm:null});let bgm;if(v.startsWith('b:'))bgm={id:v,name:(BGM_BUILTIN.find(x=>'b:'+x[0]===v)||[])[1]||''};else{const a=Store.get('play/audio/'+v.slice(2));if(!a)return;bgm={id:v,name:a.name||'',url:a.url}}dirSend({fx:'bgm',bgm});setTimeout(paintDirBar,0)},
