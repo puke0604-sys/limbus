@@ -178,6 +178,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .sh-top .ib{width:122px;height:66px}
 .ii{width:47px;height:47px;background:#1c1a18;border:2px solid #cfc4ae;color:#efe6d4;font:900 30px Georgia,serif;cursor:pointer}
 .ii.on,.ii:hover{color:var(--amber);border-color:var(--amber)}
+.ii.ed-btn{width:auto;padding:0 14px;font:400 18px var(--fk);letter-spacing:.04em;white-space:nowrap}.ii.ed-btn.on{background:#3a2a10}
 .sh-icons{position:absolute;left:8.7%;top:13%;display:flex;flex-direction:column;gap:15px;z-index:3}
 .ib{display:block;width:80px;height:76px;padding:0;background:transparent center/contain no-repeat;border:0;cursor:pointer}
 .a-back{background-image:var(--a-back)}.a-book{background-image:var(--a-book)}.a-sync{background-image:var(--a-sync)}.a-cross{background-image:var(--a-cross)}.a-stack{background-image:var(--a-stack)}.a-heart{background-image:var(--a-heart)}.a-boot{background-image:var(--a-boot)}.a-shield{background-image:var(--a-shield)}
@@ -813,6 +814,44 @@ label.use input{flex:none;margin-top:2px}
 @keyframes hwait{to{border-color:#ffcf6a;box-shadow:0 0 14px rgba(255,207,106,.35)}}
 #sheet.ro input,#sheet.ro textarea,#sheet.ro select{pointer-events:none;opacity:.85}
 .sh-ro{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:30;padding:5px 16px;background:rgba(10,6,3,.85);border:1px solid #8a6a2a;font:400 13px var(--fk);color:#ffcf6a;pointer-events:none}
+.mbox.wide{width:min(860px,100%)}
+.mm-top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:6px}.mm-top .ok{color:#6fdc6a;font-style:normal}.mm-top .bad{color:#e05a3a;font-style:normal}
+.mm-tbl{display:grid;gap:2px;margin:4px 0 12px}
+.mm-r{display:grid;grid-template-columns:12px minmax(90px,1.1fr) 70px minmax(90px,1.4fr) 76px minmax(190px,auto);align-items:center;gap:10px;padding:5px 8px;background:rgba(0,0,0,.22);font-size:13px;min-width:0}
+.mm-r>*{min-width:0}.mm-r b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mm-r b small{font-weight:400;opacity:.7}
+.mm-r>i{width:8px;height:8px;border-radius:50%;background:#555}.mm-r>i.on{background:#6fdc6a;box-shadow:0 0 6px #6fdc6a}
+.mm-head{background:none;font-size:11px;color:#a89578;padding-bottom:0}.mm-head b{font-weight:400}
+.mm-dim{color:#c9b89a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.mm-act{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}.mm-act .btn{padding:2px 8px;font-size:12px}
+.mm-role{font-style:normal;font-size:11px;padding:1px 6px;border:1px solid #6a5038;white-space:nowrap}
+.mm-role.own{color:#ffd23b;border-color:#a07a1e}.mm-role.gm{color:#ffcf6a;border-color:#8a6a2a}.mm-role.pl{color:#c9b89a}.mm-role.ban{color:#ff8a70;border-color:#7c1411}
+.mm-r.snap{grid-template-columns:12px 110px minmax(80px,1fr) minmax(90px,auto) auto}
+.mm-r.pend{background:rgba(160,122,30,.15);grid-template-columns:12px minmax(90px,1.1fr) 120px 1fr auto}
+.mm-owners{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px 14px;margin:4px 0 12px}
+.mm-o{display:grid;grid-template-columns:minmax(0,1fr) 130px;align-items:center;gap:8px;font-size:13px}
+.mm-o>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mm-o select{width:100%;min-width:0}.mm-o em{font-style:normal;color:#c9b89a;text-align:right}
+.mm-chk{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0 12px}
+.net-pend{font-style:normal;margin-left:4px;padding:0 5px;background:#c23b2a;color:#fff;border-radius:8px;font-size:11px}
+.net-kick{position:fixed;inset:0;z-index:99;display:grid;place-content:center;text-align:center;background:rgba(0,0,0,.85);color:#f3e7cf}.net-kick b{font:400 28px var(--fk);color:#ff8a70}
+@media(max-width:700px){.mm-r{grid-template-columns:12px 1fr 60px;}.mm-r>span:nth-child(4),.mm-r>span:nth-child(5){display:none}.mm-act{grid-column:1/-1}}
+.m-opt{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 2px 12px}.m-opt select{font-size:12px;padding:1px 4px;max-width:150px}
+.m-react{margin:2px 0 2px 12px}
+.bt-cell.dc{background:rgba(79,195,255,.22);box-shadow:inset 0 0 0 2px rgba(79,195,255,.65);cursor:pointer}.bt-cell.dc:hover{background:rgba(79,195,255,.45)}
+.dash-i{color:#9fd6ff}
+.hs.re{animation:hsre 1s ease-in-out infinite alternate}.hs.re::after{content:'재사용';position:absolute;top:-8px;left:50%;transform:translateX(-50%);padding:0 6px;background:#1f7a96;color:#fff;font:700 10px var(--fb);white-space:nowrap}
+@keyframes hsre{to{filter:drop-shadow(0 0 10px #4fc3ff)}}
+.sk-editgo{display:block;width:100%;margin:12px 0 4px;padding:10px 12px;font:400 17px var(--fk);text-align:left;border:1px solid #b8895a;background:linear-gradient(90deg,rgba(124,20,17,.55),rgba(30,18,10,.6))}.sk-editgo small{display:block;font:400 12px var(--fb);opacity:.75;margin-top:2px}
+.hud-atk .lnk,.lnk{background:none;border:0;padding:2px 0;color:#9fd6ff;font:400 12px var(--fb);cursor:pointer;text-decoration:underline}
+.bt-cell.aa2{background:rgba(224,138,42,.32);box-shadow:inset 0 0 0 1px rgba(255,170,80,.7)}
+.mrow .s2{margin-left:4px;padding:0 4px;font-size:10px;color:#ffb35a;border:1px solid #8a5a1e}
+.gp{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.gp-g{display:grid;grid-template-columns:repeat(9,22px);gap:2px}
+.gp-c{width:22px;height:22px;padding:0;background:#2a1c13;border:1px solid #4a3626;color:#fff3df;font-size:12px;line-height:1;cursor:pointer}
+.gp-c.on{background:#c23b2a;border-color:#ff8a70}.gp-c.ctr{background:#d9b26a;color:#1a0f09}.gp-c.ctr.on{background:#e08a2a}.gp-c:hover:not(:disabled){outline:1px solid #ffcf6a}
+.area-next .gp-c.on{background:#e08a2a;border-color:#ffc06a}
+.gp-side{display:flex;flex-direction:column;gap:6px;max-width:150px}
+.area-next{margin:8px 0;padding:6px 8px;border-left:3px solid #e08a2a;background:rgba(224,138,42,.07)}
+.bt-cell.zn{background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--zc) 38%,transparent) 0 5px,color-mix(in srgb,var(--zc) 18%,transparent) 5px 10px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--zc) 70%,transparent)}
+.zone-ed{margin:4px 0 8px;padding:6px 8px;border-left:3px solid #e0602a;background:rgba(224,96,42,.07)}
 /* 숫자 팝업 */
 .bt-pops{position:absolute;inset:0;pointer-events:none;z-index:15}
 .pop{position:absolute;transform:translate(-50%,-100%);font:400 22px var(--fn);color:#fff;text-shadow:0 2px 3px #000,0 0 8px #000;white-space:nowrap;animation:popup 1.4s ease-out forwards}
@@ -943,7 +982,7 @@ const UI={tab:'talk',master:false,sheet:false,charId:'',log:false,talkMenu:false
 const TABS=[['battle','전투'],['talk','스탠딩'],['inv','조사'],['rail','철도']];
 function renderNav(){queueMicrotask(paintNet);$('#nav').innerHTML=`<div class="brand"><small>LIMBUS</small>PLAY</div>
  <div class="tabs" role="tablist">${TABS.map(([k,n])=>`<button class="tab ${UI.tab===k?'on':''}" role="tab" aria-selected="${UI.tab===k}" data-a="tab" data-v="${k}"><i class="tab-ic a-ic-${k}" aria-hidden="true"></i>${n}</button>`).join('')}</div>
- <div class="acts"><button class="btn" data-a="openSheet">시트</button>${NET.on?`<button class="btn net-b" id="netBadge" data-a="netPanel" title="온라인 방 · 접속자 · 초대"><i></i>…</button>`:''}${!NET.on||NET.gm?`<button class="btn ${UI.master?'on':''}" data-a="master" aria-pressed="${UI.master}">마스터 모드</button>`:''}<button class="btn" data-a="backup">백업</button></div>`}
+ <div class="acts"><button class="btn" data-a="openSheet">시트</button>${NET.on?`<button class="btn net-b" id="netBadge" data-a="netPanel" title="멤버 관리 · 초대"><i></i>…</button>`:''}${!NET.on||NET.gm?`<button class="btn ${UI.master?'on':''}" data-a="master" aria-pressed="${UI.master}">마스터 모드</button>`:''}<button class="btn" data-a="backup">백업</button></div>`}
 const PAGES={
  battle:()=>battlePage(),
  talk:()=>`<section class="talk"><div class="stage film" id="tkStage"><div class="film-bg" id="tkBg"></div><div id="tkFigs"></div><div class="film-fx"></div><div id="tkUI"></div><div class="typing" id="tkTyping" aria-live="polite"></div></div>
@@ -995,7 +1034,7 @@ function paintTalkStage(){
  const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog">${talkList().map(m=>{const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(m.txt)}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu"><label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu">${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -1019,7 +1058,7 @@ function paintFigs(){
 }
 function paintBar(){
  const sel=$('#tkSp'),ex=$('#tkEx');if(!sel)return;
- const opts=[...chars().map(c=>[`c:${c.id}`,c.info.name||'(이름 없음)']),...UI.master?vals(Store.get('play/npc')).map(n=>[`n:${n.k}`,`NPC · ${n.name||n.k}`]):[],['nar','지문']];
+ const opts=[...myChars().map(c=>[`c:${c.id}`,c.info.name||'(이름 없음)']),...UI.master?vals(Store.get('play/npc')).map(n=>[`n:${n.k}`,`NPC · ${n.name||n.k}`]):[],['nar','지문']];
  const sig=JSON.stringify(opts);if(sel._sig!==sig){sel._sig=sig;sel.innerHTML=opts.map(([v,n])=>`<option value="${esc(v)}">${esc(n)}</option>`).join('')}
  sel.value=opts.some(o=>o[0]===UI.sp)?UI.sp:opts[0][0];
  const sp=sel.value,L=sp.startsWith('c:')?CH(sp.slice(2))?.stands:sp.startsWith('n:')?Store.get(`play/npc/${sp.slice(2)}/stands`):null,names=(L||[]).map(s=>s.n||'표정'),exSig=sp+JSON.stringify(names);
@@ -1127,7 +1166,7 @@ const SH={
   if(ed)return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><input class="sk-name" aria-label="스킬 이름" placeholder="스킬 이름" data-b="${p}/name" value="${esc(x.name)}"><div class="row">${imgBtn(p+'/img','스킬 이미지 넣기')}</div></div></div>
    <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}"></label>${sel('반응 역할',p+'/role',x.role,['일반','반격 전용','기회공격 전용','양쪽'])}</div>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${P}/skills" data-v="${at}">스킬 삭제</button></div>`;
   return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><div class="sk-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><span class="swd">${svg(ICONS.sword)}</span><b>${esc(x.kind)}</b><small>사거리</small><span class="wsq">${'<i></i>'.repeat(clamp(r,0,8))}</span></div></div></div>
-  ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>`},
+  ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`},
  ego(c,P,ed){const k=UI.shEgo,x=c[k],q=`${P}/${k}`,im=pImg(x.img);
   const subs=`<div class="subtabs"><button class="${k==='ego'?'on':''}" style="--c:#a07a1e" data-a="shEgo" data-v="ego">E.G.O</button><button class="${k==='twist'?'on':''}" style="--c:#a81e1a" data-a="shEgo" data-v="twist">뒤틀림</button></div>`;
   if(ed)return subs+`<h4 class="sh-h">단계</h4>${pips(q+'/lv',+x.lv||0,0,4)}<div class="row" style="margin:10px 0">${imgBtn(q+'/img')}</div><div class="f2">${fld('이름',q+'/name',x.name)}${fld('형태',q+'/form',x.form)}</div>${fld('효과',q+'/effect',x.effect,1)}${fld('연출',q+'/show',x.show,1)}`;
@@ -1156,7 +1195,7 @@ function renderSheet0(){
  UI.charId=c.id;
  const P=`chars/${c.id}`,hp=hpCalc(c.hp),specs=SINS.filter(([s])=>c.sins[s].on),main=specs[0]?.[0],art=pImg(c.portrait),s=+c.stress||0,many=list.length>1,ed=UI.shEdit,info=UI.shTab==='info';
  el.innerHTML=`<div class="sh-art">${art?`<div class="sh-img"><img src="${esc(art)}" alt="${esc(c.info.name)}"></div>`:`<button class="sh-noimg" data-a="charArt">일러스트를 올려 주세요</button>`}
-  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ${ed?'on':''}" data-a="shEdit" aria-label="편집 모드" title="편집 모드" aria-pressed="${ed}">i</button></div>
+  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ed-btn ${ed?'on':''}" data-a="shEdit" title="시트·스킬 편집 (스킬 제작기)" aria-pressed="${ed}">${ed?'✓ 편집 끝':'✎ 편집'}</button></div>
   <div class="sh-icons"><button class="ib a-book ${info?'on':''}" data-a="shTab" data-v="${info?'sum':'info'}" aria-label="캐릭터 설정" title="캐릭터 설정"></button>${icon('charArt','sync','일러스트 변경')}${icon('rollOpen','cross','7죄악 판정')}${icon('standOpen','stack','스탠딩 편집')}${icon('poseOpen','shield','전투 자세 (합 연출 그림)')}</div>
   ${many?`<button class="sh-arrow l" data-a="shMove" data-v="-1" aria-label="이전 캐릭터">◀</button>`:''}
   ${UI.shTab==='skill'?`<button class="passive ${UI.shSub==='passive'?'on':''}" data-a="shPassive">패시브</button>`:''}
@@ -1175,20 +1214,20 @@ function renderSheet0(){
 /* ---------- 모달 ---------- */
 const M={title:'',fn:null};
 function openModal(title,fn){M.title=title;M.fn=fn;drawModal();setTimeout(()=>$('#modal input,#modal textarea,#modal select,#modal button')?.focus())}
-function closeModal(){M.fn=null;drawModal()}
-function drawModal(){const el=$('#modal');if(!M.fn){el.innerHTML='';return}el.innerHTML=`<div class="mbox" role="dialog" aria-modal="true" aria-label="${esc(M.title)}"><h3>${esc(M.title)}</h3>${M.fn()}</div>`}
+function closeModal(){M.fn=null;M.wide=false;drawModal()}
+function drawModal(){const el=$('#modal');if(!M.fn){el.innerHTML='';return}el.innerHTML=`<div class="mbox${M.wide?' wide':''}" role="dialog" aria-modal="true" aria-label="${esc(M.title)}"><h3>${esc(M.title)}</h3>${M.fn()}</div>`}
 function openForm(title,fields,onSave){M.save=onSave;openModal(title,()=>fields.map(f=>`<label class="f">${esc(f.label)}${f.area?`<textarea data-k="${f.k}">${esc(f.v)}</textarea>`:`<input type="text" data-k="${f.k}" value="${esc(f.v)}">`}</label>`).join('')+`<div class="mfoot">${f0(fields)}<button class="btn" data-a="closeModal">취소</button><button class="btn pri" data-a="formSave">저장</button></div>`)}
 const f0=fields=>fields.del?'<button class="btn danger" data-a="formDel" style="margin-right:auto">삭제</button>':'';
 function sceneModal(){const cur=Store.get('play/scene/id');return vals(Store.get('play/scenes')).map(s=>`<div class="stand">${pImg(s.bg)?`<img src="${esc(pImg(s.bg))}" alt="">`:'<span></span>'}<span>${esc(s.name||'배경')}</span><span class="row"><button class="btn sm ${s.k===cur?'on':''}" data-a="sceneUse" data-v="${esc(s.k)}">적용</button><button class="btn sm danger" data-a="sceneDel" data-v="${esc(s.k)}">삭제</button></span></div>`).join('')+`<div class="mfoot"><button class="btn" data-a="sceneOff">배경 끄기</button><button class="btn pri" data-a="sceneAdd">이미지 추가</button><button class="btn" data-a="closeModal">닫기</button></div>`}
 function npcModal(){return vals(Store.get('play/npc')).map(n=>`<div class="item"><div class="f2"><label class="f">이름<input type="text" data-b="play/npc/${n.k}/name" value="${esc(n.name)}"></label><label class="f">호칭 (이름표 위)<input type="text" data-b="play/npc/${n.k}/sub" value="${esc(n.sub)}"></label></div>${standsEditor(`play/npc/${n.k}/stands`,n.stands)} <button class="btn sm danger" data-a="npcDel" data-v="${esc(n.k)}">NPC 삭제</button></div>`).join('')+`<div class="mfoot"><button class="btn pri" data-a="npcAdd">NPC 추가</button><button class="btn" data-a="closeModal">닫기</button></div>`}
-function rollModal(){const r=UI.roll,c=CH(r.id),spec=c?.sins[r.sin]?.on,n=(spec?2:1)+(r.push?1:0)+(r.help?1:0),res=r.res;
- return`<label class="f">캐릭터<select data-u="id">${chars().map(x=>`<option value="${x.id}" ${x.id===r.id?'selected':''}>${esc(x.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
+function rollModal(){{const r=UI.roll,m=myChars();if(NET.on&&!NET.gm&&m.length&&!m.some(c=>c.id===r.id)){r.id=m[0].id;r.res=null}}const r=UI.roll,c=CH(r.id),spec=c?.sins[r.sin]?.on,n=(spec?2:1)+(r.push?1:0)+(r.help?1:0),res=r.res;
+ return`<label class="f">캐릭터<select data-u="id">${(myChars().length?myChars():chars()).map(x=>`<option value="${x.id}" ${x.id===r.id?'selected':''}>${esc(x.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
  <label class="f">속성<select data-u="sin">${SINS.map(([s,sub])=>`<option value="${s}" ${s===r.sin?'selected':''}>${s} (${sub})${c?.sins[s]?.on?' · 전문':''}</option>`).join('')}</select></label>
  <div class="row small" style="margin-bottom:8px"><label class="row"><input type="checkbox" data-u="push" ${r.push?'checked':''}> 분발 (스트레스 +2)</label><label class="row"><input type="checkbox" data-u="adv" ${r.adv?'checked':''}> 유리한 속성 (+1)</label></div>
  <label class="f">도움 (도와주는 캐릭터 스트레스 +2)<select data-u="help"><option value="">없음</option>${chars().filter(x=>x.id!==r.id).map(x=>`<option value="${x.id}" ${x.id===r.help?'selected':''}>${esc(x.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
  ${res?`<div class="result">[${esc(res.sin)}] ${res.rawDice.join(', ')} → <b>${esc(res.grade)}</b> <span class="muted small">비교값 ${res.compareValue}</span></div>`:''}
  <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button><button class="btn pri" data-a="rollDo">${n}d6 굴리기</button></div>`}
-function backupModal(){return`<p class="small" style="margin-top:0">방 ${esc(UI.room)} · 아이디 ${esc(ME)}</p><p class="small muted">데이터는 이 브라우저에만 저장됩니다. 브라우저 데이터를 지우면 함께 사라지니 파일로 백업해 두세요.</p>${(()=>{const st=imgStats();return`<p class="small">이 방의 그림 ${st.n}장 · 약 ${st.kb>1024?(st.kb/1024).toFixed(1)+'MB':st.kb+'KB'}${st.big?` · 큰 그림 ${st.big}장 <button class="btn sm" data-a="imgSlim">용량 줄이기</button>`:''}</p>`})()}<div class="mfoot"><button class="btn" data-a="leaveRoom" style="margin-right:auto">방 나가기</button><button class="btn" data-a="closeModal">닫기</button><button class="btn" data-a="importAll">가져오기</button><button class="btn pri" data-a="exportAll">내보내기</button></div>`}
+function backupModal(){return`<p class="small" style="margin-top:0">방 ${esc(UI.room)} · 아이디 ${esc(ME)}</p><p class="small muted">${NET.on?'온라인 방의 데이터는 Firebase에 있어요. 파일로도 가끔 내보내 두면 더 안전해요.':'데이터는 이 브라우저에만 저장됩니다. 브라우저 데이터를 지우면 함께 사라지니 파일로 백업해 두세요.'}</p>${snapSection()}${(()=>{const st=imgStats();return`<p class="small">이 방의 그림 ${st.n}장 · 약 ${st.kb>1024?(st.kb/1024).toFixed(1)+'MB':st.kb+'KB'}${st.big?` · 큰 그림 ${st.big}장 <button class="btn sm" data-a="imgSlim">용량 줄이기</button>`:''}</p>`})()}<div class="mfoot"><button class="btn" data-a="leaveRoom" style="margin-right:auto">방 나가기</button><button class="btn" data-a="closeModal">닫기</button>${!NET.on||NET.gm?'<button class="btn" data-a="importAll">가져오기</button>':''}<button class="btn pri" data-a="exportAll">내보내기</button></div>`}
 const okMap=o=>!!o&&typeof o==='object'&&!Array.isArray(o);
 function validBackup(b){return okMap(b)&&b.v===1&&okMap(b.data)&&okMap(b.data.chars)&&okMap(b.data.play)&&okMap(b.imgs)&&Object.keys(b.data.chars).every(k=>/^[\w-]+$/.test(k)&&okMap(b.data.chars[k]))&&Object.values(b.imgs).every(u=>typeof u==='string'&&/^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+\/=]+$/.test(u))}
 
@@ -1196,7 +1235,7 @@ function validBackup(b){return okMap(b)&&b.v===1&&okMap(b.data)&&okMap(b.data.ch
 const A={
  tab(e){if(UI.tab==='talk')UI.draft=$('#tkTxt')?.value||'';UI.tab=e.dataset.v;UI.log=false;renderNav();renderMain();if(UI.tab==='talk')dlgHold()},
  master(){UI.master=!UI.master;UI.routeEdit=false;UI.bt.mode='';renderNav();if(UI.tab==='rail'||UI.tab==='battle')renderMain();else paint()},
- backup(){openModal('백업',backupModal)},
+ backup(){openModal('백업',backupModal);M.wide=NET.on&&NET.gm;drawModal()},
  openSheet(){UI.sheet=true;renderSheet()},closeSheet(){UI.sheet=false;renderSheet();paint()},
  closeModal,
  imgSlim(){slimAll()},
@@ -1206,6 +1245,8 @@ const A={
  shSub(e){const v=e.dataset.v;UI.shTab='skill';UI.shSub=/^\d+$/.test(v)?+v:v;renderSheet()},
  shJump(e){UI.shTab='skill';UI.shSub=+e.dataset.v;renderSheet()},
  shEdit(){UI.shEdit=!UI.shEdit;renderSheet()},
+ shEditSkill(){UI.shEdit=true;renderSheet();setTimeout(()=>$('#sheet .sk-maker')?.scrollIntoView({behavior:'smooth',block:'start'}),60)},
+ skOpen(e){const t=ATK(),u=uOf(t?.by);const id=srcOf(u);if(!id)return toast('시트가 없는 유닛이에요',1);UI.charId=id;UI.shTab='skill';UI.shSub=+String(e.dataset.v).slice(1)||0;UI.shEdit=true;A.openSheet();setTimeout(()=>$('#sheet .sk-maker')?.scrollIntoView({block:'start'}),80)},
  shInfoTab(e){UI.shInfo=e.dataset.v;renderSheet()},
  sinToggle(e){const p=`chars/${UI.charId}/sins/${e.dataset.v}/on`;Store.set(p,!Store.get(p))},
  setVal(e){Store.set(e.dataset.p,e.dataset.v)},
@@ -1273,7 +1314,7 @@ const A={
  mapClick(e,ev){if(!UI.routeEdit)return;const b=$('#railMapBox').getBoundingClientRect();Store.set('play/rail/route',[...(rail().route||[]),{x:+((ev.clientX-b.left)/b.width*100).toFixed(2),y:+((ev.clientY-b.top)/b.height*100).toFixed(2)}])},
  exportAll(){const a=document.createElement('a'),{typing,...play}=Store.data.play,used=JSON.stringify(Store.data),imgs=Object.fromEntries(Object.entries(IMG).filter(([k])=>used.includes('vimg:'+k)));a.href=URL.createObjectURL(new Blob([JSON.stringify({v:1,data:{...Store.data,play},imgs})],{type:'application/json'}));a.download=`limbus-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},
  importAll(){pickFile('application/json,.json',f=>{const rd=new FileReader;rd.onerror=()=>toast('파일을 읽지 못했어요.',1);rd.onload=async()=>{let b;try{b=JSON.parse(rd.result)}catch{b=null}
-  if(!validBackup(b))return toast('백업 파일 형식이 아니에요.',1);if(!confirm('이 방의 데이터를 지우고 백업으로 덮어쓸까요?'))return;
+  if(!validBackup(b))return toast('백업 파일 형식이 아니에요.',1);if(!confirm('이 방의 데이터를 지우고 백업으로 덮어쓸까요?'))return;if(NET.on)await snapSave('백업 가져오기 전',true);
   try{for(const[k,v]of Object.entries(b.imgs))await IDB.put('imgs',k,v);Object.assign(IMG,b.imgs);loadData(b.data);if(NET.on){for(const[k,v]of Object.entries(b.imgs))NET.putImg(k,v);NET.pushAll();renderNav();renderMain();return toast('백업을 방에 올렸어요')}await saveNow();location.reload()}catch(e){toast('가져오기 실패: '+e.message,1)}};rd.readAsText(f)})}
 };
 function editPoint(sid,k,p){const fields=[{k:'name',label:'포인트 이름',v:p.name},{k:'txt',label:'내용 (줄바꿈마다 대사 한 페이지)',v:p.txt,area:true}];fields.del=!!k;
@@ -1382,11 +1423,11 @@ function damageUnit(k,tier,n,why){const u={...unitRaw(k),k};if(!u.side)return;
 function btStartRound(){const B=BT(),round=(+B.round||0)+1,list=units().filter(u=>!isDown(u));
  if(!list.length)return toast('배치된 유닛이 없어요',1);
  const lines=[];list.forEach(u=>{u.init=rollInit(u);Store.set(`${BTP}/units/${u.k}/init`,u.init,true);lines.push(`${uName(u)} ${u.init.dice.join(',')}→${u.init.final} ${u.init.speed}`)});
- Store.set(`${BTP}/round`,round,true);Store.set(`${BTP}/order`,list.sort(initSort).map(u=>u.k),true);Store.set(`${BTP}/turn`,-1,true);
+ Store.set(`${BTP}/round`,round,true);zoneRound(round);Store.set(`${BTP}/order`,list.sort(initSort).map(u=>u.k),true);Store.set(`${BTP}/turn`,-1,true);
  btLog(`라운드 ${round} 이니셔티브 — ${lines.join(' · ')}`,{type:'round',round});btNextTurn()}
 function btNextTurn(){const B=BT(),o=B.order||[];let i=+(B.turn??-1);
  UI.bt.pick=false;if(B.atk){protCleanup(B.atk);Store.set(`${BTP}/atk`,null,true)}
- if(B.cur?.k&&unitRaw(B.cur.k)){runPassives(B.cur.k,'onTurnEnd');Store.set(`${BTP}/te/${B.cur.k}`,(+BT().te?.[B.cur.k]||0)+1,true);btLog(`${uName({...unitRaw(B.cur.k),k:B.cur.k})} 턴 종료`)}
+ if(B.cur?.k&&unitRaw(B.cur.k)){{const cu=unitRaw(B.cur.k);zoneFire(B.cur.k,+cu.x,+cu.y,'end')}runPassives(B.cur.k,'onTurnEnd');Store.set(`${BTP}/te/${B.cur.k}`,(+BT().te?.[B.cur.k]||0)+1,true);btLog(`${uName({...unitRaw(B.cur.k),k:B.cur.k})} 턴 종료`)}
  for(i++;i<o.length;i++){const u=unitRaw(o[i]);if(!u||isDown({...u,k:o[i]}))continue;
   if(u.st?.행동불능){Store.set(`${BTP}/units/${o[i]}/st/행동불능`,null,true);Store.set(`${BTP}/te/${o[i]}`,(+BT().te?.[o[i]]||0)+1,true);btLog(`${uName({...u,k:o[i]})} 행동 불능 — 이번 턴을 넘기고 해제`,{type:'status',k:o[i],key:'행동불능',on:false});continue}
   break}
@@ -1395,12 +1436,13 @@ function btNextTurn(){const B=BT(),o=B.order||[];let i=+(B.turn??-1);
  Store.set(`${BTP}/turn`,i,true);Store.set(`${BTP}/cur`,{k:u.k,mv,base:mv,main:false,dash:false,done:{}});
  UI.bt.sel=u.k;btLog(`▶ ${uName(u)} 턴 (이동력 ${mv})`,{type:'turn',k:u.k});
  if(u.st?.대응불능){Store.set(`${BTP}/units/${u.k}/st/대응불능`,null);btLog(`${uName(u)} 대응 불능 해제 (자신의 턴 시작)`,{type:'status',k:u.k,key:'대응불능',on:false})}
- runPassives(u.k,'onTurnStart')}
+ zoneFire(u.k,+u.x,+u.y,'start');runPassives(u.k,'onTurnStart')}
 
 function btMove(n){const B=BT(),cur=B.cur,k=cur.k,ctx=btCtx(B),me=ctx.units.find(u=>u.k===k),done={...(cur.done||{})};let at={x:me.x,y:me.y},used=0;
  for(const s of pathOf(n)){
   for(const e of stepExits(ctx,me,at,s,done)){done[e]=1;Store.set(`${BTP}/cur/done`,done,true);withSrc(e,()=>damageUnit(k,1,1,`${uName({...unitRaw(e),k:e})}의 접전 이탈`))}
   at=s;used++;me.x=s.x;me.y=s.y;
+  if(zoneAt(s.x,s.y).length){Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:s.x,y:s.y},true);zoneFire(k,s.x,s.y,'enter')}
   if(isDown({...unitRaw(k),k})){btLog('전투 불능으로 이동 중단');break}}
  Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:at.x,y:at.y},true);
  Store.set(`${BTP}/cur`,{...BT().cur,mv:Math.max(0,cur.mv-used),done});
@@ -1431,8 +1473,8 @@ function sampleFoe(){const c=blankChar(),sk=(o)=>({...blankSkill(),...o});c.foe=
 /* 전투 화면: 림버스 전투 화면 배치 (격자 무대 + HUD) */
 function battlePage(){return`<section class="bt"><div class="bt-bgimg" id="btBg"></div><div class="bt-vig"></div><div class="bt-wrap"><div class="bt-board" id="btBoard"></div></div><div class="hud" id="btHud"></div><div class="bt-pops" id="btPops"></div><div id="btCs"></div></section>`}
 function paintBattle(){const bg=pImg(BT().bg),b=$('#btBg');if(b)b.style.backgroundImage=bg?`url('${bg}')`:'';paintBoard();paintHud();fxPump()}
-function hudSkillIcon(o,k,on,off){const u=uOf(k),s=o.opt.startsWith('s')&&srcOf(u)?CH(srcOf(u))?.skills?.[+o.opt.slice(1)]:null,i=SINS.findIndex(x=>x[0]===s?.sin),im=pImg(s?.img);
- return`<button class="hs ${on?'on':''}" data-a="hudSkill" data-v="${o.opt}" ${off?'disabled':''} title="${esc(o.label)} · ${esc(o.kind)} ${o.range}"><span class="hs-tag" style="--c:${s?sinColor(s.sin):'#6b5138'}">${esc(o.label)}</span>
+function hudSkillIcon(o,k,on,off,re){const u=uOf(k),s=o.opt.startsWith('s')&&srcOf(u)?CH(srcOf(u))?.skills?.[+o.opt.slice(1)]:null,i=SINS.findIndex(x=>x[0]===s?.sin),im=pImg(s?.img);
+ return`<button class="hs ${on?'on':''}${re?' re':''}" data-a="hudSkill" data-v="${o.opt}" ${off?'disabled':''} title="${esc(o.label)} · ${esc(o.kind)} ${o.range}"><span class="hs-tag" style="--c:${s?sinColor(s.sin):'#6b5138'}">${esc(o.label)}</span>
  <span class="hs-ic" style="${i>=0?`--fr:var(--w${i})`:''}"><s style="${im?`background-image:url('${esc(im)}')`:i>=0?`background-image:var(--s${i})`:o.opt==='custom'?'background-image:var(--a-cross)':'background-image:var(--a-ic-battle)'}"></s></span><em>${esc(o.kind==='원거리'?'원':o.kind==='근접'?'근':'?')}${o.range}</em></button>`}
 function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,round=+B.round||0,o=(B.order||[]).filter(k=>unitRaw(k)),turn=+(B.turn??-1),act=turn>=0&&cur,t=ATK(),M=UI.master;
  const cu=act&&uOf(cur.k),all=units(),allies=all.filter(u=>u.side!=='foe'),foes=all.filter(u=>u.side==='foe');
@@ -1457,15 +1499,15 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
   <div class="hi-kw">${Object.entries(stOf(su)).filter(([,v])=>v).map(([k])=>`<span class="stt">${ST_L[k]}</span>`).join('')}${Object.entries(kwOf(su)).filter(([,v])=>+v>0).map(([k,v])=>`<span title="${esc(k)}"><i style="background-image:var(--k${KW.indexOf(k)})"></i>${esc(k)} <b>${+v}</b>${TOL_KW.includes(k)?`<small>/${tolOf(su,k)}</small>`:''}</span>`).join('')}${+su.chargeMax||+su.charge?`<span><i style="background-image:var(--k6)"></i>충전 <b>${+su.charge||0}</b>${+su.chargeMax?'/'+su.chargeMax:''}</span>`:''}</div>
   <div class="hi-row">${sc?`<span class="st">스트레스 <b>${+sc.stress||0}</b>/10</span>`:''}<label>신속<select data-c="btStat" data-k="haste">${[0,1,2].map(n=>`<option ${n===(+su.haste||0)?'selected':''}>${n}</option>`).join('')}</select></label><label>속박<select data-c="btStat" data-k="bind">${[0,1,2].map(n=>`<option ${n===(+su.bind||0)?'selected':''}>${n}</option>`).join('')}</select></label>${srcOf(su)?'<button class="btn sm" data-a="btSheet">시트</button>':''}</div></div>`}
  // 하단: 아군 카드 + 현재 턴 캐릭터의 스킬 줄
- const canAct=act&&!cur.main&&(!t||t.phase==='declare'),opts=act?atkOptions(cur.k):[];
- const skills=act&&!isDown(cu)?`<div class="hs-row">${opts.map(op=>hudSkillIcon(op,cur.k,t?.phase==='declare'&&t.opt===op.opt,!canAct)).join('')}</div>`:'';
+ const canUse=op=>act&&(!cur.main||(cur.reuse===op.opt&&!t?.dashed))&&(!t||t.phase==='declare')&&!t?.dashed,opts=act?atkOptions(cur.k):[];
+ const skills=act&&!isDown(cu)?`<div class="hs-row">${opts.map(op=>hudSkillIcon(op,cur.k,t?.phase==='declare'&&t.opt===op.opt,!canUse(op),cur.reuse===op.opt)).join('')}</div>`:'';
  const cards=allies.map(u=>{const c=hpCalc(hpOf(u)),sc=u.char&&CH(u.char),im=uImg(u),isCur=act&&cur.k===u.k;
   return`<div class="card-slot ${isCur?'now':''}">${isCur?skills:''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span><b class="pc-hp">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
  const foeSkills=act&&cu?.side==='foe'&&!isDown(cu)?`<div class="foe-act"><span class="fa-name">${esc(uName(cu))}의 행동</span>${skills}</div>`:'';
  const bottom=`<div class="hud-bottom">${foeSkills}<div class="cards">${cards||'<p class="small muted">아군이 없어요. 마스터 도구에서 배치하세요.</p>'}</div></div>`;
  // 오른쪽 아래: START 와 보조 버튼
  let go={a:'btRound',big:'START',sub:round?'다음 라운드':'전투 시작',off:!all.length};
- if(act){if(t?.phase==='declare')go={a:'atkDeclare',big:'ATTACK',sub:'공격 선언',off:!(t.multi?t.aim&&mCands(t).length:t.to)};
+ if(act){if(t?.phase==='declare')go={a:'atkDeclare',big:'ATTACK',sub:'공격 선언',off:!(t.multi?t.aim:t.to)};
   else if(t&&t.phase!=='done')go={a:'',big:'WAIT',sub:'처리 중',off:true};
   else go={a:'btEnd',big:'END',sub:'턴 종료',off:false}}
  const br=`<div class="hud-br">${act?`<div class="mv"><small>이동력</small><b>${+cur.mv}</b><i>/ ${cur.dash?cur.base*2:cur.base}</i></div>
@@ -1478,21 +1520,23 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  else if(UI.bt.drawer==='gm'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">마스터 도구<button class="x" data-a="hudDrawer" data-v="gm">✕</button></div><div class="dr-body">${masterPanel(B)}${su?unitPanel(su,true):''}</div></div>`;
  else if(UI.bt.drawer==='set')dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">소리·연출<button class="x" data-a="hudDrawer" data-v="set">✕</button></div><div class="dr-body">${fxSetPanel()}</div></div>`;
  else if(UI.bt.drawer==='dbg'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">디버그 · 직접 수정<button class="x" data-a="hudDrawer" data-v="dbg">✕</button></div><div class="dr-body">${dbgPanel()}</div></div>`;
- const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':t?.phase==='declare'?(t.multi?(t.aim?'다른 칸을 눌러 다시 조준 · START로 선언':(AREA_ORIGIN.includes(t.area.shape)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'START를 눌러 공격을 선언하세요':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
+ const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':needDash(t)?`파란 칸 중 착지할 칸을 누르세요 (직선 최대 ${t.move.n}칸) · 자기 말을 누르면 제자리`:t?.phase==='declare'?(t.multi?(t.aim?(t.range||isOrigin(t.area)?'다른 칸을 눌러 다시 조준 · START로 선언':'착지한 칸이 중심 · START로 선언'):(isOrigin(t.area)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'START를 눌러 공격을 선언하세요':t.move?.type==='target'?'대상을 누르세요 — 직선 위 대상에게는 돌진해서 공격 · Esc 취소':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
  el.innerHTML=tl+left+right+tr+info+bottom+br+card+dr+(hint?`<div class="hud-hint">${esc(hint)}</div>`:'');
  const db=$('.bt-drawer .dr-body',el);if(db)db.scrollTop=keepScroll;
  const ac=$('.hud-atk',el),ph=t?t.phase+(t.rs?'r':''):'';if(ac){if(UI.bt.atkPh!==ph)ac.scrollTop=ac.scrollHeight;else ac.scrollTop=UI.bt.atkScroll||0;ac.onscroll=()=>UI.bt.atkScroll=ac.scrollTop}UI.bt.atkPh=ph}
 Object.assign(A,{
  hudDrawer(e){UI.bt.drawer=UI.bt.drawer===e.dataset.v?'':e.dataset.v;paintHud()},
  hudInfoX(){UI.bt.sel='';paintBattle()},
- hudSkill(e){const c=BT().cur;if(!c||c.main)return;if(!ATK())atkStart();atkSetOpt(e.dataset.v)}
+ hudSkill(e){const c=BT().cur;if(!c||(c.main&&c.reuse!==e.dataset.v))return;if(!ATK())atkStart();atkSetOpt(e.dataset.v)}
 });
 function paintBoard(){const el=$('#btBoard');if(!el)return;const B=BT(),w=btW(),h=btH(),W=B.walls||{},cur=B.cur,bg=pImg(B.bg),ctx=btCtx(B);
  const atk=ATK(),busy=atk&&atk.phase!=='done',tg=picking()&&cur?new Set(atk.multi?(atk.aim?mCands(atk):[]):atkTargets(cur.k).map(u=>u.k)):null,me=cur&&unitRaw(cur.k),
-  acells=atk?.multi&&atk.aim&&unitRaw(atk.by)?new Set(areaCells(atk.area,{x:+unitRaw(atk.by).x,y:+unitRaw(atk.by).y},atk.aim,atk.range,ctx).map(c=>wkey(c.x,c.y))):null,aimZone=picking()&&atk.multi&&!AREA_ORIGIN.includes(atk.area.shape);
+  aplan=atk?.multi&&atk.aim&&unitRaw(atk.by)?mPlan(atk):null,acells=aplan?new Set(aplan.c1.map(c=>wkey(c.x,c.y))):null,acells2=aplan?new Set(aplan.c2.map(c=>wkey(c.x,c.y))):null,aimZone=picking()&&atk.multi&&!isOrigin(atk.area);
  UI.bt.reach=cur&&!busy&&UI.bt.sel===cur.k&&!UI.bt.mode&&!isDown({...unitRaw(cur.k)||{},k:cur.k})?reach(ctx,cur.k,+cur.mv||0,cur.done||{}):null;
  el.style.setProperty('--w',w);el.style.setProperty('--h',h);el.className='bt-board'+(UI.bt.mode?' m-'+UI.bt.mode:'');
- let cells='';for(let y=0;y<h;y++)for(let x=0;x<w;x++){const n=UI.bt.reach?.get(wkey(x,y));const inR=me&&Math.max(Math.abs(x-me.x),Math.abs(y-me.y))<=atk?.range&&!(x==me.x&&y==me.y),ar=tg&&(atk.multi?aimZone&&inR:inR);cells+=`<div class="bt-cell${W[wkey(x,y)]?' wall':''}${n?.end?' rc':''}${ar?' ar':''}${acells?.has(wkey(x,y))?' aa':''}${atk?.aim&&atk.aim.x===x&&atk.aim.y===y?' aim':''}${picking()&&atk.multi?' pk':''}" data-a="btCell" data-x="${x}" data-y="${y}"></div>`}
+ const zmap={};for(const z of zones())for(const c of z.cells||[])(zmap[c]=zmap[c]||[]).push(z);
+ const dcs=needDash(atk)?new Set(dashCells(atk.by,atk.move.n).map(c=>wkey(c.x,c.y))):null;
+ let cells='';for(let y=0;y<h;y++)for(let x=0;x<w;x++){const n=UI.bt.reach?.get(wkey(x,y));const inR=me&&Math.max(Math.abs(x-me.x),Math.abs(y-me.y))<=atk?.range&&!(x==me.x&&y==me.y),ar=tg&&(atk.multi?aimZone&&inR:inR);cells+=`<div class="bt-cell${W[wkey(x,y)]?' wall':''}${n?.end?' rc':''}${ar?' ar':''}${acells?.has(wkey(x,y))?' aa':''}${acells2?.has(wkey(x,y))?' aa2':''}${dcs?.has(wkey(x,y))?' dc':''}${zmap[wkey(x,y)]?' zn':''}${atk?.aim&&atk.aim.x===x&&atk.aim.y===y?' aim':''}${picking()&&atk.multi?' pk':''}" data-a="btCell" data-x="${x}" data-y="${y}"${zmap[wkey(x,y)]?` style="--zc:${sinColor(zmap[wkey(x,y)][0].sin)||'#e0602a'}" title="${esc(zmap[wkey(x,y)].map(z=>z.name+' — '+zoneText(z)).join(' / '))}"`:''}></div>`}
  const pct=(v,n)=>v/n*100;
  el.innerHTML=`<div class="bt-grid">${cells}</div>${atk&&unitRaw(atk.by)&&atk.to&&unitRaw(atk.to)?(()=>{const a=unitRaw(atk.by),b=unitRaw(atk.to),x1=+a.x+.5,y1=+a.y+.5,x2=+b.x+.5,y2=+b.y+.5,d=Math.hypot(x2-x1,y2-y1),cx=(x1+x2)/2,cy=Math.min(y1,y2)-.35-d*.35,col=atk.phase==='declare'||atk.phase==='opp'?'#efe4cc':atk.r?.mode==='none'?'#4fc3ff':atk.r?.mode?'#ffc23b':'#efe4cc';
  return`<svg class="bt-path bt-arc" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width=".16"/><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="${col}" stroke-width=".08" class="bt-atkline"/><circle cx="${x2}" cy="${y2-.3}" r=".13" fill="${col}"/></svg>`})():''}<svg class="bt-path" id="btPath" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"></svg>
@@ -1525,15 +1569,15 @@ function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boole
  <label class="f">적 배치 (적 시트에서 꺼내기, 체력은 개체마다 따로)<select data-c="btFoe"><option value="">${foes.length?'적 시트 선택':'적 시트 없음'}</option>${foes.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
  <div class="row"><button class="btn sm" data-a="foeNew">적 시트 만들기</button><button class="btn sm" data-a="foeSample">예시 적 만들기</button></div>
  <div class="row"><button class="btn sm" data-a="btAdd" data-v="foe">이름만 있는 적</button><button class="btn sm" data-a="btAdd" data-v="pc">아군 NPC 추가</button></div>
- <div class="row"><button class="btn sm" data-a="battleBg">배경 이미지</button>${B.bg?'<button class="btn sm danger" data-a="battleBgDel">배경 지우기</button>':''}<button class="btn sm danger" data-a="btReset">전투 종료·초기화</button><button class="btn sm danger" data-a="btWallClear">벽 전부 지우기</button></div></div>`}
+ <div class="row"><button class="btn sm" data-a="battleBg">배경 이미지</button>${B.bg?'<button class="btn sm danger" data-a="battleBgDel">배경 지우기</button>':''}<button class="btn sm danger" data-a="btReset">전투 종료·초기화</button><button class="btn sm danger" data-a="btWallClear">벽 전부 지우기</button></div>${zones().length?`<div class="bt-h">바닥 효과</div>${zones().map(z=>`<div class="row small"><span style="flex:1">${esc(z.name)} · ${(z.cells||[]).length}칸 · ${esc(zoneText(z))}</span><button class="btn sm danger" data-a="zoneDel" data-v="${esc(z.id)}">지우기</button></div>`).join('')}`:''}</div>`}
 
 Object.assign(A,{
  btRound:btStartRound,
  btEnd(){const t=ATK();if(t&&t.phase!=='done')return toast('진행 중인 공격을 먼저 끝내 주세요',1);btNextTurn()},
  btDash(){const c=BT().cur;if(!c||c.main)return;Store.set(`${BTP}/cur`,{...c,main:true,dash:true,mv:+c.mv+c.base});btLog(`${uName({...unitRaw(c.k),k:c.k})} 전력 이동 (이동력 +${c.base})`)}, // 7.3 전체 이동력 두 배
  btMain(){const c=BT().cur;if(!c||c.main)return;Store.set(`${BTP}/cur`,{...c,main:true,other:true});btLog(`${uName({...unitRaw(c.k),k:c.k})} 주요 행동 사용`)},
- btUnit(e){if(picking()&&ATK().multi){const u=unitRaw(e.dataset.v);return u&&mAim(+u.x,+u.y)}if(picking()){if(atkTargets(ATK().by).some(u=>u.k===e.dataset.v))return Store.set(`${BTP}/atk/to`,e.dataset.v);return toast('사거리 안의 대상을 고르세요',1)}UI.bt.sel=e.dataset.v;paintBattle()},
- btCell(e){const x=+e.dataset.x,y=+e.dataset.y,k=UI.bt.sel;if(picking()&&ATK().multi&&!UI.bt.mode)return mAim(x,y);if(UI.bt.mode==='wall'||!k)return;
+ btUnit(e){if(needDash(ATK())){if(e.dataset.v===ATK().by)return doDash(0,0,0);return toast('먼저 돌진할 칸을 고르세요',1)}if(picking()&&ATK().multi){const u=unitRaw(e.dataset.v);return u&&mAim(+u.x,+u.y)}if(picking()){if(atkTargets(ATK().by).some(u=>u.k===e.dataset.v))return Store.set(`${BTP}/atk/to`,e.dataset.v);return toast('사거리 안의 대상을 고르세요',1)}UI.bt.sel=e.dataset.v;paintBattle()},
+ btCell(e){const x=+e.dataset.x,y=+e.dataset.y,k=UI.bt.sel;const at=ATK();if(needDash(at)&&!UI.bt.mode){const c=dashCells(at.by,at.move.n).find(c=>c.x===x&&c.y===y);return c?doDash(x,y,c.d):toast('파란 칸 중에서 고르세요 (직선, 사이가 비어 있어야 해요)',1)}if(picking()&&ATK().multi&&!UI.bt.mode)return mAim(x,y);if(UI.bt.mode==='wall'||!k)return;
   if(UI.bt.mode==='free'){if(BT().walls?.[wkey(x,y)]||occupied(x,y))return toast('빈 칸에만 놓을 수 있어요',1);return btPlace(k,x,y)}
   const n=UI.bt.reach?.get(wkey(x,y));if(n?.end){UI.bt.hov=null;btMove(n)}},
  btOrd(e){const o=[...(BT().order||[])],i=o.indexOf(e.dataset.v),j=i+ +e.dataset.d;if(i<0||!o[j])return;[o[i],o[j]]=[o[j],o[i]];Store.set(`${BTP}/order`,o)},
@@ -1551,7 +1595,7 @@ Object.assign(A,{
  btHpStep(e){const k=UI.bt.sel,hp=hpOf(unitRaw(k)),i=+e.dataset.i,l=hp[i],n=clamp(l.length+ +e.dataset.v,0,12);l.length=Math.min(l.length,n);while(l.length<n)l.push(0);Store.set(`${BTP}/units/${k}/hp`,hp)},
  btImg(){const k=UI.bt.sel;pickImg(400,img=>Store.set(`${BTP}/units/${k}/img`,img))},
  btSheet(){UI.charId=srcOf(unitRaw(UI.bt.sel))||'';A.openSheet()},
- btReset(){if(!confirm('전투를 끝내고 라운드·행동 순서·기록·키워드·충전을 지울까요? 맵, 유닛, 체력은 남습니다.'))return;UI.bt.pick=false;units().forEach(u=>{Store.set(`${BTP}/units/${u.k}/kw`,null,true);Store.set(`${BTP}/units/${u.k}/st`,null,true);Store.set(`${BTP}/units/${u.k}/charge`,0,true)});['round','order','cur','log','atk','rs','te'].forEach(k=>Store.set(`${BTP}/${k}`,null,true));Store.set(`${BTP}/turn`,-1)},
+ btReset(){if(!confirm('전투를 끝내고 라운드·행동 순서·기록·키워드·충전을 지울까요? 맵, 유닛, 체력은 남습니다.'))return;snapSave('전투 초기화 전',true);UI.bt.pick=false;units().forEach(u=>{Store.set(`${BTP}/units/${u.k}/kw`,null,true);Store.set(`${BTP}/units/${u.k}/st`,null,true);Store.set(`${BTP}/units/${u.k}/charge`,0,true)});['round','order','cur','log','atk','rs','te'].forEach(k=>Store.set(`${BTP}/${k}`,null,true));Store.set(`${BTP}/turn`,-1)},
  btWallClear(){if(confirm('벽을 모두 지울까요?'))Store.set(`${BTP}/walls`,null)}
 });
 Object.assign(CHANGE,{
@@ -1581,11 +1625,11 @@ document.addEventListener('pointerleave',ev=>{if(ev.target.id==='btBoard'){UI.bt
 /* ---------- 디버그: 되돌리기·다시 하기와 GM 직접 수정 ---------- */
 // 전투 행동 단위로 전투 데이터와 캐릭터 체력·스트레스를 저장한다 (이 브라우저 메모리에만, 최근 50개)
 const UNDO={past:[],future:[]};
-const UNDO_A={btRound:'라운드 시작',btEnd:'턴 종료',btDash:'전력 이동',btMain:'기타 행동',btCell:'이동·배치',btUnit:'대상 지정',btDel:'유닛 빼기',btDmg:'피해 적용',btHeal:'회복 적용',btKw:'키워드 조정',
+const UNDO_A={btRound:'라운드 시작',btEnd:'턴 종료',btDash:'전력 이동',btMain:'기타 행동',btCell:'이동·배치',zoneDel:'바닥 효과 지우기',atkNoDash:'제자리 공격',btUnit:'대상 지정',btDel:'유닛 빼기',btDmg:'피해 적용',btHeal:'회복 적용',btKw:'키워드 조정',
  btReset:'전투 초기화',btWallClear:'벽 지우기',btOrd:'순서 변경',btAdd:'유닛 추가',btCell2:'체력 칸 수정',btHpStep:'체력 칸 수',atkPick:'공격 시작',hudSkill:'공격 선택',atkDeclare:'공격 선언',oppAct:'기회공격',
- atkRespond:'대응·결과 공개',protAct:'보호',resistAct:'저항',reactOk:'침잠 반응',mRespond:'대응·결과 공개',mProtOk:'보호 확정',mCounter:'반격',mMode:'대응 선택',atkCounter:'반격',atkCancel:'공격 취소',atkClose:'공격 닫기',dbgTurn:'턴 지정',dbgMain:'주요 행동 수정',dbgDone:'이탈 기록 초기화',dbgOpp:'기회공격 기록 초기화',
+ atkRespond:'대응·결과 공개',protAct:'보호',resistAct:'저항',reactOk:'침잠 반응',mRespond:'대응·결과 공개',mProtOk:'보호 확정',mReactOk:'침잠 반응',mCounter:'반격',mMode:'대응 선택',atkCounter:'반격',atkCancel:'공격 취소',atkClose:'공격 닫기',dbgTurn:'턴 지정',dbgMain:'주요 행동 수정',dbgDone:'이탈 기록 초기화',dbgOpp:'기회공격 기록 초기화',
  dbgRules:'규칙 기록 초기화',dbgSt:'상태 수정',dbgSettle:'키워드 정산',dbgAtkKill:'공격 강제 종료',dbgOrd:'순서 강제 변경',dbgResort:'순서 다시 정렬',foeSample:'예시 적'};
-const UNDO_C={btPc:'PC 배치',btFoe:'적 배치',btStat:'신속·속박',btName:'이름',btSide:'진영',btSize:'맵 크기',btChMax:'충전 최대',dbgKw:'키워드 직접 수정',dbgStress:'스트레스 수정',dbgInit:'이니셔티브 수정',dbgMv:'이동력 수정',dbgRound:'라운드 수정',dbgTol:'내성치 수정',atkUse:'소비 효과 선택'};
+const UNDO_C={btPc:'PC 배치',btFoe:'적 배치',btStat:'신속·속박',btName:'이름',btSide:'진영',btSize:'맵 크기',btChMax:'충전 최대',dbgKw:'키워드 직접 수정',dbgStress:'스트레스 수정',dbgInit:'이니셔티브 수정',dbgMv:'이동력 수정',dbgRound:'라운드 수정',dbgTol:'내성치 수정',atkUse:'소비 효과 선택',mOpt:'대응 보정',mdUse:'침잠 반응 선택'};
 function snapState(){return JSON.stringify({b:Store.get(BTP)||null,c:Object.fromEntries(chars().map(c=>[c.id,{hp:c.hp,stress:+c.stress||0}]))})}
 function restoreState(j){const o=JSON.parse(j);Store.set(BTP,o.b,true);
  for(const[id,v]of Object.entries(o.c))if(CH(id)){Store.set(`chars/${id}/hp`,v.hp,true);Store.set(`chars/${id}/stress`,v.stress,true)}
@@ -1705,8 +1749,14 @@ const useOk=(use,by,to)=>{const p=uOf(usePayer(use,by,to));return!!p&&(+kwOf(p)[
 const useFxText=(f,kw)=>f.type==='dice'?`공격 주사위 +${+f.n||0}`:f.type==='rdice'?`대상 대응 주사위 -${+f.n||0}`:f.type==='res'?`대상 충전 -${+f.n||0}`:f.type==='dmgUp'?`적중 시 ${TIERS[(+f.t||1)-1]} ${+f.n||0}칸 추가`:f.type==='kwUp'?`적중 시 ${f.kw} +${+f.n||0}`:`자작: ${f.text||'(설명 없음)'} — GM 확인`;
 const useText=u=>`[${u.kw} ${+u.cost||0} 소비${u.name?' · '+u.name:''}] ${(u.fx||[]).map(f=>useFxText(f,u.kw)).join(' · ')}`;
 // 판정 전 결제와 효과. 한 선택 = 한 거래(transactionId), 비용은 한 번만, 실패해도 환불 없음
-function payUses(t,ctx){const sk=skillOf(t.by,t.opt),uses=sk?.uses||[],post=[];let rdice=0;
- const sel=t.a.uses||{};uses.forEach((use,i)=>{if(!sel[i])return;const payer=usePayer(use,t.by,t.to),p=uOf(payer),have=+kwOf(p)[use.kw]||0,cost=+use.cost||0;
+function payUses(t,ctx){const sk=skillOf(t.by,t.opt),uses=sk?.uses||[],post=[],trdice={};let rdice=0;
+ const sel=t.a.uses||{};uses.forEach((use,i)=>{if(!sel[i])return;
+  if(t.multi&&use.kw==='침잠'){const cost=+use.cost||0;(t.T||[]).forEach((e,j)=>{const p=uOf(e.k);if(!p||isDown(p))return;const have=+kwOf(p).침잠||0;
+    if(have<cost)return btLog(`${uName(p)}: 침잠 부족 (${have}/${cost}) — ${use.name||'소비 효과'} 적용 안 함`);
+    const tx=uid();Store.set(`${BTP}/units/${e.k}/kw/침잠`,have-cost||null,true);btLog(`${uName(p)} 침잠 ${cost} 소비 (${have} → ${have-cost}) · ${use.name||'소비 효과'} [거래 ${tx.slice(-4)}]`,{type:'spend',k:e.k,kw:'침잠',n:cost,tx});
+    for(const f of use.fx||[]){const n=+f.n||0;if(f.type==='rdice')trdice[j]=(trdice[j]||0)+n;
+     else if(f.type==='res'){const v=Math.max(0,(+unitRaw(e.k)?.charge||0)-n);Store.set(`${BTP}/units/${e.k}/charge`,v,true);btLog(`${uName(p)} 충전 -${n} (${v})`)}
+     else if(f.type==='custom')btLog(`GM 확인: ${f.text||'자작 소비 효과'} (침잠 소비, ${uName(p)}, 자동 처리 안 함)`)}});return}const payer=usePayer(use,t.by,t.to),p=uOf(payer),have=+kwOf(p)[use.kw]||0,cost=+use.cost||0;
   if(have<cost)return btLog(`${use.kw} 부족 (${have}/${cost}) — ${use.name||'소비 효과'} 선언 불가`);       // E02
   const tx=uid();Store.set(`${BTP}/units/${payer}/kw/${use.kw}`,have-cost||null,true);
   btLog(`${uName(p)} ${use.kw} ${cost} 소비 (${have} → ${have-cost}) · ${use.name||'소비 효과'} [거래 ${tx.slice(-4)}]`,{type:'spend',k:payer,kw:use.kw,n:cost,tx});
@@ -1715,7 +1765,7 @@ function payUses(t,ctx){const sk=skillOf(t.by,t.opt),uses=sk?.uses||[],post=[];l
    else if(f.type==='res'){const q=unitRaw(t.to),v=Math.max(0,(+q?.charge||0)-n);Store.set(`${BTP}/units/${t.to}/charge`,v,true);btLog(`${atkName(t.to)} 충전 -${n} (${v})`)}
    else if(f.type==='custom')btLog(`GM 확인: ${f.text||'자작 소비 효과'} (${use.kw} 소비, 자동 처리 안 함)`);
    else post.push({...f,tx})}});
- return{post,rdice}}
+ return{post,rdice,trdice}}
 // 적중 후 강화 (E03: 미적중이면 적용 안 함)
 function applyPost(post,to,why){for(const f of post||[]){const n=+f.n||0;if(!n)continue;
  if(f.type==='dmgUp')damageUnit(to,clamp(+f.t||1,1,4),n,why+' (호흡 강화)');else if(f.type==='kwUp')addKw(to,f.kw,n,why+' (호흡 강화)')}}
@@ -2050,17 +2100,25 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
    const used=JSON.stringify(Store.data),U={};for(const id in IMG)if(used.includes('vimg:'+id))U[id]=IMG[id];
    if(Object.keys(U).length)await F.update(this.b('imgs'),U);
    this.meta={owner:name,at:Date.now(),gms:{[encK(name)]:true}};await F.set(this.b('meta'),this.meta)}
-  else{this.meta=meta;const[d,imgs]=await Promise.all([F.get(this.b('d')),F.get(this.b('imgs'))]);
+  else{const k=encK(name);if(meta.banned?.[k])throw new Error('BANNED');
+   if(meta.lock&&meta.owner!==name&&!meta.gms?.[k]&&!(await F.get(this.b('members/'+k))))await this.waitApproval(name);
+   this.meta=await F.get(this.b('meta'))||meta;const[d,imgs]=await Promise.all([F.get(this.b('d')),F.get(this.b('imgs'))]);
    loadData(dec(d)||{});for(const[k,v]of Object.entries(imgs||{})){IMG[k]=v;if(IDB.db)IDB.put('imgs',k,v).catch(()=>{})}}
   ME=name;UI.room=room;this.on=true;this.gm=!!this.meta.gms?.[encK(name)];UNDO.past=[];UNDO.future=[];this.listen(name)},
+ // 잠긴 방: 승인 대기 목록에 이름을 올리고 마스터의 결정을 기다린다
+ waitApproval(name){const F=this.F(),k=encK(name);F.set(this.b('meta/pending/'+k),{at:Date.now()});const err=$('#lgErr');if(err)err.textContent='잠긴 방이에요. 마스터의 승인을 기다리는 중…';
+  return new Promise((ok,no)=>{let un=null;const end=f=>{try{un?.()}catch{}clearTimeout(to);f()};const to=setTimeout(()=>end(()=>{F.set(this.b('meta/pending/'+k),null);no(new Error('WAIT'))}),5*60e3);
+   un=F.on(this.b('meta'),'value',async(_,m)=>{if(m?.pending?.[k])return;if(m?.banned?.[k])return end(()=>no(new Error('BANNED')));const mem=await F.get(this.b('members/'+k));end(()=>mem?ok():no(new Error('REJECT')))})})},
  listen(name){const F=this.F(),S=this.subs;
   // 자주 늘어나는 곳(전투 기록, 대화)은 한 줄 단위로, 전투는 항목 단위로 듣는다 — 기록이 길어져도 변경 하나에 전체를 다시 읽지 않게
   for(const[p,skip]of NET_TREE)for(const ty of['added','changed','removed'])S.push(F.on(this.b('d/'+encP(p)),ty,(k,v)=>{k=decK(k);if(!skip.includes(k))this.apply(p,k,ty==='removed'?null:v)}));
   for(const ty of['added','changed'])S.push(F.on(this.b('imgs'),ty,(k,v)=>{if(IMG[k]===v)return;IMG[k]=v;if(IDB.db)IDB.put('imgs',k,v).catch(()=>{});paintSoon()}));
-  S.push(F.on(this.b('meta'),'value',(k,v)=>{this.meta=v||{};const g=!!this.meta.gms?.[encK(ME)];
+  S.push(F.on(this.b('meta'),'value',(k,v)=>{this.meta=v||{};if(this.meta.banned?.[encK(ME)])return netKicked();const g=!!this.meta.gms?.[encK(ME)];
    if(g!==this.gm){this.gm=g;if(!g)UI.master=false;toast(g?'마스터 권한을 받았어요':'마스터 권한이 해제됐어요');renderNav();if(UI.tab==='battle'||UI.tab==='rail')renderMain()}paintSoon()}));
   S.push(F.on(this.b('members'),'value',(k,v)=>{this.members=v||{};paintNet()}));
-  S.push(F.on('.info/connected','value',(k,v)=>{const was=this.conn;this.conn=!!v;
+  S.push(F.on(this.b('snapmeta'),'value',(k,v)=>{const first=this.snaps===undefined;this.snaps=v||{};if(first&&this.gm)snapAuto();if(M.title==='백업')drawModal()}));
+  let pendN=0;S.push(F.on(this.b('meta/pending'),'value',(k,v)=>{const n=Object.keys(v||{}).length;if(this.gm&&n>pendN)toast(`입장 승인 요청이 왔어요 (${n}명) — 멤버 관리에서 확인하세요`);pendN=n;paintNet()}));
+  S.push(F.on('.info/connected','value',(k,v)=>{const was=this.everConn?this.conn:null;this.conn=!!v;if(v)this.everConn=true;
    if(v){const p=this.b('members/'+encK(name));F.set(p,{on:true,at:Date.now()});F.onDc(p,{on:false,at:Date.now()});F.onDc(this.b('d/play/typing/'+encK(name)),null);if(was===false)toast('다시 연결됐어요')}
    else if(was)toast('연결이 끊겼어요. 다시 연결되면 그동안의 행동이 올라가요',1);paintNet()}))},
  // 다른 사람의 변경을 반영. 내 쓰기 도중 곧바로 되돌아오는 신호(quiet)는 이미 반영된 내용이라 건너뛰고, 내용이 같은 신호도 무시
@@ -2081,7 +2139,11 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
  leave(){for(const u of this.subs)try{u()}catch{}this.subs=[];if(this.on)this.F().set(this.b('members/'+encK(ME)),{on:false,at:Date.now()}).catch(()=>{});this.on=false},
  fail(e){console.error(e);const m=netErr(e);if(m!==this.lastErr){this.lastErr=m;toast('온라인 오류: '+m,1);setTimeout(()=>this.lastErr='',8000)}},
  invite(){try{return'LIMBUS1:'+btoa(unescape(encodeURIComponent(JSON.stringify({c:this.cfg(),r:this.room}))))}catch{return''}}};
+function netKicked(){NET.leave();UI.room='';document.body.insertAdjacentHTML('beforeend','<div class="net-kick"><b>방에서 나가게 됐어요</b><p>마스터가 이 방에서 내보냈어요. 잠시 후 첫 화면으로 돌아갑니다.</p></div>');setTimeout(()=>location.reload(),3000)}
 function netErr(e){const m=String(e?.message||e||'');
+ if(m==='BANNED')return'이 방에서 내보내진 이름이에요. 마스터에게 문의해 주세요';
+ if(m==='REJECT')return'마스터가 입장을 거절했어요';
+ if(m==='WAIT')return'승인을 5분 동안 기다렸지만 응답이 없었어요. 다시 시도해 주세요';
  if(m==='NOCFG')return'온라인 설정이 없어요. "온라인 설정"에 firebaseConfig나 초대 코드를 넣어 주세요';
  if(m==='LOAD')return'Firebase를 불러오지 못했어요. 인터넷 연결을 확인해 주세요';
  if(m==='TIMEOUT')return'데이터베이스가 응답하지 않아요. databaseURL과 인터넷 연결을 확인해 주세요';
@@ -2095,10 +2157,10 @@ function parseNetCfg(txt){txt=String(txt||'').trim();if(!txt)return null;
  return cfg.apiKey&&cfg.databaseURL?{cfg}:cfg.apiKey?{cfg,noUrl:true}:null}
 
 /* 권한: 온라인에서 마스터가 아니면 자기 캐릭터의 결정만 내릴 수 있다 */
-const NET_GM=new Set(['btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
+const NET_GM=new Set(['zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
  'dbgAtkKill','dbgDone','dbgMain','dbgOpp','dbgOrd','dbgResort','dbgRules','dbgSettle','dbgSt','dbgTurn','importAll']);
-const NET_GM_C=new Set(['btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
-const NET_DECIDE=new Set(['btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
+const NET_GM_C=new Set(['stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
+const NET_DECIDE=new Set(['atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
 const NET_DECIDE_C=new Set(['atkCustom','atkDmg','atkOpt','atkPUse','atkRupt','atkSel','atkUse','cnSel','dUse','mProt','mPush','rPUse','rsCustom','rsMode','rsNote']);
 const ownerOf=k=>{const u=unitRaw(k);return u?.char?CH(u.char)?.owner||'':''};
 const mineU=k=>!!k&&ownerOf(k)===ME;
@@ -2113,42 +2175,87 @@ function deciders(){const B=BT(),t=B.atk;
   case'resist':return[t.rs?.k];
   case'mprotect':return[...(t.cand||[]),...(t.cand||[]).flatMap(c=>mProtOpts(t,c).map(u=>u.k))];
   case'mrespond':return(t.T||[]).map(e=>e.k);
+  case'mreact':return(t.T||[]).filter(e=>mReactOpts(t,e.k).length).map(e=>e.k);
   case'mcounter':return[t.T?.[t.cq?.[t.ci]]?.k];
   default:return[t.by,t.to,...(t.T||[]).map(e=>e.k)]}}
 // 시트: 온라인에서 마스터가 아니면 자기 캐릭터만 고칠 수 있다 (전투 결과로 바뀌는 체력·스트레스는 그대로 반영)
 const sheetLocked=id=>NET.on&&!NET.gm&&!!id&&(CH(id)?.owner||'')!==ME;
-const NET_SHEET=new Set(['charArt','charArtDel','charDel','hpCell','hpStep','itemAdd','itemDel','standAdd','standDel','poseSet','poseDel','shImg','sinToggle','setNum','setVal','skDel','skFxAdd','skIfAdd','skInit','skMove','skPUseFx','skRuleAdd','skUseAdd','skUseFx','pInit','pRuleAdd','pUseAdd','shEdit','rollDo']);
+const NET_SHEET=new Set(['charArt','charArtDel','charDel','hpCell','hpStep','itemAdd','itemDel','standAdd','standDel','poseSet','poseDel','shImg','sinToggle','setNum','setVal','skDel','skFxAdd','skIfAdd','skInit','skMove','skPUseFx','skRuleAdd','skUseAdd','skUseFx','pInit','pRuleAdd','pUseAdd','shEdit','shEditSkill','rollDo','areaCell','areaClear','areaNext','areaNextDel','zoneFxAdd']);
+const spMine=sp=>!NET.on||NET.gm||sp==='nar'||(sp.startsWith('c:')&&CH(sp.slice(2))?.owner===ME);
+const myChars=()=>chars().filter(c=>!NET.on||NET.gm||c.owner===ME);
 const pathChar=p=>String(p||'').startsWith('chars/')?String(p).split('/')[1]:'';
 let netDenyT=0;
 const canDecide=()=>!NET.on||NET.gm||deciders().some(mineU);
 function netDeny(msg){if(Date.now()-netDenyT>1500){netDenyT=Date.now();toast(msg,1)}return true}
 function netBlocked(n,el,isC){if(!NET.on||NET.gm)return false;
  if(n==='hudDrawer'&&['gm','dbg'].includes(el.dataset.v))return netDeny('마스터만 쓸 수 있어요');
+ if(n==='talkSend'||n==='figToggle'){const sp=$('#tkSp')?.value||'nar';if(!spMine(sp))return netDeny('자기 캐릭터나 지문으로만 말할 수 있어요')}
  if(!isC&&NET_SHEET.has(n)){const id=pathChar(el.dataset.p)||(n==='rollDo'?UI.roll?.id:'')||(el.dataset.p&&!pathChar(el.dataset.p)?'':UI.charId);if(id&&sheetLocked(id))return netDeny(`${CH(id)?.info?.name||'다른 사람'}의 캐릭터는 주인과 마스터만 고칠 수 있어요`)}
  if(isC?NET_GM_C.has(n):NET_GM.has(n))return netDeny('마스터만 할 수 있어요');
  const wait=()=>{const l=[...new Set(deciders().filter(Boolean))].map(atkName).join(', ');return netDeny(l?`지금은 ${l}의 결정 차례예요`:'지금은 결정할 차례가 아니에요')};
  if(n==='btCell')return UI.bt.mode?netDeny('마스터만 할 수 있어요'):canDecide()?false:wait();
  if(n==='btUnit')return picking()&&!canDecide()?wait():false;
- if(n==='mMode'){const e=ATK()?.T?.[+el.dataset.i];return e&&mineU(e.k)?false:netDeny(`${atkName(e?.k)}의 주인만 고를 수 있어요`)}
+ if(n==='mMode'||n==='mPush'||n==='mOpt'||n==='mdUse'){const e=ATK()?.T?.[+el.dataset.i];return e&&mineU(e.k)?false:netDeny(`${atkName(e?.k)}의 주인만 고를 수 있어요`)}
  if(isC?NET_DECIDE_C.has(n):NET_DECIDE.has(n))return canDecide()?false:wait();
  return false}
 function netWaitPill(){if(!NET.on||canDecide())return'';const l=[...new Set(deciders().filter(Boolean))].map(atkName);return l.length?`<div class="hud-wait">${esc(l.join(', '))}의 결정을 기다리는 중</div>`:''}
 
 /* 접속자·초대 창 */
 const netLink=()=>location.origin+location.pathname+'#join='+encodeURIComponent(NET.invite());
-function paintNet(){const b=$('#netBadge');if(!b)return;const n=Object.values(NET.members).filter(m=>m.on).length;b.className='btn net-b'+(NET.conn?'':' off');b.innerHTML=`<i></i>${NET.conn?n+'명':'연결 끊김'}`;if(M.title==='온라인 방')drawModal()}
-function netModal(){const mem=Object.entries(NET.members).map(([k,v])=>({n:decK(k),...v})).sort((a,b)=>b.on-a.on||a.n.localeCompare(b.n)),gms=NET.meta.gms||{},G=NET.gm,owner=NET.meta.owner;
- const names=[...new Set([...mem.map(m=>m.n),...chars().map(c=>c.owner).filter(Boolean)])];
- return`<div class="net-m"><p class="small">방 <b>${esc(NET.room)}</b> · ${NET.conn?'<span class="ok">연결됨</span>':'<span class="bad">연결 끊김 — 다시 연결 중</span>'} · 방장 ${esc(owner||'?')}</p>
- <div class="bt-h">접속자</div><div class="net-list">${mem.map(m=>`<div class="net-row"><i class="${m.on?'on':''}"></i><span>${esc(m.n)}${m.n===ME?' (나)':''}</span>${gms[encK(m.n)]?'<em>마스터</em>':''}${G&&m.n!==owner?`<button class="btn sm" data-a="netGm" data-v="${esc(m.n)}">${gms[encK(m.n)]?'마스터 해제':'마스터 주기'}</button>`:''}</div>`).join('')||'<p class="small muted">아직 아무도 없어요</p>'}</div>
- ${G?`<div class="bt-h">캐릭터 주인</div><p class="small muted">주인으로 지정된 사람만 전투에서 그 캐릭터의 행동·대응을 고를 수 있어요. 적은 마스터가 조종해요.</p><div class="net-list">${chars().map(c=>`<label class="net-row"><span>${esc(c.info?.name||'이름 없음')}</span><select data-c="netOwner" data-v="${esc(c.id)}"><option value="">(없음)</option>${names.map(n=>`<option ${c.owner===n?'selected':''}>${esc(n)}</option>`).join('')}</select></label>`).join('')||'<p class="small muted">캐릭터가 없어요</p>'}</div>`:''}
- ${location.protocol.startsWith('http')?`<div class="bt-h">초대 링크</div><p class="small muted">이 링크를 보내면 받은 사람은 서명만 하고 탑승하면 돼요.</p><textarea class="net-code net-link" readonly rows="3">${esc(netLink())}</textarea>`:`<div class="bt-h">초대 코드</div><p class="small muted">같이 할 사람에게 이 파일과 초대 코드를 보내 주세요. 접속 화면의 "온라인 설정"에 붙여 넣으면 방 이름까지 채워져요. 웹에 올려 주소로 열면 초대 링크 하나로 바뀌어요.</p><textarea class="net-code" readonly rows="3">${esc(NET.invite())}</textarea>`}
+function paintNet(){const b=$('#netBadge');if(!b)return;const n=Object.values(NET.members).filter(m=>m.on).length;b.className='btn net-b'+(NET.conn?'':' off');const pn=NET.gm?Object.keys(NET.meta?.pending||{}).length:0;b.innerHTML=`<i></i>${NET.conn?n+'명':'연결 끊김'}${pn?`<em class="net-pend">${pn}</em>`:''}`;if(M.title==='멤버 관리')drawModal()}
+
+/* 서버 저장본: 방 전체(그림은 이미 imgs에 따로 있음)를 rooms/<방>/snaps에 보관. 목록은 가벼운 snapmeta만 듣는다 */
+const SNAP_MAX=15,SNAP_AUTO_H=6;
+async function snapSave(label,auto){if(!NET.on||!NET.gm)return;const F=NET.F(),{typing,...play}=Store.data.play,d=enc({chars:Store.data.chars,play}),id=uid();   // 상태는 await 전에 잡는다
+ try{await F.set(NET.b('snaps/'+id),d);await F.set(NET.b('snapmeta/'+id),{at:Date.now(),by:ME,label:String(label||'').slice(0,30),auto:!!auto,kb:Math.max(1,Math.round(JSON.stringify(d).length/1024))});
+  const all=Object.entries(await F.get(NET.b('snapmeta'))||{}).sort((a,b)=>b[1].at-a[1].at);
+  for(const[k]of all.slice(SNAP_MAX)){F.set(NET.b('snaps/'+k),null);F.set(NET.b('snapmeta/'+k),null)}
+  if(!auto)toast('서버에 저장했어요')}catch(e){NET.fail(e)}}
+async function snapLoad(id){const m=NET.snaps?.[id];if(!m||!NET.gm)return;
+ if(!confirm(`${new Date(m.at).toLocaleString('ko-KR')}${m.label?` (${m.label})`:''} 저장본으로 되돌릴까요?\n모두의 화면이 그 시점으로 바뀌어요. 지금 상태는 '되돌리기 전'으로 따로 저장해 둡니다.`))return;
+ await snapSave('되돌리기 전',true);let d;try{d=await NET.F().get(NET.b('snaps/'+id))}catch(e){return NET.fail(e)}if(!d)return toast('저장본을 읽지 못했어요',1);
+ const ty=Store.data.play?.typing;loadData(dec(d));Store.data.play.typing=ty||{};NET.pushAll();UNDO.past=[];UNDO.future=[];UI.bt.sel='';
+ renderNav();renderMain();renderSheet();drawModal();toast('저장본으로 되돌렸어요')}
+function snapAuto(){const l=Object.values(NET.snaps||{}),last=Math.max(0,...l.map(x=>x.at));if(Date.now()-last>SNAP_AUTO_H*3600e3)snapSave('세션 시작',true)}
+function snapSection(){if(!NET.on||!NET.gm)return'';const l=Object.entries(NET.snaps||{}).sort((a,b)=>b[1].at-a[1].at);
+ return`<div class="bt-h">서버 저장본 ${l.length}/${SNAP_MAX}</div><p class="small muted">방 전체 상태를 서버에 보관해 두고, 문제가 생기면 그 시점으로 모두 함께 되돌려요. 마스터가 들어올 때 ${SNAP_AUTO_H}시간마다 하나씩 자동으로 저장되고, 되돌리기·백업 가져오기·전투 초기화 직전에도 자동으로 저장돼요.</p>
+ <div class="row" style="margin-bottom:6px"><button class="btn sm pri" data-a="snapSave">지금 저장</button></div>
+ <div class="mm-tbl">${l.map(([k,m])=>`<div class="mm-r snap"><i class="${m.auto?'':'on'}"></i><b>${new Date(m.at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</b><span class="mm-dim" title="${esc(m.label||'')}">${esc(m.label||(m.auto?'자동':''))}${m.auto&&m.label?' <em class="mm-role pl">자동</em>':''}</span><span class="mm-dim">${esc(m.by||'')} · ${m.kb}KB</span><span class="mm-act"><button class="btn sm" data-a="snapLoad" data-v="${esc(k)}">되돌리기</button><button class="btn sm danger" data-a="snapDel" data-v="${esc(k)}">삭제</button></span></div>`).join('')||'<p class="small muted">아직 저장본이 없어요</p>'}</div>`}
+Object.assign(A,{
+ snapSave(){const l=prompt('저장본 메모 (비워도 돼요)','');if(l===null)return;snapSave(l,false)},
+ snapLoad(e){snapLoad(e.dataset.v)},
+ snapDel(e){if(!NET.gm||!confirm('이 저장본을 지울까요?'))return;const k=e.dataset.v;NET.F().set(NET.b('snaps/'+k),null);NET.F().set(NET.b('snapmeta/'+k),null)}});
+const agoTxt=t=>{if(!t)return'-';const m=Math.round((Date.now()-t)/60000);return m<1?'방금':m<60?m+'분 전':m<1440?Math.round(m/60)+'시간 전':Math.round(m/1440)+'일 전'};
+function netModal(){const meta=NET.meta||{},gms=meta.gms||{},ban=meta.banned||{},pend=meta.pending||{},G=NET.gm,owner=meta.owner;
+ const names=new Set([...Object.keys(NET.members),...Object.keys(ban)].map(decK));if(owner)names.add(owner);
+ const role=n=>ban[encK(n)]?['ban','내보냄']:n===owner?['own','방장']:gms[encK(n)]?['gm','마스터']:['pl','플레이어'];
+ const rows=[...names].map(n=>({n,m:NET.members[encK(n)]||{},r:role(n),cs:chars().filter(c=>c.owner===n)})).sort((a,b)=>(b.m.on?1:0)-(a.m.on?1:0)||a.n.localeCompare(b.n));
+ const act=x=>{if(!G||x.n===owner||x.n===ME)return'';const k=esc(x.n);
+  if(x.r[0]==='ban')return`<button class="btn sm" data-a="netUnban" data-v="${k}">차단 풀기</button>`;
+  return`<button class="btn sm" data-a="netGm" data-v="${k}">${x.r[0]==='gm'?'마스터 해제':'마스터 주기'}</button><button class="btn sm danger" data-a="netKick" data-v="${k}">내보내기</button>${x.m.on?'':`<button class="btn sm" data-a="netForget" data-v="${k}" title="목록에서만 지워요. 다시 들어올 수 있어요">지우기</button>`}`};
+ const pl=Object.entries(pend).map(([k,v])=>({n:decK(k),at:v?.at}));
+ const opts=[...names].filter(n=>!ban[encK(n)]);
+ return`<div class="net-m"><div class="mm-top"><span>방 <b>${esc(NET.room)}</b></span><span>${NET.conn?'<i class="ok">●</i> 연결됨':'<i class="bad">●</i> 연결 끊김 — 다시 연결 중'}</span><span>방장 ${esc(owner||'?')}</span><span>내 권한 ${G?'마스터':'플레이어'}</span></div>
+ ${G&&pl.length?`<div class="bt-h">입장 승인 대기 ${pl.length}</div><div class="mm-tbl">${pl.map(x=>`<div class="mm-r pend"><i class="on"></i><b>${esc(x.n)}</b><span class="mm-dim">${agoTxt(x.at)} 요청</span><span></span><span class="mm-act"><button class="btn sm pri" data-a="netApprove" data-v="${esc(x.n)}">승인</button><button class="btn sm" data-a="netDeny" data-v="${esc(x.n)}">거절</button></span></div>`).join('')}</div>`:''}
+ <div class="bt-h">멤버 ${rows.length}</div>
+ <div class="mm-tbl"><div class="mm-r mm-head"><i></i><b>이름</b><span>역할</span><span>캐릭터</span><span>마지막 접속</span><span class="mm-act"></span></div>
+ ${rows.map(x=>`<div class="mm-r"><i class="${x.m.on?'on':''}"></i><b title="${esc(x.n)}">${esc(x.n)}${x.n===ME?' <small>(나)</small>':''}</b><span><em class="mm-role ${x.r[0]}">${x.r[1]}</em></span><span class="mm-dim" title="${esc(x.cs.map(c=>c.info?.name||'이름 없음').join(', '))}">${esc(x.cs.map(c=>c.info?.name||'이름 없음').join(', ')||'-')}</span><span class="mm-dim">${x.m.on?'접속 중':agoTxt(x.m.at)}</span><span class="mm-act">${act(x)}</span></div>`).join('')}</div>
+ <div class="bt-h">캐릭터 주인</div><p class="small muted">주인만 전투에서 그 캐릭터를 움직이고 대응하며, 시트를 고칠 수 있어요. 적은 마스터가 조종해요.</p>
+ <div class="mm-owners">${chars().map(c=>`<div class="mm-o"><span title="${esc(c.info?.name||'')}">${esc(c.info?.name||'이름 없음')}</span>${G?`<select data-c="netOwner" data-v="${esc(c.id)}"><option value="">(없음)</option>${[...new Set([...opts,c.owner].filter(Boolean))].map(n=>`<option ${c.owner===n?'selected':''}>${esc(n)}</option>`).join('')}</select>`:`<em>${esc(c.owner||'(없음)')}</em>`}</div>`).join('')||'<p class="small muted">캐릭터가 없어요</p>'}</div>
+ ${G?`<div class="bt-h">방 설정</div><label class="mm-chk"><input type="checkbox" data-c="netLock" ${meta.lock?'checked':''}> 방 잠금 — 처음 오는 이름은 마스터가 승인해야 들어올 수 있어요</label>`:''}
+ ${location.protocol.startsWith('http')?`<div class="bt-h">초대 링크</div><p class="small muted">이 링크를 보내면 받은 사람은 서명만 하고 탑승하면 돼요.</p><textarea class="net-code net-link" readonly rows="2">${esc(netLink())}</textarea>`:`<div class="bt-h">초대 코드</div><p class="small muted">이 파일과 초대 코드를 보내 주세요. 접속 화면의 "온라인 설정"에 붙여 넣으면 방 이름까지 채워져요. 웹에 올려 주소로 열면 초대 링크 하나로 바뀌어요.</p><textarea class="net-code" readonly rows="2">${esc(NET.invite())}</textarea>`}
  <div class="mfoot"><button class="btn" data-a="netCopy">${location.protocol.startsWith('http')?'초대 링크 복사':'초대 코드 복사'}</button><button class="btn danger" data-a="leaveRoom">방 나가기</button><button class="btn" data-a="closeModal">닫기</button></div></div>`}
 Object.assign(A,{
- netPanel(){openModal('온라인 방',netModal)},
+ netPanel(){openModal('멤버 관리',netModal);M.wide=true;drawModal()},
+ netKick(e){if(!NET.gm)return;const n=e.dataset.v,k=encK(n);if(!confirm(`${n}님을 이 방에서 내보낼까요? 같은 이름으로는 다시 들어올 수 없어요.`))return;
+  NET.F().update(NET.b('meta'),{['banned/'+k]:true,['gms/'+k]:null,['pending/'+k]:null}).catch(er=>NET.fail(er));NET.F().set(NET.b('members/'+k+'/on'),false).catch(()=>{})},
+ netUnban(e){if(NET.gm)NET.F().set(NET.b('meta/banned/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
+ netForget(e){if(NET.gm)NET.F().set(NET.b('members/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
+ netApprove(e){if(!NET.gm)return;const k=encK(e.dataset.v);NET.F().set(NET.b('members/'+k),{on:false,at:Date.now(),ok:true}).then(()=>NET.F().set(NET.b('meta/pending/'+k),null)).catch(er=>NET.fail(er))},
+ netDeny(e){if(NET.gm)NET.F().set(NET.b('meta/pending/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
  netGm(e){if(!NET.gm)return;const n=e.dataset.v,k=encK(n),on=!NET.meta.gms?.[k];NET.F().set(NET.b('meta/gms/'+k),on||null).catch(er=>NET.fail(er))},
  netCopy(){const c=location.protocol.startsWith('http')?netLink():NET.invite();(navigator.clipboard?.writeText(c)||Promise.reject()).then(()=>toast('복사했어요'),()=>{$('.net-code')?.select();toast('코드를 선택해 두었어요. Ctrl+C로 복사해 주세요')})}});
-Object.assign(CHANGE,{netOwner(el){Store.set(`chars/${el.dataset.v}/owner`,el.value)}});
+Object.assign(CHANGE,{netOwner(el){Store.set(`chars/${el.dataset.v}/owner`,el.value)},netLock(el){if(NET.gm)NET.F().set(NET.b('meta/lock'),el.checked||null).catch(er=>NET.fail(er))}});
 
 /* (스킬 제작기 화면은 엔진 다음) */
 /* ---------- 스킬 효과 엔진 (룰북 16.4~16.8, 6장 회복, 7.8.3 강제 이동) ---------- */
@@ -2200,9 +2307,29 @@ function forceDest(ctx,k,from,kind,n){const u=ctx.units.find(x=>x.k===k),a=ctx.u
 function forceMove(k,from,kind,n,why){const ctx=btCtx(),d=forceDest(ctx,k,from,kind,n);if(!d)return;
  if(kind==='swap'){const a=unitRaw(from),u=unitRaw(k);Store.set(`${BTP}/units/${from}`,{...a,x:+u.x,y:+u.y},true);Store.set(`${BTP}/units/${k}`,{...u,x:d.x,y:d.y});
   return btLog(`${atkName(from)} ↔ ${atkName(k)} 위치 교환 (${why})`,{type:'forced',kind,k,from})}
- Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:d.x,y:d.y});
+ Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:d.x,y:d.y});zoneFire(k,d.x,d.y,'enter');
  btLog(`${atkName(k)} ${FX_L[kind]} ${d.steps}/${n}칸${d.steps<n?' — 막혀서 정지':''} (${why}, 이탈 피해 없음)`,{type:'forced',kind,k,steps:d.steps})}
 
+
+/* 15.9 바닥 효과(지형): 스킬이 닿은 칸에 남는 조건부 효과.
+   z={id,name,cells:['x_y'],by,side(만든 쪽 진영),who:'all'|'foe'|'ally',trig:{enter,start,end},fx:[{type:'damage'|'keyword'|'heal',...}],until(이 라운드 시작 때 사라짐),once,sin,fired:{대상:턴키}}
+   발동: 칸 진입(이동·돌진·밀침, 지나간 칸 포함) / 그 칸에서 턴 시작 / 턴 종료. 대상별로 지금 턴에 한 번. 진입만으로 기회공격은 없음(15.9) */
+const ZONE_FX={damage:'단계형 피해',keyword:'키워드 부여',heal:'회복'};
+const zones=()=>vals(BT().zones);
+const zoneAt=(x,y)=>zones().filter(z=>(z.cells||[]).includes(wkey(x,y)));
+function placeZone(t,cells,why){const z=t.zone;if(!z||!cells.length)return;const by=unitRaw(t.by),id=uid(),B=BT();
+ const d={id,name:z.name||t.label,cells:[...new Set(cells.map(c=>wkey(c.x,c.y)))],by:t.by,side:by?.side||'pc',who:z.who||'all',trig:{enter:z.trig?.enter!==false,start:!!z.trig?.start,end:!!z.trig?.end},
+  fx:(z.fx||[]).filter(f=>ZONE_FX[f.type]).map(f=>({type:f.type,t:+f.t||1,n:Math.max(0,+f.n||0),kw:f.kw||'화상'})),until:(+B.round||0)+Math.max(1,+z.dur||1),once:!!z.once,sin:t.sin||''};
+ Store.set(`${BTP}/zones/${id}`,d,true);btLog(`${atkName(t.by)} ${why}: 바닥 효과 "${d.name}" ${d.cells.length}칸 (${zoneText(d)})`,{type:'status',k:t.by,on:true})}
+const zoneText=z=>`${[z.trig.enter&&'진입',z.trig.start&&'턴 시작',z.trig.end&&'턴 종료'].filter(Boolean).join('·')||'발동 없음'} → ${(z.fx||[]).map(f=>f.type==='keyword'?`${f.kw} ${f.n}`:`${f.type==='heal'?'회복 ':''}${TIERS[f.t-1]} ${f.n}칸`).join(', ')||'효과 없음'}${z.who==='foe'?' · 적에게만':z.who==='ally'?' · 아군에게만':''} · 라운드 ${z.until} 시작 때 소멸${z.once?' · 한 번 발동 후 소멸':''}`;
+function zoneFire(k,x,y,ev){const u=unitRaw(k);if(!u||isDown({...u,k}))return;const B=BT(),tk=`${+B.round||0}_${+(B.turn??-1)}`;
+ for(const z of zoneAt(x,y)){if(!z.trig?.[ev])continue;if(z.who==='foe'&&u.side===z.side)continue;if(z.who==='ally'&&u.side!==z.side)continue;if(z.fired?.[k]===tk)continue;
+  Store.set(`${BTP}/zones/${z.id}/fired/${k}`,tk,true);const why=`바닥 "${z.name}" ${ev==='enter'?'진입':ev==='start'?'턴 시작':'턴 종료'}`;
+  withSrc(z.by,()=>{for(const f of z.fx||[]){if(!f.n)continue;if(f.type==='damage')damageUnit(k,f.t,f.n,why);else if(f.type==='keyword')addKw(k,f.kw,f.n,why);else if(f.type==='heal')healUnit(k,f.t,f.n,why)}});
+  if(!(z.fx||[]).length)btLog(`${atkName(k)} — ${why} (효과 없음)`);
+  if(z.once){Store.set(`${BTP}/zones/${z.id}`,null,true);btLog(`바닥 "${z.name}" 발동 후 소멸`)}}}
+const zonePath=(k,cells)=>{for(const c of cells){if(isDown({...unitRaw(k)||{},k}))break;zoneFire(k,c.x,c.y,'enter')}};
+function zoneRound(round){for(const z of zones())if(+z.until<=round){Store.set(`${BTP}/zones/${z.id}`,null,true);btLog(`바닥 "${z.name}" 소멸 (라운드 ${round} 시작)`)}}
 /* 효과 실행 */
 const skillOf=(k,opt)=>{const u=uOf(k);return opt?.startsWith('s')&&srcOf(u)?CH(srcOf(u))?.skills?.[+opt.slice(1)]:null};
 function snapAll(){return Object.fromEntries(units().map(u=>[u.k,{kw:{...kwOf(u)},charge:+u.charge||0,hp:hpCalc(hpOf(u))}]))}
@@ -2308,7 +2435,15 @@ function useCard(u,q,i,P){const types=USE_FX[u.kw]||USE_FX.호흡;
 function skillEditor(x,p){
  if(!isStruct(x))return`<div class="sk-maker"><h4 class="sh-h">전투 효과</h4><p class="small muted">이 스킬은 효과 칸이 없어서 전투에서 피해를 직접 고릅니다.</p><button class="btn sm pri" data-a="skInit" data-p="${p}">효과 칸 만들기</button></div>`;
  const fx=x.fx||[],rules=x.rules||[],w=skillWarn(x);
- return`<div class="sk-maker">${areaEditor(x,p)}<h4 class="sh-h">적중 시 기본 효과 <small>16.4 · 적중한 대상마다 실행</small></h4>
+ const mv=x.move||{},ru=x.reuse||{};
+ return`<div class="sk-maker">${areaEditor(x,p)}
+ <h4 class="sh-h">이동 결합 <small>공격 전에 직선(8방향)으로 돌진 · 벽과 유닛은 통과하지 않음 · 스킬 이동은 이탈 피해·기회공격 없음</small></h4>
+ <div class="fxr"><select data-b="${p}/move/type" data-r>${optsKV({'':'없음',cell:'돌진 후 공격 (착지 칸 선택)',target:'대상에게 돌진 (바로 앞 칸에서 공격)'},mv.type||'')}</select>${mv.type?`<label class="small">최대${num(`${p}/move/n`,mv.n||3,1,9)}칸</label>`:''}</div>
+ ${mv.type==='cell'&&isMulti(x.area)&&!isOrigin(x.area)?`<p class="small muted">사거리를 0으로 두면 착지한 칸이 범위의 중심이 돼요 (예: 돌진 후 착지점 주변 3×3).</p>`:''}
+ ${zoneEditor(x,p)}
+ <h4 class="sh-h">재사용</h4>
+ <div class="fxr"><select data-b="${p}/reuse/on" data-r>${optsKV({'':'없음',hit:'적중하면 한 번 더 사용 가능'},ru.on||'')}</select>${ru.on?`<label class="small">턴당 최대${num(`${p}/reuse/max`,ru.max||1,1,5)}회</label>`:''}</div>
+ <h4 class="sh-h">적중 시 기본 효과 <small>16.4 · 적중한 대상마다 실행</small></h4>
  ${fx.map((f,j)=>fxRow(f,`${p}/fx/${j}`,j,`${p}/fx`)).join('')||'<p class="small muted">효과 없음</p>'}
  <div class="row">${Object.entries(FX_L).map(([k,n])=>`<button class="btn sm" data-a="skFxAdd" data-p="${p}/fx" data-v="${k}">+ ${n}</button>`).join('')}</div>
  <h4 class="sh-h">조건부 규칙 <small>16.5 · 위에서부터 차례로 검사</small></h4>
@@ -2319,7 +2454,7 @@ function skillEditor(x,p){
  <div class="row"><button class="btn sm" data-a="skUseAdd" data-p="${p}/uses" data-v="호흡">+ 호흡 소비</button><button class="btn sm" data-a="skUseAdd" data-p="${p}/uses" data-v="침잠">+ 침잠 소비</button></div>
  ${w.length?`<div class="sk-warn"><b>작성 검사 (16.13)</b>${w.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}</div>`}
 function skillView(x){if(!isStruct(x))return'';const fx=x.fx||[],rules=(x.rules||[]).filter(r=>r.on);
- return`<div class="sk-fxv">${isMulti(x.area)?`<p>${hl('[범위] '+areaText({...blankArea(),...x.area},+x.range||0))}</p>`:''}${fx.length?`<p>${hl('[적중 시] '+fx.map(fxText).join(' · '))}</p>`:''}${rules.map(r=>`<p>${hl(ruleText(r))}</p>`).join('')}${(x.uses||[]).map(u=>`<p>${hl(useText(u))}</p>`).join('')}</div>`}
+ return`<div class="sk-fxv">${x.move?.type?`<p>${hl(`[돌진] ${x.move.type==='target'?'대상에게 ':''}직선 최대 ${+x.move.n||3}칸${x.move.type==='cell'?' 이동 후 공격':''}`)}</p>`:''}${isMulti(x.area)?`<p>${hl('[범위] '+areaText({...blankArea(),...x.area},+x.range||0))}</p>`:''}${x.reuse?.on==='hit'?`<p>${hl(`[재사용] 적중 시 한 번 더 (턴당 ${+x.reuse.max||1}회)`)}</p>`:''}${x.zone?.on?`<p>${hl(`[바닥] ${x.zone.name||'바닥 효과'} ${+x.zone.dur||1}라운드: ${(x.zone.fx||[]).map(f=>f.type==='keyword'?`${f.kw} ${+f.n||0}`:`${f.type==='heal'?'회복 ':''}${TIERS[(+f.t||1)-1]} ${+f.n||0}칸`).join(', ')||'효과 없음'}`)}</p>`:''}${fx.length?`<p>${hl('[적중 시] '+fx.map(fxText).join(' · '))}</p>`:''}${rules.map(r=>`<p>${hl(ruleText(r))}</p>`).join('')}${(x.uses||[]).map(u=>`<p>${hl(useText(u))}</p>`).join('')}</div>`}
 Object.assign(A,{
  skInit(e){const p=e.dataset.p;Store.set(p+'/fx',[blankFx('damage')]);Store.set(p+'/rules',[])},
  skFxAdd(e){const p=e.dataset.p;Store.set(p,[...(Store.get(p)||[]),blankFx(e.dataset.v)])},
@@ -2332,9 +2467,10 @@ Object.assign(A,{
 });
 
 /* ---------- 범위 도형 (룰북 13.0, 16.3) ---------- */
-const AREA_L={single:'단일 지정',line:'직선 투사체',square:'중심 사각',front:'전방 사각',diamond:'마름모',circle:'원형',ring:'고리',cross:'십자',x:'대각선 X',cone:'원뿔·부채꼴',checker:'체커'};
-const AREA_ORIGIN=['line','front','cone'];          // 사용자 기준 + 조준 방향. 나머지는 지정 지점(사거리 안) 중심
-const blankArea=()=>({shape:'single',w:3,h:3,r:1,ri:0,len:3,angle:90,pierce:false});
+const AREA_L={single:'단일 지정',custom:'격자 지정 (칸 직접 찍기)',line:'직선 투사체',square:'중심 사각',front:'전방 사각',diamond:'마름모',circle:'원형',ring:'고리',cross:'십자',x:'대각선 X',cone:'원뿔·부채꼴',checker:'체커'};
+const AREA_ORIGIN=['line','front','cone'];
+const isOrigin=a=>AREA_ORIGIN.includes(a?.shape)||(a?.shape==='custom'&&a.anchor!=='point');   // 사용자 기준 도형
+const blankArea=()=>({shape:'single',w:3,h:3,r:1,ri:0,len:3,angle:90,pierce:false,cells:[],anchor:'self',rot:'dir'});
 const isMulti=a=>!!a&&a.shape&&a.shape!=='single';
 // 칸 집합 계산. ctx={w,h,walls}. 결과는 가까운 순서(직선은 공격선 순서)
 function areaCells(a,o,aim,range,ctx){const W=ctx.walls||{},inb=(x,y)=>x>=0&&y>=0&&x<ctx.w&&y<ctx.h,ok=(x,y)=>inb(x,y)&&!W[wkey(x,y)];
@@ -2349,31 +2485,75 @@ function areaCells(a,o,aim,range,ctx){const W=ctx.walls||{},inb=(x,y)=>x>=0&&y>=
   else{const k=Math.round(Math.atan2(vy,vx)/(Math.PI/4)),sx=Math.round(Math.cos(k*Math.PI/4)),sy=Math.round(Math.sin(k*Math.PI/4)),diag=!!(sx&&sy),m=diag?2:1,half=(Math.max(1,+a.w||1)-1)/2+(diag?.5:0);
    for(let dy=-L*2;dy<=L*2;dy++)for(let dx=-L*2;dx<=L*2;dx++){const t=(dx*sx+dy*sy)/m,p=(-dx*sy+dy*sx)/m;if(t>0&&t<=L&&Math.abs(p)<=half)add(o.x+dx,o.y+dy)}}
   return out.sort((p,q)=>cheb(p,o)-cheb(q,o))}
+ if(s==='custom'){const self=a.anchor!=='point',an=self?o:aim;let f=[1,0];
+  if(a.rot!=='none'){const bx=aim.x-o.x,by=aim.y-o.y;if(bx||by)f=Math.abs(bx)>=Math.abs(by)?[Math.sign(bx),0]:[0,Math.sign(by)]}
+  for(const pk of a.cells||[]){const[dx,dy]=String(pk).split('_').map(Number);if(!isFinite(dx)||!isFinite(dy))continue;add(an.x+dx*f[0]-dy*f[1],an.y+dx*f[1]+dy*f[0])}
+  return out.sort((p,q)=>cheb(p,an)-cheb(q,an))}
  const c=aim,r=Math.max(0,+a.r||0),hw=(Math.max(1,+a.w||1)-1)/2,hh=(Math.max(1,+a.h||1)-1)/2,R=Math.max(r,hw,hh);
  for(let dy=-R;dy<=R;dy++)for(let dx=-R;dx<=R;dx++){const ch=Math.max(Math.abs(dx),Math.abs(dy));let hit=false;
   switch(s){case'square':hit=Math.abs(dx)<=hw&&Math.abs(dy)<=hh;break;case'diamond':hit=Math.abs(dx)+Math.abs(dy)<=r;break;case'circle':hit=dx*dx+dy*dy<=r*r+r;break;
    case'ring':hit=ch<=r&&ch>(+a.ri||0);break;case'cross':hit=(!dx||!dy)&&ch<=r;break;case'x':hit=Math.abs(dx)===Math.abs(dy)&&ch<=r;break;case'checker':hit=ch<=r&&!((dx+dy)&1);break}
   if(hit)add(c.x+dx,c.y+dy)}
  return out.sort((p,q)=>cheb(p,o)-cheb(q,o))}
-const aimOk=(a,o,aim,range)=>AREA_ORIGIN.includes(a.shape)?(aim.x!==o.x||aim.y!==o.y):cheb(o,aim)<=range;  // 13.0 중심 도달 거리
-const areaText=(a,range)=>{if(!isMulti(a))return'단일 지정';const s=a.shape;
+const aimOk=(a,o,aim,range)=>a.shape==='custom'&&a.anchor!=='point'&&a.rot==='none'?true:isOrigin(a)?(aim.x!==o.x||aim.y!==o.y):cheb(o,aim)<=range;  // 13.0 중심 도달 거리
+const shapeText=(a,range)=>{if(!a)return'';const s=a.shape,R=range!=null;return s==='custom'?`격자 ${(a.cells||[]).length}칸`:s==='line'?`직선 ${R?range:+a.len||1}칸${a.pierce?' · 관통':''}`:s==='front'?`전방 사각 ${a.w}×${a.len}`:s==='cone'?`원뿔 ${a.angle}°×${a.len}칸`:s==='square'?`사각 ${a.w}×${a.h}`:s==='ring'?`고리 반경 ${a.r}`:`${AREA_L[s]||s} 반경 ${a.r}`};
+const areaText=(a,range)=>{if(!isMulti(a))return'단일 지정';const n=a.next?.shape&&a.next.shape!=='single'?` → 확산: ${shapeText(a.next)}${a.next.trigger==='hit'?(a.shape==='line'?' (첫 대상 적중 시)':' (1단계 적중 시)'):''}`:'';return areaText1(a,range)+n};
+const areaText1=(a,range)=>{const s=a.shape;
+ if(s==='custom')return`격자 지정 ${(a.cells||[]).length}칸 · ${a.anchor==='point'?`사거리 ${range} 안 지점`:'사용자'} 기준${a.rot==='none'?'':' · 조준 방향으로 회전'}`;
  return s==='line'?`직선 ${range}칸${a.pierce?' · 관통':''}`:s==='front'?`전방 사각 폭 ${a.w} × 길이 ${a.len}`:s==='cone'?`원뿔 ${a.angle}° × ${a.len}칸`:
   s==='square'?`사거리 ${range} / 중심 ${a.w}×${a.h}`:s==='ring'?`사거리 ${range} / 고리 반경 ${a.r}${+a.ri?` (안쪽 ${a.ri} 제외)`:''}`:`사거리 ${range} / ${AREA_L[s]} 반경 ${a.r}`};
-// 미리보기 (조준 방향 = 오른쪽)
-function areaPreview(a,range){const n=11,o={x:5,y:5},ctx={w:n,h:n,walls:{}},orig=AREA_ORIGIN.includes(a.shape),aim=orig?{x:9,y:5}:{x:5+Math.min(range,3),y:5};
- const cells=new Set(areaCells(a,o,aim,a.shape==='line'?range:range,ctx).map(c=>wkey(c.x,c.y)));let r='';
- for(let y=0;y<n;y++)for(let x=0;x<n;x++){const k=wkey(x,y),me=x===o.x&&y===o.y,am=!orig&&x===aim.x&&y===aim.y;
-  r+=`<rect x="${x}" y="${y}" width=".92" height=".92" fill="${me?'#d9b26a':cells.has(k)?'#c23b2a':'#2a1c13'}" ${am?'stroke="#fff3df" stroke-width=".12"':''}/>`}
+// 미리보기 (조준 방향 = 오른쪽). 직선 확산은 4칸 앞에 가상의 대상을 둔다
+function areaPreview(a,range){const n=13,o={x:3,y:6},ctx={w:n,h:n,walls:{}},orig=isOrigin(a),noRot=a.shape==='custom'&&a.anchor!=='point'&&a.rot==='none';
+ const aim=orig||noRot?{x:10,y:6}:{x:3+Math.min(Math.max(range,0),6),y:6},dummy=a.shape==='line'&&a.next?.shape?{x:3+Math.min(4,Math.max(1,range)),y:6}:null;
+ const P=areaPlan(a,o,aim,range,ctx,(x,y)=>!!dummy&&dummy.x===x&&dummy.y===y),c1=new Set(P.c1.map(c=>wkey(c.x,c.y))),c2=new Set(P.c2.map(c=>wkey(c.x,c.y)));let r='';
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){const k=wkey(x,y),me=x===o.x&&y===o.y,am=!orig&&!noRot&&x===aim.x&&y===aim.y;
+  r+=`<rect x="${x}" y="${y}" width=".92" height=".92" fill="${me?'#d9b26a':c1.has(k)?'#c23b2a':c2.has(k)?'#e08a2a':'#2a1c13'}" ${am?'stroke="#fff3df" stroke-width=".12"':''}/>`}
+ if(dummy)r+=`<circle cx="${dummy.x+.46}" cy="${dummy.y+.46}" r=".3" fill="#fff3df"/>`;
  return`<svg class="area-pv" viewBox="0 0 ${n} ${n}" aria-label="범위 미리보기">${r}</svg>`}
-function areaEditor(x,p){const a={...blankArea(),...(x.area||{})},s=a.shape,q=p+'/area',r=+x.range||0;
- const f=(k,label,min,max)=>`<label class="small">${label}${num(`${q}/${k}`,a[k],min,max,1)}</label>`;
- return`<h4 class="sh-h">범위 <small>16.3 · 지금은 도형 한 단계. 여러 단계 합성·이동 결합은 GM 확인</small></h4>
- <div class="area-ed">${areaPreview(a,r)}<div class="grow"><div class="fxr"><select data-b="${q}/shape" data-r>${optsKV(AREA_L,s)}</select>${AREA_ORIGIN.includes(s)?'<small>기준: 사용자 · 방향: 조준</small>':s!=='single'?'<small>기준: 지정 지점 (사거리 안)</small>':''}</div>
- <div class="fxr">${s==='square'?f('w','가로',1,9)+f('h','세로',1,9):s==='front'?f('w','폭',1,9)+f('len','길이',1,12):s==='cone'?f('len','길이',1,12)+f('angle','각도',10,360):s==='line'?`<small>길이 = 사거리 ${r}칸</small><label class="row small"><input type="checkbox" data-b="${q}/pierce" ${a.pierce?'checked':''}> 관통 (적중·방어 뒤에도 진행)</label>`:s==='ring'?f('r','반경',1,6)+f('ri','안쪽 제외',0,5):s==='single'?'':f('r','반경',1,6)}</div>
- <p class="small muted">${esc(areaText(a,r))}. 범위 안의 모든 캐릭터(아군 포함, 사용자 제외)가 대상. 벽 칸은 제외, 직선은 벽에서 멈춤. 시야선·엄폐는 계산하지 않음(13.5)</p></div></div>`}
+// 격자 지정: 9×9 칸을 눌러 무늬를 찍는다. 기준점은 가운데, 앞(조준 방향) = 오른쪽
+function gridPainter(a,q,isNext){const set=new Set(a.cells||[]),self=a.anchor!=='point',R=4;let h='';
+ for(let dy=-R;dy<=R;dy++)for(let dx=-R;dx<=R;dx++){const k=dx+'_'+dy,c=!dx&&!dy;
+  h+=`<button class="gp-c${set.has(k)?' on':''}${c?' ctr':''}" data-a="areaCell" data-p="${q}" data-v="${k}" ${c&&(self&&!isNext)?'disabled':''} title="${c?(isNext?'확산 기준점':self?'사용자':'지정 지점'):''}">${c?(isNext?'◎':self?'★':'◎'):''}</button>`}
+ return`<div class="gp"><div class="gp-g">${h}</div><div class="gp-side"><small>${isNext?'◎ = 확산이 시작되는 칸':self?'★ = 사용자':'◎ = 사거리 안에서 고른 칸'}<br>오른쪽 → = 조준 방향</small><button class="btn sm" data-a="areaClear" data-p="${q}">모두 지우기</button></div></div>`}
+function shapeFields(a,q,r,isNext){const s=a.shape,f=(k,label,min,max)=>`<label class="small">${label}${num(`${q}/${k}`,a[k],min,max,1)}</label>`;
+ return s==='custom'?`<div class="fxr">${isNext?'':`<select data-b="${q}/anchor" data-r>${optsKV({self:'사용자 기준',point:'지정 지점 기준 (사거리 안)'},a.anchor||'self')}</select>`}<select data-b="${q}/rot" data-r>${optsKV({dir:'조준 방향으로 회전 (4방향)',none:'회전 안 함'},a.rot||'dir')}</select></div>${gridPainter(a,q,isNext)}`
+  :`<div class="fxr">${s==='square'?f('w','가로',1,9)+f('h','세로',1,9):s==='front'?f('w','폭',1,9)+f('len','길이',1,12):s==='cone'?f('len','길이',1,12)+f('angle','각도',10,360):s==='line'?(isNext?f('len','길이',1,12):`<small>길이 = 사거리 ${r}칸</small>`)+`<label class="row small"><input type="checkbox" data-b="${q}/pierce" ${a.pierce?'checked':''}> 관통</label>`:s==='ring'?f('r','반경',1,6)+f('ri','안쪽 제외',0,5):s==='single'?'':f('r','반경',1,6)}</div>`}
+
+function zoneEditor(x,p){const z=x.zone||{},q=p+'/zone',fx=z.fx||[];
+ return`<h4 class="sh-h">바닥 효과 <small>15.9 · 스킬이 닿은 칸(범위 전체, 단일은 대상 칸)에 남는 장판. 아무도 없는 바닥에도 쓸 수 있어요</small></h4>
+ <label class="row small"><input type="checkbox" data-b="${q}/on" ${z.on?'checked':''} data-r> 바닥에 효과 남기기</label>
+ ${z.on?`<div class="zone-ed"><div class="fxr"><input type="text" class="sk-num" style="width:140px!important" placeholder="이름 (예: 불바닥)" data-b="${q}/name" value="${esc(z.name||'')}"><label class="small">지속${num(`${q}/dur`,z.dur||1,1,9)}라운드</label>
+  <select data-b="${q}/who">${optsKV({all:'모두에게',foe:'적에게만',ally:'아군에게만'},z.who||'all')}</select></div>
+  <div class="fxr"><small>발동</small><label class="small"><input type="checkbox" data-b="${q}/trig/enter" ${z.trig?.enter!==false?'checked':''}> 칸에 들어올 때</label><label class="small"><input type="checkbox" data-b="${q}/trig/start" ${z.trig?.start?'checked':''}> 그 칸에서 턴 시작</label><label class="small"><input type="checkbox" data-b="${q}/trig/end" ${z.trig?.end?'checked':''}> 턴 종료</label><label class="small"><input type="checkbox" data-b="${q}/once" ${z.once?'checked':''}> 한 번 발동하면 사라짐 (지뢰)</label></div>
+  ${fx.map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(ZONE_FX,f.type)}</select>${f.type==='keyword'?`<select data-b="${q}/fx/${j}/kw">${optsL(KW.filter(k=>k!=='충전'),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
+  ${fx.length<3?`<button class="btn sm" data-a="zoneFxAdd" data-p="${q}/fx">+ 바닥 효과</button>`:''}
+  <p class="small muted">대상마다 지금 턴에 한 번만 발동. 들어온 것만으로 기회공격은 생기지 않아요. 지정한 라운드가 시작될 때 사라져요.</p></div>`:''}`}
+Object.assign(A,{zoneFxAdd(e){const p=e.dataset.p,l=Store.get(p)||[];if(l.length<3)Store.set(p,[...l,{type:'keyword',kw:'화상',t:1,n:2}])},
+ zoneDel(e){Store.set(`${BTP}/zones/${e.dataset.v}`,null)}});
+function areaEditor(x,p){const a={...blankArea(),...(x.area||{})},s=a.shape,q=p+'/area',r=+x.range||0,nx=a.next?{...blankArea(),...a.next}:null;
+ const N2={...AREA_L};delete N2.single;
+ return`<h4 class="sh-h">범위 <small>16.3 · 미리보기의 빨간 칸 = 1단계, 주황 칸 = 2단계 확산. 돌진은 아래 '이동 결합'에서</small></h4>
+ <div class="area-ed">${areaPreview(a,r)}<div class="grow"><div class="fxr"><select data-b="${q}/shape" data-r>${optsKV(AREA_L,s)}</select>${s==='single'?'':isOrigin(a)?'<small>기준: 사용자 · 방향: 조준</small>':'<small>기준: 지정 지점 (사거리 안)</small>'}</div>
+ ${shapeFields(a,q,r,false)}
+ ${s!=='single'?(nx?`<div class="area-next"><div class="fxr"><b class="small">2단계 확산</b><select data-b="${q}/next/shape" data-r>${optsKV(N2,nx.shape)}</select><select data-b="${q}/next/trigger" data-r>${optsKV({always:'항상 퍼짐',hit:s==='line'?'첫 대상이 적중했을 때만':'1단계에서 하나라도 적중했을 때만'},nx.trigger||'always')}</select><button class="x" data-a="areaNextDel" data-p="${q}" aria-label="확산 삭제">✕</button></div>
+  <small class="muted">${s==='line'?'공격선 위 첫 대상의 칸(없으면 끝 칸)':isOrigin(a)?'1단계에서 가장 먼 칸':'1단계 중심'}에서 같은 방향으로 펼쳐져요. 확산 대상도 같은 공격 판정을 받고, 1단계 대상 다음 순서로 처리돼요.</small>
+  ${shapeFields(nx,q+'/next',r,true)}</div>`:`<button class="btn sm" data-a="areaNext" data-p="${q}">+ 2단계 확산 (예: 직선 적중 후 원뿔로 퍼짐)</button>`):''}
+ ${s!=='single'?`<div class="fxr"><small>범위 안 대상</small><select data-b="${q}/filter">${optsKV({all:'모두 (아군 포함, 13.4 기본)',foe:'적만',ally:'아군만'},a.filter||'all')}</select></div>`:''}
+ <p class="small muted">${esc(areaText(a,r))}${a.filter==='foe'?' · 적만':a.filter==='ally'?' · 아군만':''}. 범위 안의 모든 캐릭터(사용자 제외)가 대상. 벽 칸은 제외, 직선은 벽에서 멈춤. 시야선·엄폐는 계산하지 않음(13.5)</p></div></div>`}
+Object.assign(A,{
+ areaCell(e){const p=e.dataset.p+'/cells',l=Store.get(p)||[],v=e.dataset.v;Store.set(p,l.includes(v)?l.filter(x=>x!==v):[...l,v])},
+ areaClear(e){Store.set(e.dataset.p+'/cells',[])},
+ areaNext(e){Store.set(e.dataset.p+'/next',{shape:'cone',len:2,angle:90,w:3,h:3,r:1,ri:0,trigger:'always',cells:[],rot:'dir'})},
+ areaNextDel(e){Store.set(e.dataset.p+'/next',null)}});
 
 function areaTest(eq){
  const C={w:11,h:11,walls:{}},o={x:5,y:5},K=l=>l.map(c=>c.x+','+c.y).join(' ');
+ eq(K(areaCells({shape:'custom',anchor:'self',rot:'dir',cells:['1_0','2_0','1_1']},o,{x:5,y:9},3,C)),'5,6 4,6 5,7','격자 지정: 남쪽 조준이면 무늬가 회전');
+ eq(K(areaCells({shape:'custom',anchor:'self',rot:'dir',cells:['1_0','1_1']},o,{x:9,y:6},3,C)),'6,5 6,6','격자 지정: 동쪽 조준 그대로');
+ eq(K(areaCells({shape:'custom',anchor:'point',rot:'none',cells:['0_0','1_0']},o,{x:7,y:5},3,C)),'7,5 8,5','격자 지정: 지정 지점, 회전 없음');
+ {const P=areaPlan({shape:'line',next:{shape:'cone',len:2,angle:90}},o,{x:9,y:5},4,C,(x,y)=>x===7&&y===5);
+  eq([K(P.c1),P.first&&P.first.x+','+P.first.y,P.c2.length,P.c2.some(c=>c.x===8&&c.y===5)],['6,5 7,5 8,5 9,5','7,5',8,true],'2단계: 직선 첫 대상 칸에서 원뿔 확산')}
+ eq(areaPlan({shape:'square',w:3,h:3,next:{shape:'cross',r:1}},o,{x:7,y:5},3,C).c2.length,4,'2단계: 지점형은 중심에서 확산');
  eq(areaCells({shape:'square',w:3,h:3},o,{x:7,y:5},3,C).length,9,'중심 사각 3×3 = 9칸');
  eq(areaCells({shape:'diamond',r:1},o,{x:8,y:5},3,C).length,5,'마름모 반경 1 = 5칸');
  eq(areaCells({shape:'cross',r:2},o,{x:8,y:8},3,C).length,9,'십자 반경 2 = 9칸');
@@ -2390,16 +2570,35 @@ function areaTest(eq){
 
 /* ---------- 다중 대상 공격 (룰북 13.1~13.4, 14.4, 11.5) ---------- */
 // 조준한 칸의 범위 안 후보 대상 (사용자·전투 불능 제외, 아군 포함)
-function mCands(t){const by=uOf(t.by);if(!by||!t.aim)return[];const ctx=btCtx(),cells=areaCells(t.area,{x:+by.x,y:+by.y},t.aim,t.range,ctx),out=[];
- for(const c of cells)for(const u of units())if(+u.x===c.x&&+u.y===c.y&&u.k!==t.by&&!isDown(u)&&!out.includes(u.k))out.push(u.k);return out}
-function mAim(x,y){const t=ATK(),by=uOf(t.by);if(!aimOk(t.area,by,{x,y},t.range))return toast(AREA_ORIGIN.includes(t.area.shape)?'자기 칸이 아닌 방향을 고르세요':`중심은 사거리 ${t.range}칸 안이어야 해요`,1);
+
+// 16.3 확장: 2단계 확산. 1단계가 닿은 곳(직선은 공격선 위 첫 유닛 칸, 없으면 끝 칸 · 사용자 기준 도형은 가장 먼 칸 · 지점형은 중심)에서
+// 같은 방향으로 2단계 도형을 펼친다. occ(x,y): 그 칸에 유닛이 있는지
+function areaPlan(a,o,aim,range,ctx,occ){const c1=areaCells(a,o,aim,range,ctx),n=a.next;if(!n?.shape||n.shape==='single')return{c1,c2:[]};
+ const vx=aim.x-o.x,vy=aim.y-o.y;let o2,first=null;
+ if(a.shape==='line'){first=c1.find(c=>occ?.(c.x,c.y))||null;o2=first||c1.at(-1)||aim}
+ else if(isOrigin(a))o2=c1.length?c1.reduce((m,c)=>cheb(c,o)>cheb(m,o)?c:m,c1[0]):aim;else o2=aim;
+ const d=vx||vy?{x:vx,y:vy}:{x:1,y:0},aim2=isOrigin(n)?{x:o2.x+d.x,y:o2.y+d.y}:o2;
+ const c2=areaCells({...blankArea(),...n},o2,aim2,n.shape==='line'?Math.max(1,+n.len||1):0,ctx).filter(c=>!(c.x===o.x&&c.y===o.y));
+ return{c1,c2,o2,first}}
+function mPlan(t){const by=uOf(t.by);if(!by||!t.aim)return{c1:[],c2:[],k1:[],k2:[]};const at=(x,y)=>units().find(u=>+u.x===x&&+u.y===y&&u.k!==t.by&&!isDown(u));
+ const P=areaPlan(t.area,{x:+by.x,y:+by.y},t.aim,t.range,btCtx(),(x,y)=>!!at(x,y)),k1=[],k2=[];
+ const ok=u=>{const f=t.area.filter;return!f||f==='all'||(f==='foe'?u.side!==by.side:u.side===by.side)};
+ for(const c of P.c1){const u=at(c.x,c.y);if(u&&ok(u)&&!k1.includes(u.k))k1.push(u.k)}
+ for(const c of P.c2){const u=at(c.x,c.y);if(u&&ok(u)&&!k1.includes(u.k)&&!k2.includes(u.k))k2.push(u.k)}
+ return{...P,k1,k2,firstK:P.first?at(P.first.x,P.first.y)?.k:null}}
+function mCands(t){const P=mPlan(t);return[...P.k1,...P.k2]}
+function mAim(x,y){const t=ATK(),by=uOf(t.by);if(!aimOk(t.area,by,{x,y},t.range))return toast(isOrigin(t.area)?'자기 칸이 아닌 방향을 고르세요':`중심은 사거리 ${t.range}칸 안이어야 해요`,1);
  Store.set(`${BTP}/atk/aim`,{x,y})}
 function mDeclare(t){const by=uOf(t.by);if(!t.aim)return toast('조준할 칸을 고르세요',1);
  if(t.kind==='미지정')return toast('공격 종류가 미지정이에요. 시트에서 근접·원거리를 정해 주세요 (16.2)',1);
  if(!aimOk(t.area,by,t.aim,t.range))return toast('조준 위치가 범위 조건에 맞지 않아요',1);
- const cand=mCands(t);if(!cand.length)return toast('범위 안에 대상이 없어요',1);
- Store.set(`${BTP}/cur/main`,true,true);
- Store.set(`${BTP}/atk`,{...t,cand,snap:snapAll(),fired:{}},true);
+ if(needDash(t))return toast('먼저 돌진할 칸을 고르세요',1);
+ const P=mPlan(t),cand=[...P.k1,...P.k2];
+ if(!cand.length){if(!t.zone&&!confirm('범위 안에 아무도 없어요. 그래도 바닥에 사용할까요? (주요 행동 소비)'))return;
+  takeMain(t);btLog(`${uName(by)} ${t.label} — ${areaText(t.area,t.range)}, 범위 안에 대상 없음`,{type:'declare',by:t.by,kind:t.kind,multi:true});
+  if(t.zone)placeZone(t,[...P.c1,...P.c2],t.label);Store.set(`${BTP}/atk`,null);return}
+ takeMain(t);if(t.zone)placeZone(t,[...P.c1,...P.c2],t.label);
+ Store.set(`${BTP}/atk`,{...t,cand,s2:P.k2,firstK:P.firstK||null,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 — ${areaText(t.area,t.range)}, 후보 ${cand.map(atkName).join(', ')}`,{type:'declare',by:t.by,to:cand[0],kind:t.kind,multi:true});
  const used=BT().cur?.opp||{},q=t.kind==='원거리'?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];   // 7.8.2
  if(q.length)return Store.set(`${BTP}/atk`,{...ATK(),phase:'opp',oppQ:q,oppLog:[]});
@@ -2414,23 +2613,37 @@ function mBuild(pp){const t=ATK(),T=[],prots=[],usedP=new Set();
   if(p&&!usedP.has(p)&&uOf(p)){usedP.add(p);const pu=uOf(p),cu=uOf(c);if(pu.char)addStress(pu.char,2);
    prots.push({k:p,orig:c,from:{x:+pu.x,y:+pu.y}});Store.set(`${BTP}/units/${p}`,{...unitRaw(p),x:+cu.x,y:+cu.y},true);
    btLog(`${uName(pu)} 보호 → ${uName(cu)} 대신 대상${pu.char?' (스트레스 +2)':''} — 보호 이동, 이탈 피해 없음${t.cand.includes(p)?' · 자신의 몫도 따로 처리':''}`,{type:'protect',k:p,to:c});
-   T.push({k:p,for:c})}
-  else T.push({k:c})}
- Store.set(`${BTP}/atk`,{...t,T:T.map(e=>({...e,mode:noResp(uOf(e.k))?'none':'',push:false,adv:0})),prots,pp:null},true);atkRoll()}
+   T.push({k:p,for:c,s2:(t.s2||[]).includes(c)})}
+  else T.push({k:c,s2:(t.s2||[]).includes(c)})}
+ Store.set(`${BTP}/atk`,{...t,T:T.map(e=>({...e,mode:noResp(uOf(e.k))?'none':'',push:false,help:'',adv:0})),prots,pp:null},true);mReactOrRoll()}
+// 15.4·13.1 다중 대상의 침잠 반응: 각 최종 대상이 공격자에게 쌓인 침잠을 소비. 공격 주사위 감소는 하나의 공격 판정에 합산,
+// 피해 감소는 선언한 대상의 몫에만, 충전 감소는 공격자에게. 공격 주사위 전에만 선언 (E06)
+const mReactOpts=(t,k)=>{const have=+kwOf(uOf(t.by))['침잠']||0;return pUses(k,P_DEF).filter(x=>(+x.use.cost||0)<=have)};
+function mReactOrRoll(){const t=ATK();if(!t.mreactAsked&&t.T.some(e=>uOf(e.k)&&!isDown(uOf(e.k))&&mReactOpts(t,e.k).length))return Store.set(`${BTP}/atk`,{...t,phase:'mreact',mreactAsked:true,md:{}});atkRoll()}
+function mReactOk(){const t=ATK();if(!t||t.phase!=='mreact')return;let adice=0;const T=t.T.map(e=>({...e}));
+ T.forEach((e,i)=>{const sel=t.md?.[i]||{};for(const x of pUses(e.k,P_DEF)){if(!sel[x.id])continue;if(!payPUse(x,t.by,`${atkName(e.k)}의 반응`))continue;
+  for(const f of x.use.fx||[]){const n=+f.n||0;if(f.type==='adice')adice+=n;else if(f.type==='dmgDown')(e.dmgDown=e.dmgDown||[]).push({t:+f.t||1,n});
+   else if(f.type==='res'){const v=Math.max(0,(+unitRaw(t.by)?.charge||0)-n);Store.set(`${BTP}/units/${t.by}/charge`,v,true);btLog(`${atkName(t.by)} 충전 -${n} (${v})`)}
+   else if(f.type==='custom')btLog(`GM 확인: ${f.text||'자작 반응 효과'} (침잠 소비, 자동 처리 안 함)`)}}
+  if(e.dmgDown?.length)btLog(`${atkName(t.by)}이(가) ${atkName(e.k)}에게 주는 피해 감소 예약: ${e.dmgDown.map(d=>`${TIERS[d.t-1]} -${d.n}칸`).join(', ')}`)});
+ if(adice)btLog(`${atkName(t.by)} 공격 주사위 -${adice} (침잠 반응, 모든 대상 공통)`);
+ Store.set(`${BTP}/atk`,{...ATK(),T,adice:(+t.adice||0)+adice,md:null},true);atkRoll()}
 // 대상별 대응이 모두 정해지면 대상 순서대로 처리 (직선은 공격선 순서)
 function mRespond(){const t=ATK();if(t.T.some(e=>!e.mode))return toast('모든 대상의 대응을 골라 주세요',1);Store.set(`${BTP}/atk`,{...t,i:0,stop:false},true);mStep()}
 function mCtx(t,target){const sk=skillOf(t.by,t.opt);return{self:t.by,target,attacker:t.by,si:t.si,skill:isStruct(sk)?sk:null,snap:t.snap,roll:t.aRoll,fired:{...(t.fired||{})},mods:{dice:0,res:0},label:t.label}}
 function mStep(){let t=ATK();const by=uOf(t.by),line=t.area.shape==='line',pierce=!!t.area.pierce;
  while(t.i<t.T.length){const i=t.i,e={...t.T[i]},u=uOf(e.k);
-  if(t.stop||!u||isDown(u)){e.cancel=true;if(t.stop)btLog(`${atkName(e.k)}: 공격이 앞에서 멈춰 선언 취소 (비용 없음)`);t.T[i]=e;t.i++;Store.set(`${BTP}/atk`,t,true);continue}   // 13.3
+  if(e.s2&&t.s2ok===undefined){const tr=t.area.next?.trigger||'always',hit1=t.T.filter(x=>!x.s2&&x.hit);t.s2ok=tr!=='hit'||(t.firstK?hit1.some(x=>x.k===t.firstK||x.for===t.firstK):hit1.length>0);
+   btLog(t.s2ok?`확산: ${shapeText(t.area.next)}`:`확산 조건(${t.firstK?'첫 대상':'1단계'} 적중) 미충족 — 확산 대상 취소 (비용 없음)`);Store.set(`${BTP}/atk`,t,true)}
+  if((t.stop&&!e.s2)||(e.s2&&!t.s2ok)||!u||isDown(u)){e.cancel=true;if(t.stop&&!e.s2)btLog(`${atkName(e.k)}: 공격이 앞에서 멈춰 선언 취소 (비용 없음)`);t.T[i]=e;t.i++;Store.set(`${BTP}/atk`,t,true);continue}   // 13.3
   const none=e.mode==='none'||noResp(u);let rr=null;
-  if(!none){payStress(e.k,{push:e.push},RESP[e.mode]);const rm=runPassives(e.k,'beforeResponseRoll',{attacker:t.by});rr=judge(rollN(Math.max(1,2+(e.push?1:0)+rm.dice)),(+e.adv||0)+rm.res)}
+  if(!none){payStress(e.k,{push:e.push,help:e.help},RESP[e.mode]);const rm=runPassives(e.k,'beforeResponseRoll',{attacker:t.by});rr=judge(rollN(Math.max(1,2+bonusDice(e)-(+t.trdice?.[i]||0)+rm.dice)),(+e.adv||0)+rm.res)}
   const out=resolveAtk(t.aRoll,rr,undefined,!!stOf(u).행동불능);Object.assign(e,{rRoll:rr,...out,mode:none?'none':e.mode});
   btLog(`${uName(by)} ${t.label} → ${uName(u)}${e.for?` (${atkName(e.for)} 보호)`:''}: 공격 ${fmtRoll(t.aRoll)} / ${RESP[e.mode]}${rr?' '+fmtRoll(rr):''}${out.clash?` / 합 ${out.clash.map(([a,r])=>a+':'+r).join(' → ')}`:''} → ${RESO[out.resolution]}${out.counterEligible?', 반격 기회':''}`,
    {type:'reveal',by:t.by,to:e.k,a:t.aRoll.rawDice,r:rr?.rawDice||null,crit:t.aRoll.critical||!!rr?.critical,clash:out.clash,resolution:out.resolution,hit:out.hit,label:t.label,sin:t.sin||'',mode:e.mode,aCv:t.aRoll.compareValue,rCv:rr?.compareValue,aCrit:t.aRoll.critical,rCrit:!!rr?.critical,aMod:+t.a.adv||0,rMod:+e.adv||0,multi:true});
   if(line&&!pierce&&(out.hit||e.mode==='guard')){t.stop=true;btLog(`공격선이 ${uName(u)}에게서 멈춤 (${out.hit?'적중':'방어'})`)}   // 13.3 회피는 통과, 방어·적중은 정지
   t.T[i]=e;Store.set(`${BTP}/atk`,t,true);                                   // 결과·정지 여부를 먼저 저장
-  if(out.hit){const sk=skillOf(t.by,t.opt),items=isStruct(sk)?dmgItemsOf(sk.fx,t.post):[{t:+t.dmg.t,n:+t.dmg.n},...dmgItemsOf([],t.post)];
+  if(out.hit){const sk=skillOf(t.by,t.opt),items=reduceItems(isStruct(sk)?dmgItemsOf(sk.fx,t.post):[{t:+t.dmg.t,n:+t.dmg.n},...dmgItemsOf([],t.post)],e.dmgDown||[]);
    if(canResist(e.k,items)){Store.set(`${BTP}/atk`,{...t,phase:'resist',rs:{k:e.k,items,src:'m',i}});return}
    mHit(i,items);t=ATK()}
   else{const ctx=mCtx(t,e.k);withSrc(t.by,()=>{if(ctx.skill)runRules('afterMiss',ctx);runPassives(t.by,'afterMiss',{target:e.k,attacker:t.by,snap:t.snap,roll:t.aRoll,fired:ctx.fired})});t={...ATK(),fired:ctx.fired}}
@@ -2461,21 +2674,30 @@ function mNextCounter(){const t=ATK(),ci=t.ci+1;
  if(ci>=t.cq.length||isDown(uOf(t.by)||{})){if(ci<t.cq.length)btLog('원래 공격자가 전투 불능 — 남은 반격 취소 (11.5)');return Store.set(`${BTP}/atk`,{...t,rs:null,phase:'done'})}
  Store.set(`${BTP}/atk`,{...t,ci,rs:null,phase:'mcounter',cn:{opt:'basic',t:1,n:1}})}
 
+// 대상별 대응 보정: 분발·도움(각 스트레스 +2, 한 판정에 도움 1명)·유리/불리 (14.1~14.3, 4.5)
+function mOptRow(e,i,t){const me=uOf(e.k),hs=helpers(e.k),cut=+t.trdice?.[i]||0;return`<div class="m-opt">
+ ${me?.char?`<label class="small"><input type="checkbox" data-c="mPush" data-i="${i}" ${e.push?'checked':''}> 분발</label>`:''}
+ ${hs.length?`<select data-c="mOpt" data-i="${i}" data-k="help" aria-label="도움"><option value="">도움 없음</option>${hs.map(h=>`<option value="${esc(h.k)}" ${h.k===e.help?'selected':''}>도움: ${esc(uName(h))}</option>`).join('')}</select>`:''}
+ <select data-c="mOpt" data-i="${i}" data-k="adv" aria-label="보정">${[[-1,'불리 -1'],[0,'보정 없음'],[1,'유리 +1']].map(([v,n])=>`<option value="${v}" ${v===(+e.adv||0)?'selected':''}>${n}</option>`).join('')}</select>
+ <small class="muted">${Math.max(1,2+bonusDice(e)-cut)}d6${cut?` (침잠 -${cut})`:''}</small></div>`}
 function mPanel(t){const by=uOf(t.by),head=`<div class="bt-atk-h"><b>${esc(uName(by))}</b><span>${esc(t.label)} ▶</span><b class="foe">${t.T?t.T.length+'명':t.aim?mCands(t).length+'명':'조준'}</b></div><p class="small muted">${esc(t.kind)} · ${esc(areaText(t.area,t.range))}</p>`;
- const row=(e,i,inner)=>`<div class="mrow ${e.cancel?'off':''}"><b>${esc(atkName(e.k))}</b>${e.for?`<small>(${esc(atkName(e.for))} 보호)</small>`:''}${inner}</div>`;
+ const row=(e,i,inner)=>`<div class="mrow ${e.cancel?'off':''}"><b>${esc(atkName(e.k))}</b>${e.s2?'<small class="s2">확산</small>':''}${e.for?`<small>(${esc(atkName(e.for))} 보호)</small>`:''}${inner}</div>`;
  let body='';
  if(t.phase==='declare'){const c=t.aim?mCands(t):[],sk=t.st?skillOf(t.by,t.opt):null,uses=sk?.uses||[];
   body=`<label class="f">공격<select data-c="atkSel">${atkOptions(t.by).map(o=>`<option value="${o.opt}" ${o.opt===t.opt?'selected':''}>${esc(o.label)}${o.opt.startsWith('s')?` (${o.kind} ${o.range})`:''}</option>`).join('')}</select></label>
-  ${sk?skillSummary(sk):''}<p class="small">${t.aim?`후보 ${c.length}명: ${c.map(k=>esc(atkName(k))).join(', ')||'없음'}`:`<span class="warn">${AREA_ORIGIN.includes(t.area.shape)?'방향을 정할 칸을 누르세요':'사거리 안에서 중심 칸을 누르세요'}</span>`}</p>
-  <div class="bt-step">공격 판정 전 선언</div>${uses.map((u,i)=>{const ok=useOk(u,t.by,u.kw==='침잠'?'':t.by)&&u.kw!=='침잠';return`<label class="row small use ${ok?'':'off'}"><input type="checkbox" data-c="atkUse" data-i="${i}" ${t.a.uses?.[i]&&ok?'checked':''} ${ok?'':'disabled'}> ${esc(useText(u))}${u.kw==='침잠'?' <em>(다중 대상에는 사용 불가)</em>':''}</label>`}).join('')}
-  ${sk?.fx?.some(f=>f.type==='ruptureBurst')?`<label class="f">파열 폭발 구간<select data-c="atkRupt">${optsKV({max:'가능한 최대',3:'3',5:'5',7:'7',10:'10',none:'터뜨리지 않음'},t.a.rupt||'max')}</select></label>`:''}
-  ${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})}${optRow('a',t.a,t.by,'공격')}<div class="row"><button class="btn sm pri" data-a="atkDeclare" ${c.length?'':'disabled'}>공격 선언 · 굴림</button><button class="btn sm" data-a="atkCancel">취소</button></div>`}
+  ${sk?skillSummary(sk):''}${t.opt?.startsWith('s')&&srcOf(by)&&!sheetLocked(srcOf(by))?`<button class="lnk" data-a="skOpen" data-v="${t.opt}">✎ 이 스킬 편집</button>`:''}${dashInfo(t)}<p class="small">${needDash(t)?'':t.aim?`후보 ${c.length}명: ${c.map(k=>esc(atkName(k))).join(', ')||'없음'}`:`<span class="warn">${isOrigin(t.area)?'방향을 정할 칸을 누르세요':'사거리 안에서 중심 칸을 누르세요'}</span>`}</p>
+  <div class="bt-step">공격 판정 전 선언</div>${uses.map((u,i)=>{const sk=u.kw==='침잠',ok=sk?c.some(k=>(+kwOf(uOf(k)).침잠||0)>=(+u.cost||0)):useOk(u,t.by,t.by);return`<label class="row small use ${ok?'':'off'}"><input type="checkbox" data-c="atkUse" data-i="${i}" ${t.a.uses?.[i]&&ok?'checked':''} ${ok?'':'disabled'}> ${esc(useText(u))}${sk?' <em>(최종 대상마다, 침잠이 충분한 대상에게만 적용)</em>':''}</label>`}).join('')}
+  ${sk?.fx?.some(f=>f.type==='ruptureBurst')?`<label class="f">파열 폭발<select data-c="atkRupt">${optsKV({max:'가능한 최대 터뜨리기',none:'쌓아 두기'},t.a.rupt==='none'?'none':'max')}</select></label>`:''}
+  ${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})}${optRow('a',t.a,t.by,'공격')}<div class="row"><button class="btn sm pri" data-a="atkDeclare" ${t.aim?'':'disabled'}>${t.aim&&!c.length?'바닥에 사용':'공격 선언 · 굴림'}</button><button class="btn sm" data-a="atkCancel">취소</button></div>`}
  else if(t.phase==='opp')return'';
  else if(t.phase==='mprotect')body=`<div class="bt-step">보호 선언 (14.4 · 13.1)</div><p class="small muted">후보마다 주변 2칸 안의 같은 편이 대신 맞을 수 있어요. 범위 안에 있던 보호자는 자신의 몫도 따로 받아요.</p>
   ${t.cand.map(c=>{const ps=mProtOpts(t,c);return ps.length?`<label class="f">${esc(atkName(c))}<select data-c="mProt" data-k="${esc(c)}"><option value="">보호 없음</option>${ps.map(p=>`<option value="${esc(p.k)}" ${t.pp?.[c]===p.k?'selected':''}>${esc(uName(p))}${p.char?' (스트레스 +2)':''}</option>`).join('')}</select></label>`:`<p class="small muted">${esc(atkName(c))}: 보호할 수 있는 아군 없음</p>`}).join('')}
   <div class="row"><button class="btn sm pri" data-a="mProtOk">보호 확정 · 공격 굴림</button></div>`;
+ else if(t.phase==='mreact'){const have=+kwOf(by)['침잠']||0;body=`<div class="bt-step">대상별 반응 (15.4 침잠 · 공격 주사위 전)</div><p class="small muted">${esc(uName(by))}에게 쌓인 침잠(${have})을 소비해 이 공격을 약하게 만들 수 있어요. 공격 주사위 감소는 모든 대상에게 함께 적용되고, 피해 감소는 선언한 대상의 몫에만 적용돼요. 침잠은 선언한 순서대로 차감돼요.</p>
+  ${t.T.map((e,i)=>{const l=mReactOpts(t,e.k);return l.length?row(e,i,`<div class="m-react">${l.map(x=>`<label class="row small use"><input type="checkbox" data-c="mdUse" data-i="${i}" data-id="${esc(x.id)}" ${t.md?.[i]?.[x.id]?'checked':''}> ${esc(pUseText(x.use,x.name))}</label>`).join('')}</div>`):''}).join('')}
+  <div class="row"><button class="btn sm pri" data-a="mReactOk">반응 확정 · 공격 굴림</button></div>`}
  else if(t.phase==='mrespond')body=`<div class="bt-hidden">공격 주사위 ${t.aRoll.rawDice.length}개 — <b>결과 비공개</b> · 모든 대상이 같은 결과를 받음</div><div class="bt-step">대상별 대응 선택</div>
-  ${t.T.map((e,i)=>row(e,i,`<span class="row">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${e.mode===k?'on':''}" data-a="mMode" data-i="${i}" data-v="${k}" ${k!=='none'&&noResp(uOf(e.k))?'disabled':''}>${n}</button>`).join('')}${uOf(e.k)?.char&&e.mode&&e.mode!=='none'?`<label class="small"><input type="checkbox" data-c="mPush" data-i="${i}" ${e.push?'checked':''}> 분발</label>`:''}</span>`)).join('')}
+  ${t.T.map((e,i)=>row(e,i,`<span class="row">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${e.mode===k?'on':''}" data-a="mMode" data-i="${i}" data-v="${k}" ${k!=='none'&&noResp(uOf(e.k))?'disabled':''}>${n}</button>`).join('')}</span>${e.mode&&e.mode!=='none'?mOptRow(e,i,t):''}`)).join('')}
   ${t.area.shape==='line'?`<p class="small muted">직선: 가까운 순서로 처리. 회피 성공은 통과, ${t.area.pierce?'관통이라 계속 진행':'방어 성공·적중이면 멈추고 뒤쪽은 취소(비용 없음)'}.</p>`:''}
   <div class="row"><button class="btn sm pri" data-a="mRespond" ${t.T.some(e=>!e.mode)?'disabled':''}>대응 확정 · 결과 공개</button></div>`;
  else{const res=`<div class="bt-res"><div><small>공격</small>${rollChips(t.aRoll)}</div></div>${t.T.map((e,i)=>row(e,i,e.cancel?'<small class="muted">취소</small>':e.resolution?`<small>${RESP[e.mode]}${e.rRoll?' '+e.rRoll.rawDice.join(','):''}</small><em class="${e.hit?'hit':'miss'}">${e.hit?'적중':'미적중'}</em>`:'<small class="muted">대기</small>')).join('')}`;
@@ -2521,7 +2743,8 @@ const uOf=k=>{const u=unitRaw(k);return u?{...u,k}:null};
 const atkName=k=>uName(uOf(k)||{});
 const ROLE_MAIN=['일반',undefined,''],ROLE_COUNTER=['반격 전용','양쪽'];
 // 16.2 스킬 → 공격 정보. 피해는 아직 구조화되지 않아 기본값(경상 1칸)에서 선언 때 고친다
-const skillAtk=(s,i)=>({opt:'s'+i,si:i,st:isStruct(s),area:isMulti(s.area)?{...blankArea(),...s.area}:null,multi:isMulti(s.area),label:s.name||`스킬 ${i+1}`,kind:s.kind||'미지정',range:Math.max(0,+s.range||0),dmg:{t:1,n:1},sin:s.sin});
+const skillAtk=(s,i)=>({opt:'s'+i,si:i,st:isStruct(s),area:isMulti(s.area)?{...blankArea(),...s.area}:null,multi:isMulti(s.area),label:s.name||`스킬 ${i+1}`,kind:s.kind||'미지정',range:Math.max(0,+s.range||0),dmg:{t:1,n:1},sin:s.sin,
+ move:s.move?.type?{type:s.move.type,n:clamp(+s.move.n||3,1,9)}:null,zone:s.zone?.on?{...s.zone,fx:(s.zone.fx||[]).filter(Boolean)}:null,reuse:s.reuse?.on==='hit'?{max:clamp(+s.reuse.max||1,1,5)}:null});
 function atkOptions(k){const u=uOf(k),out=[BASIC_ATK];
  if(srcOf(u))(CH(srcOf(u))?.skills||[]).forEach((s,i)=>{if(ROLE_MAIN.includes(s.role))out.push(skillAtk(s,i))});
  out.push({opt:'custom',label:'직접 지정',kind:'근접',range:1,dmg:{t:1,n:1}});return out}
@@ -2534,16 +2757,49 @@ function payStress(k,o,what){const u=uOf(k);if(o.push&&u?.char){addStress(u.char
 const fmtRoll=j=>`[${j.rawDice.join(',')}] ${j.grade}(${j.compareValue})`;
 const foesNear=(k)=>{const me=uOf(k);return units().filter(u=>u.side!==me.side&&!isDown(u)&&!stOf(u).행동불능&&cheb(me,u)===1)};
 
-function atkTargets(k){const me=uOf(k),t=ATK();if(!me||!t)return[];return units().filter(u=>u.k!==k&&!isDown(u)&&cheb(me,u)<=t.range)}
-function atkStart(){const c=BT().cur;if(!c||c.main||ATK())return;
+
+/* 이동 결합(스킬 돌진): 8방향 직선, 벽·유닛을 통과하지 않음, 대각선은 양옆 벽 사이로 못 지나감(7장 모서리 규칙).
+   스킬 이동은 보호 이동처럼 이탈 피해·기회공격 없음 (v1.3 개정안 후보) */
+const DIR8=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+function dashStepOk(ctx,x,y,dx,dy){const W=ctx.walls||{},nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=ctx.w||ny>=ctx.h||W[wkey(nx,ny)])return false;return!(dx&&dy&&W[wkey(x+dx,y)]&&W[wkey(x,y+dy)])}
+function dashCells(k,n){const u=unitRaw(k),ctx=btCtx(),out=[];if(!u)return out;
+ for(const[dx,dy]of DIR8){let x=+u.x,y=+u.y;for(let i=1;i<=n;i++){if(!dashStepOk(ctx,x,y,dx,dy))break;x+=dx;y+=dy;if(occupied(x,y))break;out.push({x,y,d:i})}}return out}
+function dashTo(k,tk,n){const a=unitRaw(k),b=unitRaw(tk);if(!a||!b)return null;const ax=+a.x,ay=+a.y,bx=+b.x,by=+b.y,dist=cheb({x:ax,y:ay},{x:bx,y:by});
+ if(!(ax===bx||ay===by||Math.abs(bx-ax)===Math.abs(by-ay)))return null;if(dist<=1)return{x:ax,y:ay,d:0};if(dist-1>n)return null;
+ const dx=Math.sign(bx-ax),dy=Math.sign(by-ay),ctx=btCtx();let x=ax,y=ay;
+ for(let i=1;i<dist;i++){if(!dashStepOk(ctx,x,y,dx,dy))return null;x+=dx;y+=dy;if(occupied(x,y))return null}
+ return dashStepOk(ctx,x,y,dx,dy)?{x,y,d:dist-1}:null}
+// 주요 행동 소비. 재사용 허가가 있으면 그것을 쓴다
+function takeMain(t){const c=BT().cur;if(c?.main&&c.reuse===t.opt){const n=(+c.reN?.[t.opt]||0)+1;Store.set(`${BTP}/cur/reN/${t.opt}`,n,true);Store.set(`${BTP}/cur/reuse`,null,true);btLog(`${atkName(t.by)} ${t.label} 재사용 (${n}회째)`,{type:'declare',by:t.by})}
+ Store.set(`${BTP}/cur/main`,true,true)}
+function doDash(x,y,d){const t=ATK();if(!t)return;const k=t.by,u=unitRaw(k);takeMain(t);
+ if(d){const sx=Math.sign(x-u.x),sy=Math.sign(y-u.y);Store.set(`${BTP}/units/${k}`,{...u,x,y},true);zonePath(k,Array.from({length:d},(_,i)=>({x:+u.x+sx*(i+1),y:+u.y+sy*(i+1)})));btLog(`${atkName(k)} ${t.label} 돌진 ${d}칸 → (${x},${y}) — 스킬 이동, 이탈 피해 없음`,{type:'move',k,to:{x,y},steps:d,dash:true})}
+ else btLog(`${atkName(k)} ${t.label} — 돌진하지 않고 제자리에서`);
+ const nt={...ATK(),dashed:true,dashD:d};if(nt.multi&&((!isOrigin(nt.area)&&!nt.range)||(nt.area.shape==='custom'&&nt.area.anchor!=='point'&&nt.area.rot==='none')))nt.aim={x:d?x:+u.x,y:d?y:+u.y};else if(nt.multi)nt.aim=null;
+ if(!nt.multi&&nt.to&&cheb(uOf(k),uOf(nt.to))>nt.range)nt.to='';Store.set(`${BTP}/atk`,nt)}
+const needDash=t=>t?.phase==='declare'&&t.move?.type==='cell'&&!t.dashed;
+// 적중하면 같은 스킬을 한 번 더 (턴당 최대 max회). 공격 카드를 닫을 때 허가
+function grantReuse(t){const c=BT().cur;if(!t?.reuse||t.phase!=='done'||!c||c.k!==t.by)return;
+ const hit=t.multi?(t.T||[]).some(e=>e.hit&&!e.cancel):!!t.hit;if(!hit)return;const used=+c.reN?.[t.opt]||0;
+ if(used>=t.reuse.max)return btLog(`${t.label} 재사용 한도 도달 (턴당 ${t.reuse.max}회)`);
+ Store.set(`${BTP}/cur/reuse`,t.opt,true);btLog(`${atkName(t.by)} ${t.label} 적중 — 한 번 더 사용할 수 있음 (${used+1}/${t.reuse.max})`,{type:'status',k:t.by,on:true})}
+function dashInfo(t){if(!t.move)return'';const n=t.move.n;
+ if(t.move.type==='target')return`<p class="small dash-i">돌진: 같은 직선 위 대상에게 최대 ${n}칸 달려가 바로 앞 칸에서 공격해요. 사이 칸이 비어 있어야 해요.</p>`;
+ return t.dashed?`<p class="small dash-i">돌진 ${t.dashD?t.dashD+'칸 완료':'안 함 (제자리)'} — 이제 ${t.multi?'범위를 정하세요':'대상을 고르세요'}.</p>`
+  :`<div class="bt-step">돌진: 직선 최대 ${n}칸</div><p class="small dash-i">파란 칸 중 착지할 칸을 누르세요. 돌진하면 주요 행동이 소비돼 다른 공격으로 바꿀 수 없어요.</p><div class="row"><button class="btn sm" data-a="atkNoDash">제자리에서 공격</button></div>`}
+function atkTargets(k){const me=uOf(k),t=ATK();if(!me||!t||needDash(t))return[];return units().filter(u=>u.k!==k&&!isDown(u)&&(cheb(me,u)<=t.range||(t.move?.type==='target'&&dashTo(k,u.k,t.move.n))))}
+function atkStart(){const c=BT().cur;if(!c||(c.main&&!c.reuse)||ATK())return;
  Store.set(`${BTP}/atk`,{id:uid(),by:c.k,to:'',...BASIC_ATK,phase:'declare',a:{push:false,help:'',adv:0},r:{mode:'',push:false,help:'',adv:0},cn:{opt:'basic',t:1,n:1}})}
-function atkSetOpt(v){const t=ATK();if(!t||t.phase!=='declare')return;const o=atkOptions(t.by).find(x=>x.opt===v)||BASIC_ATK;
- const to=t.to&&uOf(t.to)&&cheb(uOf(t.by),uOf(t.to))<=o.range?t.to:'';Store.set(`${BTP}/atk`,{...t,area:null,multi:false,...o,to:o.multi?'':to,aim:null})}
+function atkSetOpt(v){const t=ATK();if(!t||t.phase!=='declare')return;if(t.dashed)return toast('이미 돌진해서 다른 공격으로 바꿀 수 없어요',1);const c=BT().cur;if(c?.main&&c.reuse&&v!==c.reuse)return toast('지금은 재사용할 수 있는 스킬만 쓸 수 있어요',1);const o=atkOptions(t.by).find(x=>x.opt===v)||BASIC_ATK;
+ const to=t.to&&uOf(t.to)&&cheb(uOf(t.by),uOf(t.to))<=o.range?t.to:'';const me=unitRaw(t.by),self=o.multi&&((!isOrigin(o.area)&&!o.range)||(o.area.shape==='custom'&&o.area.anchor!=='point'&&o.area.rot==='none'))&&!(o.move?.type==='cell');
+ Store.set(`${BTP}/atk`,{...t,area:null,multi:false,move:null,reuse:null,...o,to:o.multi||o.move?.type==='cell'?'':to,aim:self&&me?{x:+me.x,y:+me.y}:null})}
 function atkDeclare(){const t=ATK();if(!t||t.phase!=='declare')return;if(t.multi)return mDeclare(t);const by=uOf(t.by),to=uOf(t.to);
  if(!to||isDown(to))return toast('대상을 고르세요',1);
  if(t.kind==='미지정')return toast('공격 종류가 미지정이에요. 시트에서 근접·원거리를 정해 주세요 (16.2)',1);
+ if(needDash(t))return toast('먼저 돌진할 칸을 고르세요',1);
+ if(cheb(by,to)>t.range&&t.move?.type==='target'){const L=dashTo(t.by,t.to,t.move.n);if(!L)return toast('직선으로 돌진해 닿을 수 없는 대상이에요',1);doDash(L.x,L.y,L.d);return atkDeclare()}
  if(cheb(by,to)>t.range)return toast(`사거리 밖이에요 (거리 ${cheb(by,to)}, 사거리 ${t.range})`,1); // 9.3
- Store.set(`${BTP}/cur/main`,true,true);                                   // 선언한 주요 행동은 소비
+ takeMain(t);if(t.zone)placeZone(t,[{x:+to.x,y:+to.y}],t.label);                                     // 선언한 주요 행동은 소비
  Store.set(`${BTP}/atk`,{...t,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 → ${uName(to)} (${t.kind} · 사거리 ${t.range} · 거리 ${cheb(by,to)})`,{type:'declare',by:t.by,to:t.to,kind:t.kind});
  // 7.8.2 접전 중 원거리 공격: 인접한 적마다 기회공격 기회. 같은 적은 이 캐릭터의 한 턴에 한 번
@@ -2563,7 +2819,7 @@ function oppAct(use){const t=ATK();if(!t||t.phase!=='opp')return;const k=t.oppQ[
 function atkRoll(){const t=ATK();const by=uOf(t.by),to=uOf(t.to);
  payStress(t.by,t.a,'공격');                                               // 비용은 굴림 직전에 확정
  const sk=skillOf(t.by,t.opt),ctx={self:t.by,target:t.to,attacker:t.by,si:t.si,skill:isStruct(sk)?sk:null,snap:null,roll:null,fired:{...(t.fired||{})},mods:{dice:0,res:0},label:t.label};
- const pu=ctx.skill?payUses(t,ctx):{post:[],rdice:0};                       // 16.16 (3) 소비 결제
+ const pu=ctx.skill?payUses(t,ctx):{post:[],rdice:0,trdice:{}};                       // 16.16 (3) 소비 결제
  if(ctx.skill)runRules('beforeAttackRoll',ctx);                             // 16.16 (3) 판정 전 비용·주사위 조정
  runPassives(t.by,'beforeAttackRoll',{target:t.to,attacker:t.by,mods:ctx.mods,fired:ctx.fired});
  for(const x of pUses(t.by,P_ATK)){if(!t.a.pu?.[x.id])continue;if(!payPUse(x,t.by,'공격 판정 전'))continue;
@@ -2571,7 +2827,7 @@ function atkRoll(){const t=ATK();const by=uOf(t.by),to=uOf(t.to);
  ctx.mods.dice-=+t.adice||0;
  const res=judge(rollN(Math.max(1,2+bonusDice(t.a)+ctx.mods.dice)),(+t.a.adv||0)+ctx.mods.res);
  btLog(`${uName(by)} 공격 굴림 (주사위 ${res.rawDice.length}개, 결과 비공개)`,{type:'roll',by:t.by});
- Store.set(`${BTP}/atk`,{...ATK(),phase:t.multi?'mrespond':'respond',aRoll:res,fired:ctx.fired,mods:ctx.mods,post:pu.post,rdice:pu.rdice,r:{...ATK().r,mode:noResp(uOf(t.to))?'none':ATK().r.mode}})}                  // 9.1 대응 확정 전까지 숨김
+ Store.set(`${BTP}/atk`,{...ATK(),phase:t.multi?'mrespond':'respond',aRoll:res,fired:ctx.fired,mods:ctx.mods,post:pu.post,rdice:pu.rdice,trdice:pu.trdice,r:{...ATK().r,mode:noResp(uOf(t.to))?'none':ATK().r.mode}})}                  // 9.1 대응 확정 전까지 숨김
 function atkRespond(){const t=ATK();if(!t||t.phase!=='respond'||!t.r.mode)return;const none=t.r.mode==='none';
  if(!none&&noResp(uOf(t.to)))return toast('대응 불능 상태라 비대응만 할 수 있어요',1);
  let rr=null;if(!none){payStress(t.to,t.r,RESP[t.r.mode]);const rm=runPassives(t.to,'beforeResponseRoll',{attacker:t.by});
@@ -2686,12 +2942,12 @@ function atkPanel(){const t=ATK();if(!t)return'';const by=uOf(t.by),to=t.to&&uOf
  if(t.phase==='declare'){const near=t.kind==='원거리'?foesNear(t.by).filter(u=>!(BT().cur?.opp||{})[u.k]):[];
   body=`<label class="f">공격<select data-c="atkSel">${atkOptions(t.by).map(o=>`<option value="${o.opt}" ${o.opt===t.opt?'selected':''}>${esc(o.label)}${o.opt.startsWith('s')?` (${o.kind} ${o.range})`:''}</option>`).join('')}</select></label>
   ${t.opt==='custom'?`<div class="f2"><label class="f">종류<select data-c="atkCustom" data-k="kind">${['근접','원거리'].map(v=>`<option ${v===t.kind?'selected':''}>${v}</option>`).join('')}</select></label><label class="f">사거리<input type="number" min="0" max="40" data-c="atkCustom" data-k="range" value="${t.range}"></label></div>`:''}
-  ${t.st?skillSummary(skillOf(t.by,t.opt)):tierSel('atkDmg','dmg',t.dmg)}
+  ${t.st?skillSummary(skillOf(t.by,t.opt)):tierSel('atkDmg','dmg',t.dmg)}${t.opt?.startsWith('s')&&srcOf(by)&&!sheetLocked(srcOf(by))?`<button class="lnk" data-a="skOpen" data-v="${t.opt}">✎ 이 스킬 편집</button>`:''}${dashInfo(t)}
   ${t.kind==='미지정'?'<p class="small warn">공격 종류 미지정 — 시트에서 근접·원거리를 정해야 쓸 수 있어요.</p>':''}
   <p class="small muted">${to?'':'빨간 칸 안의 대상을 누르세요. '}${near.length?`<span class="warn">접전 중 원거리 공격 — ${near.map(u=>esc(uName(u))).join(', ')}의 기회공격을 먼저 처리합니다.</span>`:''}</p>
   <div class="bt-step">공격 판정 전 선언</div>${(()=>{const sk=t.st?skillOf(t.by,t.opt):null,uses=sk?.uses||[];
    return`${uses.map((u,i)=>{const ok=t.to&&useOk(u,t.by,t.to),have=+kwOf(uOf(usePayer(u,t.by,t.to)||''))[u.kw]||0;return`<label class="row small use ${ok?'':'off'}"><input type="checkbox" data-c="atkUse" data-i="${i}" ${t.a.uses?.[i]&&ok?'checked':''} ${ok?'':'disabled'}> ${esc(useText(u))} <em>(${u.kw==='침잠'?'대상':'보유'} ${have})</em></label>`}).join('')}
-   ${sk?.fx?.some(f=>f.type==='ruptureBurst')?`<label class="f">파열 폭발 구간 (대상 파열 ${t.to?+kwOf(uOf(t.to)).파열||0:'-'})<select data-c="atkRupt">${optsKV({max:'가능한 최대',3:'3 → 경상 1칸',5:'5 → 경상 2칸',7:'7 → 중상 1칸',10:'10 → 중상 1칸 + 경상 2칸',none:'터뜨리지 않음'},t.a.rupt||'max')}</select></label>`:''}`})()}${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})}${optRow('a',t.a,t.by,'공격')}
+   ${sk?.fx?.some(f=>f.type==='ruptureBurst')?`<label class="f">파열 폭발 (대상 파열 ${t.to?+kwOf(uOf(t.to)).파열||0:'-'})<select data-c="atkRupt">${optsKV({max:`가능한 최대 터뜨리기${t.to?(()=>{const v=+kwOf(uOf(t.to)).파열||0,c=ruptPick(v,'max');return c?` (${c} 소비 → ${RUPT[c].map(([x,y])=>TIERS[x-1]+' '+y+'칸').join(' + ')})`:' (아직 3 미만)'})():''}`,none:'쌓아 두기'},t.a.rupt==='none'?'none':'max')}</select></label>`:''}`})()}${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})}${optRow('a',t.a,t.by,'공격')}
   <div class="row"><button class="btn sm pri" data-a="atkDeclare" ${to?'':'disabled'}>공격 선언 · 굴림</button><button class="btn sm" data-a="atkCancel">취소</button></div>`}
  else if(t.phase==='opp'){const e=uOf(t.oppQ[0]);
   body=`<div class="bt-step">${esc(uName(e||{}))}의 기회공격 기회</div><p class="small muted">접전 중 원거리 공격 선언. 2d6 최고 눈 4 이상이면 경상 1칸. ${esc(uName(by))}은 대응할 수 없고 반격도 없어요.</p>
@@ -2726,15 +2982,18 @@ function atkPanel(){const t=ATK();if(!t)return'';const by=uOf(t.by),to=t.to&&uOf
 Object.assign(A,{
  atkPick:atkStart,atkDeclare,atkRespond,
  protAct(e){protAct(e.dataset.v)},reactOk,
- mMode(e){Store.set(`${BTP}/atk/T/${e.dataset.i}/mode`,e.dataset.v)},mRespond,mProtOk(){mBuild(ATK().pp||{})},mCounter(e){mCounter(e.dataset.v==='1')},resistAct(e){resistAct(e.dataset.v==='1')},
+ mMode(e){Store.set(`${BTP}/atk/T/${e.dataset.i}/mode`,e.dataset.v)},mRespond,mProtOk(){mBuild(ATK().pp||{})},mReactOk(){mReactOk()},mCounter(e){mCounter(e.dataset.v==='1')},resistAct(e){resistAct(e.dataset.v==='1')},
  oppAct(e){oppAct(e.dataset.v==='1')},
  atkMode(e){Store.set(`${BTP}/atk/r/mode`,e.dataset.v)},
  atkCounter(e){atkCounter(e.dataset.v==='1')},
  atkCancel(){Store.set(`${BTP}/atk`,null)},
- atkClose(){protCleanup(ATK());Store.set(`${BTP}/atk`,null)}
+ atkClose(){const t=ATK();protCleanup(t);grantReuse(t);Store.set(`${BTP}/atk`,null)},
+ atkNoDash(){if(needDash(ATK()))doDash(0,0,0)}
 });
 Object.assign(CHANGE,{
- mPush(el){Store.set(`${BTP}/atk/T/${el.dataset.i}/push`,el.checked)},mProt(el){Store.set(`${BTP}/atk/pp/${el.dataset.k}`,el.value||null)},
+ mPush(el){Store.set(`${BTP}/atk/T/${el.dataset.i}/push`,el.checked)},
+ mOpt(el){const k=el.dataset.k;Store.set(`${BTP}/atk/T/${el.dataset.i}/${k}`,k==='adv'?+el.value:el.value)},
+ mdUse(el){Store.set(`${BTP}/atk/md/${el.dataset.i}/${el.dataset.id}`,el.checked||null)},mProt(el){Store.set(`${BTP}/atk/pp/${el.dataset.k}`,el.value||null)},
  rsCustom(el){Store.set(`${BTP}/atk/rs/custom/${el.dataset.k}`,+el.value)},
  rsMode(el){Store.set(`${BTP}/atk/rs/mode`,el.value)},rsNote(el){Store.set(`${BTP}/atk/rs/note`,el.value.slice(0,60),true)},
  atkPUse(el){Store.set(`${BTP}/atk/a/pu/${el.dataset.id}`,el.checked)},rPUse(el){Store.set(`${BTP}/atk/r/pu/${el.dataset.id}`,el.checked)},dUse(el){Store.set(`${BTP}/atk/d/uses/${el.dataset.id}`,el.checked)},
