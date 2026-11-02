@@ -1093,6 +1093,7 @@ svg.ci-crack{position:absolute;inset:0;width:100%;height:100%;z-index:4;backgrou
 .cut-lv{margin:6px 0}.cut-lv summary{cursor:pointer;color:var(--mute);font-size:13px}.f3{display:grid;grid-template-columns:50px 1fr 1fr 1fr;gap:6px;align-items:end}
 .tok-sw{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.tok-sw button{width:38px;height:38px;padding:0;border:1px solid #4a3626;background:#120c09 center/cover;cursor:pointer;font-size:10px;color:#cfc0a8}.tok-sw button.on{border-color:#ffc23b;box-shadow:0 0 0 1px #ffc23b}
 
+.dbg-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.dbg-cr{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:6px 0;border-top:1px solid #3a2c20;font-size:12px}.dbg-cr>b{flex:1 1 100%;font-size:13px}.dbg-cr label{display:flex;align-items:center;gap:4px;color:var(--mute)}.dbg-cr input[type=number]{width:48px;height:26px;padding:2px 4px}.dbg-cr .btn{padding:2px 8px;font-size:11px}.dbg-ct{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px}.dbg-ct th{color:var(--mute);font-weight:400;text-align:left;padding:2px 4px}.dbg-ct td{padding:2px 4px;border-top:1px solid #3a2c20}.dbg-ct input[type=number]{width:52px;height:26px;padding:2px 4px}.dbg-ct .btn{padding:2px 6px;font-size:11px}
 </style>
 </head>
 <body>
@@ -1296,7 +1297,7 @@ function paintTalkStage(){
  const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog">${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu">${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu">${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button><button class="btn sm" data-a="dbgOpen">디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">기록</button><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -1970,7 +1971,8 @@ function dbgPanel(){const B=BT(),cur=B.cur,su=UI.bt.sel&&uOf(UI.bt.sel),o=B.orde
   h+=`<div class="bt-h">${esc(uName(su))}</div><div class="plate dbg">
   <div class="dbg-kw">${KW.filter(k=>k!=='충전').map((k,i)=>`<label><i style="background-image:var(--k${KW.indexOf(k)})"></i>${k}<input type="number" min="0" max="999" data-c="dbgKw" data-k="${k}" value="${+kw[k]||0}"></label>`).join('')}
    <label><i style="background-image:var(--k6)"></i>충전<input type="number" min="0" max="999" data-c="dbgKw" data-k="충전" value="${+su.charge||0}"></label></div>
-  ${sc?`<label class="f">스트레스 (0~10)<input type="number" min="0" max="10" data-c="dbgStress" value="${+sc.stress||0}"></label>`:''}
+  ${sc?`<div class="dbg-g3"><label class="f">스트레스<input type="number" min="0" max="10" data-c="dbgStress" value="${+sc.stress||0}"></label><label class="f">E.G.O 단계<input type="number" min="0" max="4" data-c="dbgLv" data-id="${sc.id}" data-k="ego" value="${+sc.ego.lv||0}"></label><label class="f">뒤틀림 단계<input type="number" min="0" max="4" data-c="dbgLv" data-id="${sc.id}" data-k="twist" value="${+sc.twist.lv||0}"></label></div>`:''}
+  ${dbgUnitExtra(su)}
   ${su.init?`<label class="f">이니셔티브 최종값 (속도 구간도 함께 바뀜)<input type="number" min="1" max="12" data-c="dbgInit" value="${+su.init.final||1}"></label>`:''}
   ${idx>=0?`<div class="row"><button class="btn sm" data-a="dbgOrd" data-d="-1" ${idx>0?'':'disabled'}>순서 앞으로</button><button class="btn sm" data-a="dbgOrd" data-d="1" ${idx<o.length-1?'':'disabled'}>순서 뒤로</button><button class="btn sm" data-a="dbgTurn" ${cur?.k===su.k?'disabled':''}>이 유닛 턴으로</button></div>`:'<p class="small muted">행동 순서에 없음 (다음 라운드부터)</p>'}
   <div class="f">이 개체의 내성치 (비우면 시트 값)<div class="row bt-dmg">${TOL_KW.map(k=>`<label class="small">${k}<input type="number" min="1" max="99" style="width:58px" data-c="dbgTol" data-k="${k}" value="${su.tol?.[k]??''}" placeholder="${tolOf({...su,tol:null},k)}"></label>`).join('')}</div></div>
@@ -1981,11 +1983,13 @@ function dbgPanel(){const B=BT(),cur=B.cur,su=UI.bt.sel&&uOf(UI.bt.sel),o=B.orde
  if(cur&&unitRaw(cur.k))h+=`<div class="bt-h">현재 턴 · ${esc(atkName(cur.k))}</div><div class="plate dbg">
   <label class="f">남은 이동력<input type="number" min="0" max="99" data-c="dbgMv" value="${+cur.mv||0}"></label>
   <div class="row"><button class="btn sm" data-a="dbgMain">${cur.main?'주요 행동 되돌려 주기':'주요 행동 사용 처리'}</button></div>
-  <div class="row"><button class="btn sm" data-a="dbgDone" ${Object.keys(cur.done||{}).length?'':'disabled'}>이탈 피해 기록 초기화</button><button class="btn sm" data-a="dbgOpp" ${Object.keys(cur.opp||{}).length?'':'disabled'}>기회공격 기록 초기화</button></div></div>`;
+  <div class="row"><button class="btn sm" data-a="dbgDone" ${Object.keys(cur.done||{}).length?'':'disabled'}>이탈 피해 기록 초기화</button><button class="btn sm" data-a="dbgOpp" ${Object.keys(cur.opp||{}).length?'':'disabled'}>기회공격 기록 초기화</button></div><div class="row"><button class="btn sm" data-a="dbgReuse" ${cur.reuse||cur.reN?'':'disabled'}>스킬 재사용 기록 초기화</button><button class="btn sm" data-a="dbgNextTurn">다음 턴으로 넘기기</button></div></div>`;
  h+=`<div class="bt-h">전투</div><div class="plate dbg"><label class="f">라운드 번호<input type="number" min="0" max="99" data-c="dbgRound" value="${+B.round||0}"></label>
   <div class="row"><button class="btn sm danger" data-a="dbgAtkKill" ${B.atk?'':'disabled'}>진행 중 공격 강제 종료</button><button class="btn sm" data-a="dbgResort" ${o.length?'':'disabled'}>남은 순서 다시 정렬</button></div>
-  <div class="row"><button class="btn sm" data-a="dbgRules" ${B.rs||B.te?'':'disabled'}>규칙 발동 기록 초기화</button></div>
+  <div class="row"><button class="btn sm" data-a="dbgRules" ${B.rs||B.te?'':'disabled'}>규칙 발동 기록 초기화</button><button class="btn sm" data-a="dbgReInit" ${o.length?'':'disabled'}>이니셔티브 다시 굴리기 (라운드 유지)</button></div>
+  <div class="row"><button class="btn sm" data-a="dbgZones" ${Object.keys(B.zones||{}).length?'':'disabled'}>바닥 효과 모두 지우기</button><button class="btn sm" data-a="dbgHealAll" data-v="pc">아군 전체 회복</button><button class="btn sm" data-a="dbgHealAll" data-v="foe">적 전체 회복</button><button class="btn sm danger" data-a="dbgLogClear">전투 기록 비우기</button></div>
   <p class="small muted">강제 종료는 이미 들어간 피해를 되돌리지 않아요. 되돌리려면 ↶를 쓰세요.</p></div>`;
+ h+=dbgRigHTML()+dbgCharsHTML()+dbgSysHTML();
  return h}
 Object.assign(A,{
  undo,redo,
@@ -2479,9 +2483,9 @@ function parseNetCfg(txt){txt=String(txt||'').trim();if(!txt)return null;
  return cfg.apiKey&&cfg.databaseURL?{cfg}:cfg.apiKey?{cfg,noUrl:true}:null}
 
 /* 권한: 온라인에서 마스터가 아니면 자기 캐릭터의 결정만 내릴 수 있다 */
-const NET_GM=new Set(['cutSendBtn','voiceScene','bossIntro','scrNew','scrEdit','scrCheck','scrSave','scrDel','scrNext','scrSkip','scrBack','scrReset','dirFx','dirScene','dirTitle','dirBgm','dirWait','dirAudioAdd','dirAudioDel','dirBgPick','dirBgAdd','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
+const NET_GM=new Set(['dbgOpen','dbgHeal','dbgDown','dbgHealAll','dbgCharHeal','dbgReuse','dbgNextTurn','dbgReInit','dbgZones','dbgLogClear','dbgStressAll','dbgVoiceClear','dbgStage','dbgFig','dbgTalkClear','dbgChatClear','dbgCutLog','dbgSync','cutSendBtn','voiceScene','bossIntro','scrNew','scrEdit','scrCheck','scrSave','scrDel','scrNext','scrSkip','scrBack','scrReset','dirFx','dirScene','dirTitle','dirBgm','dirWait','dirAudioAdd','dirAudioDel','dirBgPick','dirBgAdd','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
  'dbgAtkKill','dbgDone','dbgMain','dbgOpp','dbgOrd','dbgResort','dbgRules','dbgSettle','dbgSt','dbgTurn','importAll']);
-const NET_GM_C=new Set(['scrPick','presetKind','stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
+const NET_GM_C=new Set(['dbgLv','dbgCS','dbgVU','dbgPos','dbgTok','dbgPh','dbgRig','scrPick','presetKind','stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
 const NET_DECIDE=new Set(['btEgo','atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
 const NET_DECIDE_C=new Set(['atkCustom','atkDmg','atkOpt','atkPUse','atkRupt','atkSel','atkUse','cnSel','dUse','mProt','mPush','rPUse','rsCustom','rsMode','rsNote']);
 const ownerOf=k=>{const u=unitRaw(k);return u?.char?CH(u.char)?.owner||'':''};
@@ -2933,6 +2937,58 @@ function bossEditor(c,P){const b=c.boss||{},q=`${P}/boss`,L=b.phases||[];
  <div class="f2"><label class="f"><span>영상 위치</span><select data-b="${q}/vmode">${optsKV(Object.fromEntries(VMODES),b.vmode||'art')}</select></label><label class="row small" style="align-self:end"><input type="checkbox" data-b="${q}/auto" ${b.auto?'checked':''}> 1라운드 시작 때 자동 등장 연출</label></div>
  <h4 class="sh-h">페이즈 <small>체력이 정한 % 이하가 되면 자동 전환</small></h4>${L.map((x,i)=>`<div class="phr"><b>${i+2}</b><label class="f"><span>체력 %</span><input type="number" min="1" max="99" data-b="${q}/phases/${i}/at" value="${+x.at||50}"></label>${fld('제목',`${q}/phases/${i}/name`,x.name)}${fld('부제',`${q}/phases/${i}/sub`,x.sub)}${fld('대사',`${q}/phases/${i}/line`,x.line)}<label class="f"><span>스타일</span><select data-b="${q}/phases/${i}/style">${optsKV(Object.fromEntries(CUT_STYLES.phase),x.style||'act')}</select></label>${fld('영상 WebM',`${q}/phases/${i}/vid`,x.vid)}<button class="btn sm danger" data-a="phaseDel" data-p="${q}/phases" data-v="${i}">삭제</button><button class="btn sm" data-a="cutTest" data-v="ph${i}">▶</button></div>`).join('')}
  <div class="row"><button class="btn sm" data-a="phaseAdd" data-p="${q}/phases">＋ 페이즈 추가</button><button class="btn sm" data-a="cutTest" data-v="boss">▶ 등장 미리보기</button></div>`:''}`}
+
+
+/* ---------- 디버그 (마스터): 전투 서랍과 스탠딩·조사 ≡ 메뉴 공용 ---------- */
+function dbgUnitExtra(su){const c=CH(srcOf(su)),L=c?.tokens||[],P=c?.boss?.on?(c.boss.phases||[]):null,hp=hpCalc(hpOf(su));
+ return`<div class="dbg-g3"><label class="f">X<input type="number" min="0" max="${btW()-1}" data-c="dbgPos" data-k="x" value="${+su.x||0}"></label><label class="f">Y<input type="number" min="0" max="${btH()-1}" data-c="dbgPos" data-k="y" value="${+su.y||0}"></label>${L.length?`<label class="f">토큰<select data-c="dbgTok"><option value="">기본</option>${L.map((t,i)=>`<option value="${i}" ${String(su.tok)===String(i)?'selected':''}>${esc(t.n||'토큰 '+(i+1))}</option>`).join('')}</select></label>`:''}</div>
+  ${P?`<label class="f">보스 페이즈 (자동 전환 기준점)<select data-c="dbgPh"><option value="-1">1페이즈 (처음)</option>${P.map((x,i)=>`<option value="${i}" ${(su.ph??-1)===i?'selected':''}>${i+2}페이즈 · ${esc(x.name||'')}${' ('+x.at+'%)'}</option>`).join('')}</select></label>`:''}
+  <div class="row"><span class="small">HP ${hp.left}/${hp.max}</span><button class="btn sm" data-a="dbgHeal" data-v="${esc(su.k)}">전체 회복</button><button class="btn sm" data-a="dbgHeal" data-v="${esc(su.k)}" data-d="lock">잠금까지 초기화</button><button class="btn sm danger" data-a="dbgDown" data-v="${esc(su.k)}">전투 불능으로</button>${P?`<button class="btn sm" data-a="bossIntro" data-v="${esc(su.k)}">보스 등장 컷인</button>`:''}</div>`}
+function dbgRigHTML(){return`<div class="bt-h">주사위 고정 (시험용)</div><div class="plate dbg"><label class="f">다음에 나올 주사위 (쉼표로)<input type="text" data-c="dbgRig" value="${RIG.join(',')}" placeholder="예: 6,6,1"></label><p class="small muted">이 브라우저에서 굴리는 주사위에만 적용돼요 (전투·목소리·발현·기회공격). 판정창·자유 굴림은 제외. 남은 값: ${RIG.length?RIG.join(', '):'없음'}</p></div>`}
+function dbgCharsHTML(){const L=chars();return`<div class="bt-h">캐릭터 전체</div><div class="plate dbg">${L.length?`${L.map(c=>`<div class="dbg-cr"><b>${esc(c.info?.name||'이름 없음')}${c.foe?' <small class="muted">적</small>':''}</b><label>스트레스<input type="number" min="0" max="10" data-c="dbgCS" data-id="${c.id}" value="${+c.stress||0}"></label><label>E.G.O<input type="number" min="0" max="4" data-c="dbgLv" data-id="${c.id}" data-k="ego" value="${+c.ego?.lv||0}"></label><label>뒤틀림<input type="number" min="0" max="4" data-c="dbgLv" data-id="${c.id}" data-k="twist" value="${+c.twist?.lv||0}"></label><label class="cb"><input type="checkbox" data-c="dbgVU" data-id="${c.id}" ${c.voiceUsed?'checked':''}>이 장면 목소리 함</label><button class="btn sm" data-a="voiceOpen" data-v="${c.id}">목소리 판정</button><button class="btn sm" data-a="dbgCharHeal" data-v="${c.id}">체력 회복</button></div>`).join('')}`:'<p class="small muted">캐릭터가 없어요</p>'}
+ <div class="row"><button class="btn sm" data-a="voiceScene">새 장면 (목소리 기록 초기화)</button><button class="btn sm" data-a="dbgStressAll" data-v="0">스트레스 전부 0</button><button class="btn sm" data-a="dbgVoiceClear" ${Object.keys(Store.get('play/voiceReq')||{}).length?'':'disabled'}>목소리 요청 정리</button></div></div>`}
+function dbgSysHTML(){const q=CUT.q.length+(CUT.busy?1:0),dq=DLG.pending.length;return`<div class="bt-h">연출 · 기록 · 동기화</div><div class="plate dbg">
+ <div class="row"><button class="btn sm" data-a="dbgCutClear">컷인 멈춤·대기열 비우기${q?` (${q})`:''}</button><button class="btn sm" data-a="dbgDlgClear">대사 대기열 비우기${dq?` (${dq})`:''}</button><button class="btn sm" data-a="dbgStage">연출 상태 초기화 (암전·바·색조·BGM)</button></div>
+ <div class="row"><button class="btn sm" data-a="dbgCutTest" data-v="ego">컷인 시험 (내 화면)</button><button class="btn sm" data-a="dbgFig">스탠딩 모두 퇴장</button><button class="btn sm danger" data-a="dbgTalkClear">대사 기록 비우기</button></div>
+ <div class="row"><button class="btn sm danger" data-a="dockClear">주사위 기록 비우기</button><button class="btn sm danger" data-a="dbgChatClear">채팅 비우기</button><button class="btn sm danger" data-a="dbgCutLog">컷인 기록 비우기</button></div>
+ ${NET.on?`<div class="row"><button class="btn sm" data-a="dbgSync">내 화면 기준으로 방 전체 다시 올리기</button><span class="small muted">${NET.conn?'연결됨':'연결 끊김'} · 방 ${esc(NET.room)} · ${Object.values(NET.members).filter(m=>m.on).length}명</span></div>`:''}
+ <p class="small muted">"다시 올리기"는 다른 사람 화면이 어긋났을 때 마스터 화면 상태로 맞추는 마지막 수단이에요.</p></div>`}
+function dbgModal(){M.wide=true;return dbgRigHTML()+dbgCharsHTML()+dbgSysHTML()+'<div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>'}
+const healHp=(hp,lock)=>fixHp(hp).map(t=>t.map(v=>lock?0:(v===1?0:v)));
+const hpPathOf=k=>{const u=unitRaw(k);return u?.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`};
+Object.assign(A,{
+ dbgOpen(){openModal('디버그',dbgModal)},
+ dbgHeal(e){const k=e.dataset.v,u=unitRaw(k);if(!u)return;Store.set(hpPathOf(k),healHp(hpOf(u),e.dataset.d==='lock'));gmLog(`${atkName(k)} 체력 ${e.dataset.d==='lock'?'잠금까지 초기화':'전체 회복'}`)},
+ dbgDown(e){const k=e.dataset.v,u=unitRaw(k);if(!u)return;Store.set(hpPathOf(k),fixHp(hpOf(u)).map(t=>t.map(v=>v||1)));gmLog(`${atkName(k)} 전투 불능 처리`)},
+ dbgHealAll(e){const side=e.dataset.v;units().filter(u=>side==='foe'?u.side==='foe':u.side!=='foe').forEach(u=>Store.set(hpPathOf(u.k),healHp(hpOf(u))));gmLog(`${side==='foe'?'적':'아군'} 전체 회복`)},
+ dbgCharHeal(e){const c=CH(e.dataset.v);if(c){Store.set(`chars/${c.id}/hp`,healHp(c.hp));toast(`${c.info.name} 체력 회복`)}},
+ dbgReuse(){Store.set(`${BTP}/cur/reuse`,null);Store.set(`${BTP}/cur/reN`,null);gmLog('스킬 재사용 기록 초기화')},
+ dbgNextTurn(){gmLog('다음 턴으로 강제 진행');btNextTurn()},
+ dbgReInit(){const B=BT(),o=B.order||[],t=+(B.turn??-1),list=o.map(uOf).filter(Boolean);const lines=[];list.forEach(u=>{u.init=rollInit(u);Store.set(`${BTP}/units/${u.k}/init`,u.init,true);lines.push(`${uName(u)} ${u.init.final}`)});
+  const done=o.slice(0,t+1),rest=o.slice(t+1).map(uOf).filter(Boolean).sort(initSort).map(u=>u.k);Store.set(`${BTP}/order`,[...done,...rest]);gmLog('이니셔티브 다시 굴림 — '+lines.join(' · '));diceAdd({ty:'init',lbl:'이니셔티브 다시 굴림 (디버그)',rows:list.map(u=>[uName(u),u.init.dice,u.init.final,u.init.speed||''])})},
+ dbgZones(){Store.set(`${BTP}/zones`,null);gmLog('바닥 효과 모두 지움')},
+ dbgLogClear(){if(confirm('전투 기록을 모두 지울까요?'))Store.set(`${BTP}/log`,null)},
+ dbgStressAll(){chars().forEach(c=>{if(+c.stress)Store.set(`chars/${c.id}/stress`,0)});toast('모든 캐릭터 스트레스 0')},
+ dbgVoiceClear(){Store.set('play/voiceReq',null)},
+ dbgCutClear(){CUT.q=[];CUT.timers.forEach(clearTimeout);CUT.timers=[];$('#cutin')?.remove();CUT.busy=false;toast('컷인을 멈췄어요 (내 화면)')},
+ dbgDlgClear(){DLG.pending=[];DLG.fxBusy=false;clearTimeout(DLG.fxT);DLG.holdDone=true;dlgType.finish?.();toast('대사 대기열을 비웠어요 (내 화면)')},
+ dbgStage(){dirSend({fx:'black',on:false,_play:1});dirSend({fx:'cine',on:false,_play:1},1);dirSend({fx:'tint',tint:'',_play:1},2);dirSend({fx:'bgm',bgm:null,_play:1},3);const st={...(Store.get('play/stagefx')||{})};st.pos=null;Store.set('play/stagefx',st);DLG.st={...DLG.st,pos:null};paintFigs();toast('연출 상태를 초기화했어요')},
+ dbgCutTest(){cutPlay({kind:'ego',lv:3,label:'시험',who:'디버그',name:'시험 E.G.O',form:'',line:'컷인 재생 시험',art:'',art2:'',col:'',grade:'WAW',style:'slash',vid:'',vid2:'',vmode:'art'})},
+ dbgFig(){const f=Store.get('play/fig')||{},now=Date.now(),o={};for(const k of Object.keys(f))o[k]={off:now};for(const m of DLG.shown)if(m.sp&&m.sp!=='nar')o[m.sp]={off:now};Store.set('play/fig',o);toast('스탠딩을 모두 내렸어요')},
+ dbgTalkClear(){if(!confirm('대사 기록(연출 포함)을 모두 지울까요?'))return;Store.set('play/talk',null);DLG.pending=[];DLG.shown=[];DLG.cur=null;paintTalkStage?.()},
+ dbgChatClear(){if(confirm('채팅을 모두 지울까요?'))Store.set('play/chat',null)},
+ dbgCutLog(){Store.set('play/cutin',null)},
+ dbgSync(){if(!NET.on||!NET.gm)return;if(!confirm('지금 내 화면의 방 데이터로 서버를 통째로 덮어써요. 계속할까요?'))return;NET.pushAll();toast('방 전체를 다시 올렸어요')}
+});
+Object.assign(CHANGE,{
+ dbgLv(el){const id=el.dataset.id,k=el.dataset.k,v=clamp(Math.round(+el.value)||0,0,4);if(!CH(id))return;Store.set(`chars/${id}/${k}/lv`,v);if(BT().round)gmLog(`${CH(id).info.name} ${k==='ego'?'E.G.O':'뒤틀림'} 단계 = ${v}`)},
+ dbgCS(el){const id=el.dataset.id,v=clamp(Math.round(+el.value)||0,0,10);if(!CH(id))return;Store.set(`chars/${id}/stress`,v);if(BT().round)gmLog(`${CH(id).info.name} 스트레스 = ${v}`)},
+ dbgVU(el){Store.set(`chars/${el.dataset.id}/voiceUsed`,el.checked||null)},
+ dbgPos(el){const k=UI.bt.sel,u=unitRaw(k);if(!u)return;const v=clamp(Math.round(+el.value)||0,0,(el.dataset.k==='x'?btW():btH())-1);Store.set(`${BTP}/units/${k}/${el.dataset.k}`,v);gmLog(`${atkName(k)} 위치 ${el.dataset.k.toUpperCase()} = ${v}`)},
+ dbgTok(el){const k=UI.bt.sel;Store.set(`${BTP}/units/${k}/tok`,el.value===''?null:+el.value)},
+ dbgPh(el){const k=UI.bt.sel;Store.set(`${BTP}/units/${k}/ph`,+el.value<0?null:+el.value);gmLog(`${atkName(k)} 보스 페이즈 기준 = ${+el.value+2}`)},
+ dbgRig(el){RIG.length=0;String(el.value).split(/[,\s]+/).map(x=>+x).filter(x=>x>=1&&x<=6).forEach(x=>RIG.push(x));toast(RIG.length?`다음 주사위: ${RIG.join(', ')}`:'주사위 고정 해제')}
+});
 
 /* ---------- 채팅 · 주사위 기록 (전투·스탠딩·조사 공용, 방 전체 공유) ----------
    play/chat: {t,uid,txt}  play/dice: {t,uid,ty,who,lbl,a,r,mode,res,ok,rows}  각각 최근 것만 남긴다 */
