@@ -1213,6 +1213,20 @@ body.my-decide .hud-atk{outline:2px solid #ffc23b;outline-offset:2px;animation:m
 .kwd-ic{width:58px;height:58px;border:1px solid #6b5138;background:#140d08 center/70% no-repeat;cursor:pointer}.kwd.ro .kwd-ic{cursor:default}
 .kwd-m{display:grid;gap:6px}.kwd-m .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.kwd-m input[type=text]{width:180px;flex:none}.kwd-m select{width:110px;flex:none}.kwd-add{display:flex;gap:8px;align-items:center}.kwd-add input{flex:1}.kwd-m textarea{width:100%;resize:vertical}.kwd-m .sp{flex:1}
 .hl-k.kw-own{color:#9fe0b0;cursor:help}.hi-kw .kw-own{cursor:help}.kw-mng{margin-left:auto}
+
+/* 자작 키워드 자동화 (§57) */
+.kwd-auto{display:flex;gap:8px;align-items:center}.kwd-auto small{color:#a89578;font-size:12px;line-height:1.4}
+.kwe-h{display:flex;gap:12px;align-items:center;margin-bottom:10px}.kwe-h .kwd-ic{display:block;width:46px;height:46px;cursor:default}.kwe-h b{font:400 20px var(--fk);color:#f3e7cf;display:block}.kwe-h small{color:#a89578}.kwe-h .sp{flex:1}
+.kwe-box,.kwe-rules{border:1px solid #4a3524;padding:8px 10px;margin:8px 0;background:rgba(0,0,0,.2)}.kwe-box legend,.kwe-rules legend{padding:0 6px;font:400 13px var(--fk);color:var(--amber)}
+.kwe-box .fxr{flex-wrap:wrap;margin:4px 0}.kwe-box .sep,.kwe-test .sep{width:1px;height:18px;background:#4a3524;margin:0 6px}
+.kwe-tpl{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:6px 0}.kwe-tpl small{color:#a89578;margin-right:4px}
+.kwr .kwa{border-left:2px solid #5a4029;padding-left:6px;margin:4px 0}.kwa .fxr{flex-wrap:wrap}.kwa-n{font:400 12px var(--fn);color:var(--amber);width:14px}.kwa-to{opacity:.9;margin-left:20px}
+.kwe-warn{border:1px solid #8a5a1e;background:rgba(80,50,10,.3);padding:6px 10px;margin:8px 0}.kwe-warn b{color:#ffc23b;font:400 13px var(--fk)}.kwe-warn p{font-size:12.5px;color:#f0d9a8;margin:2px 0}
+.kwe-test{border:1px dashed #5a4029;padding:8px 10px;margin:8px 0}.kwe-test .fxr{flex-wrap:wrap;margin-top:6px}.kwe-test select{width:auto;max-width:240px}.kwe-log{margin-top:6px;font-size:12px;color:#c9b08f;max-height:120px;overflow:auto}.kwe-log div{padding:1px 0;border-bottom:1px solid rgba(90,64,41,.3)}
+fieldset[disabled]{opacity:.75}
+.mbox .fxr select,.mbox .fxr input,.mbox .kwe-test input{width:auto!important;flex:none;max-width:280px;padding:4px 8px;font-size:13.5px;min-height:0;height:auto}
+.mbox .fxr .sk-num,.mbox #kwtN{width:62px!important}.mbox .fxr input[type=text].sk-num{width:260px!important}
+.mbox .skr-l>select{width:auto;max-width:320px}.mbox .kwr .ud button{padding:0 5px}.mbox .fxr label.row{margin:0}
 </style>
 </head>
 <body>
@@ -1521,7 +1535,7 @@ const kwIconCache={};
 function kwIcon(k){const i=KW.indexOf(k);if(i>=0)return`var(--k${i})`;const d=kwDef(k);const im=d&&pImg(d.img);if(im)return`url('${im}')`;
  const col=(KW_CAT[d?.cat]||KW_CAT.etc)[1],ch=[...String(k||'?')][0],key=col+ch;
  return kwIconCache[key]||(kwIconCache[key]=`url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polygon points='16,1 30,9 30,23 16,31 2,23 2,9' fill='${col}' stroke='#f3e7cf' stroke-width='1.5'/><text x='16' y='21.5' font-size='15' font-weight='700' text-anchor='middle' fill='#fff' font-family='sans-serif'>${ch.replace(/[<&'"]/g,'')}</text></svg>`).replace(/'/g,'%27')}')`)}
-const kwTip=k=>{const d=kwDef(k);return d?`${d.name} (${(KW_CAT[d.cat]||KW_CAT.etc)[0]} · 자작)${d.desc?'\n'+d.desc:''}\n특수 효과는 GM 확인`:k};
+const kwTip=k=>{const d=kwDef(k);if(!d)return k;const rl=(d.rules||[]).filter(r=>r&&r.on!==false);return`${d.name} (${(KW_CAT[d.cat]||KW_CAT.etc)[0]} · 자작)${d.desc?'\n'+d.desc:''}${kwCfgText(d)?'\n'+kwCfgText(d):''}${rl.length?'\n'+rl.map(r=>kwRuleText(r,d.name)).join('\n'):'\n특수 효과는 GM 확인'}`};
 const reEsc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const hl=t=>esc(t).replace(/\[[^\]\n]+\]/g,m=>`<span class="hl-b">${m}</span>`).replace(new RegExp(KWA().map(x=>reEsc(esc(x))).sort((a,b)=>b.length-a.length).join('|'),'g'),m=>`<span class="hl-k ${KW.includes(m)?'':'kw-own'}" ${KW.includes(m)?'':`title="${esc(kwTip(m))}"`}><i class="kw" style="background-image:${kwIcon(m)}"></i>${m}</span>`);
 const imgBtn=(p,label='이미지 넣기')=>`<button class="btn sm" data-a="shImg" data-p="${p}">${label}</button>`;
@@ -1730,7 +1744,8 @@ document.addEventListener('change',ev=>{const el=ev.target;if(el.dataset?.b!=nul
  if(el.id==='tkSp'){UI.sp=el.value;paintBar();paintFigs();if($('#tkTxt').value.trim())typingWrite(true);return}
  if(el.id==='tkEx'){const sp=$('#tkSp').value,f=Store.get('play/fig/'+sp);if(f?.on)Store.set(`play/fig/${sp}/ex`,+el.value);return}
  if(el.type==='checkbox'&&el.dataset.b!=null)Store.set(el.dataset.b,el.checked);
- if(el.dataset.r!=null&&el.type!=='checkbox')renderSheet();
+ if(el.dataset.r!=null&&el.type!=='checkbox'){renderSheet();if(M.fn)drawModal()}
+ if(el.type==='checkbox'&&el.dataset.b!=null&&el.dataset.r!=null&&M.fn)drawModal();
  if(el.dataset.c){const n=el.dataset.c;if(netBlocked(n,el,true)){paintSoon();return}const f=()=>CHANGE[n](el);UNDO_C[n]?undoWrap(UNDO_C[n],f):f()}
  if(el.dataset.u!=null){const r=UI.roll;r[el.dataset.u]=el.type==='checkbox'?el.checked:el.value;if(el.dataset.u==='id'&&r.help===r.id)r.help='';r.res=null;drawModal()}});
 document.addEventListener('keydown',ev=>{
@@ -1816,20 +1831,21 @@ function damageUnit(k,tier,n,why){const u={...unitRaw(k),k};if(!u.side)return;
  Store.set(u.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`,hp);
  btLog(`${uName(u)} — ${why}: ${TIERS[tier-1]} 피해 ${n}칸 (HP ${hpCalc(hp).left}/${hpCalc(hp).max})`,{type:'damage',k,tier,n});
  if(!was&&isDown(u))btLog(`${uName(u)} 전투 불능`,{type:'down',k});
- if(n>0)runPassives(k,'onDamageTaken',{attacker:DMG_SRC})}
+ if(n>0)runPassives(k,'onDamageTaken',{attacker:DMG_SRC});
+ if(!was&&isDown({...unitRaw(k),k}))kwFire(k,'downed',{attacker:DMG_SRC})}
 
 function btStartRound(){const B=BT(),round=(+B.round||0)+1,list=units().filter(u=>!isDown(u));
  if(!list.length)return toast('배치된 유닛이 없어요',1);
  const lines=[];list.forEach(u=>{u.init=rollInit(u);Store.set(`${BTP}/units/${u.k}/init`,u.init,true);lines.push(`${uName(u)} ${u.init.dice.join(',')}→${u.init.final} ${u.init.speed}`)});
  Store.set(`${BTP}/round`,round,true);zoneRound(round);Store.set(`${BTP}/order`,list.sort(initSort).map(u=>u.k),true);Store.set(`${BTP}/turn`,-1,true);
- btLog(`라운드 ${round} 이니셔티브 — ${lines.join(' · ')}`,{type:'round',round});if(round===1)list.filter(u=>u.side==='foe'&&CH(srcOf(u))?.boss?.on&&CH(srcOf(u)).boss.auto).forEach(u=>cutSend(cutFromBoss(CH(srcOf(u)),-1)));diceAdd({ty:'init',lbl:`라운드 ${round} 이니셔티브`,rows:list.map(u=>[uName(u),u.init.dice,u.init.final,u.init.speed||''])});btNextTurn()}
+ btLog(`라운드 ${round} 이니셔티브 — ${lines.join(' · ')}`,{type:'round',round});kwHook(list.map(u=>u.k),'roundStart');if(round===1)list.filter(u=>u.side==='foe'&&CH(srcOf(u))?.boss?.on&&CH(srcOf(u)).boss.auto).forEach(u=>cutSend(cutFromBoss(CH(srcOf(u)),-1)));diceAdd({ty:'init',lbl:`라운드 ${round} 이니셔티브`,rows:list.map(u=>[uName(u),u.init.dice,u.init.final,u.init.speed||''])});btNextTurn()}
 function btNextTurn(){const B=BT(),o=B.order||[];let i=+(B.turn??-1);
  UI.bt.pick=false;if(B.atk){protCleanup(B.atk);Store.set(`${BTP}/atk`,null,true)}
  if(B.cur?.k&&unitRaw(B.cur.k)){{const cu=unitRaw(B.cur.k);zoneFire(B.cur.k,+cu.x,+cu.y,'end')}runPassives(B.cur.k,'onTurnEnd');Store.set(`${BTP}/te/${B.cur.k}`,(+BT().te?.[B.cur.k]||0)+1,true);btLog(`${uName({...unitRaw(B.cur.k),k:B.cur.k})} 턴 종료`)}
  for(i++;i<o.length;i++){const u=unitRaw(o[i]);if(!u||isDown({...u,k:o[i]}))continue;
   if(u.st?.행동불능){Store.set(`${BTP}/units/${o[i]}/st/행동불능`,null,true);Store.set(`${BTP}/te/${o[i]}`,(+BT().te?.[o[i]]||0)+1,true);btLog(`${uName({...u,k:o[i]})} 행동 불능 — 이번 턴을 넘기고 해제`,{type:'status',k:o[i],key:'행동불능',on:false});continue}
   break}
- if(i>=o.length){Store.set(`${BTP}/turn`,-1,true);Store.set(`${BTP}/cur`,null,true);btLog(`라운드 ${B.round} 종료`);return paintSoon()}
+ if(i>=o.length){Store.set(`${BTP}/turn`,-1,true);Store.set(`${BTP}/cur`,null,true);btLog(`라운드 ${B.round} 종료`);kwHook(units().map(u=>u.k),'roundEnd');return paintSoon()}
  const u={...unitRaw(o[i]),k:o[i]},mv=(+u.init?.final||1)+3;           // 7.3 이동력 = 이니셔티브 최종 결과 + 3
  Store.set(`${BTP}/turn`,i,true);Store.set(`${BTP}/cur`,{k:u.k,mv,base:mv,main:false,dash:false,done:{}});
  UI.bt.sel=u.k;btLog(`▶ ${uName(u)} 턴 (이동력 ${mv})`,{type:'turn',k:u.k});
@@ -1844,7 +1860,7 @@ function btMove(n){const B=BT(),cur=B.cur,k=cur.k,ctx=btCtx(B),me=ctx.units.find
   if(isDown({...unitRaw(k),k})){btLog('전투 불능으로 이동 중단');break}}
  Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:at.x,y:at.y},true);
  Store.set(`${BTP}/cur`,{...BT().cur,mv:Math.max(0,cur.mv-used),done});
- btLog(`${uName({...unitRaw(k),k})} 이동 ${used}칸 (남은 이동력 ${Math.max(0,cur.mv-used)})`,{type:'move',k,to:at,steps:used})}
+ btLog(`${uName({...unitRaw(k),k})} 이동 ${used}칸 (남은 이동력 ${Math.max(0,cur.mv-used)})`,{type:'move',k,to:at,steps:used});if(used>0)kwHook([k],'moved',{steps:used})}
 // 7.6.2 수동 위치 변경. 이탈 피해는 마스터가 고른 경우에만
 function btPlace(k,x,y){const B=BT(),ctx=btCtx(B),me=ctx.units.find(u=>u.k===k);if(!me)return;
  if(UI.bt.gmDmg){const done=B.cur?.k===k?{...(B.cur.done||{})}:{};
@@ -2037,7 +2053,7 @@ Object.assign(A,{
  btHpStep(e){const k=UI.bt.sel,hp=hpOf(unitRaw(k)),i=+e.dataset.i,l=hp[i],n=clamp(l.length+ +e.dataset.v,0,12);l.length=Math.min(l.length,n);while(l.length<n)l.push(0);Store.set(`${BTP}/units/${k}/hp`,hp)},
  btImg(){const k=UI.bt.sel;pickImg(400,img=>Store.set(`${BTP}/units/${k}/img`,img))},
  btSheet(){UI.charId=srcOf(unitRaw(UI.bt.sel))||'';A.openSheet()},
- btReset(){if(!confirm('전투를 끝내고 라운드·행동 순서·기록·키워드·충전을 지울까요? 맵, 유닛, 체력은 남습니다.'))return;snapSave('전투 초기화 전',true);UI.bt.pick=false;units().forEach(u=>{Store.set(`${BTP}/units/${u.k}/kw`,null,true);Store.set(`${BTP}/units/${u.k}/st`,null,true);Store.set(`${BTP}/units/${u.k}/charge`,0,true)});['round','order','cur','log','atk','rs','te'].forEach(k=>Store.set(`${BTP}/${k}`,null,true));Store.set(`${BTP}/turn`,-1)},
+ btReset(){if(!confirm('전투를 끝내고 라운드·행동 순서·기록·키워드·충전을 지울까요? 맵, 유닛, 체력은 남습니다.'))return;snapSave('전투 초기화 전',true);UI.bt.pick=false;units().forEach(u=>{const keep=Object.fromEntries(Object.entries(kwOf(u)).filter(([n,v])=>+v>0&&kwDef(n)?.cfg?.keep));Store.set(`${BTP}/units/${u.k}/kw`,Object.keys(keep).length?keep:null,true);Store.set(`${BTP}/units/${u.k}/kwBy`,null,true);Store.set(`${BTP}/kwrs`,null,true);Store.set(`${BTP}/units/${u.k}/st`,null,true);Store.set(`${BTP}/units/${u.k}/charge`,0,true)});['round','order','cur','log','atk','rs','te'].forEach(k=>Store.set(`${BTP}/${k}`,null,true));Store.set(`${BTP}/turn`,-1)},
  btWallClear(){if(confirm('벽을 모두 지울까요?'))Store.set(`${BTP}/walls`,null)}
 });
 Object.assign(CHANGE,{
@@ -2067,7 +2083,7 @@ document.addEventListener('pointerleave',ev=>{if(ev.target.id==='btBoard'){UI.bt
 /* ---------- 디버그: 되돌리기·다시 하기와 GM 직접 수정 ---------- */
 // 전투 행동 단위로 전투 데이터와 캐릭터 체력·스트레스를 저장한다 (이 브라우저 메모리에만, 최근 50개)
 const UNDO={past:[],future:[]};
-const UNDO_A={btRound:'라운드 시작',btEnd:'턴 종료',btDash:'전력 이동',btMain:'기타 행동',btCell:'이동·배치',zoneDel:'바닥 효과 지우기',atkNoDash:'제자리 공격',btUnit:'대상 지정',btDel:'유닛 빼기',btDmg:'피해 적용',btHeal:'회복 적용',btKw:'키워드 조정',
+const UNDO_A={kwTest:'키워드 시험',btRound:'라운드 시작',btEnd:'턴 종료',btDash:'전력 이동',btMain:'기타 행동',btCell:'이동·배치',zoneDel:'바닥 효과 지우기',atkNoDash:'제자리 공격',btUnit:'대상 지정',btDel:'유닛 빼기',btDmg:'피해 적용',btHeal:'회복 적용',btKw:'키워드 조정',
  btReset:'전투 초기화',btWallClear:'벽 지우기',btOrd:'순서 변경',btAdd:'유닛 추가',btCell2:'체력 칸 수정',btHpStep:'체력 칸 수',atkPick:'공격 시작',hudSkill:'공격 선택',atkDeclare:'공격 선언',oppAct:'기회공격',
  atkRespond:'대응·결과 공개',protAct:'보호',resistAct:'저항',reactOk:'침잠 반응',mRespond:'대응·결과 공개',mProtOk:'보호 확정',mReactOk:'침잠 반응',mCounter:'반격',mMode:'대응 선택',atkCounter:'반격',atkCancel:'공격 취소',atkClose:'공격 닫기',dbgTurn:'턴 지정',dbgMain:'주요 행동 수정',dbgDone:'이탈 기록 초기화',dbgOpp:'기회공격 기록 초기화',
  dbgRules:'규칙 기록 초기화',dbgSt:'상태 수정',dbgSettle:'키워드 정산',dbgAtkKill:'공격 강제 종료',dbgOrd:'순서 강제 변경',dbgResort:'순서 다시 정렬',foeSample:'예시 적'};
@@ -2140,7 +2156,7 @@ Object.assign(CHANGE,{
 
 /* ---------- 키워드 엔진 (룰북 15장, 16.15) ---------- */
 const TOL_KW=['화상','출혈','진동'];
-const tolOf=(u,kw)=>Math.max(1,+(u?.tol?.[kw]??CH(srcOf(u))?.tol?.[kw]??10)||10);
+const tolOf=(u,kw)=>Math.max(1,+(u?.tol?.[kw]??CH(srcOf(u))?.tol?.[kw]??(KW.includes(kw)?10:(+kwDef(kw)?.cfg?.tol?.def||10)))||10);
 const stOf=u=>u?.st||{};
 const noResp=u=>!!(stOf(u).대응불능||stOf(u).행동불능);
 const cantResp=(t,u)=>noResp(u)||!!t?.unresp;   // 스킬의 '대응 불가'도 비대응만   // 15.5 대응·보호·반격 불가
@@ -2166,7 +2182,8 @@ const ST_L={대응불능:'대응 불능',행동불능:'행동 불능',과다출�
 
 function setSt(k,key,on,why){Store.set(`${BTP}/units/${k}/st/${key}`,on?1:null);btLog(`${atkName(k)} ${ST_L[key]} ${on?'':'해제'}${why?` (${why})`:''}`,{type:'status',k,key,on:!!on})}
 // 한 행동의 효과가 끝난 뒤 화상·출혈을 한꺼번에 정산 (15.0)
-function settleKw(keys,why){for(const k of [...new Set(keys)]){const u=uOf(k);if(!u||isDown(u))continue;const kw=kwOf(u);
+function settleKw(keys,why){settleKw0(keys,why);if(KW_SET_D>1)return;KW_SET_D++;try{for(const k of [...new Set(keys)])kwFireOwnAll(k,'reachTol')}finally{KW_SET_D--}}
+function settleKw0(keys,why){for(const k of [...new Set(keys)]){const u=uOf(k);if(!u||isDown(u))continue;const kw=kwOf(u);
  const b=+kw.화상||0,bt=tolOf(u,'화상');if(b>=bt){const r=burnCalc(b,bt);Store.set(`${BTP}/units/${k}/kw/화상`,r.left||null,true);
   btLog(`${uName(u)} 화상 발화 ${r.fires}회 (화상 ${b}/${bt} → ${r.left})`,{type:'burn',k,n:r.fires});damageUnit(k,2,r.fires,'화상 발화')}
  const u2=uOf(k);if(!u2||isDown(u2))continue;
@@ -3507,12 +3524,14 @@ const kwOf=u=>u?.kw||{};
 function addKw(k,kw,n,why){const u=unitRaw(k);if(!u)return;const nm=uName({...u,k});
  if(kw==='충전'){const max=+u.chargeMax||0,v=Math.max(0,(+u.charge||0)+n),fin=max?Math.min(max,v):v;Store.set(`${BTP}/units/${k}/charge`,fin);btLog(`${nm} — ${why}: 충전 ${n>0?'+':''}${n} (${fin}${max?'/'+max:''})`,{type:'charge',k,n});return}
  if(kw==='진동'&&n>0&&noResp(u))return btLog(`${nm} — ${why}: 진동 ${n} 무시 (불능 상태 중에는 쌓이지 않음)`);
- const v=Math.max(0,(+kwOf(u)[kw]||0)+n);Store.set(`${BTP}/units/${k}/kw/${kw}`,v||null);
- btLog(`${nm} — ${why}: ${kw} ${n>0?'+':''}${n} (현재 ${v})${n>0&&!KW.includes(kw)?' · 자작 키워드 — 특수 효과는 GM 확인':''}`,{type:'keyword',k,kw,n});
- if(n>0)runPassives(k,'onKeywordGained',{kw})}
+ const prev=+kwOf(u)[kw]||0,mx=KW.includes(kw)?0:+kwDef(kw)?.cfg?.max||0;let v=Math.max(0,prev+n);if(mx)v=Math.min(mx,v);Store.set(`${BTP}/units/${k}/kw/${kw}`,v||null);KW_TOUCH.add(k);
+ if(n>0&&!KW.includes(kw)){const g=KW_GIVER||DMG_SRC||ATK()?.by||BT().cur?.k||null;if(g)Store.set(`${BTP}/units/${k}/kwBy/${kw}`,g,true)}
+ btLog(`${nm} — ${why}: ${kw} ${n>0?'+':''}${n} (현재 ${v}${mx?'/'+mx:''})${n>0&&!KW.includes(kw)&&!(kwDef(kw)?.rules||[]).length?' · 자작 키워드 — 특수 효과는 GM 확인':''}`,{type:'keyword',k,kw,n});
+ if(n>0)runPassives(k,'onKeywordGained',{kw});
+ if(v!==prev)kwAfterChange(k,kw,prev,v,v-prev)}
 function healUnit(k,tier,n,why){const u=uOf(k);if(!u)return;const hp=applyHeal(hpOf(u),tier,n);
  Store.set(u.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`,hp);
- btLog(`${uName(u)} — ${why}: ${TIERS[tier-1]} 회복 ${n}칸 (HP ${hpCalc(hp).left}/${hpCalc(hp).max})`,{type:'heal',k,tier,n})}
+ btLog(`${uName(u)} — ${why}: ${TIERS[tier-1]} 회복 ${n}칸 (HP ${hpCalc(hp).left}/${hpCalc(hp).max})`,{type:'heal',k,tier,n});if(n>0)kwFire(k,'healed',{gain:n})}
 
 /* 7.8.3 강제 이동: 벽·유닛·경계에 닿으면 직전 칸에서 정지, 충돌 피해 없음, 이탈 피해 없음 */
 function forceDest(ctx,k,from,kind,n){const u=ctx.units.find(x=>x.k===k),a=ctx.units.find(x=>x.k===from);if(!u||!a)return null;
@@ -3648,7 +3667,7 @@ function ruleCard(r,q,i,P,n,ws){const d=r.do||{},L=r.limit||{},bad=!doValid(r.wh
   ${['diceModifier','resultModifier'].includes(d.type)?'<small class="muted">이 공격의 주사위·결과에 적용</small>':`<div class="fxr"><small>대상</small>${+d.radius>0?'':`<select data-b="${q}/do/to">${optsKV(WHO_L,d.to||'target')}</select>`}<small>반경</small>${num(q+'/do/radius',d.radius,0,5,1)}${+d.radius>0?`<select data-b="${q}/do/rside">${optsKV(RSIDE,d.rside||'opp')}</select>`:''}</div>`}</div></div>
  <div class="skr-l"><span>LIMIT</span><div class="fxr"><select data-b="${q}/limit/inner" data-r>${optsKV(LIM_IN,L.inner||'perTarget')}</select><select data-b="${q}/limit/count" data-r>${optsKV(LIM_CNT,L.count||'any')}</select><small>활성 기간</small>${num(q+'/limit/dur',L.dur,0,20)}<small>${+L.dur?'턴 종료':'전투 끝까지'}</small>${r.when==='onKeywordGained'?`<small>키워드 필터</small><select data-b="${q}/limit/kwf">${optsKV({'':'모든 키워드',...Object.fromEntries(KWA_NC().map(k=>[k,k]))},L.kwf||'')}</select>`:''}</div></div>
  <p class="skr-t">${hl(ruleText(r))}</p>${bad?`<p class="small warn">${WHEN_L[r.when]}에는 ${DO_L[d.type]}를 쓸 수 없어요 (16.7)</p>`:''}</div>`}
-function tolRow(c,P,ed){const t=c.tol||{};return`<div class="tolrow"><b>키워드 내성치</b>${TOL_KW.map(k=>`<label><i style="background-image:${kwIcon(k)}"></i>${k}${ed?`<input type="number" min="1" max="99" data-b="${P}/tol/${k}" value="${+t[k]||10}">`:`<em>${+t[k]||10}</em>`}</label>`).join('')}<button class="lnk kw-mng" data-a="kwDefsOpen">자작 키워드${kwDefs().length?` ${kwDefs().length}개`:''} ›</button></div>`}
+function tolRow(c,P,ed){const t=c.tol||{},L=[...TOL_KW,...kwDefs().filter(d=>d.cfg?.tol?.on).map(d=>d.name)],dv=k=>+t[k]||(KW.includes(k)?10:(+kwDef(k)?.cfg?.tol?.def||10));return`<div class="tolrow"><b>키워드 내성치</b>${L.map(k=>`<label title="${esc(kwTip(k))}"><i style="background-image:${kwIcon(k)}"></i>${esc(k)}${ed?`<input type="number" min="1" max="99" data-b="${P}/tol/${k}" value="${dv(k)}">`:`<em>${dv(k)}</em>`}</label>`).join('')}<button class="lnk kw-mng" data-a="kwDefsOpen">자작 키워드${kwDefs().length?` ${kwDefs().length}개`:''} ›</button></div>`}
 function useCard(u,q,i,P){const types=USE_FX[u.kw]||USE_FX.호흡;
  return`<div class="skr"><div class="skr-h"><b>${esc(u.kw)} 소비 ${i+1}</b><button class="x" data-a="skDel" data-p="${P}" data-v="${i}" aria-label="소비 효과 삭제">✕</button></div>
  <div class="fxr"><select data-b="${q}/kw" data-r>${optsL(['호흡','침잠'],u.kw)}</select><small>소비</small>${num(q+'/cost',u.cost,0,99)}<small>${u.kw==='침잠'?'(대상의 침잠)':'(자신의 호흡)'}</small><input type="text" class="sk-num" style="width:140px!important" placeholder="이름 (선택)" data-b="${q}/name" value="${esc(u.name)}"></div>
@@ -4381,11 +4400,12 @@ function showLogin(){
 const kwCanEdit=d=>!NET.on||NET.gm||!d||d.owner===ME;
 const kwSafe=n=>String(n||'').replace(/[.#$\[\]\/\\]/g,'').trim().slice(0,12);
 function kwDefsModal(){M.wide=true;const L=kwDefs(),used=n=>units().filter(u=>+kwOf(u)[n]>0).length;
- return`<p class="small muted" style="margin-bottom:10px">룰북 16.11 — 이름·아이콘·설명·분류를 등록하면 스킬 효과(키워드 부여), 조건(키워드 N 이상·이하), 지형, 마스터 도구, 디버그에서 기본 키워드처럼 고를 수 있어요. 스킬 설명에 이름을 쓰면 아이콘과 함께 강조되고, 마우스를 올리면 설명이 보여요. <b style="color:var(--amber)">자작 키워드만의 특수 효과(자동 소모·특수 피해 등)는 자동으로 처리하지 않아요</b> — 전투 기록에 'GM 확인'으로 남으니 마스터가 손으로 처리해 주세요.</p>
+ return`<p class="small muted" style="margin-bottom:10px">룰북 16.11 — 이름·아이콘·설명·분류를 등록하면 스킬 효과(키워드 부여), 조건(키워드 N 이상·이하), 지형, 마스터 도구, 디버그에서 기본 키워드처럼 고를 수 있어요. 스킬 설명에 이름을 쓰면 아이콘과 함께 강조되고, 마우스를 올리면 설명이 보여요. <b style="color:var(--amber)">⚙ 자동화</b>에서 규칙(언제·조건·효과)을 만들면 전투에서 자동으로 처리돼요. 규칙이 없는 키워드는 전투 기록에 'GM 확인'으로 남아요.</p>
  <div class="kwd-list">${L.map(d=>{const ed=kwCanEdit(d),P='play/kwdefs/'+d.k;return`<div class="kwd ${ed?'':'ro'}">
   <button class="kwd-ic" ${ed?`data-a="kwImg" data-v="${esc(d.k)}" title="아이콘 바꾸기 (정사각형 그림 권장)"`:'disabled'} style="background-image:${kwIcon(d.name)}"></button>
   <div class="kwd-m"><div class="row"><input type="text" maxlength="12" value="${esc(d.name)}" data-c="kwName" data-v="${esc(d.k)}" ${ed?'':'disabled'} aria-label="이름"><select data-b="${P}/cat" ${ed?'':'disabled'} aria-label="분류">${optsKV(Object.fromEntries(Object.entries(KW_CAT).map(([k,v])=>[k,v[0]])),d.cat||'etc')}</select>${used(d.name)?`<small class="muted">전투 중 ${used(d.name)}명에게 있음</small>`:''}<span class="sp"></span>${d.img&&ed?`<button class="lnk" data-a="kwImgDel" data-v="${esc(d.k)}">아이콘 지우기</button>`:''}${ed?`<button class="lnk" data-a="kwDel" data-v="${esc(d.k)}">삭제</button>`:`<small class="muted">${esc(d.owner||'')} 작성</small>`}</div>
-  <textarea rows="2" maxlength="300" data-b="${P}/desc" ${ed?'':'disabled'} placeholder="설명 — 무엇을 하는 키워드인지, 언제 줄어드는지 (표시용)">${esc(d.desc||'')}</textarea></div></div>`}).join('')||'<p class="muted">아직 자작 키워드가 없어요.</p>'}</div>
+  <textarea rows="2" maxlength="300" data-b="${P}/desc" ${ed?'':'disabled'} placeholder="설명 — 무엇을 하는 키워드인지 (표시용)">${esc(d.desc||'')}</textarea>
+  <div class="kwd-auto"><button class="btn sm ${kwHasRules(d)?'pri':''}" data-a="kwEdit" data-v="${esc(d.k)}">⚙ 자동화 ${kwHasRules(d)?`· 규칙 ${(d.rules||[]).filter(r=>r&&r.on!==false).length}개`:'설정'}</button><small>${esc([kwCfgText(d),...(d.rules||[]).filter(r=>r&&r.on!==false).map(r=>kwRuleText(r,d.name))].filter(Boolean).join(' / ')||'규칙 없음 — 표시용 (GM 확인)')}</small></div></div></div>`}).join('')||'<p class="muted">아직 자작 키워드가 없어요.</p>'}</div>
  <div class="kwd-add" style="margin-top:10px"><input type="text" id="kwNew" maxlength="12" placeholder="새 키워드 이름 (예: 맹독)" data-keep="1"><button class="btn pri" data-a="kwAdd">추가</button></div>
  <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 Object.assign(A,{
@@ -4406,6 +4426,197 @@ Object.assign(CHANGE,{kwName(el){const k=el.dataset.v,d0=Store.get('play/kwdefs/
  // 전투 중 수치는 새 이름으로 옮긴다
  for(const u of units()){const v=+kwOf(u)[d.name]||0;if(v){Store.set(`${BTP}/units/${u.k}/kw/${d.name}`,null);Store.set(`${BTP}/units/${u.k}/kw/${n}`,v)}}
  Store.set(`play/kwdefs/${k}/name`,n);toast(`'${d.name}' → '${n}'${fixed?` · 캐릭터 ${fixed}명의 스킬·규칙도 바꿨어요`:''}`);drawModal()}});
+
+/* ---------- 자작 키워드 자동화 (§57) ----------
+   키워드마다 규칙 카드(WHEN/IF/DO/LIMIT). '자신'은 그 키워드를 가진 보유자.
+   전투의 기존 시점(runPassives)과 키워드 변화(addKw), 이동·회복·전투 불능·라운드·정산에 걸어 둔다. */
+const KWW_L={gained:'이 키워드를 받았을 때',reachTol:'수치가 내성치 이상 (정산 때)',reachMax:'최대 중첩에 닿았을 때',lost:'이 키워드가 0이 됐을 때',
+ turnStart:'보유자 턴 시작',turnEnd:'보유자 턴 종료',roundStart:'라운드 시작',roundEnd:'라운드 종료',
+ attackRoll:'보유자 공격 주사위 직전',respRoll:'보유자 대응 주사위 직전',hitDealt:'보유자가 공격을 적중시킴',missDealt:'보유자 공격이 빗나감',attackDone:'보유자 공격 처리 후',
+ hitTaken:'보유자가 피격',dmgTaken:'보유자가 체력 피해를 받음',healed:'보유자가 회복함',moved:'보유자가 이동함',otherGained:'보유자가 다른 키워드를 받음',downed:'보유자 전투 불능'};
+const KWW_OWN=['gained','reachTol','reachMax','lost'],KWW_PRE=['attackRoll','respRoll'];
+const KWW_MAP={beforeAttackRoll:'attackRoll',beforeResponseRoll:'respRoll',afterHit:'hitDealt',afterMiss:'missDealt',afterAttack:'attackDone',onHitTaken:'hitTaken',onDamageTaken:'dmgTaken',onTurnStart:'turnStart',onTurnEnd:'turnEnd'};
+const KWWHO={self:'보유자',target:'상대 (공격 대상)',attacker:'공격자',giver:'부여자 (마지막으로 준 유닛)'};
+const KWIF_L={always:'항상',stackMin:'이 키워드 N 이상',stackMax:'이 키워드 N 이하',stackTol:'이 키워드가 내성치 이상',gainMin:'이번에 받은 양 N 이상',
+ kwMin:'키워드 N 이상',kwMax:'키워드 N 이하',chargeMin:'충전 N 이상',chargeMax:'충전 N 이하',hpAtMost:'남은 HP N 이하',hpPct:'HP% N 이하',
+ sideFoe:'적 편이면',sideAlly:'아군 편이면',roundEvery:'라운드가 N의 배수',d6:'1d6을 굴려 N 이상',grade:'공격 결과 6 이상',crit:'공격 결과 크리티컬'};
+const KWIF_WHO=['kwMin','kwMax','chargeMin','chargeMax','hpAtMost','hpPct','sideFoe','sideAlly'],KWIF_NOV=['always','stackTol','sideFoe','sideAlly','grade','crit'];
+const KWDO_L={damage:'피해',heal:'회복',lock:'체력 잠금 (1단계, 출혈식)',give:'키워드 부여',take:'키워드 줄이기',stack:'이 키워드 바꾸기',convert:'이 키워드를 다른 키워드로 바꾸기',
+ dice:'주사위 수 ±',res:'결과 보정 ±',charge:'충전 ±',haste:'신속 ±',bind:'속박 ±',mv:'이동력 ± (보유자 턴 중)',status:'상태 켜기·끄기',note:'알림만 (GM 확인)'};
+const KWSTK_L={minus:'N 감소',plus:'N 증가',half:'절반으로 (버림)',zero:'0으로',set:'N으로 정하기',consumeTol:'내성치만큼 소비 → 발동 횟수'};
+const KWAMT_L={n:'고정 N',stack:'현재 수치 × N',stackDiv:'현재 수치 ÷ N',gain:'받은 양 × N',gainDiv:'받은 양 ÷ N',times:'발동 횟수 × N',steps:'이동한 칸 × N',tol:'내성치 × N'};
+const KWLIM_L={any:'제한 없음',turn:'보유자 턴당 1회',round:'라운드당 1회',combat:'전투당 1회'};
+const KWDECAY_AT={none:'자동 감소 없음',turnEnd:'보유자 턴 종료',turnStart:'보유자 턴 시작',roundEnd:'라운드 종료'},KWDECAY_M={minus:'N 감소',half:'절반 (버림)',zero:'0으로'};
+const blankKwRule=()=>({on:true,when:'turnEnd',join:'and',ifs:[],acts:[{type:'damage',t:1,src:'stack',n:1,cap:0,to:'self',radius:0,rside:'opp'}],limit:'any'});
+const blankKwAct=()=>({type:'damage',t:1,src:'n',n:1,cap:0,to:'self',radius:0,rside:'opp',kw:'화상',op:'minus',sign:1,key:'대응불능',on:'1',text:''});
+let KW_DEPTH=0,KW_SET_D=0,KW_GIVER=null;const KW_TOUCH=new Set,KW_ACTIVE=new Set;
+const withKwGiver=(g,fn)=>{const o=KW_GIVER;KW_GIVER=g;try{return fn()}finally{KW_GIVER=o}};
+const kwHasRules=d=>(d?.rules||[]).some(r=>r&&r.on!==false);
+// 보유자 k에게서 when 시점의 자작 키워드 규칙 실행
+function kwFire(k,when,o={}){const mods=o.mods||{dice:0,res:0};if(KW_DEPTH>3||!units().length)return mods;
+ const defs=kwDefs().filter(d=>(d.rules||[]).some(r=>r&&r.on!==false&&r.when===when));if(!defs.length)return mods;
+ KW_DEPTH++;try{for(const d of defs){if(KWW_OWN.includes(when)&&o.kw!==d.name)continue;if(when==='otherGained'&&o.kw===d.name)continue;
+  const u=uOf(k);if(!u)break;const stack=+kwOf(u)[d.name]||0;if(stack<=0&&when!=='lost')continue;if(isDown(u)&&!['dmgTaken','downed','lost'].includes(when))continue;
+  const ctx={self:k,target:o.target??k,attacker:o.attacker||null,giver:unitRaw(k)?.kwBy?.[d.name]||null,def:d,gain:+o.gain||0,steps:+o.steps||0,times:0,mods,roll:o.roll||null,okw:o.kw||'',when};
+  (d.rules||[]).forEach((r,i)=>{if(r&&r.on!==false&&r.when===when)kwRule(r,i,ctx)})}}finally{KW_DEPTH--}return mods}
+const kwFireOwnAll=(k,when)=>{const u=uOf(k);if(!u)return;for(const d of kwDefs())if((+kwOf(u)[d.name]||0)>0&&(d.rules||[]).some(r=>r&&r.on!==false&&r.when===when)){if(when==='reachTol'&&(+kwOf(uOf(k))[d.name]||0)<tolOf(uOf(k),d.name))continue;kwFire(k,when,{kw:d.name})}};
+// 턴·라운드 같은 행동 밖 시점: 규칙 → 자동 감소 → 바뀐 유닛 정산 (15.0)
+function kwHook(keys,when,o={}){KW_TOUCH.clear();for(const k of keys){kwFire(k,when,o)}for(const k of keys)kwDecay(k,when);if(KW_TOUCH.size&&!KW_SET_D)settleKw([...KW_TOUCH],'키워드 효과')}
+function kwAfterChange(k,kw,prev,v,dn){if(KW.includes(kw))return;
+ if(dn>0)kwFire(k,'gained',{kw,gain:dn});if(dn>0)kwFire(k,'otherGained',{kw,gain:dn});
+ const mx=+kwDef(kw)?.cfg?.max||0;if(mx&&v>=mx&&prev<mx)kwFire(k,'reachMax',{kw});if(prev>0&&v===0)kwFire(k,'lost',{kw})}
+// 기본 키워드를 받았을 때도 '다른 키워드를 받음'은 울린다
+function kwSet(k,name,v,msg){const u=uOf(k);if(!u)return;const prev=+kwOf(u)[name]||0;v=Math.max(0,v);const mx=+kwDef(name)?.cfg?.max||0;if(mx)v=Math.min(mx,v);if(v===prev)return;
+ Store.set(`${BTP}/units/${k}/kw/${name}`,v||null,true);KW_TOUCH.add(k);btLog(`${uName(u)} — ${msg}`,{type:'keyword',k,kw:name,n:v-prev});if(prev>0&&v===0)kwFire(k,'lost',{kw:name})}
+function kwDecay(k,at){const u=uOf(k);if(!u)return;for(const d of kwDefs()){const c=d.cfg?.decay;if(!c||c.at!==at)continue;const cur=+kwOf(uOf(k))[d.name]||0;if(!cur)continue;
+ const nv=Math.max(0,c.mode==='half'?Math.floor(cur/2):c.mode==='zero'?0:cur-Math.max(1,+c.n||1));kwSet(k,d.name,nv,`[${d.name}] 자동 감소 ${cur} → ${nv}`)}}
+function kwLimitOk(r,key,k,commit){const L=r.limit||'any';if(L==='any')return true;const B=BT(),st=B.kwrs?.[key]||{},te=+B.te?.[k]||0,rd=+B.round||0;
+ if(L==='combat'&&st.n)return false;if(L==='turn'&&st.n&&st.te===te)return false;if(L==='round'&&st.n&&st.rd===rd)return false;
+ if(commit)Store.set(`${BTP}/kwrs/${key}`,{n:(st.n||0)+1,te,rd},true);return true}
+function kwCond(c,ctx,tag){const u=uOf(ctx.self),nm=ctx.def.name,stack=+kwOf(u)[nm]||0,v=+c.v||0,w=uOf(ctx[c.who||'self']);
+ switch(c.kind){case'always':return true;case'stackMin':return stack>=v;case'stackMax':return stack<=v;case'stackTol':return stack>=tolOf(u,nm);case'gainMin':return ctx.gain>=v;
+  case'kwMin':return!!w&&(+kwOf(w)[c.kw]||0)>=v;case'kwMax':return!!w&&(+kwOf(w)[c.kw]||0)<=v;case'chargeMin':return!!w&&(+w.charge||0)>=v;case'chargeMax':return!!w&&(+w.charge||0)<=v;
+  case'hpAtMost':{if(!w)return false;const h=hpCalc(hpOf(w));return h.max>0&&h.left<=v}case'hpPct':{if(!w)return false;const h=hpCalc(hpOf(w));return h.max>0&&h.pct<=v}
+  case'sideFoe':return w?.side==='foe';case'sideAlly':return!!w&&w.side!=='foe';case'roundEvery':return v>0&&(+BT().round||0)%v===0;
+  case'd6':{const r=d6();btLog(`${tag}: 1d6 → ${r} (${v} 이상 필요) ${r>=v?'성공':'실패'}`,{type:'rule',k:ctx.self});return r>=v}
+  case'grade':return!!ctx.roll&&ctx.roll.rawMax===6;case'crit':return!!ctx.roll?.critical}return false}
+function kwIfOk(r,ctx,tag){const l=(r.ifs||[]).slice(0,12);if(!l.length)return true;return r.join==='or'?l.some(c=>kwCond(c,ctx,tag)):l.every(c=>kwCond(c,ctx,tag))}
+function kwAmt(a,ctx){const u=uOf(ctx.self),nm=ctx.def.name,n=+a.n||0,stack=+kwOf(u)[nm]||0,mul=x=>x*(n||1),div=x=>Math.floor(x/Math.max(1,n));
+ let v=a.src==='stack'?mul(stack):a.src==='stackDiv'?div(stack):a.src==='gain'?mul(ctx.gain):a.src==='gainDiv'?div(ctx.gain):a.src==='times'?mul(ctx.times):a.src==='steps'?mul(ctx.steps):a.src==='tol'?mul(tolOf(u,nm)):n;
+ if(a.src&&a.src!=='n'&&+a.cap>0)v=Math.min(v,+a.cap);return Math.max(0,Math.floor(v))}
+function kwTargets(a,ctx){if(+a.radius>0){const me=uOf(ctx.self);if(!me)return[];return units().filter(u=>cheb(me,u)<=+a.radius&&(a.rside==='same'?u.side===me.side&&u.k!==me.k:a.rside==='opp'?u.side!==me.side:a.rside==='sameMe'?u.side===me.side:u.k!==me.k)&&!isDown(u)).map(u=>u.k)}
+ const k=ctx[a.to||'self'];return k&&unitRaw(k)?[k]:[]}
+function kwLock(k,n,tag){const u=uOf(k);if(!u||n<=0)return;const hp=hpOf(u),was=isDown(u);let done=0,notes=[];
+ for(let i=0;i<n;i++){const r=bleedLock(hp);if(r.gm){notes.push('GM 확인: '+r.gm);break}if(r.over){notes.push('과다출혈 — '+r.note);Store.set(`${BTP}/units/${k}/st/과다출혈`,1,true)}done++}
+ Store.set(u.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`,hp);btLog(`${uName(u)} — ${tag}: 1단계 체력 ${done}칸 잠금${notes.length?' · '+notes.join(' · '):''} (HP ${hpCalc(hp).left}/${hpCalc(hp).max})`,{type:'bleed',k,n:done});
+ if(!was&&isDown({...unitRaw(k),k}))btLog(`${uName(u)} 전투 불능`,{type:'down',k})}
+function kwRule(r,i,ctx){const d=ctx.def,tag=`[${d.name}] ${KWW_L[r.when]}`,key=`${ctx.self}_${d.k}_${i}`;
+ const ak=`${ctx.self}|${d.k}|${i}`;if(KW_ACTIVE.has(ak))return;
+ if(r.when==='otherGained'&&r.kwf&&r.kwf!==ctx.okw)return;if(!kwLimitOk(r,key,ctx.self,false))return;if(!kwIfOk(r,ctx,tag))return;kwLimitOk(r,key,ctx.self,true);KW_ACTIVE.add(ak);   // 같은 규칙이 자기 효과로 다시 불리지 않게
+ try{for(const a of(r.acts||[]).slice(0,8))try{kwAct(a,ctx,tag)}catch(e){console.warn(e);btLog(`${tag}: 실행 오류 — GM 확인`)}}finally{KW_ACTIVE.delete(ak)}}
+function kwAct(a,ctx,tag){const n=kwAmt(a,ctx),T=kwTargets(a,ctx),nm=ctx.def.name,h=ctx.self,sg=+a.sign<0?-1:1;
+ if(!T.length&&!['dice','res','note'].includes(a.type))return btLog(`${tag}: 대상 없음 (${KWWHO[a.to]||'반경'}) — 건너뜀`);
+ switch(a.type){
+  case'damage':if(n>0)for(const k of T)withSrc(ctx.giver&&k!==ctx.giver?ctx.giver:null,()=>damageUnit(k,clamp(+a.t||1,1,4),n,tag));break;
+  case'heal':if(n>0)for(const k of T)healUnit(k,clamp(+a.t||1,1,4),n,tag);break;
+  case'lock':for(const k of T)kwLock(k,n,tag);break;
+  case'give':if(n>0&&a.kw)for(const k of T)withKwGiver(h,()=>addKw(k,a.kw,n,tag));break;
+  case'take':if(n>0&&a.kw)for(const k of T){const cur=+kwOf(uOf(k))[a.kw]||0;if(cur)addKw(k,a.kw,-Math.min(cur,n),tag)}break;
+  case'stack':for(const k of T){const u=uOf(k),cur=+kwOf(u)[nm]||0;let nv=cur;
+   if(a.op==='consumeTol'){const t=tolOf(u,nm),times=Math.floor(cur/t);ctx.times=times;nv=cur-times*t;if(!times){btLog(`${tag}: ${nm} ${cur}/${t} — 발동 0회`);continue}}
+   else nv=a.op==='plus'?cur+n:a.op==='half'?Math.floor(cur/2):a.op==='zero'?0:a.op==='set'?n:cur-n;
+   kwSet(k,nm,nv,`${tag}: ${nm} ${cur} → ${Math.max(0,nv)}${a.op==='consumeTol'?` (내성치 ${tolOf(u,nm)} · 발동 ${ctx.times}회)`:''}`)}break;
+  case'convert':{if(!a.kw||a.kw===nm)break;for(const k of T){const cur=+kwOf(uOf(k))[nm]||0,m=Math.min(cur,a.src==='n'?n:n||cur);if(!m)continue;kwSet(k,nm,cur-m,`${tag}: ${nm} ${m} → ${a.kw}`);withKwGiver(h,()=>addKw(k,a.kw,m,tag))}break}
+  case'dice':case'res':{if(!KWW_PRE.includes(ctx.when)){btLog(`${tag}: 주사위·결과 보정은 '주사위 직전' 시점에서만 — 건너뜀`);break}const v=clamp(n,0,6);if(!v)break;ctx.mods[a.type==='dice'?'dice':'res']+=sg*v;btLog(`${tag}: ${a.type==='dice'?(ctx.when==='respRoll'?'대응 주사위':'공격 주사위'):'결과 보정'} ${sg>0?'+':'-'}${v}`,{type:'rule',k:h});break}
+  case'charge':if(n>0)for(const k of T)addKw(k,'충전',sg*n,tag);break;
+  case'haste':case'bind':for(const k of T){const cur=+unitRaw(k)?.[a.type]||0,v=clamp(cur+sg*n,0,2);if(v===cur)continue;Store.set(`${BTP}/units/${k}/${a.type}`,v,true);btLog(`${atkName(k)} — ${tag}: ${a.type==='haste'?'신속':'속박'} ${cur} → ${v}`,{type:'rule',k})}break;
+  case'mv':{const cur=BT().cur;for(const k of T){if(cur?.k!==k)continue;const v=Math.max(0,(+cur.mv||0)+sg*n);Store.set(`${BTP}/cur/mv`,v,true);btLog(`${atkName(k)} — ${tag}: 이동력 ${cur.mv} → ${v}`,{type:'rule',k})}break}
+  case'status':{const on=String(a.on)!=='0';for(const k of T){Store.set(`${BTP}/units/${k}/st/${a.key}`,on?1:null,true);btLog(`${atkName(k)} — ${tag}: ${ST_L[a.key]||a.key} ${on?'':'해제'}`,{type:'status',k,key:a.key,on})}break}
+  case'note':btLog(`${tag}: ${a.text||'(내용 없음)'} — GM 확인`,{type:'rule',k:h});break}}
+// 기존 시점에 연결: 패시브 실행 뒤 같은 mods로 키워드 규칙
+const _runPassivesKw=runPassives;runPassives=function(k,when,o={}){const m=_runPassivesKw(k,when,o);const w=KWW_MAP[when];if(!w)return m;
+ const mods=m||o.mods||{dice:0,res:0};if(w==='turnStart'||w==='turnEnd'){kwHook([k],w,{...o,mods});return mods}return kwFire(k,w,{...o,mods})};
+// 기본 키워드를 받았을 때 → 자작 키워드의 '다른 키워드를 받음'
+const _addKwKw=addKw;addKw=function(k,kw,n,why){const r=_addKwKw(k,kw,n,why);if(KW.includes(kw)&&n>0&&kw!=='충전')kwFire(k,'otherGained',{kw,gain:n});return r};
+
+/* 보기용 문장 */
+const kwAmtText=a=>{const n=+a.n||0;const b=a.src==='stack'?`[수치${n>1?'×'+n:''}]`:a.src==='stackDiv'?`[수치÷${Math.max(1,n)}]`:a.src==='gain'?`[받은 양${n>1?'×'+n:''}]`:a.src==='gainDiv'?`[받은 양÷${Math.max(1,n)}]`:a.src==='times'?`[발동 횟수${n>1?'×'+n:''}]`:a.src==='steps'?`[이동 칸${n>1?'×'+n:''}]`:a.src==='tol'?`[내성치${n>1?'×'+n:''}]`:String(n);return b+(a.src&&a.src!=='n'&&+a.cap>0?`(최대 ${a.cap})`:'')};
+const kwToText=a=>+a.radius>0?`주변 ${a.radius}칸 ${({same:'아군',opp:'적',all:'전체',sameMe:'아군(자신 포함)'})[a.rside]||''}`:(KWWHO[a.to||'self']||'').replace(/ \(.*\)/,'');
+function kwActText(a,nm){const t=kwToText(a),A=kwAmtText(a),s=+a.sign<0?'-':'+';switch(a.type){
+ case'damage':return`${t} ${TIERS[(+a.t||1)-1]} 피해 ${A}칸`;case'heal':return`${t} ${TIERS[(+a.t||1)-1]} 회복 ${A}칸`;case'lock':return`${t} 1단계 체력 ${A}칸 잠금`;
+ case'give':return`${t}에게 ${a.kw} ${A}`;case'take':return`${t}의 ${a.kw} ${A} 감소`;
+ case'stack':return`${t===KWWHO.self?'':t+'의 '}${nm} ${a.op==='consumeTol'?'내성치만큼 소비 (발동 횟수 기록)':a.op==='half'?'절반':a.op==='zero'?'0으로':a.op==='set'?A+'으로':a.op==='plus'?'+'+A:'-'+A}`;
+ case'convert':return`${nm} ${a.src==='n'?A:'전부'}를 ${a.kw}로`;case'dice':return`주사위 ${s}${A}`;case'res':return`결과 보정 ${s}${A}`;
+ case'charge':return`${t} 충전 ${s}${A}`;case'haste':return`${t} 신속 ${s}${A}`;case'bind':return`${t} 속박 ${s}${A}`;case'mv':return`${t} 이동력 ${s}${A}`;
+ case'status':return`${t} ${ST_L[a.key]||a.key} ${String(a.on)==='0'?'해제':''}`;case'note':return`알림: ${a.text||''}`}return a.type}
+const kwIfText=(c,nm)=>{const w=(KWWHO[c.who||'self']||'').replace(/ \(.*\)/,''),v=+c.v||0;switch(c.kind){case'stackMin':return`${nm} ${v} 이상`;case'stackMax':return`${nm} ${v} 이하`;case'stackTol':return`${nm} 내성치 이상`;case'gainMin':return`받은 양 ${v} 이상`;
+ case'kwMin':return`${w} ${c.kw} ${v} 이상`;case'kwMax':return`${w} ${c.kw} ${v} 이하`;case'chargeMin':return`${w} 충전 ${v} 이상`;case'chargeMax':return`${w} 충전 ${v} 이하`;case'hpAtMost':return`${w} HP ${v} 이하`;case'hpPct':return`${w} HP ${v}% 이하`;
+ case'sideFoe':return`${w}가 적`;case'sideAlly':return`${w}가 아군`;case'roundEvery':return`${v}의 배수 라운드`;case'd6':return`1d6 ${v} 이상`;case'grade':return'공격 결과 6 이상';case'crit':return'크리티컬'}return'항상'};
+const kwRuleText=(r,nm)=>`[${KWW_L[r.when]||r.when}${r.when==='otherGained'&&r.kwf?` (${r.kwf})`:''}] ${(r.ifs||[]).length?r.ifs.map(c=>kwIfText(c,nm)).join(r.join==='or'?' 또는 ':' 그리고 ')+' → ':''}${(r.acts||[]).map(a=>kwActText(a,nm)).join(', ')||'(효과 없음)'}${r.limit&&r.limit!=='any'?' · '+KWLIM_L[r.limit]:''}`;
+function kwCfgText(d){const c=d.cfg||{},o=[];if(+c.max)o.push(`최대 ${c.max}`);if(c.tol?.on)o.push(`내성치 사용 (기본 ${+c.tol.def||10})`);if(c.decay?.at&&c.decay.at!=='none')o.push(`${KWDECAY_AT[c.decay.at]}마다 ${c.decay.mode==='half'?'절반':c.decay.mode==='zero'?'0으로':'-'+(+c.decay.n||1)}`);if(c.keep)o.push('전투 뒤에도 유지');return o.join(' · ')}
+function kwWarn(d){const w=[],c=d.cfg||{};(d.rules||[]).forEach((r,i)=>{if(!r)return;const acts=r.acts||[];
+ if(!acts.length)w.push(`규칙 ${i+1}: 효과가 없어요`);
+ if(acts.some(a=>['dice','res'].includes(a.type))&&!KWW_PRE.includes(r.when))w.push(`규칙 ${i+1}: 주사위·결과 보정은 '주사위 직전' 시점에서만 돼요`);
+ if((r.when==='reachTol'||(r.ifs||[]).some(x=>x.kind==='stackTol')||acts.some(a=>a.op==='consumeTol'||a.src==='tol'))&&!c.tol?.on)w.push(`규칙 ${i+1}: 내성치를 쓰는데 '내성치 사용'이 꺼져 있어요 (기본 10으로 계산)`);
+ if(r.when==='reachMax'&&!+c.max)w.push(`규칙 ${i+1}: '최대 중첩에 닿았을 때'인데 최대 중첩이 없어요`);
+ if(acts.some(a=>a.src==='times')&&!acts.some(a=>a.op==='consumeTol'))w.push(`규칙 ${i+1}: '발동 횟수'를 쓰려면 같은 규칙 앞쪽에 '내성치만큼 소비'가 있어야 해요`);
+ if(acts.some(a=>a.src==='steps')&&r.when!=='moved')w.push(`규칙 ${i+1}: '이동한 칸'은 '보유자가 이동함' 시점에서만 값이 있어요`);
+ if(acts.some(a=>a.to==='attacker')&&!['hitTaken','dmgTaken','respRoll','downed'].includes(r.when))w.push(`규칙 ${i+1}: 이 시점에는 공격자가 없을 수 있어요 (없으면 건너뜀)`);
+ if(acts.some(a=>a.to==='target')&&!['attackRoll','hitDealt','missDealt','attackDone'].includes(r.when))w.push(`규칙 ${i+1}: 이 시점의 '상대'는 보유자 자신이에요`);
+ if(r.when==='gained'&&acts.some(a=>a.type==='give'&&a.kw===d.name))w.push(`규칙 ${i+1}: 받았을 때 같은 키워드를 주면 다른 유닛에서 연쇄될 수 있어요 (최대 3단계에서 멈춤)`);
+ if(r.when==='otherGained'&&r.kwf&&acts.some(a=>a.type==='give'&&a.kw===r.kwf&&(a.to||'self')==='self'&&!+a.radius))w.push(`규칙 ${i+1}: ${r.kwf}를 받을 때 자신에게 ${r.kwf}를 또 주면 그 효과로는 다시 발동하지 않아요 (한 번만)`)});return w}
+
+/* 템플릿 */
+const KW_TPL={
+ poison:['맹독형 — 턴 종료 시 수치만큼 피해, 절반',{cat:'debuff',cfg:{max:0},rules:[{on:true,when:'turnEnd',join:'and',ifs:[],acts:[{type:'damage',t:1,src:'stack',n:1,cap:0,to:'self'},{type:'stack',op:'half',src:'n',n:0,to:'self'}],limit:'any'}]}],
+ burn:['화상형 — 내성치 도달 시 발동 횟수만큼 2단계 피해',{cat:'debuff',cfg:{tol:{on:true,def:10}},rules:[{on:true,when:'reachTol',join:'and',ifs:[],acts:[{type:'stack',op:'consumeTol',src:'n',n:0,to:'self'},{type:'damage',t:2,src:'times',n:1,cap:0,to:'self'}],limit:'any'}]}],
+ bleed:['출혈형 — 내성치 도달 시 체력 잠금',{cat:'debuff',cfg:{tol:{on:true,def:10}},rules:[{on:true,when:'reachTol',join:'and',ifs:[],acts:[{type:'stack',op:'consumeTol',src:'n',n:0,to:'self'},{type:'lock',src:'times',n:1,cap:0,to:'self'}],limit:'any'}]}],
+ weak:['약화형 — 공격 주사위 -1, 턴 종료 -1',{cat:'debuff',cfg:{decay:{at:'turnEnd',mode:'minus',n:1}},rules:[{on:true,when:'attackRoll',join:'and',ifs:[],acts:[{type:'dice',sign:-1,src:'n',n:1}],limit:'any'}]}],
+ regen:['재생형 — 턴 시작 시 수치만큼 회복, -1',{cat:'buff',cfg:{decay:{at:'turnStart',mode:'minus',n:1}},rules:[{on:true,when:'turnStart',join:'and',ifs:[],acts:[{type:'heal',t:1,src:'stack',n:1,cap:3,to:'self'}],limit:'any'}]}],
+ thorns:['가시형 — 피격 시 공격자에게 피해',{cat:'buff',cfg:{decay:{at:'roundEnd',mode:'minus',n:1}},rules:[{on:true,when:'hitTaken',join:'and',ifs:[],acts:[{type:'damage',t:1,src:'stack',n:1,cap:3,to:'attacker'}],limit:'any'}]}],
+ shield:['보호막형 — 피격 시 대응 주사위 +1, 1 소비',{cat:'buff',cfg:{},rules:[{on:true,when:'respRoll',join:'and',ifs:[],acts:[{type:'dice',sign:1,src:'n',n:1},{type:'stack',op:'minus',src:'n',n:1,to:'self'}],limit:'any'}]}],
+ haste:['가속형 — 턴 시작 시 이동력 +수치, 턴 종료 0',{cat:'buff',cfg:{decay:{at:'turnEnd',mode:'zero'}},rules:[{on:true,when:'turnStart',join:'and',ifs:[],acts:[{type:'mv',sign:1,src:'stack',n:1,cap:6,to:'self'}],limit:'any'}]}],
+ spread:['전염형 — 턴 종료 시 주변 적에게 1 옮기기',{cat:'debuff',cfg:{},rules:[{on:true,when:'turnEnd',join:'and',ifs:[{kind:'stackMin',v:2}],acts:[{type:'give',kw:'@',src:'n',n:1,radius:1,rside:'same'}],limit:'any'}]}],
+ bomb:['시한폭탄형 — 3 쌓이면 폭발해 주변까지 피해',{cat:'debuff',cfg:{max:3},rules:[{on:true,when:'reachMax',join:'and',ifs:[],acts:[{type:'damage',t:2,src:'n',n:2,to:'self'},{type:'damage',t:1,src:'n',n:1,radius:1,rside:'same'},{type:'stack',op:'zero',to:'self'}],limit:'any'}]}]};
+
+/* 편집 창 */
+function kwRuleCard(r,q,i,P,n,d){const W=r.when||'turnEnd',ws=kwWarn({...d,rules:[r]}).map(x=>x.replace(/^규칙 1: /,''));
+ return`<div class="skr kwr ${r.on===false?'off':''}"><div class="skr-h"><b>규칙 ${i+1}</b><label class="row small"><input type="checkbox" data-b="${q}/on" data-r ${r.on!==false?'checked':''}> 활성</label>
+ <span class="ud"><button data-a="skMove" data-p="${P}" data-v="${i}" data-d="-1" ${i?'':'disabled'} aria-label="위로">▲</button><button data-a="skMove" data-p="${P}" data-v="${i}" data-d="1" ${i<n-1?'':'disabled'} aria-label="아래로">▼</button></span><button class="x" data-a="skDel" data-p="${P}" data-v="${i}" aria-label="규칙 삭제">✕</button></div>
+ <div class="skr-l"><span>WHEN</span><div class="fxr"><select data-b="${q}/when" data-r>${optsKV(KWW_L,W)}</select>${W==='otherGained'?`<small>키워드</small><select data-b="${q}/kwf" data-r>${optsKV({'':'모든 키워드',...Object.fromEntries(KWA().filter(x=>x!==d.name).map(x=>[x,x]))},r.kwf||'')}</select>`:''}</div></div>
+ <div class="skr-l"><span>IF</span><div class="grow">${(r.ifs||[]).length>1?`<select class="sk-join" data-b="${q}/join" data-r>${optsKV({and:'모두 만족 (AND)',or:'하나 만족 (OR)'},r.join)}</select>`:''}${(r.ifs||[]).map((c,m)=>kwIfRow(c,`${q}/ifs/${m}`,m,`${q}/ifs`)).join('')||'<small class="muted">조건 없음 = 항상</small>'}
+  ${(r.ifs||[]).length<12?`<button class="btn sm" data-a="kwIfAdd" data-p="${q}/ifs">+ 조건</button>`:''}</div></div>
+ <div class="skr-l"><span>DO</span><div class="grow">${(r.acts||[]).map((a,j)=>kwActRow(a,`${q}/acts/${j}`,j,`${q}/acts`,(r.acts||[]).length,d)).join('')||'<small class="muted">효과 없음</small>'}
+  ${(r.acts||[]).length<8?`<button class="btn sm" data-a="kwActAdd" data-p="${q}/acts">+ 효과</button>`:''}<small class="muted"> 위에서부터 차례로 실행</small></div></div>
+ <div class="skr-l"><span>LIMIT</span><div class="fxr"><select data-b="${q}/limit" data-r>${optsKV(KWLIM_L,r.limit||'any')}</select></div></div>
+ <p class="skr-t">${hl(kwRuleText(r,d.name))}</p>${ws.map(x=>`<p class="small warn">${esc(x)}</p>`).join('')}</div>`}
+function kwIfRow(c,q,m,P){const k=c.kind||'always';return`<div class="fxr"><select data-b="${q}/kind" data-r>${optsKV(KWIF_L,k)}</select>${KWIF_WHO.includes(k)?`<select data-b="${q}/who" data-r>${optsKV(KWWHO,c.who||'self')}</select>`:''}${k==='kwMin'||k==='kwMax'?`<select data-b="${q}/kw" data-r>${optsL(KWA_NC(),c.kw)}</select>`:''}${KWIF_NOV.includes(k)?'':num(q+'/v',c.v,0,k==='hpPct'?100:999,1)}<button class="x" data-a="skDel" data-p="${P}" data-v="${m}" aria-label="조건 삭제">✕</button></div>`}
+function kwActRow(a,q,j,P,n,d){const t=a.type||'damage',amt=(def='n')=>`<select data-b="${q}/src" data-r>${optsKV(KWAMT_L,a.src||def)}</select>${num(q+'/n',a.n??1,0,99,1)}${a.src&&a.src!=='n'?`<small>최대</small>${num(q+'/cap',a.cap,0,99,1)}`:''}`,
+ sign=`<select data-b="${q}/sign" data-r>${optsKV({'1':'+','-1':'-'},String(a.sign??1))}</select>`,
+ to=`<small>대상</small>${+a.radius>0?'':`<select data-b="${q}/to" data-r>${optsKV(KWWHO,a.to||'self')}</select>`}<small>반경</small>${num(q+'/radius',a.radius,0,6,1)}${+a.radius>0?`<select data-b="${q}/rside" data-r>${optsKV({opp:'보유자의 적',same:'보유자의 아군 (자신 제외)',sameMe:'보유자의 아군 (자신 포함)',all:'자신 제외 전체'},a.rside||'opp')}</select>`:''}`;
+ let body='';switch(t){case'damage':case'heal':body=`<select data-b="${q}/t" data-r>${tierOpts(a.t)}</select>${amt()}<small>칸</small>`;break;case'lock':body=`${amt()}<small>칸</small>`;break;
+  case'give':case'take':body=`<select data-b="${q}/kw" data-r>${optsL(KWA_NC(),a.kw)}</select>${amt()}`;break;
+  case'stack':body=`<select data-b="${q}/op" data-r>${optsKV(KWSTK_L,a.op||'minus')}</select>${['minus','plus','set'].includes(a.op||'minus')?amt():''}`;break;
+  case'convert':body=`<small>→</small><select data-b="${q}/kw" data-r>${optsL(KWA_NC().filter(x=>x!==d.name),a.kw)}</select><select data-b="${q}/src" data-r>${optsKV({stack:'전부',n:'N만'},a.src==='n'?'n':'stack')}</select>${a.src==='n'?num(q+'/n',a.n??1,0,99,1):''}`;break;
+  case'dice':case'res':case'charge':case'haste':case'bind':case'mv':body=`${sign}${amt()}`;break;
+  case'status':body=`<select data-b="${q}/key" data-r>${optsKV(ST_L,a.key||'대응불능')}</select><select data-b="${q}/on" data-r>${optsKV({'1':'켜기','0':'끄기'},String(a.on??'1'))}</select>`;break;
+  case'note':body=`<input type="text" class="sk-num" style="width:260px!important" maxlength="80" placeholder="기록에 남길 문장 (마스터가 처리)" data-b="${q}/text" value="${esc(a.text||'')}">`;break}
+ return`<div class="kwa"><div class="fxr"><b class="kwa-n">${j+1}</b><select data-b="${q}/type" data-r>${optsKV(KWDO_L,t)}</select>${body}<span class="ud"><button data-a="skMove" data-p="${P}" data-v="${j}" data-d="-1" ${j?'':'disabled'} aria-label="위로">▲</button><button data-a="skMove" data-p="${P}" data-v="${j}" data-d="1" ${j<n-1?'':'disabled'} aria-label="아래로">▼</button></span><button class="x" data-a="skDel" data-p="${P}" data-v="${j}" aria-label="효과 삭제">✕</button></div>${['dice','res','note','convert'].includes(t)?'':`<div class="fxr kwa-to">${to}</div>`}</div>`}
+function kwEditModal(){const k=UI.kwEd,d=Store.get('play/kwdefs/'+k);if(!d)return'<p>키워드가 없어요</p><div class="mfoot"><button class="btn" data-a="kwDefsOpen">목록으로</button></div>';M.wide=true;
+ const ed=kwCanEdit(d),P='play/kwdefs/'+k,c=d.cfg||{},rules=d.rules||[],w=kwWarn(d),U=units();
+ const dis=ed?'':'disabled';
+ return`<div class="kwe-h"><span class="kwd-ic" style="background-image:${kwIcon(d.name)}"></span><div><b>${esc(d.name)}</b><small>${esc((KW_CAT[d.cat]||KW_CAT.etc)[0])} · ${esc(d.desc||'설명 없음')}</small></div><span class="sp"></span><button class="btn sm" data-a="kwDefsOpen">← 목록</button></div>
+ ${ed?'':'<p class="small warn">만든 사람과 마스터만 고칠 수 있어요 (읽기 전용)</p>'}
+ <fieldset class="kwe-box" ${dis}><legend>공통 설정</legend>
+  <div class="fxr"><small>최대 중첩</small>${num(P+'/cfg/max',c.max,0,999,1)}<small>${+c.max?'':'(0 = 제한 없음)'}</small><span class="sep"></span><label class="row small"><input type="checkbox" data-b="${P}/cfg/tol/on" data-r ${c.tol?.on?'checked':''}> 내성치 사용</label>${c.tol?.on?`<small>기본값</small>${num(P+'/cfg/tol/def',c.tol.def||10,1,99,1)}<small>캐릭터별 값은 시트 스킬 탭 '키워드 내성치'에서</small>`:''}</div>
+  <div class="fxr"><small>자동 감소</small><select data-b="${P}/cfg/decay/at" data-r>${optsKV(KWDECAY_AT,c.decay?.at||'none')}</select>${c.decay?.at&&c.decay.at!=='none'?`<select data-b="${P}/cfg/decay/mode" data-r>${optsKV(KWDECAY_M,c.decay.mode||'minus')}</select>${(c.decay.mode||'minus')==='minus'?num(P+'/cfg/decay/n',c.decay.n||1,1,99,1):''}<small>(규칙이 끝난 뒤)</small>`:''}<span class="sep"></span><label class="row small"><input type="checkbox" data-b="${P}/cfg/keep" data-r ${c.keep?'checked':''}> 전투 종료·초기화 뒤에도 유지</label></div>
+ </fieldset>
+ ${ed?`<div class="kwe-tpl"><small>템플릿 (규칙을 덮어써요)</small>${Object.entries(KW_TPL).map(([id,[nm]])=>`<button class="btn sm" data-a="kwTpl" data-v="${id}" title="${esc(nm)}">${esc(nm.split(' — ')[0])}</button>`).join('')}</div>`:''}
+ <fieldset class="kwe-rules" ${dis}><legend>규칙 · 보유자 기준 (‘보유자’ = 이 키워드를 1 이상 가진 유닛)</legend>
+ ${rules.map((r,i)=>kwRuleCard(r,`${P}/rules/${i}`,i,`${P}/rules`,rules.length,d)).join('')||'<p class="muted small">규칙이 없으면 표시용 키워드예요 (부여 시 \'GM 확인\').</p>'}
+ ${rules.length<12?'<button class="btn sm pri" data-a="kwRuleAdd">+ 규칙</button>':''}</fieldset>
+ ${w.length?`<div class="kwe-warn"><b>작성 검사</b>${w.map(x=>`<p>${esc(x)}</p>`).join('')}</div>`:''}
+ <div class="kwe-test"><b>실행 시험</b> <small class="muted">전투에 놓인 유닛에 실제로 적용돼요 — 오른쪽 위 ↶로 되돌릴 수 있어요</small>
+  ${U.length?`<div class="fxr"><select id="kwtU" data-keep="1">${U.map(u=>`<option value="${esc(u.k)}" ${UI.kwtU===u.k?'selected':''}>${esc(uName(u))} (${esc(d.name)} ${+kwOf(u)[d.name]||0})</option>`).join('')}</select><input type="number" id="kwtN" data-keep="1" class="sk-num" min="1" max="99" value="${UI.kwtN||3}">
+  ${[['give','+N 부여'],['turnStart','턴 시작'],['turnEnd','턴 종료'],['roundStart','라운드 시작'],['roundEnd','라운드 종료'],['settle','정산'],['hitTaken','피격'],['moved','N칸 이동'],['clear','0으로']].map(([v,n])=>`<button class="btn sm" data-a="kwTest" data-v="${v}">${n}</button>`).join('')}</div>
+  <div class="kwe-log">${Object.values(BT().log||{}).sort((a,b)=>b.t-a.t).slice(0,6).map(l=>`<div>${esc(l.txt)}</div>`).join('')}</div>`:'<p class="small muted">전투 탭에 유닛을 배치하면 여기서 바로 시험할 수 있어요.</p>'}</div>
+ <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
+Object.assign(A,{
+ kwEdit(e){UI.kwEd=e.dataset.v;openModal('자작 키워드 자동화',kwEditModal)},
+ kwRuleAdd(){const d=Store.get('play/kwdefs/'+UI.kwEd);if(!kwCanEdit(d))return;Store.set(`play/kwdefs/${UI.kwEd}/rules`,[...(d.rules||[]),blankKwRule()]);drawModal()},
+ kwIfAdd(e){const p=e.dataset.p,l=Store.get(p)||[];if(l.length<12){Store.set(p,[...l,{kind:'stackMin',who:'self',kw:'화상',v:1}]);drawModal()}},
+ kwActAdd(e){const p=e.dataset.p,l=Store.get(p)||[];if(l.length<8){Store.set(p,[...l,blankKwAct()]);drawModal()}},
+ kwTpl(e){const d=Store.get('play/kwdefs/'+UI.kwEd);if(!d||!kwCanEdit(d))return;const[nm,t]=KW_TPL[e.dataset.v];if((d.rules||[]).length&&!confirm(`'${nm}' 템플릿으로 규칙과 공통 설정을 덮어쓸까요?`))return;
+  const rules=JSON.parse(JSON.stringify(t.rules).replace(/"kw":"@"/g,`"kw":${JSON.stringify(d.name)}`));
+  Store.set('play/kwdefs/'+UI.kwEd,{...d,cat:t.cat||d.cat,cfg:{max:0,keep:false,...JSON.parse(JSON.stringify(t.cfg||{})),tol:t.cfg?.tol||{on:false,def:10},decay:t.cfg?.decay||{at:'none'}},rules});toast(`${nm.split(' — ')[0]} 적용 — 숫자를 원하는 대로 고치세요`);drawModal()},
+ kwTest(e){const d=Store.get('play/kwdefs/'+UI.kwEd),k=$('#kwtU')?.value,n=Math.max(1,+$('#kwtN')?.value||1);UI.kwtU=k;UI.kwtN=n;if(!d||!unitRaw(k))return;const v=e.dataset.v;gmLog(`키워드 시험: ${d.name} · ${v}`);
+  if(v==='give'){withKwGiver(BT().cur?.k||null,()=>addKw(k,d.name,n,'시험'));settleKw([k],'시험')}
+  else if(v==='clear')kwSet(k,d.name,0,`시험: ${d.name} 0으로`);
+  else if(v==='settle')settleKw([k],'시험');
+  else if(v==='hitTaken'){const foe=units().find(u=>u.k!==k&&u.side!==unitRaw(k).side)||units().find(u=>u.k!==k);kwFire(k,'hitTaken',{attacker:foe?.k||null});settleKw([k],'시험')}
+  else if(v==='moved')kwHook([k],'moved',{steps:n});
+  else if(v==='turnStart'||v==='turnEnd')kwHook([k],v);else kwHook(units().map(u=>u.k),v);
+  drawModal();paintSoon()}});
 /* ---------- 대사음 · 카메라 · 파티클 (§54) ---------- */
 const TVOICES=[['blip','삑 (기본)'],['soft','부드럽게'],['low','낮고 거칠게'],['type','타자기'],['bell','맑게'],['glitch','지직 (뒤틀림)'],['file','효과음 파일'],['none','없음']];
 const tvKey=sp=>String(sp||'nar').replace(/[.#$\[\]\/]/g,'_');
