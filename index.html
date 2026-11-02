@@ -41,7 +41,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .btn:disabled{opacity:.45;cursor:default}
 
 /* 전체 틀 */
-#app{height:100dvh;display:grid;grid-template-rows:minmax(0,1fr) auto}
+#app{height:calc(100dvh/var(--uz,1));display:grid;grid-template-rows:minmax(0,1fr) auto}
 #main{min-height:0;overflow:auto;position:relative}
 #nav{display:flex;align-items:stretch;gap:14px;padding:9px 16px;background:var(--rivets),linear-gradient(#34241a,#180f0a);border-top:2px solid #8a6a48;box-shadow:0 -6px 18px rgba(0,0,0,.7)}
 .brand{display:flex;flex-direction:column;justify-content:center;border:2px solid #7d5f3f;box-shadow:inset 0 0 0 2px #000;padding:3px 16px;background:#0e0806;font:400 19px var(--ft);letter-spacing:.08em;line-height:1.1}
@@ -64,16 +64,16 @@ h2,h3{font-family:var(--fh);margin:0}
 @keyframes flick{0%,100%{opacity:1}30%{opacity:.9}55%{opacity:.97}80%{opacity:.86}}
 
 /* 림버스 컷씬풍 대사창 */
-.dlg{position:absolute;left:0;right:0;bottom:14%;min-height:21%;z-index:5;padding:clamp(14px,3.2vh,30px) 13% clamp(14px,3.2vh,30px) 20%;cursor:pointer}
+.dlg{position:absolute;left:0;right:0;bottom:14%;min-height:21%;z-index:5;padding:clamp(14px,calc(3.2vh/var(--uz,1)),30px) 13% clamp(14px,calc(3.2vh/var(--uz,1)),30px) 20%;cursor:pointer}
 .dlg::before{content:"";position:absolute;inset:0 7%;z-index:-1;background:repeating-linear-gradient(0deg,rgba(0,0,0,.26) 0 2px,transparent 2px 5px),linear-gradient(rgba(47,32,20,.86),rgba(30,20,13,.92));-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.dlg-txt{font:500 clamp(15px,1.5vw,20px)/1.7 var(--fb);color:#ece4d3;text-shadow:0 1px 3px #000;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+.dlg-txt{font:500 clamp(15px,calc(1.5vw/var(--uz,1)),20px)/1.7 var(--fb);color:#ece4d3;text-shadow:0 1px 3px #000;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
 .dlg.nar{padding-left:13%;text-align:center}.dlg.nar .dlg-txt{color:#cfc0a8}
 .dlg-next{position:absolute;right:12%;bottom:10px;color:var(--amber);animation:blink 1s steps(2) infinite}
 .plank{background:linear-gradient(90deg,#3a271a,#5e4330 50%,#3a271a);border:1px solid #7d5f3f;box-shadow:inset 0 0 0 2px #1f140c,0 4px 9px rgba(0,0,0,.75);color:#f3e7cf;font-family:var(--fb);font-weight:900;letter-spacing:.05em}
 .sp{position:absolute;left:4.5%;top:-24px;display:flex;flex-direction:column;align-items:flex-start;gap:0;transform:rotate(-3deg);transform-origin:left center}
 .sp-sub,.sp-name{position:relative;display:block}
-.sp-sub{margin-left:12px;padding:2px 15px;font-size:clamp(11px,1vw,14px);color:#dbc49c;z-index:1}
-.sp-name{padding:6px 26px;font-size:clamp(16px,1.65vw,23px)}
+.sp-sub{margin-left:12px;padding:2px 15px;font-size:clamp(11px,calc(1vw/var(--uz,1)),14px);color:#dbc49c;z-index:1}
+.sp-name{padding:6px 26px;font-size:clamp(16px,calc(1.65vw/var(--uz,1)),23px)}
 .sp-sub::before,.sp-name::before{content:"";position:absolute;right:100%;top:50%;width:18px;height:2px;background:var(--brass)}
 .sp-sub::after,.sp-name::after{content:"";position:absolute;left:-23px;top:calc(50% - 4px);width:9px;height:9px;border:2px solid var(--brass);border-radius:50%;background:#150d08}
 .cur{display:inline-block;width:2px;height:1em;background:var(--amber);margin-left:2px;vertical-align:-2px;animation:blink .8s steps(2) infinite}
@@ -90,7 +90,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .fig.leave{opacity:0}
 @keyframes figin{from{opacity:0}}
 .tools{position:absolute;right:16px;top:12px;z-index:6}
-.place{position:absolute;left:1%;top:10%;z-index:5;padding:7px 28px;font-size:clamp(14px,1.45vw,20px);transform:rotate(-3deg)}
+.place{position:absolute;left:1%;top:10%;z-index:5;padding:7px 28px;font-size:clamp(14px,calc(1.45vw/var(--uz,1)),20px);transform:rotate(-3deg)}
 .orn{position:absolute;left:50%;bottom:100%;width:66px;height:20px;margin-left:-33px;margin-bottom:-1px}
 .menuwrap{position:absolute;right:0;top:9%;z-index:8;display:flex;flex-direction:column;align-items:flex-end}
 .menu-btn{display:flex;align-items:center;background:none;border:0;padding:0;cursor:pointer}
@@ -104,7 +104,7 @@ h2,h3{font-family:var(--fh);margin:0}
 @keyframes tydot{50%{opacity:.55}}
 .bar{display:grid;grid-template-columns:150px 110px minmax(0,1fr) auto auto auto;gap:6px;padding:8px 16px;background:linear-gradient(#2a1c13,#150d08);border-top:2px solid #5b4029}
 .bar textarea{min-height:40px;height:40px;resize:none}
-.log{position:absolute;inset:0;z-index:7;background:rgba(7,4,3,.93);overflow:auto;padding:52px clamp(16px,12vw,190px) 24px}
+.log{position:absolute;inset:0;z-index:7;background:rgba(7,4,3,.93);overflow:auto;padding:52px clamp(16px,calc(12vw/var(--uz,1)),190px) 24px}
 .log-row{padding:9px 0;border-bottom:1px solid rgba(110,79,53,.5);font-family:var(--fh)}
 .log-row b{color:var(--amber);margin-right:10px}.log-row small{color:var(--mute);margin-left:8px}.log-row.nar{color:#cfc0a8;font-style:italic}.log-row div{white-space:pre-wrap}
 
@@ -112,7 +112,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .inv{min-height:100%;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 16px}
 .inv-top{width:100%;max-width:1400px}
 .inv-top select{width:auto;max-width:240px}
-.inv-stage{width:min(100%,calc((100dvh - 180px)*16/9));aspect-ratio:16/9;border:2px solid var(--line)}
+.inv-stage{width:min(100%,calc((calc(100dvh/var(--uz,1)) - 180px)*16/9));aspect-ratio:16/9;border:2px solid var(--line)}
 .inv-stage.edit{cursor:crosshair}
 .pt{position:absolute;z-index:4;width:30px;height:30px;margin:-15px 0 0 -15px;border:1px solid var(--amber);background:rgba(255,177,59,.14);transform:rotate(45deg);cursor:pointer;animation:ptp 2.2s ease-in-out infinite;padding:0}
 .pt span{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;background:var(--amber)}
@@ -130,7 +130,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .plate{border:2px solid #5b4029;box-shadow:inset 0 0 0 1px #000;background:var(--rivets),linear-gradient(#2c1e14,#1a110b);padding:11px 15px}
 .plate small{display:block;color:var(--mute);font-size:12px}
 .plate b{font:400 25px var(--fn);color:var(--amber)}
-.monitor{position:relative;aspect-ratio:1586/992;align-self:center;justify-self:center;width:min(100%,calc((100dvh - 190px)*1.6))}
+.monitor{position:relative;aspect-ratio:1586/992;align-self:center;justify-self:center;width:min(100%,calc((calc(100dvh/var(--uz,1)) - 190px)*1.6))}
 .frame{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;filter:drop-shadow(0 10px 18px #000)}
 /* 틀 이미지의 구멍 위치(%)보다 살짝 넓혀 틀 아래로 파고들게 한다 */
 .map{position:absolute;left:11.6%;right:11.55%;top:16.4%;bottom:17.5%;overflow:hidden;background:#150403;isolation:isolate}
@@ -140,7 +140,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .map svg{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
 .map .scan{position:absolute;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 70px #000}
 .marker{position:absolute;z-index:4;width:15px;height:15px;margin:-8px 0 0 -8px;background:var(--amber);transform:rotate(45deg);box-shadow:0 0 12px var(--amber);animation:ptp 1.6s infinite}
-.sign{position:absolute;z-index:4;right:0;top:7%;min-width:44%;padding:9px 26px;text-align:right;font:900 clamp(16px,2.6vw,30px) var(--fh);background:linear-gradient(90deg,transparent,#1a0f09 16%);color:#fff;border-top:1px solid var(--amber);border-bottom:1px solid var(--amber);box-shadow:0 7px 0 -4px var(--red2)}
+.sign{position:absolute;z-index:4;right:0;top:7%;min-width:44%;padding:9px 26px;text-align:right;font:900 clamp(16px,calc(2.6vw/var(--uz,1)),30px) var(--fh);background:linear-gradient(90deg,transparent,#1a0f09 16%);color:#fff;border-top:1px solid var(--amber);border-bottom:1px solid var(--amber);box-shadow:0 7px 0 -4px var(--red2)}
 
 .train{height:100%;min-height:320px}
 /* shortcut: 왼쪽으로 달리는 열차 기준이라 배경이 오른쪽으로 흐른다. 오른쪽을 보는 열차를 쓰게 되면 방향 설정을 추가 */
@@ -158,8 +158,8 @@ h2,h3{font-family:var(--fh);margin:0}
 @keyframes sweep{from{background-position:130% 0}to{background-position:-30% 0}}
 .rail-cap{position:absolute;right:5%;top:37%;width:min(40%,560px);z-index:4;pointer-events:none;color:#ff2a22;opacity:0;filter:blur(16px);transform:translateX(14px) scale(1.03);transition:opacity 1.9s ease,filter 2.2s ease,transform 2.6s ease}
 .rail-cap.on{opacity:1;filter:blur(0);transform:none}
-.rail-cap b{display:block;font:900 clamp(22px,2.9vw,42px)/1.22 var(--fb);white-space:pre-wrap;word-break:keep-all;text-shadow:0 0 18px rgba(255,30,20,.5)}
-.rail-cap p{margin:9px 0 0;font:500 clamp(12px,1vw,15px)/1.6 var(--fb);white-space:pre-wrap;word-break:keep-all;color:#e23a2e}
+.rail-cap b{display:block;font:900 clamp(22px,calc(2.9vw/var(--uz,1)),42px)/1.22 var(--fb);white-space:pre-wrap;word-break:keep-all;text-shadow:0 0 18px rgba(255,30,20,.5)}
+.rail-cap p{margin:9px 0 0;font:500 clamp(12px,calc(1vw/var(--uz,1)),15px)/1.6 var(--fb);white-space:pre-wrap;word-break:keep-all;color:#e23a2e}
 .cap-edit{position:absolute;right:16px;bottom:14px;z-index:6;width:300px;padding:10px;background:rgba(20,13,9,.92);border:1px solid #7d5f3f}
 .train .tools{top:12px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -195,12 +195,12 @@ h2,h3{font-family:var(--fh);margin:0}
 .rng{font-size:18px;white-space:nowrap}
 .resist{display:flex;align-items:center;gap:7px;margin-right:8px}.resist .oct{width:40px;height:40px}.resist small{font-size:13px;line-height:1.3;color:#c8bba6;text-align:center}.resist small b{font-size:15px}
 .oct{display:inline-grid;place-items:center;flex:none;width:36px;height:36px;font:900 15px var(--fb);color:#fff;background:radial-gradient(circle,color-mix(in srgb,var(--c) 45%,#000),color-mix(in srgb,var(--c) 85%,#000));clip-path:polygon(29% 0,71% 0,100% 29%,100% 71%,71% 100%,29% 100%,0 71%,0 29%);text-shadow:0 1px 2px #000}
-.sh-side{position:relative;display:grid;grid-template-rows:auto auto minmax(0,1fr);min-height:0;padding:1.7vh 1.6vw 4.6vh 0;background:linear-gradient(90deg,#000,#0d0a08 10%,#0b0806)}
+.sh-side{position:relative;display:grid;grid-template-rows:auto auto minmax(0,1fr);min-height:0;padding:calc(1.7vh/var(--uz,1)) calc(1.6vw/var(--uz,1)) calc(4.6vh/var(--uz,1)) 0;background:linear-gradient(90deg,#000,#0d0a08 10%,#0b0806)}
 .cut{position:relative;background:#4d3b2a;--cut:polygon(0 0,calc(100% - 44px) 0,100% 44px,100% calc(100% - 44px),calc(100% - 44px) 100%,0 100%);clip-path:var(--cut)}
 .cut::before{content:"";position:absolute;inset:2px 2px 2px 0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px),#0f0b08;clip-path:var(--cut);z-index:0}
 .cut>*{position:relative;z-index:1}
-.sh-head{padding:6.4vh 66px 3.6vh 12%;overflow:hidden}
-.ghost{position:absolute!important;left:7%;top:4.2vh;font:900 clamp(34px,3.6vw,56px)/1.1 var(--fb);color:color-mix(in srgb,var(--c) 30%,#0f0b08);white-space:nowrap;overflow:hidden;max-width:58%}
+.sh-head{padding:calc(6.4vh/var(--uz,1)) 66px calc(3.6vh/var(--uz,1)) 12%;overflow:hidden}
+.ghost{position:absolute!important;left:7%;top:calc(4.2vh/var(--uz,1));font:900 clamp(34px,calc(3.6vw/var(--uz,1)),56px)/1.1 var(--fb);color:color-mix(in srgb,var(--c) 30%,#0f0b08);white-space:nowrap;overflow:hidden;max-width:58%}
 .sh-vert{position:absolute!important;right:34px;top:40px;writing-mode:vertical-rl;font:400 16px/1.05 var(--fd);color:#3e5ea8;letter-spacing:.04em;max-height:88px;overflow:hidden}
 .sh-tags{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-height:24px;margin-top:-3vh}
 .sh-tags i{width:17px;height:17px;color:#c9a064;border-bottom:1px solid #c9a064}.sh-tags svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4}
@@ -210,7 +210,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .emblem{flex:none;display:grid;place-items:center;width:72px;height:72px;margin-right:-22px;z-index:2;position:relative;background:none}
 .emblem::after{content:"";position:absolute;inset:-5px;background:var(--a-ring) center/contain no-repeat;pointer-events:none}
 .emblem .oct{width:54px;height:54px;font-size:24px}
-.sh-name{flex:1;display:flex;align-items:center;height:42px;min-width:0;padding:0 8px 0 36px;font:700 clamp(20px,2.25vw,34px) var(--fb);color:#efe4cc;text-shadow:2px 2px 0 #1a120c;white-space:nowrap;overflow:hidden;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 66%,#000),color-mix(in srgb,var(--c) 42%,#000) 74%,transparent)}
+.sh-name{flex:1;display:flex;align-items:center;height:42px;min-width:0;padding:0 8px 0 36px;font:700 clamp(20px,calc(2.25vw/var(--uz,1)),34px) var(--fb);color:#efe4cc;text-shadow:2px 2px 0 #1a120c;white-space:nowrap;overflow:hidden;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 66%,#000),color-mix(in srgb,var(--c) 42%,#000) 74%,transparent)}
 .sh-gauges{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr) 62px minmax(0,.85fr);gap:12px;align-items:center;margin-top:12px;padding-right:8px}
 .lvt{display:flex;align-items:baseline;gap:6px;color:#a89578}.lvt span{font:400 26px var(--fn)}.lvt b{font-size:40px;line-height:1;color:#d9c9a8}.lvt em{margin-left:auto;font-style:normal;font-size:19px;transform-origin:right center}
 .lvbar{height:11px;margin-top:2px;background:#3a342c;border:1px solid #5a5044}.lvbar i{display:block;height:100%;background:linear-gradient(90deg,#a81e1a,#ffb13b)}
@@ -230,7 +230,7 @@ h2,h3{font-family:var(--fh);margin:0}
 .sh-hr{border:0;border-top:1px solid #3a2f24;margin:12px 0}
 .rings{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .ring{position:relative;display:flex;flex-direction:column;align-items:center;padding:0;background:none;border:0;color:#efe3cf;cursor:pointer}
-.ring-img{position:relative;display:grid;place-items:center;width:clamp(74px,6.8vw,104px);aspect-ratio:1;border-radius:50%;background:#0d0a08 center/cover no-repeat}
+.ring-img{position:relative;display:grid;place-items:center;width:clamp(74px,calc(6.8vw/var(--uz,1)),104px);aspect-ratio:1;border-radius:50%;background:#0d0a08 center/cover no-repeat}
 .ring-img::after{content:"";position:absolute;inset:-7%;background:var(--a-ring) center/contain no-repeat;pointer-events:none}
 .ring-img.lg{flex:none;width:112px}
 .ring-img i{width:34%;height:44%;border:2px solid #4d3b2a;border-radius:40% 40% 8% 8%}
@@ -289,7 +289,7 @@ input.sk-name{height:40px;margin-bottom:9px;border:0;box-shadow:none;font-size:2
 .stand img{width:54px;height:66px;object-fit:contain;background:#000}
 #modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72)}
 #modal:empty{display:none}
-.mbox{width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--rivets),linear-gradient(#2e1f15,#170f0a);border:3px solid #8a6a48;box-shadow:inset 0 0 0 2px #000,0 14px 40px #000;padding:18px}
+.mbox{width:min(560px,100%);max-height:calc(calc(100dvh/var(--uz,1)) - 32px);overflow:auto;background:var(--rivets),linear-gradient(#2e1f15,#170f0a);border:3px solid #8a6a48;box-shadow:inset 0 0 0 2px #000,0 14px 40px #000;padding:18px}
 .mbox>h3{display:inline-block;font:900 17px var(--fb);color:#f3e7cf;margin-bottom:13px;padding:5px 22px;background:linear-gradient(90deg,#3a271a,#5e4330 50%,#3a271a);border:1px solid #7d5f3f;box-shadow:inset 0 0 0 2px #1f140c;transform:rotate(-1.2deg)}
 .mfoot{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
 .result{margin-top:10px;padding:10px;border:1px solid var(--amber);font-family:var(--fh)}.result b{color:var(--amber);font-size:18px}
@@ -331,8 +331,8 @@ input.sk-name{height:40px;margin-bottom:9px;border:0;box-shadow:none;font-size:2
 #login.off .lg-form{animation:lgout .25s both}
 @keyframes lgin{from{opacity:0}}@keyframes lgout{to{opacity:0}}
 .cab{overflow:hidden;align-items:center}
-.monitor{width:min(100%,calc((100dvh - 100px)*1.6));margin:-34px 0}
-.sign{width:34%;top:5%;font-size:clamp(13px,1.5vw,22px);padding:0 5% 1.5% 0}
+.monitor{width:min(100%,calc((calc(100dvh/var(--uz,1)) - 100px)*1.6));margin:-34px 0}
+.sign{width:34%;top:5%;font-size:clamp(13px,calc(1.5vw/var(--uz,1)),22px);padding:0 5% 1.5% 0}
 .sh-scroll .f{gap:0;margin-bottom:15px;color:#e9dcc4}
 .sh-scroll .f>span{align-self:flex-start;padding:2px 34px 2px 11px;font:400 14px var(--fk);letter-spacing:.03em;color:#21150b;background:repeating-linear-gradient(115deg,rgba(0,0,0,.1) 0 2px,transparent 2px 6px),linear-gradient(100deg,#c89b67 76%,transparent 94%)}
 .sh-scroll .f input,.sh-scroll .f select,.sh-scroll .f textarea,.dos-why input{width:100%;padding:8px 10px;background:linear-gradient(0deg,rgba(255,255,255,.035),transparent);border:0;border-bottom:2px solid #6e5640;box-shadow:none;font:400 16px var(--fb);color:#f3ead8;transition:border-color .15s,background .15s}
@@ -349,7 +349,7 @@ input.sk-name{height:40px;margin-bottom:9px;border:0;box-shadow:none;font-size:2
 .sincards{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-bottom:16px}
 .sincard{position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 2px 9px;background:linear-gradient(#17100b,#0b0705);border:2px solid #33261b;box-shadow:inset 0 0 0 1px #000;color:#8b7a66;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .12s}
 .sincard:hover{transform:translateY(-2px);border-color:#8a6a48}
-.sc-ic{width:clamp(42px,3.9vw,62px);aspect-ratio:1;background-position:center;background-size:contain;background-repeat:no-repeat;filter:grayscale(.9) brightness(.55);transition:filter .15s}
+.sc-ic{width:clamp(42px,calc(3.9vw/var(--uz,1)),62px);aspect-ratio:1;background-position:center;background-size:contain;background-repeat:no-repeat;filter:grayscale(.9) brightness(.55);transition:filter .15s}
 .sincard b{margin-top:6px;font:400 16px var(--fk)}.sincard small{font-size:11.5px}
 .sincard em{margin-top:6px;padding:1px 6px;font:400 11.5px var(--fb);font-style:normal;white-space:nowrap;background:#1f1812}
 .sincard.on{border-color:var(--c);box-shadow:0 0 13px color-mix(in srgb,var(--c) 70%,transparent),inset 0 0 22px color-mix(in srgb,var(--c) 32%,transparent);color:#f3ead8}
@@ -384,7 +384,7 @@ input.sk-name{height:40px;margin-bottom:9px;border:0;box-shadow:none;font-size:2
 .more{margin-top:0;font-size:16px;color:#8b7a66}
 .sincards.mini{gap:5px;margin-bottom:0}
 .sincards.mini .sincard{padding:9px 2px 7px}
-.sincards.mini .sc-ic{width:clamp(38px,3vw,48px)}
+.sincards.mini .sc-ic{width:clamp(38px,calc(3vw/var(--uz,1)),48px)}
 .sincards.mini .sincard:not(.on) .sc-ic{filter:saturate(.5) brightness(.72)}
 .sincards.mini .sincard:hover .sc-ic{filter:none}
 .sincards.mini .sincard b{margin-top:4px;font-size:14.5px}
@@ -408,7 +408,7 @@ input.sk-name{height:40px;margin-bottom:9px;border:0;box-shadow:none;font-size:2
 .cell.s1{background:linear-gradient(135deg,#e23a2e,#7c1411);border-color:#ff8a70;box-shadow:0 0 9px #e23a2e}
 .cell.s2{background:linear-gradient(135deg,#7a4fc0,#2f1a55);border-color:#c9a8ff;box-shadow:0 0 9px #8a4bb0}
 .hp-step{display:flex;gap:4px}.hp-step .btn{width:28px;padding:2px 0}
-.inv{position:relative;height:100%;min-height:0;padding:0;--u:max(calc(100vw/16),calc((100dvh - 104px)/9));background:#000 var(--bg-inv) center/cover no-repeat}
+.inv{position:relative;height:100%;min-height:0;padding:0;--u:max(calc(calc(100vw/var(--uz,1))/16),calc((calc(100dvh/var(--uz,1)) - 104px)/9));background:#000 var(--bg-inv) center/cover no-repeat}
 /* 벽 이미지의 금속판 중심이 그림 세로 45% 지점이라 그만큼 올린다 */
 .inv-stage{position:absolute;left:50%;top:calc(50% - .45*var(--u));width:calc(8.3*var(--u));transform:translate(-50%,-50%);border:0;border-radius:calc(.34*var(--u));box-shadow:0 0 16px 4px rgba(0,0,0,.85)}
 .inv-top{position:absolute;left:16px;top:10px;z-index:6;width:auto}
@@ -684,7 +684,7 @@ label.use input{flex:none;margin-top:2px}
 .cs-fig.l{--fc:var(--c)}.cs-fig.r{--fc:#6b6b6b}
 .cs-fig.r .cs-card{transform:skewX(9deg);border-left:0;border-right:3px solid var(--fc)}
 .cs.in .cs-card{opacity:.55}
-.cs-card span{position:absolute;top:2%;left:4%;writing-mode:vertical-rl;font:400 clamp(60px,9vw,150px)/1 var(--fk);color:transparent;-webkit-text-stroke:1.5px rgba(255,235,210,.28);white-space:nowrap}
+.cs-card span{position:absolute;top:2%;left:4%;writing-mode:vertical-rl;font:400 clamp(60px,calc(9vw/var(--uz,1)),150px)/1 var(--fk);color:transparent;-webkit-text-stroke:1.5px rgba(255,235,210,.28);white-space:nowrap}
 .cs-fig.r .cs-card span{left:auto;right:4%}
 .cs-body{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;transition:transform .14s,filter .14s}
 .cs-fig.r .cs-body{transform:scaleX(-1)}
@@ -712,16 +712,16 @@ label.use input{flex:none;margin-top:2px}
 .cs-head{position:absolute;top:6%;display:flex;align-items:center;gap:14px;opacity:0;transition:transform .35s .08s,opacity .35s .08s}
 .cs-head.l{left:6%;transform:translateX(-60px)}.cs-head.r{right:6%;transform:translateX(60px)}
 .cs.in .cs-head{opacity:1;transform:none}
-.cs-plate{padding:6px 30px 7px 18px;font:400 clamp(20px,2.3vw,32px) var(--fk);color:#fff3df;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));border:2px solid rgba(255,255,255,.3);box-shadow:0 6px 16px #000;transform:skewX(-12deg) rotate(-3deg);white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.cs-plate{padding:6px 30px 7px 18px;font:400 clamp(20px,calc(2.3vw/var(--uz,1)),32px) var(--fk);color:#fff3df;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));border:2px solid rgba(255,255,255,.3);box-shadow:0 6px 16px #000;transform:skewX(-12deg) rotate(-3deg);white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.5)}
 .cs-head.r .cs-plate{transform:skewX(12deg) rotate(3deg);padding:6px 18px 7px 30px;background:linear-gradient(270deg,#4a4a4a,#161616)}
 .cs-head.r .cs-plate.evade{background:linear-gradient(270deg,#2387a6,#0b2e3a)}.cs-head.r .cs-plate.guard{background:linear-gradient(270deg,#55698c,#18202e)}
 .cs-plate small{display:block;font:700 12px var(--fb);opacity:.8;letter-spacing:.04em}
-.cs-badge{position:relative;width:clamp(96px,9.5vw,132px);aspect-ratio:1;display:grid;place-items:center;transition:transform .3s,filter .3s,opacity .3s}
+.cs-badge{position:relative;width:clamp(96px,calc(9.5vw/var(--uz,1)),132px);aspect-ratio:1;display:grid;place-items:center;transition:transform .3s,filter .3s,opacity .3s}
 .cs-badge::before{content:"";position:absolute;inset:0;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);background:radial-gradient(circle,#1a0f09 50%,#7c1411 53%,#e23a2e 64%,#ff9a3d 72%,#7c1411 84%)}
 .cs-badge.crit::before{background:radial-gradient(circle,#2a1a05 50%,#a07a1e 53%,#ffd23b 64%,#fff6c4 72%,#a07a1e 84%)}
 .cs-badge.crit{animation:cscrit 1s ease-in-out infinite alternate}
 @keyframes cscrit{to{filter:drop-shadow(0 0 18px #ffd23b)}}
-.cs-badge b{position:relative;font:400 clamp(48px,5.2vw,76px)/1 var(--fn);color:#fff3df;text-shadow:0 0 14px #e23a2e,0 3px 0 #000}
+.cs-badge b{position:relative;font:400 clamp(48px,calc(5.2vw/var(--uz,1)),76px)/1 var(--fn);color:#fff3df;text-shadow:0 0 14px #e23a2e,0 3px 0 #000}
 .cs-badge.crit b{color:#fff6c4;text-shadow:0 0 18px #ffb000,0 3px 0 #000}
 .cs-badge b.bump{animation:csbump .28s cubic-bezier(.2,1.8,.4,1)}
 @keyframes csbump{from{transform:scale(1.7);filter:brightness(2)}}
@@ -738,7 +738,7 @@ label.use input{flex:none;margin-top:2px}
 @keyframes csshard{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rz));opacity:0}}
 /* 불꽃·번쩍·베기 */
 .cs-spark{position:absolute;left:50%;top:52%;width:30px;height:30px;border-radius:50%;opacity:0;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff,#ffe58a 30%,rgba(255,120,30,.6) 52%,transparent 70%)}
-.cs-spark::before,.cs-spark::after{content:"";position:absolute;left:50%;top:50%;width:170vw;height:4px;transform:translate(-50%,-50%) rotate(-24deg);background:linear-gradient(90deg,transparent,#fff3c4 46%,#fff 50%,#fff3c4 54%,transparent)}
+.cs-spark::before,.cs-spark::after{content:"";position:absolute;left:50%;top:50%;width:calc(170vw/var(--uz,1));height:4px;transform:translate(-50%,-50%) rotate(-24deg);background:linear-gradient(90deg,transparent,#fff3c4 46%,#fff 50%,#fff3c4 54%,transparent)}
 .cs-spark::after{transform:translate(-50%,-50%) rotate(16deg);background:linear-gradient(90deg,transparent,var(--c) 44%,#fff 50%,var(--c) 56%,transparent)}
 .cs-spark.go{animation:csspark .5s ease-out}
 @keyframes csspark{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(16)}}
@@ -756,7 +756,7 @@ label.use input{flex:none;margin-top:2px}
 .cs-clash.go{animation:cspop .4s cubic-bezier(.2,1.6,.4,1) forwards}
 .cs-clash b{font:400 64px var(--fk);color:#ffcf6a;text-shadow:0 0 18px #e23a2e,0 4px 0 #000;font-style:italic}
 .cs-res{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);text-align:center;white-space:nowrap}
-.cs-res b{display:block;font:400 clamp(52px,6vw,84px)/1 var(--fk);letter-spacing:.04em;font-style:italic;animation:cspop .35s cubic-bezier(.2,1.6,.4,1)}
+.cs-res b{display:block;font:400 clamp(52px,calc(6vw/var(--uz,1)),84px)/1 var(--fk);letter-spacing:.04em;font-style:italic;animation:cspop .35s cubic-bezier(.2,1.6,.4,1)}
 .cs-res .hit{color:#ff6a4d;text-shadow:0 0 26px #e23a2e,0 5px 0 #000}.cs-res .miss{color:#9fd6ff;text-shadow:0 0 26px #3f8fb8,0 5px 0 #000}
 .cs-res small{display:block;margin-top:6px;font:800 18px var(--fb);color:#ffcf6a;text-shadow:0 2px 3px #000}
 .cs-res .dmg{margin-top:6px;display:flex;gap:16px;justify-content:center;animation:cspop .4s .12s cubic-bezier(.2,1.6,.4,1) both}
@@ -776,7 +776,7 @@ label.use input{flex:none;margin-top:2px}
 .pose-img .sil{height:100%;opacity:.45}
 .cs-pt{position:absolute;height:3px;margin-top:-1.5px;border-radius:2px;transform-origin:0 50%;transform:rotate(var(--a));box-shadow:0 0 6px currentColor;animation:cspt .5s cubic-bezier(.1,.7,.3,1) forwards;pointer-events:none}
 @keyframes cspt{0%{transform:translate(0,0) rotate(var(--a)) scaleX(1.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--a)) scaleX(.1);opacity:0}}
-.cs-cut{position:absolute;width:min(620px,48vw);height:150px;margin:-75px 0 0 max(-310px,-24vw);transform:rotate(var(--r)) scaleX(var(--sx,1));animation:cscut .55s cubic-bezier(.2,.9,.3,1) both;pointer-events:none}
+.cs-cut{position:absolute;width:min(620px,calc(48vw/var(--uz,1)));height:150px;margin:-75px 0 0 max(-310px,-24vw);transform:rotate(var(--r)) scaleX(var(--sx,1));animation:cscut .55s cubic-bezier(.2,.9,.3,1) both;pointer-events:none}
 .cs-cut svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px var(--c))}
 .cs-cut path{fill:color-mix(in srgb,var(--c) 70%,#fff)}.cs-cut path.core{fill:#fff}
 @keyframes cscut{0%{clip-path:inset(0 100% 0 0);transform:rotate(var(--r)) scaleX(var(--sx,1)) scaleY(1.3)}30%{clip-path:inset(0 0 0 0);opacity:1;transform:rotate(var(--r)) scaleX(var(--sx,1)) scaleY(1)}100%{clip-path:inset(0 0 0 0);opacity:0;transform:rotate(var(--r)) scaleX(calc(var(--sx,1)*1.12)) scaleY(.12)}}
@@ -870,8 +870,8 @@ label.use input{flex:none;margin-top:2px}
 
 /* 채팅·주사위 기록 */
 .dk-tg{position:relative}.dk-tg em{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red2);color:#fff;font:700 11px/18px var(--fn,sans-serif);font-style:normal;box-shadow:0 0 0 2px #1a110b}
-#dock{position:fixed;left:14px;bottom:112px;z-index:40;width:min(380px,calc(100vw - 28px));height:min(540px,calc(100vh - 200px));display:none;flex-direction:column;background:rgba(14,9,6,.94);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;backdrop-filter:blur(2px)}
-#dock.on{display:flex}#dock.t-talk{bottom:168px;height:min(500px,calc(100vh - 250px))}
+#dock{position:fixed;left:14px;bottom:112px;z-index:40;width:min(380px,calc(calc(100vw/var(--uz,1)) - 28px));height:min(540px,calc(calc(100vh/var(--uz,1)) - 200px));display:none;flex-direction:column;background:rgba(14,9,6,.94);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;backdrop-filter:blur(2px)}
+#dock.on{display:flex}#dock.t-talk{bottom:168px;height:min(500px,calc(calc(100vh/var(--uz,1)) - 250px))}
 .dk-hd{display:flex;align-items:center;gap:4px;padding:6px;border-bottom:1px solid #4a3626;background:linear-gradient(#2a1c12,#1a110b)}
 .dk-hd button{background:none;border:1px solid transparent;color:var(--mute);padding:4px 10px;font:700 14px var(--fk);cursor:pointer}
 .dk-hd button.on{color:var(--ink);border-color:#8a6a48;background:#3a271a}.dk-hd .sp{flex:1}.dk-hd .x{font-size:18px;padding:0 8px}
@@ -889,7 +889,7 @@ label.use input{flex:none;margin-top:2px}
 .dl-res{margin-top:4px;font-weight:700;color:#ffcf6a;font-size:13px}.dl.hit .dl-res{color:#ff8a7a}.dl.miss .dl-res{color:#8fd8ff}
 .dl-r{display:flex;align-items:center;gap:4px;margin-top:3px;font-size:13px}.dl-r b{min-width:76px;color:var(--ink)}.dl-r em{font-style:normal;color:#ffcf6a;margin-left:4px}
 #dicePop{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:9000;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
-#dicePop .dl{min-width:300px;max-width:min(560px,92vw);padding:10px 16px;background:rgba(18,11,7,.95);box-shadow:0 8px 24px #000;border-width:1px 1px 1px 4px;animation:dpop .28s cubic-bezier(.2,1.6,.4,1)}
+#dicePop .dl{min-width:300px;max-width:min(560px,calc(92vw/var(--uz,1)));padding:10px 16px;background:rgba(18,11,7,.95);box-shadow:0 8px 24px #000;border-width:1px 1px 1px 4px;animation:dpop .28s cubic-bezier(.2,1.6,.4,1)}
 #dicePop .dl .die{width:34px;height:34px;font-size:20px;border-radius:7px}#dicePop .dl-h b{font-size:16px}#dicePop .dl-res{font-size:16px}#dicePop .dl.out{opacity:0;transform:translateY(-8px);transition:.4s}
 @keyframes dpop{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:none}}
 /* 결정 권한이 없는 사람에게는 대응 조작을 잠근다 */
@@ -912,8 +912,8 @@ label.use input{flex:none;margin-top:2px}
 .tk-old{position:absolute;inset:0;z-index:0;background:#0c0908 center/cover no-repeat;filter:brightness(.5) contrast(1.08) saturate(.68) sepia(.16);animation:tkold 1s ease-in forwards}
 @keyframes tkold{to{opacity:0}}
 .tk-title{position:absolute;inset:0;z-index:7;display:grid;place-content:center;text-align:center;opacity:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.75),rgba(0,0,0,.2) 70%,transparent)}
-.tk-title.go{animation:tktitle var(--d,3.2s) ease-in-out forwards}.tk-title b{display:block;font:400 clamp(28px,4.4vw,64px) var(--fk);color:#f1e3c8;letter-spacing:.06em;text-shadow:0 0 18px #000,0 0 40px rgba(226,58,46,.35)}
-.tk-title small{display:block;margin-top:10px;font:400 clamp(14px,1.5vw,22px) var(--fb);color:#c9a878;letter-spacing:.3em}.tk-title b::after{content:"";display:block;height:2px;margin:12px auto 0;width:0;background:linear-gradient(90deg,transparent,#e23a2e,transparent);animation:tkline 1.2s .3s ease-out forwards}
+.tk-title.go{animation:tktitle var(--d,3.2s) ease-in-out forwards}.tk-title b{display:block;font:400 clamp(28px,calc(4.4vw/var(--uz,1)),64px) var(--fk);color:#f1e3c8;letter-spacing:.06em;text-shadow:0 0 18px #000,0 0 40px rgba(226,58,46,.35)}
+.tk-title small{display:block;margin-top:10px;font:400 clamp(14px,calc(1.5vw/var(--uz,1)),22px) var(--fb);color:#c9a878;letter-spacing:.3em}.tk-title b::after{content:"";display:block;height:2px;margin:12px auto 0;width:0;background:linear-gradient(90deg,transparent,#e23a2e,transparent);animation:tkline 1.2s .3s ease-out forwards}
 @keyframes tkline{to{width:120%;margin-left:-10%}}
 @keyframes tktitle{0%{opacity:0;transform:scale(1.04)}15%,80%{opacity:1;transform:none}100%{opacity:0}}
 #tkStage.shake1 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake .35s linear}#tkStage.shake2 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake2 .5s linear}#tkStage.shake3 :is(#tkBg,#tkFigs,.tk-old){animation:tkshake3 .8s linear}
@@ -936,7 +936,7 @@ label.use input{flex:none;margin-top:2px}
 .fig.fnear{height:92%;bottom:2%;width:calc(var(--w) * 1.18);z-index:3}
 .fig.ffar{height:68%;width:calc(var(--w) * .82)}.fig.ffar:not(.on){filter:brightness(.42) saturate(.6)}.fig.ffar.on{filter:brightness(.82)}
 /* 연출 패널 */
-.dir{position:absolute;right:16px;bottom:100%;margin-bottom:8px;z-index:30;width:min(620px,calc(100vw - 32px));max-height:min(560px,70vh);overflow:auto;padding:10px 12px;background:rgba(18,11,7,.97);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;font-size:13px}
+.dir{position:absolute;right:16px;bottom:100%;margin-bottom:8px;z-index:30;width:min(620px,calc(calc(100vw/var(--uz,1)) - 32px));max-height:min(560px,calc(70vh/var(--uz,1)));overflow:auto;padding:10px 12px;background:rgba(18,11,7,.97);border:1px solid #8a6a48;box-shadow:0 10px 30px #000c;font-size:13px}
 .dir h4{margin:8px 0 4px;font:700 13px var(--fk);color:#e8c48a}.dir h4:first-child{margin-top:0}.dir .row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .dir .btn{padding:4px 9px;font-size:12px}.dir .btn.on{border-color:#ffc23b;color:#ffcf6a}.dir select,.dir input[type=text]{height:28px;font-size:12px;padding:2px 6px;min-width:0}
 .dir .row>select,.dir .row>input{width:auto;flex:1 1 140px}.dir .row>select#dirFig,.dir .row>select#dirAType{flex:0 1 auto}
@@ -1024,8 +1024,8 @@ label.use input{flex:none;margin-top:2px}
 .ci-who{margin-top:10px;font:700 calc(15px*var(--cz,1)*var(--nf,1)) var(--fk);color:#a08a6c;letter-spacing:.2em}
 .ci-full{--c:#e8b23a!important}.ci-full .ci-g{-webkit-text-stroke-color:#fff3c8;text-shadow:0 0 60px rgba(255,200,80,.9)}
 /* 개화 */
-.ci-rays{position:absolute;left:50%;top:46%;width:0;height:0}.ci-rays i{position:absolute;left:-3px;bottom:0;width:6px;height:70vh;transform-origin:50% 100%;background:linear-gradient(transparent,color-mix(in srgb,var(--c) 70%,transparent));opacity:.35}
-.ci-orb{position:absolute;left:50%;top:6%;width:44vh;height:62vh;margin-left:-22vh;overflow:hidden;border-radius:50% 50% 8px 8px;z-index:3;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 80%,#fff),0 0 60px var(--c)}
+.ci-rays{position:absolute;left:50%;top:46%;width:0;height:0}.ci-rays i{position:absolute;left:-3px;bottom:0;width:6px;height:calc(70vh/var(--uz,1));transform-origin:50% 100%;background:linear-gradient(transparent,color-mix(in srgb,var(--c) 70%,transparent));opacity:.35}
+.ci-orb{position:absolute;left:50%;top:6%;width:calc(44vh/var(--uz,1));height:calc(62vh/var(--uz,1));margin-left:-22vh;overflow:hidden;border-radius:50% 50% 8px 8px;z-index:3;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 80%,#fff),0 0 60px var(--c)}
 .ci-petal{position:absolute;left:50%;top:46%;width:14px;height:34px;margin:-17px -7px;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;background:var(--c);filter:brightness(1.4)}
 .ci-center{position:absolute;left:0;right:0;top:66%;text-align:center;z-index:7}.ci-center .ci-g{font-size:calc(90px*var(--cz,1)*var(--nf,1));display:inline-block;margin-top:6px}.ci-center .ci-name{font-size:calc(52px*var(--cz,1)*var(--nf,1));margin-top:2px}.ci-center .ci-lv{padding:0}
 .ci-center .ci-line{font-size:calc(22px*var(--cz,1)*var(--nf,1))}
@@ -1124,7 +1124,7 @@ svg.ci-crack{position:absolute;inset:0;width:100%;height:100%;z-index:4;backgrou
 .pm-res{margin:6px 0;border-left:3px solid #6a4a30;padding-left:8px}.pm-res summary{cursor:pointer;display:flex;gap:8px;align-items:baseline}.pm-res summary small{color:#8a7a62}.pm-res.crit{border-color:#ffcf6a}.pm-res.full{border-color:#9fd39f}.pm-res.amb{border-color:#7cc4ff}.pm-res.fail{border-color:#a07a6a}.pm-res.fumble{border-color:#e23a2e}
 .pm-thumb{height:60px;border:1px solid #4a3626}
 .clues{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}.clue{display:grid;gap:4px;padding:6px;border:1px solid #4a3626;background:#1a110b;color:#efe3cf;text-align:left;cursor:pointer}.clue:hover{border-color:#a07a1e}.clue img,.clue .ci-ph{width:100%;height:100px;object-fit:cover;background:#0c0806;display:grid;place-items:center;color:#4a3626;font-size:calc(30px*var(--cz,1)*var(--nf,1))}.clue small{color:#9a8f80;font-size:12px}
-.clue-big{display:grid;grid-template-columns:minmax(0,1.2fr) 1fr;gap:16px}.clue-big img{width:100%;max-height:60vh;object-fit:contain;background:#0c0806}.clue-big h4{margin:0 0 4px;font:700 20px var(--fk);color:#e8c48a}.clue-big p{white-space:pre-wrap;line-height:1.7}
+.clue-big{display:grid;grid-template-columns:minmax(0,1.2fr) 1fr;gap:16px}.clue-big img{width:100%;max-height:calc(60vh/var(--uz,1));object-fit:contain;background:#0c0806}.clue-big h4{margin:0 0 4px;font:700 20px var(--fk);color:#e8c48a}.clue-big p{white-space:pre-wrap;line-height:1.7}
 
 /* ===== 판정창 ===== */
 .rj{display:grid;gap:12px}
@@ -1166,7 +1166,7 @@ svg.ci-crack{position:absolute;inset:0;width:100%;height:100%;z-index:4;backgrou
 .jg-pass{position:absolute;right:6%;top:58%;z-index:6;padding:6px 22px;font:700 calc(24px*var(--cz,1)*var(--nf,1)) var(--fk);letter-spacing:.2em;border:2px solid}.jg-pass.ok{color:#ffe6b0;border-color:#ffc23b;background:rgba(60,40,8,.85)}.jg-pass.no{color:#c8d0d8;border-color:#5a6a7a;background:rgba(20,26,32,.85)}
 /* ===== 스탠딩 메뉴 · 대사 기록 ===== */
 .menu{min-width:220px;gap:6px!important}.mn-h{margin-top:4px;padding-bottom:3px;border-bottom:1px solid #4a3626;font:700 12px var(--fk);color:#e8c48a;letter-spacing:.15em}.mn-h:first-child{margin-top:0}
-.log-h{position:sticky;top:-52px;display:flex;justify-content:space-between;align-items:center;margin:-52px calc(-1*clamp(16px,12vw,190px)) 10px;padding:12px clamp(16px,12vw,190px);background:rgba(7,4,3,.96);border-bottom:1px solid #4a3626;z-index:2}.log-h b{font:700 18px var(--fk);color:#e8c48a;letter-spacing:.2em}
+.log-h{position:sticky;top:-52px;display:flex;justify-content:space-between;align-items:center;margin:-52px calc(-1*clamp(16px,calc(12vw/var(--uz,1)),190px)) 10px;padding:12px clamp(16px,calc(12vw/var(--uz,1)),190px);background:rgba(7,4,3,.96);border-bottom:1px solid #4a3626;z-index:2}.log-h b{font:700 18px var(--fk);color:#e8c48a;letter-spacing:.2em}
 .log-row b{display:inline-block;min-width:80px}.log-row.roll{display:flex;align-items:center;gap:10px;padding:8px 10px;margin:4px 0;border:1px solid #4a3626;background:#140d09}.log-row.roll em{font:700 15px var(--fk);font-style:normal}.lr-dice{display:flex;gap:3px}.lr-dice .die{width:20px;height:20px;font-size:12px}
 
 /* 조사 상단 줄: 원작풍 어두운 띠 */
@@ -1188,9 +1188,31 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .sh-name{overflow:visible;overflow-x:clip}
 .hi-name span{flex:none;white-space:nowrap}.hi-name b{flex:1;min-width:0;line-height:1.25}
 .hud-atk~.hud-info,.hud-info:has(~.hud-atk){overflow:auto;scrollbar-width:thin}
-.menuwrap .menu{max-height:calc(100dvh - 250px);overflow-y:auto;scrollbar-width:thin}
+.menuwrap .menu{max-height:calc(calc(100dvh/var(--uz,1)) - 250px);overflow-y:auto;scrollbar-width:thin}
 .tab{justify-content:flex-start;padding-top:8px;gap:0;line-height:1.1}.tab-ic{width:27px;height:27px;flex:none}
 [data-fitted]{text-overflow:ellipsis}
+
+/* 카메라 · 파티클 (§54) */
+#tkCam{position:absolute;inset:0;z-index:0;transform-origin:50% 50%;transition:transform .9s cubic-bezier(.45,0,.2,1),transform-origin .9s cubic-bezier(.45,0,.2,1);will-change:transform}
+#tkCam.cam-drift{transition:none;animation:camDrift 26s ease-in-out infinite alternate}
+@keyframes camDrift{0%{transform:scale(1.06) translate(-1.6%,.6%)}50%{transform:scale(1.12) translate(1.2%,-.8%)}100%{transform:scale(1.08) translate(1.8%,.8%)}}
+#tkCam.cam-punch{animation:camPunch .35s cubic-bezier(.2,1.6,.4,1)}@keyframes camPunch{0%{scale:1}35%{scale:1.07}100%{scale:1}}
+.fx-cam-0 #tkCam{transform:none!important;animation:none!important}
+#tkPtc{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.vc-row{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(140px,1fr) minmax(160px,1.3fr) auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(138,106,72,.3)}
+.vc-row b{font:400 16px var(--fk);color:#f3e7cf}.vc-row label{display:flex;align-items:center;gap:6px;font-size:12px;color:#c9b08f}.vc-row input[type=range]{flex:1}
+
+#myDecide{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:45;display:flex;gap:12px;align-items:center;padding:10px 22px;border:2px solid #ffc23b;background:linear-gradient(90deg,#5a1210,#8a1c16 50%,#5a1210);color:#fff3df;font:400 15px var(--fk);box-shadow:0 0 0 2px #000,0 8px 24px #000,0 0 24px rgba(255,180,60,.5);cursor:pointer;animation:myDec 1.4s ease-in-out infinite}
+#myDecide b{font-weight:400;color:#ffd34d}#myDecide span{font-size:13px;color:#f0dcc0}
+@keyframes myDec{50%{box-shadow:0 0 0 2px #000,0 8px 24px #000,0 0 40px rgba(255,180,60,.9)}}
+body.my-decide .hud-atk{outline:2px solid #ffc23b;outline-offset:2px;animation:myDecP 1.4s ease-in-out infinite}@keyframes myDecP{50%{outline-color:rgba(255,194,59,.35)}}
+.hud-atk{min-height:min(260px,calc(100% - 300px))}
+
+/* 자작 키워드 (§56) */
+.kwd-list{display:grid;gap:8px}.kwd{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:8px;border:1px solid #4a3524;background:rgba(0,0,0,.25)}
+.kwd-ic{width:58px;height:58px;border:1px solid #6b5138;background:#140d08 center/70% no-repeat;cursor:pointer}.kwd.ro .kwd-ic{cursor:default}
+.kwd-m{display:grid;gap:6px}.kwd-m .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.kwd-m input[type=text]{width:180px;flex:none}.kwd-m select{width:110px;flex:none}.kwd-add{display:flex;gap:8px;align-items:center}.kwd-add input{flex:1}.kwd-m textarea{width:100%;resize:vertical}.kwd-m .sp{flex:1}
+.hl-k.kw-own{color:#9fe0b0;cursor:help}.hi-kw .kw-own{cursor:help}.kw-mng{margin-left:auto}
 </style>
 </head>
 <body>
@@ -1210,6 +1232,8 @@ const TEST_RAIL={"train": "data:image/webp;base64,UklGRlZNAABXRUJQVlA4WAoAAAAQAA
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+// 기기마다 시계가 달라도 채팅·대사 순서가 맞도록 서버 시계 기준 시각을 쓴다 (Firebase .info/serverTimeOffset)
+const nowT=()=>Date.now()+((typeof NET!=='undefined'&&NET.skew)||0);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const vals=o=>Object.entries(o||{}).map(([k,v])=>({...v,k}));
 let ME='local'; // 접속 화면의 아이디. Firebase 연결 시 사용자 키로 쓴다
@@ -1319,7 +1343,7 @@ function renderNav(){queueMicrotask(paintNet);$('#nav').innerHTML=`<div class="b
  <div class="acts"><button class="btn dk-tg ${DOCK.open?'on':''}" id="dkTg" data-a="dockToggle" title="채팅 · 주사위 기록">채팅${dockUnread()?`<em>${dockUnread()}</em>`:''}</button><button class="btn" data-a="openSheet">시트</button>${NET.on?`<button class="btn net-b" id="netBadge" data-a="netPanel" title="멤버 관리 · 초대"><i></i>…</button>`:''}${!NET.on||NET.gm?`<button class="btn ${UI.master?'on':''}" data-a="master" aria-pressed="${UI.master}">마스터 모드</button>`:''}<button class="btn" data-a="backup">백업</button></div>`}
 const PAGES={
  battle:()=>battlePage(),
- talk:()=>`<section class="talk"><div class="stage film" id="tkStage"><div class="film-bg" id="tkBg"></div><div id="tkFigs"></div><div class="film-fx"></div><div id="tkFx"><div class="tk-tint"></div><div class="tk-black"></div><div class="tk-tr"></div><div class="tk-cine"><i></i><i></i></div><div class="tk-title"></div><div class="tk-flash"></div></div><div id="tkUI"></div><div class="typing" id="tkTyping" aria-live="polite"></div></div>
+ talk:()=>`<section class="talk"><div class="stage film" id="tkStage"><div id="tkCam"><div class="film-bg" id="tkBg"></div><div id="tkFigs"></div></div><canvas id="tkPtc" aria-hidden="true"></canvas><div class="film-fx"></div><div id="tkFx"><div class="tk-tint"></div><div class="tk-black"></div><div class="tk-tr"></div><div class="tk-cine"><i></i><i></i></div><div class="tk-title"></div><div class="tk-flash"></div></div><div id="tkUI"></div><div class="typing" id="tkTyping" aria-live="polite"></div></div>
 
   <div class="bar"><select id="tkSp" aria-label="화자"></select><select id="tkEx" aria-label="표정"></select><textarea id="tkTxt" maxlength="400" placeholder="대사 입력 · Enter 전송 · *문장*은 지문 · {떨림}글{/} {크게} {쉼} 꾸미기 — ≡ 메뉴 도움말" aria-label="대사"></textarea><button class="btn pri" data-a="talkSend">전송</button><button class="btn" id="tkFig" data-a="figToggle">등장</button><button class="btn" data-a="rollOpen">판정</button><span id="tkDirB"></span><div id="tkDir"></div><div id="tkRt" class="rtbar"></div></div></section>`,
  inv:()=>`<section class="inv"><div class="inv-top row" id="invTop"></div><div class="inv-stage film" id="invStage" data-a="invStage"><div class="film-bg" id="invBg"></div><div class="film-fx"></div><div id="invPts"></div><div id="invDlg"></div></div></section>`,
@@ -1356,7 +1380,7 @@ const typeMs=()=>FXSET.tsp??26;
 function makeTyper(sel,onDone,ctx){const T={chars:[],ev:{},i:0,fired:-1,done:true,timer:null,ctx,
  start(txt){clearTimeout(T.timer);const r=richParse(txt);T.chars=r.chars;T.ev=r.ev;T.i=0;T.fired=-1;T.done=false;if(!typeMs())return T.finish(true);T.draw();T.step()},
  step(){if(T.done)return;if(T.fired<T.i){T.fired=T.i;const p=(T.ev[T.i]||[]).reduce((a,e)=>a+(richEvent(e,T)||0),0);if(p){T.draw();T.timer=setTimeout(T.step,p);return}}
-  if(T.i>=T.chars.length)return T.finish();const ch=T.chars[T.i++],nx=T.chars[T.i]?.c;T.draw();
+  if(T.i>=T.chars.length)return T.finish();const ch=T.chars[T.i++],nx=T.chars[T.i]?.c;T.draw();if(T.snd&&ch.c&&!/[\s.,!?…~\-—'"“”‘’()·:;]/.test(ch.c))T.snd(ch);
   let d=typeMs()*(ch.spd||1);if(ch.c==='…'||(ch.c==='.'&&nx==='.'))d+=70;else if(/[.!?。]/.test(ch.c)&&nx&&/\s/.test(nx))d+=170;else if(ch.c===','&&nx===' ')d+=80;T.timer=setTimeout(T.step,d)},
  show(txt){clearTimeout(T.timer);const r=richParse(txt);T.chars=r.chars;T.ev=r.ev;T.i=T.chars.length;T.fired=T.chars.length;T.done=true;T.draw()},
  finish(fireAll){clearTimeout(T.timer);for(let j=T.fired+1;j<=T.chars.length;j++)for(const e of T.ev[j]||[])if(e.k==='표정'||(fireAll&&e.k!=='쉼'))richEvent(e,T,!fireAll);T.fired=T.chars.length;T.i=T.chars.length;T.done=true;T.draw();onDone?.()},
@@ -1372,7 +1396,7 @@ const DLG={cur:null,pending:[],shown:[],hold:null,holdDone:false,at:{}};
 const figAlive=(m,now=Date.now())=>now-(DLG.at[m.k]||m.t)<FIG_TTL;
 const dlgHTML=({name,sub,nar,box,act,hint})=>`<div class="dlg ${nar?'nar':''}" ${act?`data-a="${act}"`:''}>${name?`<div class="sp">${sub?`<span class="plank sp-sub">${esc(sub)}</span>`:''}<span class="plank sp-name">${esc(name)}</span></div>`:''}<div class="dlg-txt" ${box?`id="${box}"`:''}>${hint||''}</div></div>`;
 const placeHTML=n=>n?`<div class="plank place"><svg class="orn" viewBox="0 0 66 20" aria-hidden="true"><path d="M2 19h62M16 19l5-6h24l5 6M27 13l6-10 6 10" fill="none" stroke="#b8895a" stroke-width="2"/><circle cx="33" cy="9" r="2" fill="#b8895a"/></svg>${esc(n)}</div>`:'';
-const dlgType=makeTyper('#tkBox',dlgHold,()=>DLG.cur);
+const dlgType=makeTyper('#tkBox',dlgHold,()=>DLG.cur);dlgType.snd=ch=>{if(dlgActive())typeBlip(DLG.cur?spKey(DLG.cur):'nar',ch.st)};
 const dlgActive=()=>UI.tab==='talk'&&!document.hidden&&!UI.log;
 function dlgPresent(m){if(m.kind==='fx')return dirPresent(m);clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=false;DLG.cur=m;DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);dlgType.done=false;paintTalkStage();dlgType.start(m.txt)}
 function dlgNext(){if(!DLG.pending.length)return false;dlgPresent(DLG.pending.shift());return true}
@@ -1394,7 +1418,7 @@ function paintTalkStage(){
  const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog"><div class="log-h"><b>대사 기록</b><button class="btn sm" data-a="talkLog">닫기</button></div>${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;if(m.kind==='roll'&&m.roll){const s=speaker(m),g=m.roll.grade;return`<div class="log-row roll"><b>${esc(s.name)}</b><span class="lr-dice">${dieChips(m.roll.rawDice)}</span><em style="color:${JUDGE_COL[g]||'#e8c48a'}">${esc(g)}</em><small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small></div>`}const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button><button class="btn sm" data-a="dbgOpen">디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button><button class="btn sm" data-a="dbgOpen">디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -1441,7 +1465,7 @@ function typingWrite(on){
  const path='play/typing/'+ME,mine=Store.get(path);
  if(!on){if(mine)Store.set(path,null,true);paintTyping();return}
  const sp=$('#tkSp')?.value||'nar',name=sp==='nar'?'':speaker({sp}).name;
- Store.set(path,{t:mine?.sp===sp?mine.t:Date.now(),at:Date.now(),sp,name},true);paintTyping();
+ Store.set(path,{t:mine?.sp===sp?mine.t:nowT(),at:nowT(),sp,name},true);paintTyping();
 }
 function typingInput(){clearTimeout(typeIdle);if($('#tkTxt').value.trim()){typingWrite(true);typeIdle=setTimeout(()=>typingWrite(false),12000)}else typingWrite(false)}
 
@@ -1462,7 +1486,7 @@ const CAP_MS=10000; // 마지막 입력 뒤 자막 표시 시간
 function paintCap(){const el=$('#railCap');if(!el)return;const c=rail().cap||{},txt=c.title||c.sub;
  if(txt){$('b',el).textContent=c.title||'';$('p',el).textContent=c.sub||''}
  el.classList.toggle('on',!!txt&&Date.now()-(c.at||0)<CAP_MS)}
-function capWrite(){const v=k=>$(`[data-cap=${k}]`)?.value||'';Store.set('play/rail/cap',{title:v('title'),sub:v('sub'),at:Date.now()},true);paintCap()}
+function capWrite(){const v=k=>$(`[data-cap=${k}]`)?.value||'';Store.set('play/rail/cap',{title:v('title'),sub:v('sub'),at:nowT()},true);paintCap()}
 function paintRail(){
  paintCap();
  const R=rail(),L=$('#railLayer');if(!L)return;
@@ -1486,7 +1510,20 @@ const ICONS={search:'<circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/>',swor
 const sinColor=s=>(SINS.find(x=>x[0]===s)||[])[2]||'#8b7a66';
 const oct=(s,t)=>{const i=SINS.findIndex(x=>x[0]===s);return i<0?`<span class="oct" style="--c:#8b7a66">${esc(t??'?')}</span>`:`<span class="oct img" style="background-image:var(--s${i})" title="${esc(s)}"></span>`};
 const KW=['화상','출혈','호흡','침잠','진동','파열','충전'];
-const hl=t=>esc(t).replace(/\[[^\]\n]+\]/g,m=>`<span class="hl-b">${m}</span>`).replace(new RegExp(KW.join('|'),'g'),m=>`<span class="hl-k"><i class="kw" style="background-image:var(--k${KW.indexOf(m)})"></i>${m}</span>`);
+/* 자작 키워드 (룰북 16.11): play/kwdefs/{k} = {name,img,desc,cat,owner}. 유닛 수치는 기본 키워드처럼 이름으로 쌓인다.
+   이름·아이콘·설명은 표시용이고, 자작 키워드만의 특수 효과는 자동 처리하지 않는다 (GM 확인) */
+const KW_CAT={buff:['이로운','#3f8f5a'],debuff:['해로운','#a8341c'],etc:['기타','#7a6a52']};
+const kwDefs=()=>vals(Store.get('play/kwdefs')).filter(d=>d&&d.name).sort((a,b)=>(a.at||0)-(b.at||0));
+const kwDef=n=>kwDefs().find(d=>d.name===n);
+const KWA=()=>[...KW,...kwDefs().map(d=>d.name).filter(n=>!KW.includes(n))];
+const KWA_NC=()=>KWA().filter(k=>k!=='충전');
+const kwIconCache={};
+function kwIcon(k){const i=KW.indexOf(k);if(i>=0)return`var(--k${i})`;const d=kwDef(k);const im=d&&pImg(d.img);if(im)return`url('${im}')`;
+ const col=(KW_CAT[d?.cat]||KW_CAT.etc)[1],ch=[...String(k||'?')][0],key=col+ch;
+ return kwIconCache[key]||(kwIconCache[key]=`url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polygon points='16,1 30,9 30,23 16,31 2,23 2,9' fill='${col}' stroke='#f3e7cf' stroke-width='1.5'/><text x='16' y='21.5' font-size='15' font-weight='700' text-anchor='middle' fill='#fff' font-family='sans-serif'>${ch.replace(/[<&'"]/g,'')}</text></svg>`).replace(/'/g,'%27')}')`)}
+const kwTip=k=>{const d=kwDef(k);return d?`${d.name} (${(KW_CAT[d.cat]||KW_CAT.etc)[0]} · 자작)${d.desc?'\n'+d.desc:''}\n특수 효과는 GM 확인`:k};
+const reEsc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const hl=t=>esc(t).replace(/\[[^\]\n]+\]/g,m=>`<span class="hl-b">${m}</span>`).replace(new RegExp(KWA().map(x=>reEsc(esc(x))).sort((a,b)=>b.length-a.length).join('|'),'g'),m=>`<span class="hl-k ${KW.includes(m)?'':'kw-own'}" ${KW.includes(m)?'':`title="${esc(kwTip(m))}"`}><i class="kw" style="background-image:${kwIcon(m)}"></i>${m}</span>`);
 const imgBtn=(p,label='이미지 넣기')=>`<button class="btn sm" data-a="shImg" data-p="${p}">${label}</button>`;
 const skOct=(x,big)=>{const im=pImg(x.img);return`<span class="skoct ${big?'big':''}" style="--c:${sinColor(x.sin)};--fr:var(--w${SINS.findIndex(s=>s[0]===x.sin)})"><em>${esc(x.sin)}</em><u><s style="${im?`background-image:url('${esc(im)}')`:`background-image:var(--s${SINS.findIndex(s=>s[0]===x.sin)});background-size:84%`}"></s></u></span>`};
 const ring=(c,label,cls,roman,name,go,p,edit)=>{const im=pImg(c);return`<button class="ring" data-a="${edit?'shImg':go[0]}" ${edit?`data-p="${p}"`:`data-v="${go[1]}"`} aria-label="${esc(label)} ${esc(name)}"><span class="ring-rm ${cls}">${roman}</span><span class="ring-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':'<i></i>'}</span><span class="ring-lb ${cls}">${esc(label)}</span><span class="ring-nm">${esc(name||'-')}</span></button>`};
@@ -1620,13 +1657,13 @@ const A={
  talkSend(){
   const inp=$('#tkTxt'),raw=inp.value.trim();if(!raw)return;
   let sp=$('#tkSp').value||'nar',ex=+($('#tkEx').value||0);const nar=raw.match(/^\*(.+)\*$/s);if(nar)sp='nar';
-  const m={t:Date.now(),uid:ME,sp,ex,name:sp==='nar'?'':speaker({sp}).name,txt:(nar?nar[1]:raw).slice(0,400)};
+  const m={t:nowT(),uid:ME,sp,ex,name:sp==='nar'?'':speaker({sp}).name,txt:(nar?nar[1]:raw).slice(0,400)};
   const k=Store.push('play/talk',m);dlgNew({...m,k});inp.value='';UI.draft='';clearTimeout(typeIdle);typingWrite(false);inp.focus()},
  talkSkip(){if(DLG.fxBusy){clearTimeout(DLG.fxT);DLG.fxBusy=false;DLG.holdDone=true}if(dlgNext())return;if(!dlgType.done)dlgType.finish();else{clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=true}},
  figToggle(){const sp=$('#tkSp').value,ex=+($('#tkEx').value||0);if(!sp||sp==='nar')return;
   if(slotsFor(stageList()).order.includes(sp))return Store.set('play/fig/'+sp,{off:Date.now()});
   if(!speaker({sp,ex}).img)return toast('스탠딩 이미지가 없어요. 시트에서 먼저 넣어 주세요',1);
-  Store.set('play/fig/'+sp,{on:true,ex,at:Date.now()})},
+  Store.set('play/fig/'+sp,{on:true,ex,at:nowT()})},
  talkMenu(){UI.talkMenu=!UI.talkMenu;paintTalkStage()},
  talkLog(){UI.log=!UI.log;UI.talkMenu=false;paintTalkStage();if(!UI.log)dlgHold()},
  sceneOpen(){openModal('배경',sceneModal)},
@@ -1643,14 +1680,14 @@ const A={
   r.res={...res,sin:r.sin};
   if(r.push)addStress(r.id,2);if(r.help)addStress(r.help,2);
   const gc={'크리티컬':'금색','완전한 성공':'금색','애매한 성공':'굵게','실패':'회색','대실패':'빨강'}[res.grade]||'굵게',pass=r.inv?invOk(invPt(r.inv.sid,r.inv.k)||{},gradeKey(res.grade)):null;
-  const m={t:Date.now(),uid:ME,sp:'c:'+r.id,ex:0,name:c.info.name||'',kind:'roll',roll:res,txt:`{회색}${r.sin} 판정 · ${dice.join(' ')}{/}  {${gc}}${res.grade}{/}${pass==null?'':pass?'  {금색}성공{/}':'  {회색}실패{/}'}`};
+  const m={t:nowT(),uid:ME,sp:'c:'+r.id,ex:0,name:c.info.name||'',kind:'roll',roll:res,txt:`{회색}${r.sin} 판정 · ${dice.join(' ')}{/}  {${gc}}${res.grade}{/}${pass==null?'':pass?'  {금색}성공{/}':'  {회색}실패{/}'}`};
   const jc=FXSET.jc!==false;if(jc)cutSend({kind:'judge',style:'judge',who:c.info.name||'',art:c.portrait||c.stands?.[0]?.img||'',sin:r.sin,spec:!!c.sins[r.sin]?.on,dice,grade:res.grade,cv:res.compareValue,mods:[r.push?'분발':'',r.help?`도움 · ${CH(r.help)?.info?.name||''}`:'',r.adv?'유리 +1':''].filter(Boolean),ctx:r.ctx||'',pass});
   afterCut(()=>dlgNew({...m,k:Store.push('play/talk',m)}),jc);diceAdd({ty:'judge',who:c.info.name||'',lbl:`${r.sin} 판정${r.push?' · 분발':''}${r.help?' · 도움':''}${r.adv?' · 유리':''}`,a:dice,res:`${res.grade} (비교값 ${res.compareValue})`,nopop:jc?1:0});if(jc&&!r.inv)closeModal();else drawModal()},
  invAdd(){pickImg(1920,bg=>openForm('조사 장면',[{k:'name',label:'장면 이름',v:''}],o=>{const id=Store.push('play/inv/scenes',{name:o.name,bg});Store.set('play/inv/cur',id)}))},
  invBg(){const id=invScene();pickImg(1920,bg=>Store.set(`play/inv/scenes/${id}/bg`,bg))},
  invReset(){Store.set('play/inv/seen/'+invScene(),null)},
  invDel(){const id=invScene();if(!confirm('이 조사 장면을 삭제할까요?'))return;Store.set('play/inv/scenes/'+id,null);Store.set('play/inv/seen/'+id,null)},
- invStage(e,ev){const id=invScene();if(!UI.master||!id||UI.inv)return;const b=$('#invStage').getBoundingClientRect(),x=+((ev.clientX-b.left)/b.width*100).toFixed(2),y=+((ev.clientY-b.top)/b.height*100).toFixed(2);editPoint(id,null,{x,y,name:'',txt:''})},
+ invStage(e,ev){const id=invScene();if(!UI.master||!id||UI.inv)return;const b=$('#invStage').getBoundingClientRect(),x=+((ev.clientX/UIZ.z-b.left)/b.width*100).toFixed(2),y=+((ev.clientY/UIZ.z-b.top)/b.height*100).toFixed(2);editPoint(id,null,{x,y,name:'',txt:''})},
  invPoint(e){const id=invScene(),k=e.dataset.v,p=Store.get(`play/inv/scenes/${id}/points/${k}`);if(!p)return;if(UI.master)return editPoint(id,k,p);
   const lines=String(p.txt||'').split('\n').map(s=>s.trim()).filter(Boolean);UI.inv={lines:lines.length?lines:['특별한 점은 없다.'],i:0,name:p.name};Store.set(`play/inv/seen/${id}/${k}`,true,true);paintInv();invType.start(UI.inv.lines[0])},
  invNext(){const v=UI.inv;if(!invType.done)return invType.finish();if(++v.i<v.lines.length)return invType.start(v.lines[v.i]);UI.inv=null;paintInvDlg()},
@@ -1664,7 +1701,7 @@ const A={
  routeEdit(){UI.routeEdit=!UI.routeEdit;renderMain()},
  routeUndo(){Store.set('play/rail/route',(rail().route||[]).slice(0,-1))},
  routeClear(){if(confirm('철로 경로를 지울까요?'))Store.set('play/rail/route',null)},
- mapClick(e,ev){if(!UI.routeEdit)return;const b=$('#railMapBox').getBoundingClientRect();Store.set('play/rail/route',[...(rail().route||[]),{x:+((ev.clientX-b.left)/b.width*100).toFixed(2),y:+((ev.clientY-b.top)/b.height*100).toFixed(2)}])},
+ mapClick(e,ev){if(!UI.routeEdit)return;const b=$('#railMapBox').getBoundingClientRect();Store.set('play/rail/route',[...(rail().route||[]),{x:+((ev.clientX/UIZ.z-b.left)/b.width*100).toFixed(2),y:+((ev.clientY/UIZ.z-b.top)/b.height*100).toFixed(2)}])},
  exportAll(){const a=document.createElement('a'),{typing,...play}=Store.data.play,used=JSON.stringify(Store.data),imgs=Object.fromEntries(Object.entries(IMG).filter(([k])=>used.includes('vimg:'+k)));a.href=URL.createObjectURL(new Blob([JSON.stringify({v:1,data:{...Store.data,play},imgs})],{type:'application/json'}));a.download=`limbus-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},
  importAll(){pickFile('application/json,.json',f=>{const rd=new FileReader;rd.onerror=()=>toast('파일을 읽지 못했어요.',1);rd.onload=async()=>{let b;try{b=JSON.parse(rd.result)}catch{b=null}
   if(!validBackup(b))return toast('백업 파일 형식이 아니에요.',1);if(!confirm('이 방의 데이터를 지우고 백업으로 덮어쓸까요?'))return;if(NET.on)await snapSave('백업 가져오기 전',true);
@@ -1857,7 +1894,7 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
   info=`<div class="hud-info ${su.side==='foe'?'foe':''}"><div class="hi-name"><span>${su.side==='foe'?'적':'아군'}</span><b>${esc(uName(su))}</b>${isDown(su)?'<em>전투 불능</em>':''}<button class="x" data-a="hudInfoX" aria-label="닫기">✕</button></div>
   <div class="hi-hp"><i style="width:${c.pct??0}%"></i><span>${c.pct==null?'-':c.left} / ${c.max}</span></div>
   <div class="hi-tiers">${hp.map((t,i)=>t.length?`<span class="t t${i}"><b>${TIERS[i]}</b>${t.map(s=>`<i class="c${s}"></i>`).join('')}</span>`:'').join('')}</div>
-  <div class="hi-kw">${Object.entries(stOf(su)).filter(([,v])=>v).map(([k])=>`<span class="stt">${ST_L[k]}</span>`).join('')}${Object.entries(kwOf(su)).filter(([,v])=>+v>0).map(([k,v])=>`<span title="${esc(k)}"><i style="background-image:var(--k${KW.indexOf(k)})"></i>${esc(k)} <b>${+v}</b>${TOL_KW.includes(k)?`<small>/${tolOf(su,k)}</small>`:''}</span>`).join('')}${+su.chargeMax||+su.charge?`<span><i style="background-image:var(--k6)"></i>충전 <b>${+su.charge||0}</b>${+su.chargeMax?'/'+su.chargeMax:''}</span>`:''}</div>
+  <div class="hi-kw">${Object.entries(stOf(su)).filter(([,v])=>v).map(([k])=>`<span class="stt">${ST_L[k]}</span>`).join('')}${Object.entries(kwOf(su)).filter(([,v])=>+v>0).map(([k,v])=>`<span title="${esc(kwTip(k))}" class="${KW.includes(k)?'':'kw-own'}"><i style="background-image:${kwIcon(k)}"></i>${esc(k)} <b>${+v}</b>${TOL_KW.includes(k)?`<small>/${tolOf(su,k)}</small>`:''}</span>`).join('')}${+su.chargeMax||+su.charge?`<span><i style="background-image:var(--k6)"></i>충전 <b>${+su.charge||0}</b>${+su.chargeMax?'/'+su.chargeMax:''}</span>`:''}</div>
   ${(()=>{const c=CH(srcOf(su)),L=c?.tokens||[];if(!L.length||(NET.on&&!NET.gm&&!mineU(su.k)))return'';return`<div class="tok-sw"><button class="${su.tok==null||su.tok===''?'on':''}" data-a="btTok" data-v="" title="기본" style="background-image:url('${esc(pImg(c.portrait))}')">${pImg(c.portrait)?'':'기본'}</button>${L.map((t,i)=>`<button class="${String(su.tok)===String(i)?'on':''}" data-a="btTok" data-v="${i}" title="${esc(t.n||'토큰 '+(i+1))}" style="background-image:url('${esc(pImg(t.img))}')"></button>`).join('')}</div>`})()}
   <div class="hi-row">${sc?`<span class="st">스트레스 <b>${+sc.stress||0}</b>/10</span>`:''}<label>신속<select data-c="btStat" data-k="haste">${[0,1,2].map(n=>`<option ${n===(+su.haste||0)?'selected':''}>${n}</option>`).join('')}</select></label><label>속박<select data-c="btStat" data-k="bind">${[0,1,2].map(n=>`<option ${n===(+su.bind||0)?'selected':''}>${n}</option>`).join('')}</select></label>${srcOf(su)?'<button class="btn sm" data-a="btSheet">시트</button>':''}</div></div>`}
  // 하단: 아군 카드 + 현재 턴 캐릭터의 스킬 줄
@@ -1962,7 +1999,7 @@ function unitPanel(u,M){const hp=hpOf(u),c=hpCalc(hp),own=!u.char,P=`${BTP}/unit
  ${M?`${own?`<label class="f">이름<input type="text" data-c="btName" value="${esc(u.name)}"></label>`:''}
   <div class="f2"><label class="f">진영<select data-c="btSide"><option value="pc" ${u.side!=='foe'?'selected':''}>아군</option><option value="foe" ${u.side==='foe'?'selected':''}>적</option></select></label>
   <div class="f">피해<div class="row bt-dmg"><select data-c="btDmgT">${[1,2,3,4].map(n=>`<option value="${n}" ${n===UI.bt.dmgT?'selected':''}>${TIERS[n-1]}</option>`).join('')}</select><select data-c="btDmgN">${[1,2,3,4,5].map(n=>`<option ${n===UI.bt.dmgN?'selected':''}>${n}</option>`).join('')}</select></div></div></div>
-  <div class="f">키워드·충전 조정<div class="row bt-dmg"><select data-c="btKwSel">${KW.map(k=>`<option ${k===UI.bt.kwSel?'selected':''}>${k}</option>`).join('')}</select><select data-c="btKwN">${[1,2,3,4,5,10].map(n=>`<option ${n===UI.bt.kwN?'selected':''}>${n}</option>`).join('')}</select><button class="btn sm" data-a="btKw" data-v="1">+</button><button class="btn sm" data-a="btKw" data-v="-1">-</button></div></div>
+  <div class="f">키워드·충전 조정 <button class="lnk" data-a="kwDefsOpen">자작 키워드 관리</button><div class="row bt-dmg"><select data-c="btKwSel">${KWA().map(k=>`<option ${k===UI.bt.kwSel?'selected':''}>${k}</option>`).join('')}</select><select data-c="btKwN">${[1,2,3,4,5,10].map(n=>`<option ${n===UI.bt.kwN?'selected':''}>${n}</option>`).join('')}</select><button class="btn sm" data-a="btKw" data-v="1">+</button><button class="btn sm" data-a="btKw" data-v="-1">-</button></div></div>
   <label class="f">충전 최대치 (0 = 제한 없음)<input type="number" min="0" max="99" data-c="btChMax" value="${+u.chargeMax||0}"></label>
   <div class="row"><button class="btn sm" data-a="btDmg">피해 적용</button><button class="btn sm" data-a="btHeal">회복 적용</button>${own?'<button class="btn sm" data-a="btImg">토큰 이미지</button>':''}${srcOf(u)?'<button class="btn sm" data-a="btSheet">시트 열기</button>':''}<button class="btn sm danger" data-a="btDel">맵에서 빼기</button></div>`:''}</div>`}
 function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boolean)),free=chars().filter(c=>!c.foe&&!placed.has(c.id)),foes=chars().filter(c=>c.foe),m=UI.bt.mode;
@@ -2055,7 +2092,7 @@ function dbgPanel(){const B=BT(),cur=B.cur,su=UI.bt.sel&&uOf(UI.bt.sel),o=B.orde
   ${hist.length?`<ol class="dbg-hist">${hist.map(x=>`<li>${esc(x.label)}</li>`).join('')}</ol>`:'<p class="small muted">저장된 행동 없음</p>'}<p class="small muted">이 브라우저에만 최근 50개까지 저장돼요. 시트 편집은 포함되지 않아요.</p></div>`;
  if(su){const sc=su.char&&CH(su.char),kw=kwOf(su),idx=o.indexOf(su.k);
   h+=`<div class="bt-h">${esc(uName(su))}</div><div class="plate dbg">
-  <div class="dbg-kw">${KW.filter(k=>k!=='충전').map((k,i)=>`<label><i style="background-image:var(--k${KW.indexOf(k)})"></i>${k}<input type="number" min="0" max="999" data-c="dbgKw" data-k="${k}" value="${+kw[k]||0}"></label>`).join('')}
+  <div class="dbg-kw">${KWA_NC().map((k,i)=>`<label title="${esc(kwTip(k))}"><i style="background-image:${kwIcon(k)}"></i>${k}<input type="number" min="0" max="999" data-c="dbgKw" data-k="${k}" value="${+kw[k]||0}"></label>`).join('')}
    <label><i style="background-image:var(--k6)"></i>충전<input type="number" min="0" max="999" data-c="dbgKw" data-k="충전" value="${+su.charge||0}"></label></div>
   ${sc?`<div class="dbg-g3"><label class="f">스트레스<input type="number" min="0" max="10" data-c="dbgStress" value="${+sc.stress||0}"></label><label class="f">E.G.O 단계<input type="number" min="0" max="4" data-c="dbgLv" data-id="${sc.id}" data-k="ego" value="${+sc.ego.lv||0}"></label><label class="f">뒤틀림 단계<input type="number" min="0" max="4" data-c="dbgLv" data-id="${sc.id}" data-k="twist" value="${+sc.twist.lv||0}"></label></div>`:''}
   ${dbgUnitExtra(su)}
@@ -2240,7 +2277,7 @@ function reduceItems(items,downs){const l=items.map(d=>({...d}));for(const dn of
 function pUseCard(u,q,i,P){const types=USE_FX_P[u.kw]||USE_FX_P.호흡;
  return`<div class="skr"><div class="skr-h"><b>${esc(u.kw)} 소비 ${i+1}</b><button class="x" data-a="skDel" data-p="${P}" data-v="${i}" aria-label="소비 효과 삭제">✕</button></div>
  <div class="fxr"><select data-b="${q}/kw" data-r>${optsL(['호흡','침잠'],u.kw)}</select><small>소비</small>${num(q+'/cost',u.cost,0,99)}<small>${u.kw==='침잠'?'(나를 공격하는 상대의 침잠, 공격 판정 전)':'(자신의 호흡)'}</small><input type="text" class="sk-num" style="width:140px!important" placeholder="이름 (선택)" data-b="${q}/name" value="${esc(u.name)}"></div>
- ${(u.fx||[]).map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(types,f.type)}</select>${['dmgUp','dmgDown'].includes(f.type)?`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`:f.type==='kwUp'?`<select data-b="${q}/fx/${j}/kw">${optsL(KW.filter(k=>k!=='충전'),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:f.type==='custom'?`<input type="text" class="sk-num" style="width:200px!important" placeholder="효과 설명" data-b="${q}/fx/${j}/text" value="${esc(f.text)}">`:num(`${q}/fx/${j}/n`,f.n,0,4)}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
+ ${(u.fx||[]).map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(types,f.type)}</select>${['dmgUp','dmgDown'].includes(f.type)?`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`:f.type==='kwUp'?`<select data-b="${q}/fx/${j}/kw">${optsL(KWA_NC(),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:f.type==='custom'?`<input type="text" class="sk-num" style="width:200px!important" placeholder="효과 설명" data-b="${q}/fx/${j}/text" value="${esc(f.text)}">`:num(`${q}/fx/${j}/n`,f.n,0,4)}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
  ${(u.fx||[]).length<3?`<button class="btn sm" data-a="skPUseFx" data-p="${q}/fx" data-v="${u.kw}">+ 효과</button>`:''}<p class="skr-t">${hl(pUseText(u,'이 항목'))}</p></div>`}
 function passiveMaker(x,p){if(!Array.isArray(x.rules)&&!Array.isArray(x.uses))return`<div class="sk-maker"><p class="small muted">전투에서 자동으로 작동하게 하려면 규칙 칸을 만드세요. 설명 글만으로는 실행되지 않아요 (16.11).</p><button class="btn sm pri" data-a="pInit" data-p="${p}">규칙 칸 만들기</button></div>`;
  const rules=x.rules||[],uses=x.uses||[],w=[];
@@ -2269,7 +2306,7 @@ function passiveTest(eq){
 }
 
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
-const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,bgm:o.bgm??0.45,shk:o.shk??2,fl:o.fl??2,tsp:o.tsp??26}})();
+const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,bgm:o.bgm??0.45,shk:o.shk??2,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1}})();
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2279,7 +2316,7 @@ const SFX_SLOTS=[['clang','칭 (합)'],['crit','치명 합'],['hit','타격'],['
 const SFX_GAIN={tick:.55,dash:.7,miss:.8,shatter:.8};
 // 교체할 수 있는 모든 소리. 방 공유(마스터·오프라인)는 play/sfx, 플레이어는 이 브라우저(localStorage)
 const SFX_GROUPS=[['전투',[...SFX_SLOTS,['down','전투 불능'],['burn','화상'],['status','상태 이상'],['protect','보호'],['bell','종소리']]],
- ['이야기·연출',[['boom','쾅'],['slash','베기'],['knock','노크'],['door','문 삐걱'],['step','발소리'],['heart','심장박동'],['glass','유리 깨짐'],['static','잡음']]],
+ ['이야기·연출',[['boom','쾅'],['slash','베기'],['knock','노크'],['door','문 삐걱'],['step','발소리'],['heart','심장박동'],['glass','유리 깨짐'],['static','잡음'],['type','대사 타이핑 (목소리 "효과음 파일")']]],
  ['컷인 — 넣으면 기본 조합 대신 이 소리 하나',[['ci_ego','E.G.O 컷인'],['ci_twist','뒤틀림 컷인'],['ci_boss','보스 등장'],['ci_phase','페이즈 전환']]],
  ['알림 — 넣었을 때만 울려요',[['dice','주사위 결과 팝업'],['chat','새 채팅'],['voice','목소리 판정 창']]]];
 const SFX_KEYS=SFX_GROUPS.flatMap(g=>g[1].map(x=>x[0]));
@@ -2469,7 +2506,7 @@ Object.assign(A,{
   if(v==='none')Object.assign(D,{a:[6,1],aCv:6,aCrit:true,hit:true,resolution:'noResponse',dmgs:[{tier:3,n:1}]});
   CS.q.push(D);csRun()}
 });
-Object.assign(CHANGE,{fxSet(el){const k=el.dataset.k;FXSET[k]=el.type==='checkbox'?el.checked:+el.value;saveFxSet();applyFxPrefs();if(k==='bgm')BGM.vol();if(k==='vol'&&SFX.master)SFX.master.gain.value=FXSET.vol;if(k==='snd'&&el.checked)SFX.init()}});
+Object.assign(CHANGE,{fxSet(el){const k=el.dataset.k;FXSET[k]=el.type==='checkbox'?el.checked:+el.value;saveFxSet();applyFxPrefs();if(k==='bgm')BGM.vol();if(k==='vol'&&SFX.master)SFX.master.gain.value=FXSET.vol;if(k==='snd'&&el.checked)SFX.init();if(k==='ptc'||k==='cam')dirApplyState(false);if(k==='uiz')uiZoom()}});
 
 /* ---------- 온라인: Firebase Realtime Database ----------
    rooms/<방>/d      — Store.data(chars, play)를 무손실 인코딩해 그대로 둔다
@@ -2518,14 +2555,14 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
    await F.set(this.b('d'),enc({chars:Store.data.chars,play}));
    const used=JSON.stringify(Store.data),U={};for(const id in IMG)if(used.includes('vimg:'+id))U[id]=IMG[id];
    if(Object.keys(U).length)await F.update(this.b('imgs'),U);
-   this.meta={owner:name,at:Date.now(),gms:{[encK(name)]:true}};await F.set(this.b('meta'),this.meta)}
+   this.meta={owner:name,at:nowT(),gms:{[encK(name)]:true}};await F.set(this.b('meta'),this.meta)}
   else{const k=encK(name);if(meta.banned?.[k])throw new Error('BANNED');
    if(meta.lock&&meta.owner!==name&&!meta.gms?.[k]&&!(await F.get(this.b('members/'+k))))await this.waitApproval(name);
    this.meta=await F.get(this.b('meta'))||meta;const[d,imgs]=await Promise.all([F.get(this.b('d')),F.get(this.b('imgs'))]);
    loadData(dec(d)||{});for(const[k,v]of Object.entries(imgs||{})){IMG[k]=v;if(IDB.db)IDB.put('imgs',k,v).catch(()=>{})}}
   ME=name;UI.room=room;this.on=true;this.gm=!!this.meta.gms?.[encK(name)];UNDO.past=[];UNDO.future=[];this.listen(name)},
  // 잠긴 방: 승인 대기 목록에 이름을 올리고 마스터의 결정을 기다린다
- waitApproval(name){const F=this.F(),k=encK(name);F.set(this.b('meta/pending/'+k),{at:Date.now()});const err=$('#lgErr');if(err)err.textContent='잠긴 방이에요. 마스터의 승인을 기다리는 중…';
+ waitApproval(name){const F=this.F(),k=encK(name);F.set(this.b('meta/pending/'+k),{at:nowT()});const err=$('#lgErr');if(err)err.textContent='잠긴 방이에요. 마스터의 승인을 기다리는 중…';
   return new Promise((ok,no)=>{let un=null;const end=f=>{try{un?.()}catch{}clearTimeout(to);f()};const to=setTimeout(()=>end(()=>{F.set(this.b('meta/pending/'+k),null);no(new Error('WAIT'))}),5*60e3);
    un=F.on(this.b('meta'),'value',async(_,m)=>{if(m?.pending?.[k])return;if(m?.banned?.[k])return end(()=>no(new Error('BANNED')));const mem=await F.get(this.b('members/'+k));end(()=>mem?ok():no(new Error('REJECT')))})})},
  listen(name){const F=this.F(),S=this.subs;
@@ -2537,8 +2574,9 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
   S.push(F.on(this.b('members'),'value',(k,v)=>{this.members=v||{};paintNet()}));
   S.push(F.on(this.b('snapmeta'),'value',(k,v)=>{const first=this.snaps===undefined;this.snaps=v||{};if(first&&this.gm)snapAuto();if(M.title==='백업')drawModal()}));
   let pendN=0;S.push(F.on(this.b('meta/pending'),'value',(k,v)=>{const n=Object.keys(v||{}).length;if(this.gm&&n>pendN)toast(`입장 승인 요청이 왔어요 (${n}명) — 멤버 관리에서 확인하세요`);pendN=n;paintNet()}));
+  try{S.push(F.on('.info/serverTimeOffset','value',(k,v)=>{this.skew=+v||0}))}catch{}
   S.push(F.on('.info/connected','value',(k,v)=>{const was=this.everConn?this.conn:null;this.conn=!!v;if(v)this.everConn=true;
-   if(v){const p=this.b('members/'+encK(name));F.set(p,{on:true,at:Date.now()});F.onDc(p,{on:false,at:Date.now()});F.onDc(this.b('d/play/typing/'+encK(name)),null);if(was===false)toast('다시 연결됐어요')}
+   if(v){const p=this.b('members/'+encK(name));F.set(p,{on:true,at:nowT()});F.onDc(p,{on:false,at:nowT()});F.onDc(this.b('d/play/typing/'+encK(name)),null);if(was===false)toast('다시 연결됐어요')}
    else if(was)toast('연결이 끊겼어요. 다시 연결되면 그동안의 행동이 올라가요',1);paintNet()}))},
  // 다른 사람의 변경을 반영. 내 쓰기 도중 곧바로 되돌아오는 신호(quiet)는 이미 반영된 내용이라 건너뛰고, 내용이 같은 신호도 무시
  apply(p,k,v){if(this.quiet||k==='_o'||k==='_a')return;let box=Store.data;for(const x of p.split('/'))box=box[x]??={};let val=v==null?undefined:dec(v);
@@ -2556,7 +2594,7 @@ const NET={on:false,room:'',gm:false,meta:{},members:{},conn:false,quiet:0,subs:
   this.quiet++;try{this.F().update(this.b('d'),U).catch(e=>this.fail(e))}finally{this.quiet--}},
  pushAll(){const{typing,...play}=Store.data.play;this.quiet++;try{this.F().set(this.b('d'),enc({chars:Store.data.chars,play})).catch(e=>this.fail(e))}finally{this.quiet--}},
  putImg(id,url){if(this.on)this.F().set(this.b('imgs/'+id),url).catch(e=>this.fail(e))},
- leave(){for(const u of this.subs)try{u()}catch{}this.subs=[];if(this.on)this.F().set(this.b('members/'+encK(ME)),{on:false,at:Date.now()}).catch(()=>{});this.on=false},
+ leave(){for(const u of this.subs)try{u()}catch{}this.subs=[];if(this.on)this.F().set(this.b('members/'+encK(ME)),{on:false,at:nowT()}).catch(()=>{});this.on=false},
  fail(e){console.error(e);const m=netErr(e);if(m!==this.lastErr){this.lastErr=m;toast('온라인 오류: '+m,1);setTimeout(()=>this.lastErr='',8000)}},
  invite(){try{return'LIMBUS1:'+btoa(unescape(encodeURIComponent(JSON.stringify({c:this.cfg(),r:this.room}))))}catch{return''}}};
 function netKicked(){NET.leave();UI.room='';document.body.insertAdjacentHTML('beforeend','<div class="net-kick"><b>방에서 나가게 됐어요</b><p>마스터가 이 방에서 내보냈어요. 잠시 후 첫 화면으로 돌아갑니다.</p></div>');setTimeout(()=>location.reload(),3000)}
@@ -2638,20 +2676,21 @@ DLG.st={};DLG.scene=null;
 function dirLabel(m){const L=(a,v)=>(a.find(x=>x[0]===v)||[0,v])[1];switch(m.fx){
  case'shake':return`흔들림 ${['','약','중','강'][m.pow]||''}`;case'flash':return`섬광${m.color==='red'?' (붉은)':''}`;case'black':return m.on?'암전':'암전 해제';case'cine':return m.on?'시네마 바':'시네마 바 해제';
  case'tint':return'색조: '+L(TINTS,m.tint||'');case'scene':return`장면 전환 → ${m.name||(m.bg?'배경':'배경 없음')} (${L(TR_MODES,m.mode)})`;case'title':return`제목: ${m.title||''}`;
- case'act':return`${atkNameSp(m.sp)} ${L(FIG_ACTS,m.act)}`;case'bgm':return m.bgm?`BGM: ${m.bgm.name||''}`:'BGM 끄기';case'sfx':return'효과음: '+L(STORY_SFX,m.sfx)+(m.name&&!STORY_SFX.some(x=>x[0]===m.sfx)?m.name:'');case'wait':return`${(m.ms/1000)}초 대기`;default:return m.fx}}
+ case'act':return`${atkNameSp(m.sp)} ${L(FIG_ACTS,m.act)}`;case'bgm':return m.bgm?`BGM: ${m.bgm.name||''}`:'BGM 끄기';case'sfx':return'효과음: '+L(STORY_SFX,m.sfx)+(m.name&&!STORY_SFX.some(x=>x[0]===m.sfx)?m.name:'');case'wait':return`${(m.ms/1000)}초 대기`;case'cam':return'카메라: '+(CAMS.find(x=>x[0]===m.cam)?.[1]||m.cam)+(m.sp?` (${atkNameSp(m.sp)})`:'');case'ptc':return m.ptc?`파티클: ${PTCS.find(x=>x[0]===m.ptc)?.[1]||m.ptc} ${['','약','중','강'][m.n]||''}`:'파티클 끄기';default:return m.fx}}
 const atkNameSp=sp=>speaker({sp}).name||'?';
 // 보내기: 메시지 + 지속 상태 저장. 보낸 사람 화면에서도 대기열 순서대로 재생
 function dirSend(o,dt=0){if(UI.rec&&!o._play){const{_play,...x}=o;UI.rec.steps.push(x);dirRun({...x,k:'rec'});paintDirBar();return}
- const{_play,...oo}=o;o=oo;const m={t:Date.now()+dt,uid:ME,kind:'fx',...o},st={...(Store.get('play/stagefx')||{})};
+ const{_play,...oo}=o;o=oo;const m={t:nowT()+dt,uid:ME,kind:'fx',...o},st={...(Store.get('play/stagefx')||{})};
  if(o.fx==='black')st.black=!!o.on;if(o.fx==='cine')st.cine=!!o.on;if(o.fx==='tint')st.tint=o.tint||'';if(o.fx==='bgm')st.bgm=o.bgm||null;
  if(o.fx==='act'&&POS_ACTS.includes(o.act)){st.pos={...(st.pos||{})};st.pos[o.sp]=o.act==='mid'?null:o.act}
+ if(o.fx==='cam'&&o.cam!=='punch')st.cam=o.cam==='reset'?null:{cam:o.cam,sp:o.sp||''};if(o.fx==='ptc')st.ptc=o.ptc?{t:o.ptc,n:o.n||2}:null;
  if(o.fx==='act'&&o.act==='flip'){st.flip={...(st.flip||{})};st.flip[o.sp]=st.flip[o.sp]?null:1}
- if(o.fx!=='scene'&&o.fx!=='title'&&o.fx!=='sfx'&&o.fx!=='wait'&&o.fx!=='shake'&&o.fx!=='flash')Store.set('play/stagefx',st);
+ if(o.fx!=='scene'&&o.fx!=='title'&&o.fx!=='sfx'&&o.fx!=='wait'&&o.fx!=='shake'&&o.fx!=='flash'&&!(o.fx==='cam'&&o.cam==='punch'))Store.set('play/stagefx',st);
  if(o.fx==='scene')Store.set('play/scene',{id:o.id||'',name:o.name||'',bg:o.bg||''});
  const k=Store.push('play/talk',m);dlgNew({...m,k})}
 function dirApplyState(anim){const st=DLG.st||{},q=s=>$('#tkFx .'+s);if(!q('tk-black'))return;
  q('tk-black').classList.toggle('on',!!st.black);q('tk-cine').classList.toggle('on',!!st.cine);
- const t=q('tk-tint');t.className='tk-tint'+(st.tint?' on '+st.tint:'')}
+ const t=q('tk-tint');t.className='tk-tint'+(st.tint?' on '+st.tint:'');camApply(st.cam,anim);PTC.set(st.ptc)}
 // 대기열에서 차례가 된 연출: 실행하고 걸리는 시간 뒤 다음으로
 function dirPresent(m){clearTimeout(DLG.hold);DLG.hold=null;if(!dlgType.done)dlgType.finish();DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);
  const ms=dirRun(m);DLG.holdDone=false;DLG.fxBusy=true;clearTimeout(DLG.fxT);DLG.fxT=setTimeout(()=>{DLG.fxBusy=false;DLG.holdDone=true;if(dlgActive()||!DLG.cur)dlgNext()},ms)}
@@ -2671,6 +2710,8 @@ function dirRun(m){const st=DLG.st=DLG.st||{},stage=$('#tkStage'),q=s=>$('#tkFx 
   case'sfx':STORY.play(m.sfx,m.url);return 150;
   case'bgm':st.bgm=m.bgm||null;BGM.want(st.bgm);return 0;
   case'wait':return clamp(+m.ms||1000,200,8000);
+  case'cam':{if(m.cam==='punch'){camPunch();return 350}st.cam=m.cam==='reset'?null:{cam:m.cam,sp:m.sp||''};camApply(st.cam,true);return m.cam==='drift'?300:900}
+  case'ptc':st.ptc=m.ptc?{t:m.ptc,n:m.n||2}:null;PTC.set(st.ptc);return 300;
   case'scene':{const tr=q('tk-tr'),mode=m.mode||'fade',swap=()=>{DLG.scene={id:m.id||'',name:m.name||'',bg:m.bg||''};paintTalkStage()};
    if(mode==='cut'||!tr){swap();return 100}
    if(mode==='fade'){const bg=$('#tkBg'),old=bg?.style.backgroundImage;swap();if(old&&bg){const o=document.createElement('div');o.className='tk-old';o.style.backgroundImage=old;bg.after(o);setTimeout(()=>o.remove(),1100)}return 1000}
@@ -2689,6 +2730,8 @@ function paintDirBar(){const b=$('#tkDirB');if(!b)return;const show=true;b.inner
  const html=`<div class="dir" role="dialog" aria-label="연출">${presetBarHTML(full,figs)}${full?scriptBarHTML():''}${full?`
   <h4>화면</h4><div class="row">${B('dirFx','shake:1','흔들림 약')}${B('dirFx','shake:2','중')}${B('dirFx','shake:3','강')}<span class="sep"></span>${B('dirFx','flash:w','섬광')}${B('dirFx','flash:red','붉은 섬광')}<span class="sep"></span>${B('dirFx','black:'+(st.black?0:1),st.black?'암전 해제':'암전','',st.black)}${B('dirFx','cine:'+(st.cine?0:1),st.cine?'시네마 바 끄기':'시네마 바','',st.cine)}</div>
   <h4>색조</h4><div class="row">${TINTS.map(([v,n])=>B('dirFx','tint:'+v,n,'',(st.tint||'')===v)).join('')}</div>
+  <h4>카메라 <small class="note">${st.cam?'지금: '+esc(dirLabel({fx:'cam',...st.cam}).slice(5)):'기본'} · 인물 대상은 아래 ‘캐릭터 동작’에서 고른 캐릭터</small></h4><div class="row">${CAMS.map(([v,n])=>B('dirCam',v,n,'',v===(st.cam?.cam||'reset'))).join('')}</div>
+  <h4>파티클</h4><div class="row">${PTCS.map(([v,n])=>B('dirPtc',v,n,'',st.ptc?.t===v)).join('')}${B('dirPtc','',  '끄기','',!st.ptc)}<span class="sep"></span>${[1,2,3].map(n=>B('dirPtcN',n,['','약','중','강'][n],st.ptc?'':'disabled',st.ptc?.n===n)).join('')}</div>
   <h4>장면 전환 <small class="note">① 배경 고르기 → ② 방식 → ③ 전환</small></h4><div class="dir-bgs">${[{k:'',name:'배경 없음',bg:''},...scenes].map(c=>{const im=pImg(c.bg);return`<button class="dir-bg ${UI.dirBg===c.k?'sel':''} ${c.k===nowId?'now':''}" data-a="dirBgPick" data-v="${esc(c.k)}" ${im?`style="background-image:url('${esc(im)}')"`:''} title="${esc(c.name||'')}"><span>${esc(c.name||'이름 없는 배경')}</span></button>`}).join('')}<button class="dir-bg add" data-a="dirBgAdd" title="배경 이미지 추가">＋</button></div>
   <div class="row">${TR_MODES.map(([v,n])=>B('dirMode',v,n,'',UI.dirMode===v)).join('')}<span class="sep"></span><button class="btn pri dir-go" data-a="dirScene" ${canGo?'':'disabled'}>${canGo?`전환 → ${esc(selName)}`:UI.dirBg==null?'배경을 먼저 고르세요':'이미 현재 배경이에요'}</button><button class="btn" data-a="sceneOpen">배경 관리</button></div>
   `:''}${full?`<h4>제목 카드</h4><div class="row"><input type="text" id="dirTitle" maxlength="40" placeholder="제1장 · 녹슨 사슬"><input type="text" id="dirSub" maxlength="40" placeholder="부제 (선택)">${B('dirTitle',null,'표시')}</div>
@@ -2705,6 +2748,11 @@ function paintDirBar(){const b=$('#tkDirB');if(!b)return;const show=true;b.inner
 
 Object.assign(A,{
  dirOpen(){UI.dir=!UI.dir;paintDirBar()},
+ dirCam(e){const v=e.dataset.v,sp=$('#dirFig')?.value||'';if(CAM_SP.includes(v)&&!sp)return toast('무대에 올라온 캐릭터가 있어야 해요',1);dirSend({fx:'cam',cam:v,sp:CAM_SP.includes(v)?sp:''});setTimeout(paintDirBar,0)},
+ dirPtc(e){const v=e.dataset.v;dirSend({fx:'ptc',ptc:v||null,n:(DLG.st?.ptc?.n)||2});setTimeout(paintDirBar,0)},
+ dirPtcN(e){const p=DLG.st?.ptc;if(!p)return;dirSend({fx:'ptc',ptc:p.t,n:+e.dataset.v});setTimeout(paintDirBar,0)},
+ voiceSet(){UI.talkMenu=false;paintTalk();openModal('캐릭터 목소리',voicesModal);M.wide=true;drawModal()},
+ tvTest(e){const sp=e.dataset.v;let i=0;const T=setInterval(()=>{TB_LAST=0;typeBlip(sp,'',true);if(++i>=9)clearInterval(T)},70)},
  dirFx(e){const[t,v]=e.dataset.v.split(':');if(t==='shake')dirSend({fx:'shake',pow:+v});else if(t==='flash')dirSend({fx:'flash',color:v==='red'?'red':'white'});else if(t==='black'||t==='cine')dirSend({fx:t,on:v==='1'});else if(t==='tint')dirSend({fx:'tint',tint:v||''});setTimeout(paintDirBar,0)},
  dirMode(e){UI.dirMode=e.dataset.v;paintDirBar()},
  dirBgPick(e){UI.dirBg=e.dataset.v;paintDirBar()},
@@ -2800,6 +2848,7 @@ const scripts=()=>vals(Store.get('play/scripts')).sort((a,b)=>(a.at||0)-(b.at||0
 function spByName(n){n=n.trim();if(n==='지문'||n==='나레이션')return'nar';const c=chars().find(c=>(c.info?.name||'')===n);if(c)return'c:'+c.id;const np=vals(Store.get('play/npc')).find(x=>(x.name||'')===n);return np?'n:'+np.k:''}
 function exByName(sp,n){const L=sp.startsWith('c:')?CH(sp.slice(2))?.stands||[]:sp.startsWith('n:')?Store.get('play/npc/'+sp.slice(2))?.stands||[]:[];const i=L.findIndex(x=>(x?.n||'')===n);return i>=0?i:(/^\d+$/.test(n)&&+n<L.length?+n:-1)}
 const byName=(list,n)=>(list.find(x=>x[1]===n)||[])[0];
+const byHead=(list,txt)=>{const t=String(txt||'').trim(),ns=t.replace(/\s+/g,'');for(const[v,n]of[...list].sort((a,b)=>b[1].length-a[1].length)){if(t===n||t.startsWith(n+' '))return[v,t.slice(n.length).trim()];const nn=n.replace(/\s+/g,'');if(ns.startsWith(nn)&&(t.replace(/\s+/g,'')===nn||t.split(/\s+/).length>1)){const w=t.split(/\s+/);let acc='';for(let i=0;i<w.length;i++){acc+=w[i];if(acc===nn)return[v,w.slice(i+1).join(' ')]}}}return[null,'']};
 function scrCmd(c){const w=c.split(/\s+/),k=w[0],rest=w.slice(1).join(' ').trim();
  switch(k){
   case'흔들림':return{fx:'shake',pow:{약:1,중:2,강:3}[rest]||2};
@@ -2812,6 +2861,8 @@ function scrCmd(c){const w=c.split(/\s+/),k=w[0],rest=w.slice(1).join(' ').trim(
   case'제목':{const[t,sub]=rest.split('|').map(x=>x.trim());return t?{fx:'title',title:t,sub:sub||''}:'제목이 비어 있어요'}
   case'BGM':case'bgm':case'브금':{if(!rest||/끄기|정지|없음/.test(rest))return{fx:'bgm',bgm:null};const b=BGM_BUILTIN.find(x=>x[1]===rest);if(b)return{fx:'bgm',bgm:{id:'b:'+b[0],name:b[1]}};const a=vals(Store.get('play/audio')).find(x=>x.type==='bgm'&&x.name===rest);return a?{fx:'bgm',bgm:{id:'u:'+a.k,name:a.name,url:a.url}}:`BGM '${rest}'을 찾을 수 없어요`}
   case'효과음':{const v=byName(STORY_SFX,rest);if(v)return{fx:'sfx',sfx:v};const a=vals(Store.get('play/audio')).find(x=>x.type==='sfx'&&x.name===rest);return a?{fx:'sfx',sfx:'u:'+a.k,url:a.url,name:a.name}:`효과음 '${rest}'을 찾을 수 없어요`}
+  case'카메라':{const[v,tail]=byHead(CAMS,rest);if(!v)return`카메라 '${rest}'는 없어요 (${CAMS.map(x=>x[1]).join('·')})`;if(CAM_SP.includes(v)){const sp=spByName(tail);if(!sp||sp==='nar')return`[카메라 ${CAMS.find(x=>x[0]===v)[1]} 캐릭터이름] 형식으로 적어 주세요`;return{fx:'cam',cam:v,sp}}return{fx:'cam',cam:v}}
+  case'파티클':{if(!rest||/^(끄기|없음|해제)$/.test(rest))return{fx:'ptc',ptc:null};const[v,tail]=byHead(PTCS,rest);if(!v)return`파티클 '${rest}'은 없어요 (${PTCS.map(x=>x[1]).join('·')})`;return{fx:'ptc',ptc:v,n:{약:1,중:2,강:3}[tail]||2}}
   case'대기':{const n=parseFloat(rest);return n>0?{fx:'wait',ms:Math.round(n*1000)}:'대기 시간(초)을 적어 주세요'}
   case'동작':{const p=rest.split(/\s+/),act=byName(FIG_ACTS,p.at(-1)),nm=p.slice(0,-1).join(' '),sp=spByName(nm);if(!act)return`동작 '${p.at(-1)}'은 없어요 (${FIG_ACTS.map(x=>x[1]).join('·')})`;if(!sp||sp==='nar')return`'${nm}' 캐릭터를 찾을 수 없어요`;return{fx:'act',sp,act}}
   case'컷인':{const p=rest.split(/\s+/),w=p.at(-1),c=chars().find(c=>(c.info?.name||'')===p.slice(0,-1).join(' '));if(!c)return`'${p.slice(0,-1).join(' ')}' 캐릭터를 찾을 수 없어요`;const kind=/^(E\.?G\.?O|에고)$/i.test(w)?'ego':w==='뒤틀림'?'twist':w==='등장'?'boss':(w.match(/^(\d+)막$/)?'ph'+(+w.match(/^(\d+)막$/)[1]-2):'');if(!kind)return`컷인 종류는 E.G.O·뒤틀림·등장·N막`;return{cut:{cid:c.id,kind}}}
@@ -2829,13 +2880,13 @@ function scriptBarHTML(){const S=scrCur();if(!S)return`<h4>대본</h4><div class
  const{steps}=scrParse(S.text),pos=clamp(+S.pos||0,0,steps.length),nx=steps[pos];let upto=pos;while(upto<steps.length&&!steps[upto].line)upto++;
  return`<h4>대본</h4><div class="scr"><select data-c="scrPick" aria-label="대본">${scripts().map(x=>`<option value="${esc(x.k)}" ${x.k===S.k?'selected':''}>${esc(x.name||'대본')}</option>`).join('')}</select><b>${pos}/${steps.length}</b><button class="btn pri" data-a="scrNext" ${nx?'':'disabled'}>▶ 다음 <small>(Space)</small></button><button class="btn" data-a="scrSkip" ${nx?'':'disabled'}>건너뛰기</button><button class="btn" data-a="scrBack" ${pos?'':'disabled'}>한 칸 뒤로</button><button class="btn" data-a="scrReset" ${pos?'':'disabled'}>처음으로</button><button class="btn" data-a="scrEdit">편집</button><button class="btn" data-a="scrNew">새 대본</button>
   <div class="nx">${nx?`다음: ${steps.slice(pos,Math.min(upto+1,pos+6)).map(x=>x.line?`<em>${esc(stepText(x))}</em>`:esc(stepText(x))).join(' → ')}`:'대본 끝'}</div></div>`}
-function sendLine(l,dt=0){const m={t:Date.now()+dt,uid:ME,sp:l.sp,ex:+l.ex||0,name:l.sp==='nar'?'':speaker({sp:l.sp}).name,txt:l.txt};const k=Store.push('play/talk',m);dlgNew({...m,k})}
+function sendLine(l,dt=0){const m={t:nowT()+dt,uid:ME,sp:l.sp,ex:+l.ex||0,name:l.sp==='nar'?'':speaker({sp:l.sp}).name,txt:l.txt};const k=Store.push('play/talk',m);dlgNew({...m,k})}
 function scrRun(x,dt){if(x.cut){const c=CH(x.cut.cid);if(!c)return;const k=x.cut.kind;return cutSend(k==='boss'?cutFromBoss(c,-1):k.startsWith('ph')?cutFromBoss(c,+k.slice(2)):cutFromChar(c,k,Math.max(1,+c[k]?.lv||1),'발현'))}if(x.line)return sendLine(x.line,dt);if(x.preset)return presetRun(x.preset,x.tg);dirSend({...x,_play:1},dt)}
 function scriptModal(){const S=UI.scrK&&Store.get('play/scripts/'+UI.scrK);if(!S)return'<p>대본이 없어요</p>';M.wide=true;const r=scrParse(UI.scrPreview??S.text);
  return`<label class="f">이름<input type="text" data-b="play/scripts/${UI.scrK}/name" value="${esc(S.name||'')}"></label>
  <textarea id="scrTxt" data-keep="1" spellcheck="false" aria-label="대본">${esc(S.text||'')}</textarea>
  ${r.errs.length?`<div class="scr-err">${r.errs.slice(0,8).map(esc).join('<br>')}${r.errs.length>8?`<br>… 외 ${r.errs.length-8}개`:''}</div>`:`<div class="scr-ok">${r.steps.length}단계 · 대사 ${r.steps.filter(x=>x.line).length}줄</div>`}
- <div class="scr-help"><b>쓰는 법</b><br><code>이름: 대사</code> 캐릭터·NPC 대사<br><code>이름(표정): 대사</code> 표정 이름으로<br><code>*지문*</code> 또는 그냥 쓴 줄은 지문<br><code>// 메모</code> 무시되는 줄<br><code>[암전]</code> <code>[암전 해제]</code><br><code>[흔들림 강]</code> 약·중·강<br><code>[섬광]</code> <code>[붉은 섬광]</code><br><code>[시네마 바]</code> <code>[시네마 바 해제]</code><br><code>[색조 회상]</code> 회상·흑백·경고·냉기·몽환·없음<br><code>[배경 뒷골목 암전]</code> 방식: 페이드·암전·섬광·즉시<br><code>[제목 제1장 | 부제]</code><br><code>[BGM 긴장]</code> <code>[BGM 끄기]</code><br><code>[효과음 쾅]</code><br><code>[동작 이상 놀람]</code><br><code>[대기 1.5]</code> 초<br><code>[컷인 이상 E.G.O]</code> 뒤틀림·등장·2막<br><code>[프리셋 이름]</code> · 캐릭터 프리셋은 <code>[프리셋 분노 이상]</code><br><code>[암전][효과음 쾅]</code> 한 줄에 여러 개</div>
+ <div class="scr-help"><b>쓰는 법</b><br><code>이름: 대사</code> 캐릭터·NPC 대사<br><code>이름(표정): 대사</code> 표정 이름으로<br><code>*지문*</code> 또는 그냥 쓴 줄은 지문<br><code>// 메모</code> 무시되는 줄<br><code>[암전]</code> <code>[암전 해제]</code><br><code>[흔들림 강]</code> 약·중·강<br><code>[섬광]</code> <code>[붉은 섬광]</code><br><code>[시네마 바]</code> <code>[시네마 바 해제]</code><br><code>[색조 회상]</code> 회상·흑백·경고·냉기·몽환·없음<br><code>[배경 뒷골목 암전]</code> 방식: 페이드·암전·섬광·즉시<br><code>[제목 제1장 | 부제]</code><br><code>[BGM 긴장]</code> <code>[BGM 끄기]</code><br><code>[효과음 쾅]</code><br><code>[동작 이상 놀람]</code><br><code>[대기 1.5]</code> 초<br><code>[카메라 다가가기]</code> 기본·클로즈업·왼쪽 보기·기울이기·순간 줌… <code>[카메라 클로즈업 이상]</code><br><code>[파티클 불씨 강]</code> 먼지·재·비·눈·꽃잎·빛 입자·안개… <code>[파티클 끄기]</code><br><code>[컷인 이상 E.G.O]</code> 뒤틀림·등장·2막<br><code>[프리셋 이름]</code> · 캐릭터 프리셋은 <code>[프리셋 분노 이상]</code><br><code>[암전][효과음 쾅]</code> 한 줄에 여러 개</div>
  <div class="mfoot"><button class="btn danger" data-a="scrDel" style="margin-right:auto">대본 삭제</button><button class="btn" data-a="scrCheck">검사</button><button class="btn" data-a="closeModal">닫기</button><button class="btn pri" data-a="scrSave">저장</button></div>`}
 Object.assign(A,{
  recStart(){UI.rec={steps:[]};toast('녹화 시작 — 연출 버튼을 누르면 단계로 쌓여요. 나에게만 미리 보여요');paintDirBar()},
@@ -2844,14 +2895,14 @@ Object.assign(A,{
  recSave(){const r=UI.rec;if(!r?.steps.length)return;const full=dirFull(),acts=[...new Set(r.steps.filter(x=>x.fx==='act').map(x=>x.sp))],onlyChar=r.steps.every(x=>PLAYER_FX.has(x.fx));
   if(!full&&!onlyChar)return toast('플레이어 프리셋에는 캐릭터 동작·효과음·대기만 넣을 수 있어요',1);
   openForm('프리셋 저장',[{k:'name',label:'이름',v:''}],o=>{const kind=(!full||(onlyChar&&acts.length===1))?'char':'scene';const steps=r.steps.map(x=>kind==='char'&&x.fx==='act'&&acts.length===1?{...x,sp:'@'}:x);
-   Store.push('play/presets',{name:(o.name||'').trim()||'프리셋',kind,owner:ME,steps,at:Date.now()});UI.rec=null;recRestore();closeModal();toast(kind==='char'?'캐릭터 프리셋으로 저장 — 실행할 때 고른 캐릭터가 움직여요':'장면 프리셋으로 저장했어요');paintDirBar()})},
+   Store.push('play/presets',{name:(o.name||'').trim()||'프리셋',kind,owner:ME,steps,at:nowT()});UI.rec=null;recRestore();closeModal();toast(kind==='char'?'캐릭터 프리셋으로 저장 — 실행할 때 고른 캐릭터가 움직여요':'장면 프리셋으로 저장했어요');paintDirBar()})},
  presetRun(e){presetRun(e.dataset.v)},
  presetManage(){openModal('연출 프리셋',presetModal)},
  presetDel(e){const p=Store.get('play/presets/'+e.dataset.v);if(!p||(!dirFull()&&p.owner!==ME))return;if(confirm(`'${p.name}' 프리셋을 지울까요?`))Store.set('play/presets/'+e.dataset.v,null)},
  pstMove(e){const p='play/presets/'+e.dataset.v+'/steps',l=[...(Store.get(p)||[])],i=+e.dataset.i,j=i+(+e.dataset.d);if(j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]];Store.set(p,l)},
  pstDel(e){const p='play/presets/'+e.dataset.v+'/steps',l=[...(Store.get(p)||[])];l.splice(+e.dataset.i,1);Store.set(p,l)},
  pstWait(e){const p='play/presets/'+e.dataset.v+'/steps';Store.set(p,[...(Store.get(p)||[]),{fx:'wait',ms:+e.dataset.d}])},
- scrNew(){const k=Store.push('play/scripts',{name:'새 대본',text:'// 예시\n[암전]\n[배경 없음 즉시]\n[제목 제1장 | 시작]\n[암전 해제]\n*버스가 덜컹거린다.*\n',pos:0,at:Date.now()});UI.scrK=k;UI.scrPreview=null;openModal('대본 편집',scriptModal)},
+ scrNew(){const k=Store.push('play/scripts',{name:'새 대본',text:'// 예시\n[암전]\n[배경 없음 즉시]\n[제목 제1장 | 시작]\n[암전 해제]\n*버스가 덜컹거린다.*\n',pos:0,at:nowT()});UI.scrK=k;UI.scrPreview=null;openModal('대본 편집',scriptModal)},
  scrEdit(){if(!scrCur())return;UI.scrPreview=null;openModal('대본 편집',scriptModal)},
  scrCheck(){UI.scrPreview=$('#scrTxt')?.value??null;drawModal()},
  scrSave(){const t=$('#scrTxt')?.value??'';Store.set(`play/scripts/${UI.scrK}/text`,t);UI.scrPreview=null;const r=scrParse(t);toast(r.errs.length?`저장했어요 — 확인할 줄 ${r.errs.length}개`:`저장했어요 · ${r.steps.length}단계`,r.errs.length?1:0);drawModal();paintDirBar()},
@@ -2871,7 +2922,7 @@ document.addEventListener('keydown',ev=>{if(UI.tab!=='talk'||M.fn||ev.ctrlKey||e
 
 
 function fxPrefsHTML(){const o=(k,L)=>`<select data-c="fxSet" data-k="${k}">${L.map(([v,n])=>`<option value="${v}" ${+FXSET[k]===v?'selected':''}>${n}</option>`).join('')}</select>`;
- return`<label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
+ return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">대사 효과음${o('tvol',[[1,'보통'],[0.5,'작게'],[0,'끄기']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
 function richHelpModal(){const r=[['{떨림}무, 무슨…{/}','떨리는 글자'],['{외침}멈춰!{/}','크고 굵게 떨림'],['{속삭임}비밀이야{/}','작고 흐리게'],['{크게} {작게} {굵게} {기울임} {흐림}','모양'],['{빨강} {파랑} {금색} {회색}','색'],['{물결}두둥실{/}','물결치는 글자'],['{/}','마지막으로 연 모양 닫기 (겹쳐 쓸 수 있어요)'],['{느리게} {빠르게} {보통}','여기부터 타자 속도'],['그래서{쉼 1.5}결국…','잠깐 멈춤 (초, 생략하면 0.6)'],['안 돼!{흔들림 강}','그 글자에 닿으면 흔들림 (약·중·강)'],['{섬광} {붉은 섬광}','그 순간 번쩍'],['{효과음 쾅}','그 순간 효과음'],['괜찮아…{표정 웃음}거짓말이야','말하는 중에 표정 바꾸기'],['{동작 놀람}','말하는 캐릭터 동작 (놀람·떨림·끄덕…)']];
  return`<div class="rh">${r.map(([c,d])=>`<code>${esc(c)}</code><span>${esc(d)}</span>`).join('')}</div><p class="small muted" style="margin-top:10px">대사 기록에는 꾸미기 표시가 빠진 글만 남아요. '…', 마침표 뒤에는 자동으로 살짝 쉬어요. 대본에서도 그대로 쓸 수 있어요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 A.richHelp=()=>openModal('대사 꾸미기',richHelpModal);
@@ -2885,7 +2936,7 @@ const CUT_STYLES={ego:[['slash','사선 각성'],['bloom','개화'],['still','�
 const VMODES=[['art','그림 자리'],['over','전체 위에 겹치기'],['only','영상만']];
 const CUT={q:[],busy:false,seen:new Set(),t0:0,timers:[],cache:{}};
 const cutList=()=>listOf('play/cutin');
-function cutSend(p){Store.push('play/cutin',{t:Date.now(),uid:ME,...p});const l=cutList();for(const e of l.slice(0,Math.max(0,l.length-20)))Store.set('play/cutin/'+e.k,null,true)}
+function cutSend(p){Store.push('play/cutin',{t:nowT(),uid:ME,...p});const l=cutList();for(const e of l.slice(0,Math.max(0,l.length-20)))Store.set('play/cutin/'+e.k,null,true)}
 const artOf=c=>c?.stands?.[0]?.img||c?.portrait||'';
 // 시트에서 보낼 내용 만들기. lv는 '이번에 도달한 단계'
 function cutFromChar(c,kind,lv,label){const x=c[kind]||{},cu=x.cut||{},L=cu.lv?.[lv]||{};
@@ -3007,7 +3058,7 @@ Object.assign(A,{
  bossIntro(e){const u=unitRaw(e.dataset.v),c=u&&CH(srcOf({...u}));if(c?.boss?.on)cutSend(cutFromBoss(c,-1))}
 });
 // 스트레스 10 → 목소리 판정 요청 (주인 화면에 창, 마스터에게 알림)
-const _addStress=addStress;addStress=function(id,n){const before=+CH(id)?.stress||0;_addStress(id,n);const c=CH(id);if(c&&before<10&&(+c.stress||0)>=10&&(+c.ego.lv||0)<4)Store.set(`play/voiceReq/${id}`,{t:Date.now()})};
+const _addStress=addStress;addStress=function(id,n){const before=+CH(id)?.stress||0;_addStress(id,n);const c=CH(id);if(c&&before<10&&(+c.stress||0)>=10&&(+c.ego.lv||0)<4)Store.set(`play/voiceReq/${id}`,{t:nowT()})};
 const VOICE_SEEN=new Set();
 function voicePump(){const R=Store.get('play/voiceReq')||{};for(const[id,r]of Object.entries(R)){if(!r||VOICE_SEEN.has(id+r.t))continue;VOICE_SEEN.add(id+r.t);const c=CH(id);if(!c)continue;
  if(!NET.on||(c.owner===ME)||(NET.gm&&!c.owner)){if(!M.fn){UI.voice={id,rp:'',res:null};UI.roll=UI.voice;openModal('목소리 판정',voiceModal);if(sfxHas('voice'))SFX.play('voice')}else toast(`${c.info.name} 스트레스 10 — 목소리 판정`,1)}else if(NET.gm)toast(`${c.info.name} 스트레스 10 — 주인이 목소리 판정을 해요`)}}
@@ -3071,7 +3122,7 @@ Object.assign(A,{
  dbgVoiceClear(){Store.set('play/voiceReq',null)},
  dbgCutClear(){CUT.q=[];CUT.timers.forEach(clearTimeout);CUT.timers=[];$('#cutin')?.remove();CUT.busy=false;toast('컷인을 멈췄어요 (내 화면)')},
  dbgDlgClear(){DLG.pending=[];DLG.fxBusy=false;clearTimeout(DLG.fxT);DLG.holdDone=true;dlgType.finish?.();toast('대사 대기열을 비웠어요 (내 화면)')},
- dbgStage(){dirSend({fx:'black',on:false,_play:1});dirSend({fx:'cine',on:false,_play:1},1);dirSend({fx:'tint',tint:'',_play:1},2);dirSend({fx:'bgm',bgm:null,_play:1},3);const st={...(Store.get('play/stagefx')||{})};st.pos=null;Store.set('play/stagefx',st);DLG.st={...DLG.st,pos:null};paintFigs();toast('연출 상태를 초기화했어요')},
+ dbgStage(){dirSend({fx:'black',on:false,_play:1});dirSend({fx:'cine',on:false,_play:1},1);dirSend({fx:'tint',tint:'',_play:1},2);dirSend({fx:'bgm',bgm:null,_play:1},3);dirSend({fx:'cam',cam:'reset',_play:1},4);dirSend({fx:'ptc',ptc:null,_play:1},5);const st={...(Store.get('play/stagefx')||{})};st.pos=null;Store.set('play/stagefx',st);DLG.st={...DLG.st,pos:null};paintFigs();toast('연출 상태를 초기화했어요')},
  dbgCutTest(){cutPlay({kind:'ego',lv:3,label:'시험',who:'디버그',name:'시험 E.G.O',form:'',line:'컷인 재생 시험',art:'',art2:'',col:'',grade:'WAW',style:'slash',vid:'',vid2:'',vmode:'art'})},
  dbgFig(){const f=Store.get('play/fig')||{},now=Date.now(),o={};for(const k of Object.keys(f))o[k]={off:now};for(const m of DLG.shown)if(m.sp&&m.sp!=='nar')o[m.sp]={off:now};Store.set('play/fig',o);toast('스탠딩을 모두 내렸어요')},
  dbgTalkClear(){if(!confirm('대사 기록(연출 포함)을 모두 지울까요?'))return;Store.set('play/talk',null);DLG.pending=[];DLG.shown=[];DLG.cur=null;paintTalkStage?.()},
@@ -3144,7 +3195,7 @@ document.addEventListener('change',ev=>{if(ev.target.id==='tkSp')paintRtBar()});
 /* 포인트 = {x,y,name,hide,shr:'all'|'self',pages:[{sp,txt,img}],chk:{on,sins:[],need:'amb'|'full',retry,res:{crit,full,amb,fail,fumble:[pages]}},clue:{on:'never'|'always'|'success',name,txt,img},door,doorNeed}
    읽기는 한 페이지씩 클릭으로 넘긴다. '모두에게 보여주기'면 play/inv/feed로 같은 페이지가 모두에게 뜬다 */
 const invScene=()=>{const id=Store.get('play/inv/cur'),s=Store.get('play/inv/scenes');return s&&(s[id]?id:Object.keys(s)[0])||''};
-const invType=makeTyper('#invBox',()=>paintInvDlg());
+const invType=makeTyper('#invBox',()=>paintInvDlg());invType.snd=ch=>{if(UI.tab==='inv'&&!document.hidden)typeBlip(UI.invSp||'nar',ch.st)};
 const INV_GR=[['crit','크리티컬'],['full','완전한 성공'],['amb','애매한 성공'],['fail','실패'],['fumble','대실패']];
 const gradeKey=g=>({'크리티컬':'crit','완전한 성공':'full','애매한 성공':'amb','실패':'fail','대실패':'fumble'})[g]||'fail';
 const invPt=(sid,k)=>Store.get(`play/inv/scenes/${sid}/points/${k}`);
@@ -3188,13 +3239,13 @@ function invOpen(sid,k){const p=invPt(sid,k);if(!p)return;const S=Store.get('pla
  if(!pages.length)pages=[{txt:after?'조사해 볼 수 있을 것 같다.':'특별한 점은 없다.'}];
  const sins=(p.chk?.sins||[]).filter(Boolean);
  invPlay({sid,k,name:p.name||'조사',pages,after,fin,chkLabel:chk?`${sins.length?sins.join('·')+' ':''}판정하기`:''},p.shr!=='self')}
-function invPlay(o,share){invShow({...o,mine:true});if(share){Store.push('play/inv/feed',{t:Date.now(),uid:ME,sid:o.sid,name:o.name,pages:o.pages});const l=listOf('play/inv/feed');for(const e of l.slice(0,Math.max(0,l.length-20)))Store.set('play/inv/feed/'+e.k,null,true)}}
+function invPlay(o,share){invShow({...o,mine:true});if(share){Store.push('play/inv/feed',{t:nowT(),uid:ME,sid:o.sid,name:o.name,pages:o.pages});const l=listOf('play/inv/feed');for(const e of l.slice(0,Math.max(0,l.length-20)))Store.set('play/inv/feed/'+e.k,null,true)}}
 function invEnd(v){UI.inv=null;$('#invCg')?.remove();paintInvDlg();if(!v?.mine||!v.fin)return invFeedShow();const p=invPt(v.sid,v.k);if(!p)return;
  if(v.fin.clue)invGrantClue(v.sid,v.k);
  if(v.fin.door&&Store.get('play/inv/scenes/'+v.fin.door)){Store.set('play/inv/cur',v.fin.door);toast(`${Store.get('play/inv/scenes/'+v.fin.door).name||'다음 장면'}(으)로 이동했어요`)}
  invFeedShow()}
 function invGrantClue(sid,k){const p=invPt(sid,k),c=p?.clue;if(!c||c.on==='never'||!c.on||!(c.name||c.txt||c.img))return;const id=`${sid}_${k}`;if(Store.get('play/inv/clues/'+id))return;
- Store.set('play/inv/clues/'+id,{name:c.name||p.name||'단서',txt:c.txt||'',img:c.img||'',from:p.name||'',at:Date.now(),by:ME})}
+ Store.set('play/inv/clues/'+id,{name:c.name||p.name||'단서',txt:c.txt||'',img:c.img||'',from:p.name||'',at:nowT(),by:ME})}
 // 다른 사람이 조사한 내용 (모두에게 보여주기)
 function invPump(){if(!dockLogged())return;const L=listOf('play/inv/feed');if(!INV.t0){INV.t0=Date.now();L.forEach(e=>{if((e.t||0)<INV.t0-4000)INV.seen.add(e.k)})}
  for(const e of L)if(!INV.seen.has(e.k)){INV.seen.add(e.k);if(e.uid!==ME&&(e.t||0)>=INV.t0-4000)INV.q.push(e)}
@@ -3230,7 +3281,7 @@ Object.assign(A,{
  invUsedReset(){Store.set(`play/inv/scenes/${invScene()}/used`,null)},
  invDel(){const id=invScene();if(!confirm('이 조사 장면을 삭제할까요?'))return;Store.set('play/inv/scenes/'+id,null);Store.set('play/inv/seen/'+id,null);Store.set('play/inv/rolls/'+id,null)},
  invPlayMode(){UI.invPlay=!UI.invPlay;UI.invMove=false;paintInv()},
- invStage(e,ev){const id=invScene();if(!invEdit()||!id||UI.inv||ev.target.closest('.pt'))return;const b=$('#invStage').getBoundingClientRect(),x=+((ev.clientX-b.left)/b.width*100).toFixed(1),y=+((ev.clientY-b.top)/b.height*100).toFixed(1);
+ invStage(e,ev){const id=invScene();if(!invEdit()||!id||UI.inv||ev.target.closest('.pt'))return;const b=$('#invStage').getBoundingClientRect(),x=+((ev.clientX/UIZ.z-b.left)/b.width*100).toFixed(1),y=+((ev.clientY/UIZ.z-b.top)/b.height*100).toFixed(1);
   if(UI.invMove&&UI.invPt){Store.set(`play/inv/scenes/${UI.invPt.sid}/points/${UI.invPt.k}/x`,x);Store.set(`play/inv/scenes/${UI.invPt.sid}/points/${UI.invPt.k}/y`,y);UI.invMove=false;openModal('조사 포인트',pointModal);return}
   const k=Store.push(`play/inv/scenes/${id}/points`,{x,y,name:'새 포인트',pages:[{txt:''}]});UI.invPt={sid:id,k};UI.invSel=k;openModal('조사 포인트',pointModal)},
  invPoint(e){const id=invScene(),k=e.dataset.v,p=invPt(id,k);if(!p)return;
@@ -3253,7 +3304,7 @@ Object.assign(A,{
  clueOpen(){UI.clueSel='';openModal('단서',clueModal)},
  clueView(e){UI.clueSel=e.dataset.v;drawModal()},
  clueBack(){UI.clueSel='';drawModal()},
- clueAdd(){openForm('단서 추가',[{k:'name',label:'이름',v:''},{k:'txt',label:'내용',v:'',area:true}],o=>{Store.push('play/inv/clues',{name:o.name||'단서',txt:o.txt||'',img:'',from:'마스터',at:Date.now(),by:ME});setTimeout(()=>{UI.clueSel='';openModal('단서',clueModal)},0)})}
+ clueAdd(){openForm('단서 추가',[{k:'name',label:'이름',v:''},{k:'txt',label:'내용',v:'',area:true}],o=>{Store.push('play/inv/clues',{name:o.name||'단서',txt:o.txt||'',img:'',from:'마스터',at:nowT(),by:ME});setTimeout(()=>{UI.clueSel='';openModal('단서',clueModal)},0)})}
 });
 Object.assign(CHANGE,{
  invCur(el){UI.inv=null;Store.set('play/inv/cur',el.value)},
@@ -3263,7 +3314,7 @@ Object.assign(CHANGE,{
 });
 // 판정창 결과를 조사로 이어 붙인다
 function invAfterRoll(r){const{sid,k}=r.inv,p=invPt(sid,k);if(!p)return;const gk=gradeKey(r.res.grade),ok=invOk(p,gk);
- Store.set(`play/inv/rolls/${sid}/${k}`,{by:CH(r.id)?.info?.name||ME,g:r.res.grade,gk,ok,at:Date.now()});
+ Store.set(`play/inv/rolls/${sid}/${k}`,{by:CH(r.id)?.info?.name||ME,g:r.res.grade,gk,ok,at:nowT()});
  let pages=resPages(p,gk);if(!pages.length)pages=[{txt:ok?'무언가를 알아냈다.':'아무것도 알아내지 못했다.'}];
  pages=[{sp:'nar',txt:`{회색}${r.res.sin} 판정 · ${r.res.rawDice.join(' ')}{/}  {${['crit','full'].includes(gk)?'금색':gk==='fumble'?'빨강':gk==='fail'?'회색':'굵게'}}${r.res.grade}{/}  ${ok?'{금색}성공{/}':'{회색}실패{/}'}`},...pages];
  const fin={clue:p.clue?.on==='always'||(p.clue?.on==='success'&&ok),door:p.door&&(p.doorNeed!=='success'||ok)?p.door:''};
@@ -3303,7 +3354,7 @@ const listOf=p=>Object.entries(Store.get(p)||{}).filter(([k,v])=>v&&typeof v==='
 const chatList=()=>listOf('play/chat'),diceList=()=>listOf('play/dice');
 const DOCK_MAX={'play/chat':200,'play/dice':120};
 function dockTrim(p){const l=listOf(p),cut=l.length-DOCK_MAX[p];for(const e of l.slice(0,Math.max(0,cut)))Store.set(`${p}/${e.k}`,null,true)}
-function diceAdd(e){Store.push('play/dice',{t:Date.now(),uid:ME,...e});dockTrim('play/dice')}
+function diceAdd(e){Store.push('play/dice',{t:nowT(),uid:ME,...e});dockTrim('play/dice')}
 function diceFromLog(f){try{const n=k=>atkName(k)||'?';
  if(f.type==='reveal')diceAdd({ty:'atk',who:`${n(f.by)} → ${n(f.to)}`,lbl:f.label||'공격',a:f.a||[],ac:f.aCv??null,r:f.r||null,rc:f.rCv??null,mode:RESP[f.mode]||'',res:(RESO[f.resolution]||'')+(f.clash?.length?` · 합 ${f.clash.map(([a,b])=>a+':'+b).join(' → ')}`:''),ok:f.hit?1:0});
  else if(f.type==='opp')diceAdd({ty:'opp',who:`${n(f.by)} → ${n(f.to)}`,lbl:'기회공격',a:f.dice||[],res:f.hit?'적중 · 경상 1칸':'빗나감',ok:f.hit?1:0});
@@ -3319,7 +3370,7 @@ function diceCard(e){const by=e.uid&&NET.on&&['judge','free'].includes(e.ty)?`<s
 const dockLogged=()=>!$('#login')?.children.length;
 function dockUnread(){if(!DOCK.t0)return 0;const since=Math.max(DOCK.seenC,DOCK.t0);if(DOCK.open&&DOCK.tab==='chat')return 0;return chatList().filter(m=>(m.t||0)>since&&m.uid!==ME).length}
 function paintDock(){const el=$('#dock');if(!el)return;if(!dockLogged()){el.className='';return}
- if(!DOCK.t0){DOCK.t0=Date.now();const d=diceList();d.forEach(e=>DOCK.popped.add(e.k))}
+ if(!DOCK.t0){DOCK.t0=nowT();const d=diceList();d.forEach(e=>DOCK.popped.add(e.k))}
  const C=chatList(),D=diceList(),show=['battle','talk','inv','rail'].includes(UI.tab);
  // 새 주사위 결과 → 모두에게 크게 띄운다 (합 연출 중이면 끝난 뒤에)
  for(const e of D)if(!DOCK.popped.has(e.k)){DOCK.popped.add(e.k);if(DOCK.pop&&!e.nopop&&(e.t||0)>=DOCK.t0-5000)DOCK.popQ.push(e)}
@@ -3348,7 +3399,7 @@ Object.assign(A,{
  dockClear(){if(!confirm('주사위 기록을 모두 비울까요?'))return;Store.set('play/dice',null);DOCK.sig='';paintDock()},
  dockSend(){const i=$('#dkTxt');const txt=(i?.value||'').trim();if(!txt)return;const r=txt.match(/^\/(?:r|roll|굴림)\s*(.*)$/i);
   if(r){if(!dockRoll(r[1]||'2'))return toast('굴림 형식: /r 3 또는 /r 2d6',1)}
-  else{Store.push('play/chat',{t:Date.now(),uid:ME,txt:txt.slice(0,300)});dockTrim('play/chat')}
+  else{Store.push('play/chat',{t:nowT(),uid:ME,txt:txt.slice(0,300)});dockTrim('play/chat')}
   i.value='';DOCK.sig='';paintDock();$('#dkTxt')?.focus()}
 });
 /* 화면에서도 잠근다: 결정권이 없는 사람에게는 버튼·선택칸을 끄고 누구 차례인지 적는다 (클릭 차단은 netBlocked가 따로 함) */
@@ -3374,7 +3425,7 @@ function paintNet(){const b=$('#netBadge');if(!b)return;const n=Object.values(NE
 /* 서버 저장본: 방 전체(그림은 이미 imgs에 따로 있음)를 rooms/<방>/snaps에 보관. 목록은 가벼운 snapmeta만 듣는다 */
 const SNAP_MAX=15,SNAP_AUTO_H=6;
 async function snapSave(label,auto){if(!NET.on||!NET.gm)return;const F=NET.F(),{typing,...play}=Store.data.play,d=enc({chars:Store.data.chars,play}),id=uid();   // 상태는 await 전에 잡는다
- try{await F.set(NET.b('snaps/'+id),d);await F.set(NET.b('snapmeta/'+id),{at:Date.now(),by:ME,label:String(label||'').slice(0,30),auto:!!auto,kb:Math.max(1,Math.round(JSON.stringify(d).length/1024))});
+ try{await F.set(NET.b('snaps/'+id),d);await F.set(NET.b('snapmeta/'+id),{at:nowT(),by:ME,label:String(label||'').slice(0,30),auto:!!auto,kb:Math.max(1,Math.round(JSON.stringify(d).length/1024))});
   const all=Object.entries(await F.get(NET.b('snapmeta'))||{}).sort((a,b)=>b[1].at-a[1].at);
   for(const[k]of all.slice(SNAP_MAX)){F.set(NET.b('snaps/'+k),null);F.set(NET.b('snapmeta/'+k),null)}
   if(!auto)toast('서버에 저장했어요')}catch(e){NET.fail(e)}}
@@ -3418,7 +3469,7 @@ Object.assign(A,{
   NET.F().update(NET.b('meta'),{['banned/'+k]:true,['gms/'+k]:null,['pending/'+k]:null}).catch(er=>NET.fail(er));NET.F().set(NET.b('members/'+k+'/on'),false).catch(()=>{})},
  netUnban(e){if(NET.gm)NET.F().set(NET.b('meta/banned/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
  netForget(e){if(NET.gm)NET.F().set(NET.b('members/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
- netApprove(e){if(!NET.gm)return;const k=encK(e.dataset.v);NET.F().set(NET.b('members/'+k),{on:false,at:Date.now(),ok:true}).then(()=>NET.F().set(NET.b('meta/pending/'+k),null)).catch(er=>NET.fail(er))},
+ netApprove(e){if(!NET.gm)return;const k=encK(e.dataset.v);NET.F().set(NET.b('members/'+k),{on:false,at:nowT(),ok:true}).then(()=>NET.F().set(NET.b('meta/pending/'+k),null)).catch(er=>NET.fail(er))},
  netDeny(e){if(NET.gm)NET.F().set(NET.b('meta/pending/'+encK(e.dataset.v)),null).catch(er=>NET.fail(er))},
  netGm(e){if(!NET.gm)return;const n=e.dataset.v,k=encK(n),on=!NET.meta.gms?.[k];NET.F().set(NET.b('meta/gms/'+k),on||null).catch(er=>NET.fail(er))},
  netCopy(){const c=location.protocol.startsWith('http')?netLink():NET.invite();(navigator.clipboard?.writeText(c)||Promise.reject()).then(()=>toast('복사했어요'),()=>{$('.net-code')?.select();toast('코드를 선택해 두었어요. Ctrl+C로 복사해 주세요')})}});
@@ -3457,7 +3508,7 @@ function addKw(k,kw,n,why){const u=unitRaw(k);if(!u)return;const nm=uName({...u,
  if(kw==='충전'){const max=+u.chargeMax||0,v=Math.max(0,(+u.charge||0)+n),fin=max?Math.min(max,v):v;Store.set(`${BTP}/units/${k}/charge`,fin);btLog(`${nm} — ${why}: 충전 ${n>0?'+':''}${n} (${fin}${max?'/'+max:''})`,{type:'charge',k,n});return}
  if(kw==='진동'&&n>0&&noResp(u))return btLog(`${nm} — ${why}: 진동 ${n} 무시 (불능 상태 중에는 쌓이지 않음)`);
  const v=Math.max(0,(+kwOf(u)[kw]||0)+n);Store.set(`${BTP}/units/${k}/kw/${kw}`,v||null);
- btLog(`${nm} — ${why}: ${kw} ${n>0?'+':''}${n} (현재 ${v})`,{type:'keyword',k,kw,n});
+ btLog(`${nm} — ${why}: ${kw} ${n>0?'+':''}${n} (현재 ${v})${n>0&&!KW.includes(kw)?' · 자작 키워드 — 특수 효과는 GM 확인':''}`,{type:'keyword',k,kw,n});
  if(n>0)runPassives(k,'onKeywordGained',{kw})}
 function healUnit(k,tier,n,why){const u=uOf(k);if(!u)return;const hp=applyHeal(hpOf(u),tier,n);
  Store.set(u.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`,hp);
@@ -3581,10 +3632,10 @@ const optsL=(l,v)=>l.map(x=>`<option ${String(x)===String(v)?'selected':''}>${es
 const tierOpts=v=>[1,2,3,4].map(n=>`<option value="${n}" ${n===+v?'selected':''}>${TIERS[n-1]}</option>`).join('');
 const num=(path,v,min=0,max=99,r)=>`<input type="number" class="sk-num" min="${min}" max="${max}" data-b="${path}" ${r?'data-r':''} value="${+v||0}">`;
 function fxRow(f,q,j,P){const t=f.type;return`<div class="fxr"><select data-b="${q}/type" data-r>${optsKV(FX_L,t)}</select>
- ${t==='tremorBurst'?'<small>진동이 내성치 이상이면 1d6 판정</small>':t==='ruptureBurst'?'<small>선언 때 소비 구간 선택</small>':t==='damage'?`<select data-b="${q}/t">${tierOpts(f.t)}</select>${num(q+'/n',f.n,0,12)}<small>칸</small>`:t==='keyword'?`<select data-b="${q}/kw">${optsL(KW,f.kw)}</select>${num(q+'/n',f.n,0,99)}`:t==='swap'?'<small>대상과 자리 교환</small>':`${num(q+'/n',f.n,0,12)}<small>칸</small>`}
+ ${t==='tremorBurst'?'<small>진동이 내성치 이상이면 1d6 판정</small>':t==='ruptureBurst'?'<small>선언 때 소비 구간 선택</small>':t==='damage'?`<select data-b="${q}/t">${tierOpts(f.t)}</select>${num(q+'/n',f.n,0,12)}<small>칸</small>`:t==='keyword'?`<select data-b="${q}/kw">${optsL(KWA(),f.kw)}</select>${num(q+'/n',f.n,0,99)}`:t==='swap'?'<small>대상과 자리 교환</small>':`${num(q+'/n',f.n,0,12)}<small>칸</small>`}
  <button class="x" data-a="skDel" data-p="${P}" data-v="${j}" aria-label="효과 삭제">✕</button></div>`}
 function ifRow(c,q,m,P){const k=c.kind||'always';return`<div class="ifr"><select data-b="${q}/kind" data-r>${optsKV(IF_L,k)}</select>
- ${k==='always'?'':k==='gradeAtLeast'?`<select data-b="${q}/v">${optsKV({'6':'6 이상','crit':'크리티컬'},c.v)}</select>`:`<select data-b="${q}/who">${optsKV(WHO_L,c.who||'target')}</select>${k.startsWith('keyword')?`<select data-b="${q}/kw">${optsL(KW.filter(x=>x!=='충전'),c.kw)}</select>`:''}${num(q+'/v',c.v,0,k==='hpPercentAtMost'?100:999)}`}
+ ${k==='always'?'':k==='gradeAtLeast'?`<select data-b="${q}/v">${optsKV({'6':'6 이상','crit':'크리티컬'},c.v)}</select>`:`<select data-b="${q}/who">${optsKV(WHO_L,c.who||'target')}</select>${k.startsWith('keyword')?`<select data-b="${q}/kw">${optsL(KWA_NC(),c.kw)}</select>`:''}${num(q+'/v',c.v,0,k==='hpPercentAtMost'?100:999)}`}
  <button class="x" data-a="skDel" data-p="${P}" data-v="${m}" aria-label="조건 삭제">✕</button></div>`}
 function ruleCard(r,q,i,P,n,ws){const d=r.do||{},L=r.limit||{},bad=!doValid(r.when,d.type);
  return`<div class="skr ${r.on?'':'off'} ${bad?'bad':''}"><div class="skr-h"><b>규칙 ${i+1}</b><label class="row small"><input type="checkbox" data-b="${q}/on" ${r.on?'checked':''}> 활성</label>
@@ -3593,15 +3644,15 @@ function ruleCard(r,q,i,P,n,ws){const d=r.do||{},L=r.limit||{},bad=!doValid(r.wh
  <div class="skr-l"><span>IF</span><div class="grow">${(r.ifs||[]).length>1?`<select class="sk-join" data-b="${q}/join" data-r>${optsKV({and:'모두 만족 (AND)',or:'하나 만족 (OR)'},r.join)}</select>`:''}${(r.ifs||[]).map((c,m)=>ifRow(c,`${q}/ifs/${m}`,m,`${q}/ifs`)).join('')||'<small class="muted">조건 없음 = 항상</small>'}
   ${(r.ifs||[]).length<12?`<button class="btn sm" data-a="skIfAdd" data-p="${q}/ifs">+ 조건</button>`:''}</div></div>
  <div class="skr-l"><span>DO</span><div class="grow"><div class="fxr"><select data-b="${q}/do/type" data-r>${optsKV(DO_L,d.type)}</select>
-  ${['diceModifier','resultModifier'].includes(d.type)?`<select data-b="${q}/do/sign">${optsKV({'1':'+','-1':'-'},d.sign||1)}</select>${num(q+'/do/n',d.n,1,4)}`:d.type==='spendCharge'?`${num(q+'/do/n',d.n,0,99)}`:d.type==='keyword'?`<select data-b="${q}/do/kw">${optsL(KW,d.kw)}</select>${num(q+'/do/n',d.n,0,99)}`:`<select data-b="${q}/do/t">${tierOpts(d.t)}</select>${num(q+'/do/n',d.n,0,12)}<small>칸</small>`}</div>
+  ${['diceModifier','resultModifier'].includes(d.type)?`<select data-b="${q}/do/sign">${optsKV({'1':'+','-1':'-'},d.sign||1)}</select>${num(q+'/do/n',d.n,1,4)}`:d.type==='spendCharge'?`${num(q+'/do/n',d.n,0,99)}`:d.type==='keyword'?`<select data-b="${q}/do/kw">${optsL(KWA(),d.kw)}</select>${num(q+'/do/n',d.n,0,99)}`:`<select data-b="${q}/do/t">${tierOpts(d.t)}</select>${num(q+'/do/n',d.n,0,12)}<small>칸</small>`}</div>
   ${['diceModifier','resultModifier'].includes(d.type)?'<small class="muted">이 공격의 주사위·결과에 적용</small>':`<div class="fxr"><small>대상</small>${+d.radius>0?'':`<select data-b="${q}/do/to">${optsKV(WHO_L,d.to||'target')}</select>`}<small>반경</small>${num(q+'/do/radius',d.radius,0,5,1)}${+d.radius>0?`<select data-b="${q}/do/rside">${optsKV(RSIDE,d.rside||'opp')}</select>`:''}</div>`}</div></div>
- <div class="skr-l"><span>LIMIT</span><div class="fxr"><select data-b="${q}/limit/inner" data-r>${optsKV(LIM_IN,L.inner||'perTarget')}</select><select data-b="${q}/limit/count" data-r>${optsKV(LIM_CNT,L.count||'any')}</select><small>활성 기간</small>${num(q+'/limit/dur',L.dur,0,20)}<small>${+L.dur?'턴 종료':'전투 끝까지'}</small>${r.when==='onKeywordGained'?`<small>키워드 필터</small><select data-b="${q}/limit/kwf">${optsKV({'':'모든 키워드',...Object.fromEntries(KW.filter(k=>k!=='충전').map(k=>[k,k]))},L.kwf||'')}</select>`:''}</div></div>
+ <div class="skr-l"><span>LIMIT</span><div class="fxr"><select data-b="${q}/limit/inner" data-r>${optsKV(LIM_IN,L.inner||'perTarget')}</select><select data-b="${q}/limit/count" data-r>${optsKV(LIM_CNT,L.count||'any')}</select><small>활성 기간</small>${num(q+'/limit/dur',L.dur,0,20)}<small>${+L.dur?'턴 종료':'전투 끝까지'}</small>${r.when==='onKeywordGained'?`<small>키워드 필터</small><select data-b="${q}/limit/kwf">${optsKV({'':'모든 키워드',...Object.fromEntries(KWA_NC().map(k=>[k,k]))},L.kwf||'')}</select>`:''}</div></div>
  <p class="skr-t">${hl(ruleText(r))}</p>${bad?`<p class="small warn">${WHEN_L[r.when]}에는 ${DO_L[d.type]}를 쓸 수 없어요 (16.7)</p>`:''}</div>`}
-function tolRow(c,P,ed){const t=c.tol||{};return`<div class="tolrow"><b>키워드 내성치</b>${TOL_KW.map(k=>`<label><i style="background-image:var(--k${KW.indexOf(k)})"></i>${k}${ed?`<input type="number" min="1" max="99" data-b="${P}/tol/${k}" value="${+t[k]||10}">`:`<em>${+t[k]||10}</em>`}</label>`).join('')}</div>`}
+function tolRow(c,P,ed){const t=c.tol||{};return`<div class="tolrow"><b>키워드 내성치</b>${TOL_KW.map(k=>`<label><i style="background-image:${kwIcon(k)}"></i>${k}${ed?`<input type="number" min="1" max="99" data-b="${P}/tol/${k}" value="${+t[k]||10}">`:`<em>${+t[k]||10}</em>`}</label>`).join('')}<button class="lnk kw-mng" data-a="kwDefsOpen">자작 키워드${kwDefs().length?` ${kwDefs().length}개`:''} ›</button></div>`}
 function useCard(u,q,i,P){const types=USE_FX[u.kw]||USE_FX.호흡;
  return`<div class="skr"><div class="skr-h"><b>${esc(u.kw)} 소비 ${i+1}</b><button class="x" data-a="skDel" data-p="${P}" data-v="${i}" aria-label="소비 효과 삭제">✕</button></div>
  <div class="fxr"><select data-b="${q}/kw" data-r>${optsL(['호흡','침잠'],u.kw)}</select><small>소비</small>${num(q+'/cost',u.cost,0,99)}<small>${u.kw==='침잠'?'(대상의 침잠)':'(자신의 호흡)'}</small><input type="text" class="sk-num" style="width:140px!important" placeholder="이름 (선택)" data-b="${q}/name" value="${esc(u.name)}"></div>
- ${(u.fx||[]).map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(types,f.type)}</select>${f.type==='dmgUp'?`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`:f.type==='kwUp'?`<select data-b="${q}/fx/${j}/kw">${optsL(KW.filter(k=>k!=='충전'),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:f.type==='custom'?`<input type="text" class="sk-num" style="width:200px!important" placeholder="효과 설명" data-b="${q}/fx/${j}/text" value="${esc(f.text)}">`:num(`${q}/fx/${j}/n`,f.n,0,4)}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
+ ${(u.fx||[]).map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(types,f.type)}</select>${f.type==='dmgUp'?`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`:f.type==='kwUp'?`<select data-b="${q}/fx/${j}/kw">${optsL(KWA_NC(),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:f.type==='custom'?`<input type="text" class="sk-num" style="width:200px!important" placeholder="효과 설명" data-b="${q}/fx/${j}/text" value="${esc(f.text)}">`:num(`${q}/fx/${j}/n`,f.n,0,4)}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
  ${(u.fx||[]).length<3?`<button class="btn sm" data-a="skUseFx" data-p="${q}/fx" data-v="${u.kw}">+ 효과</button>`:''}<p class="skr-t">${hl(useText(u))}</p></div>`}
 function skillEditor(x,p){
  if(!isStruct(x))return`<div class="sk-maker"><h4 class="sh-h">전투 효과</h4><p class="small muted">이 스킬은 효과 칸이 없어서 전투에서 피해를 직접 고릅니다.</p><button class="btn sm pri" data-a="skInit" data-p="${p}">효과 칸 만들기</button></div>`;
@@ -3698,7 +3749,7 @@ function zoneEditor(x,p){const z=x.zone||{},q=p+'/zone',fx=z.fx||[];
  ${z.on?`<div class="zone-ed"><div class="fxr"><input type="text" class="sk-num" style="width:140px!important" placeholder="이름 (예: 불바닥)" data-b="${q}/name" value="${esc(z.name||'')}"><label class="small">지속${num(`${q}/dur`,z.dur||1,1,9)}라운드</label>
   <select data-b="${q}/who">${optsKV({all:'모두에게',foe:'적에게만',ally:'아군에게만'},z.who||'all')}</select></div>
   <div class="fxr"><small>발동</small><label class="small"><input type="checkbox" data-b="${q}/trig/enter" ${z.trig?.enter!==false?'checked':''}> 칸에 들어올 때</label><label class="small"><input type="checkbox" data-b="${q}/trig/start" ${z.trig?.start?'checked':''}> 그 칸에서 턴 시작</label><label class="small"><input type="checkbox" data-b="${q}/trig/end" ${z.trig?.end?'checked':''}> 턴 종료</label><label class="small"><input type="checkbox" data-b="${q}/once" ${z.once?'checked':''}> 한 번 발동하면 사라짐 (지뢰)</label></div>
-  ${fx.map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(ZONE_FX,f.type)}</select>${f.type==='keyword'?`<select data-b="${q}/fx/${j}/kw">${optsL(KW.filter(k=>k!=='충전'),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
+  ${fx.map((f,j)=>`<div class="fxr"><select data-b="${q}/fx/${j}/type" data-r>${optsKV(ZONE_FX,f.type)}</select>${f.type==='keyword'?`<select data-b="${q}/fx/${j}/kw">${optsL(KWA_NC(),f.kw)}</select>${num(`${q}/fx/${j}/n`,f.n,0,99)}`:`<select data-b="${q}/fx/${j}/t">${tierOpts(f.t)}</select>${num(`${q}/fx/${j}/n`,f.n,0,12)}<small>칸</small>`}<button class="x" data-a="skDel" data-p="${q}/fx" data-v="${j}" aria-label="효과 삭제">✕</button></div>`).join('')}
   ${fx.length<3?`<button class="btn sm" data-a="zoneFxAdd" data-p="${q}/fx">+ 바닥 효과</button>`:''}
   <p class="small muted">대상마다 지금 턴에 한 번만 발동. 들어온 것만으로 기회공격은 생기지 않아요. 지정한 라운드가 시작될 때 사라져요.</p></div>`:''}`}
 Object.assign(A,{zoneFxAdd(e){const p=e.dataset.p,l=Store.get(p)||[];if(l.length<3)Store.set(p,[...l,{type:'keyword',kw:'화상',t:1,n:2}])},
@@ -4324,8 +4375,145 @@ function showLogin(){
 })();
 
 
+
+
+/* ---------- 자작 키워드 관리 창 (§56) ---------- */
+const kwCanEdit=d=>!NET.on||NET.gm||!d||d.owner===ME;
+const kwSafe=n=>String(n||'').replace(/[.#$\[\]\/\\]/g,'').trim().slice(0,12);
+function kwDefsModal(){M.wide=true;const L=kwDefs(),used=n=>units().filter(u=>+kwOf(u)[n]>0).length;
+ return`<p class="small muted" style="margin-bottom:10px">룰북 16.11 — 이름·아이콘·설명·분류를 등록하면 스킬 효과(키워드 부여), 조건(키워드 N 이상·이하), 지형, 마스터 도구, 디버그에서 기본 키워드처럼 고를 수 있어요. 스킬 설명에 이름을 쓰면 아이콘과 함께 강조되고, 마우스를 올리면 설명이 보여요. <b style="color:var(--amber)">자작 키워드만의 특수 효과(자동 소모·특수 피해 등)는 자동으로 처리하지 않아요</b> — 전투 기록에 'GM 확인'으로 남으니 마스터가 손으로 처리해 주세요.</p>
+ <div class="kwd-list">${L.map(d=>{const ed=kwCanEdit(d),P='play/kwdefs/'+d.k;return`<div class="kwd ${ed?'':'ro'}">
+  <button class="kwd-ic" ${ed?`data-a="kwImg" data-v="${esc(d.k)}" title="아이콘 바꾸기 (정사각형 그림 권장)"`:'disabled'} style="background-image:${kwIcon(d.name)}"></button>
+  <div class="kwd-m"><div class="row"><input type="text" maxlength="12" value="${esc(d.name)}" data-c="kwName" data-v="${esc(d.k)}" ${ed?'':'disabled'} aria-label="이름"><select data-b="${P}/cat" ${ed?'':'disabled'} aria-label="분류">${optsKV(Object.fromEntries(Object.entries(KW_CAT).map(([k,v])=>[k,v[0]])),d.cat||'etc')}</select>${used(d.name)?`<small class="muted">전투 중 ${used(d.name)}명에게 있음</small>`:''}<span class="sp"></span>${d.img&&ed?`<button class="lnk" data-a="kwImgDel" data-v="${esc(d.k)}">아이콘 지우기</button>`:''}${ed?`<button class="lnk" data-a="kwDel" data-v="${esc(d.k)}">삭제</button>`:`<small class="muted">${esc(d.owner||'')} 작성</small>`}</div>
+  <textarea rows="2" maxlength="300" data-b="${P}/desc" ${ed?'':'disabled'} placeholder="설명 — 무엇을 하는 키워드인지, 언제 줄어드는지 (표시용)">${esc(d.desc||'')}</textarea></div></div>`}).join('')||'<p class="muted">아직 자작 키워드가 없어요.</p>'}</div>
+ <div class="kwd-add" style="margin-top:10px"><input type="text" id="kwNew" maxlength="12" placeholder="새 키워드 이름 (예: 맹독)" data-keep="1"><button class="btn pri" data-a="kwAdd">추가</button></div>
+ <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
+Object.assign(A,{
+ kwDefsOpen(){openModal('자작 키워드',kwDefsModal)},
+ kwAdd(){const n=kwSafe($('#kwNew')?.value);if(!n)return toast('이름을 적어 주세요',1);if(KWA().includes(n))return toast('이미 있는 키워드예요',1);
+  Store.push('play/kwdefs',{name:n,cat:'etc',desc:'',img:'',owner:ME,at:nowT()});$('#kwNew').value='';drawModal()},
+ kwImg(e){const k=e.dataset.v,d=Store.get('play/kwdefs/'+k);if(!kwCanEdit(d))return netDeny('직접 만든 키워드만 바꿀 수 있어요');pickImg(128,img=>{Store.set(`play/kwdefs/${k}/img`,img);drawModal()})},
+ kwImgDel(e){const k=e.dataset.v,d=Store.get('play/kwdefs/'+k);if(!kwCanEdit(d))return;Store.set(`play/kwdefs/${k}/img`,'');drawModal()},
+ kwDel(e){const k=e.dataset.v,d=Store.get('play/kwdefs/'+k);if(!d||!kwCanEdit(d))return netDeny('직접 만든 키워드만 지울 수 있어요');
+  const n=units().filter(u=>+kwOf(u)[d.name]>0).length;if(!confirm(`'${d.name}' 키워드를 지울까요?${n?`\n전투 중 ${n}명이 가진 수치도 함께 사라져요.`:''}\n스킬에 적어 둔 효과는 남지만 목록에 없는 키워드가 돼요.`))return;
+  for(const u of units())if(+kwOf(u)[d.name]>0)Store.set(`${BTP}/units/${u.k}/kw/${d.name}`,null);Store.set('play/kwdefs/'+k,null);drawModal()}});
+Object.assign(CHANGE,{kwName(el){const k=el.dataset.v,d0=Store.get('play/kwdefs/'+k);if(!d0||!kwCanEdit(d0))return;const d={...d0},n=kwSafe(el.value);
+ if(!n||n===d.name){el.value=d.name;return}if(KWA().includes(n)){toast('이미 있는 키워드예요',1);el.value=d.name;return}
+ // 스킬·패시브·장비·지형에 적힌 이 키워드도 새 이름으로 (kw·kwf 칸)
+ const walk=o=>{let ch=false;if(Array.isArray(o)){for(const x of o)ch=walk(x)||ch}else if(o&&typeof o==='object'){for(const[key,v]of Object.entries(o)){if((key==='kw'||key==='kwf')&&v===d.name){o[key]=n;ch=true}else if(v&&typeof v==='object')ch=walk(v)||ch}}return ch};
+ let fixed=0;for(const c of chars()){const cc=JSON.parse(JSON.stringify(c));if(walk(cc)){Store.set('chars/'+c.id,cc);fixed++}}
+ const zs=Store.get(BTP+'/zones');if(zs){const zz=JSON.parse(JSON.stringify(zs));if(walk(zz))Store.set(BTP+'/zones',zz)}
+ // 전투 중 수치는 새 이름으로 옮긴다
+ for(const u of units()){const v=+kwOf(u)[d.name]||0;if(v){Store.set(`${BTP}/units/${u.k}/kw/${d.name}`,null);Store.set(`${BTP}/units/${u.k}/kw/${n}`,v)}}
+ Store.set(`play/kwdefs/${k}/name`,n);toast(`'${d.name}' → '${n}'${fixed?` · 캐릭터 ${fixed}명의 스킬·규칙도 바꿨어요`:''}`);drawModal()}});
+/* ---------- 대사음 · 카메라 · 파티클 (§54) ---------- */
+const TVOICES=[['blip','삑 (기본)'],['soft','부드럽게'],['low','낮고 거칠게'],['type','타자기'],['bell','맑게'],['glitch','지직 (뒤틀림)'],['file','효과음 파일'],['none','없음']];
+const tvKey=sp=>String(sp||'nar').replace(/[.#$\[\]\/]/g,'_');
+function tvHash(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
+function tvoiceOf(sp){const v=Store.get('play/voices/'+tvKey(sp));if(v&&v.v)return{v:v.v,p:+v.p||0};return sp==='nar'||!sp?{v:'type',p:0}:{v:'blip',p:tvHash(sp)%7-3}}
+let TB_LAST=0;
+function typeBlip(sp,st,force){const vol=+FXSET.tvol;if(!vol&&!force)return;if(!SFX.ok())return;const now=performance.now();if(!force&&now-TB_LAST<(typeMs()<18?70:42))return;TB_LAST=now;
+ const vc=tvoiceOf(sp);if(vc.v==='none')return;const c=SFX.ctx,t=c.currentTime+.005,pr=Math.pow(2,vc.p/12)*(1+(Math.random()*2-1)*.04);
+ let g=.2*(vol||1);if(/rt-small|rt-dim/.test(st||''))g*=.45;if(/rt-big/.test(st||''))g*=1.45;
+ const out=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=vc.v==='low'?1100:4200;out.gain.value=g;out.connect(lp);lp.connect(SFX.master);
+ const env=(node,dec,peak=1,a=.003)=>{const e=c.createGain();e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(peak,t+a);e.gain.exponentialRampToValueAtTime(.0001,t+a+dec);node.connect(e);e.connect(out)};
+ const osc=(type,f,dec,peak=1,f2)=>{const o=c.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dec);env(o,dec,peak);o.start(t);o.stop(t+dec+.03)};
+ const nz=(dec,f,q,peak=1)=>{const n=SFX.noise(dec+.02),fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=f;fl.Q.value=q;n.connect(fl);env(fl,dec,peak);n.start(t);n.stop(t+dec+.03)};
+ switch(vc.v){
+  case'blip':osc('square',520*pr,.032,.55);osc('triangle',1040*pr,.02,.3);break;
+  case'soft':osc('sine',360*pr,.065,1,330*pr);break;
+  case'low':osc('sawtooth',150*pr,.05,.9,130*pr);nz(.03,600*pr,1.2,.35);break;
+  case'type':nz(.018,3400*pr,2.5,1.2);osc('sine',1900*pr,.008,.25);break;
+  case'bell':osc('sine',880*pr,.09,.8);osc('sine',1760*pr,.05,.25);break;
+  case'glitch':osc('square',(220+Math.random()*700)*pr,.028,.45);nz(.025,2500,.8,.6);break;
+  case'file':{const b=SFX.buf.type;if(!b){osc('square',520*pr,.032,.55);break}const s=c.createBufferSource();s.buffer=b;s.playbackRate.value=pr;s.connect(out);s.start(t);break}}}
+function voicesModal(){const gm=!NET.on||NET.gm,list=[...(gm?[['nar','지문 · 나레이션']]:[]),...myChars().filter(c=>!c.foe||gm).map(c=>['c:'+c.id,c.info?.name||'이름 없음']),...(gm?vals(Store.get('play/npc')).map(n=>['n:'+n.k,(n.name||'NPC')+' (NPC)']):[])];
+ return`<p class="small muted" style="margin-bottom:8px">대사가 한 글자씩 나올 때 나는 소리예요. 모두에게 같은 목소리로 들려요. 소리 크기는 각자 ≡ 메뉴 ‘대사 효과음’에서 조절해요.${gm?'':' 플레이어는 자기 캐릭터만 바꿀 수 있어요.'}</p>
+ ${list.map(([sp,nm])=>{const v=tvoiceOf(sp),k=tvKey(sp);return`<div class="vc-row"><b>${esc(nm)}</b><select data-c="tvoice" data-sp="${esc(sp)}" data-k="v" aria-label="${esc(nm)} 목소리">${TVOICES.map(([x,n])=>`<option value="${x}" ${v.v===x?'selected':''}>${n}</option>`).join('')}</select><label>낮게<input type="range" min="-8" max="8" step="1" value="${v.p}" data-c="tvoice" data-sp="${esc(sp)}" data-k="p" aria-label="${esc(nm)} 음높이">높게</label><button class="btn sm" data-a="tvTest" data-v="${esc(sp)}">들어보기</button></div>`}).join('')||'<p class="muted">캐릭터가 없어요</p>'}
+ <p class="small muted" style="margin-top:8px">‘효과음 파일’은 ≡ 메뉴 → 효과음 바꾸기 → ‘대사 타이핑’에 넣은 소리를 음높이만 바꿔 써요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
+Object.assign(CHANGE,{tvoice(el){const sp=el.dataset.sp;if(!spMine(sp)||(sp.startsWith('n:')&&NET.on&&!NET.gm))return netDeny('자기 캐릭터 목소리만 바꿀 수 있어요');const cur=tvoiceOf(sp);Store.set('play/voices/'+tvKey(sp),{...cur,[el.dataset.k]:el.dataset.k==='p'?+el.value:el.value},true);TB_LAST=0;typeBlip(sp,'',true)}});
+
+// 카메라: 배경과 스탠딩만 움직이고 대사창·UI는 그대로
+const CAMS=[['reset','기본'],['zoom','다가가기'],['close','클로즈업'],['focus','인물 주목'],['pl','왼쪽 보기'],['pr','오른쪽 보기'],['tilt','기울이기'],['low','올려보기'],['drift','천천히 흐르기'],['punch','순간 줌']];
+const CAM_SP=['close','focus'];
+function camFigX(sp){const f=$$('#tkFigs .fig').find(x=>x.dataset.k===sp&&!x.classList.contains('leave'));if(!f)return 50;const v=parseFloat(getComputedStyle(f).getPropertyValue('--x'))||parseFloat(f.style.left)||50;return clamp(v,15,85)}
+function camApply(c,anim){const el=$('#tkCam');if(!el)return;document.body.classList.toggle('fx-cam-0',+FXSET.cam===0);el.classList.toggle('cam-drift',c?.cam==='drift');
+ if(!anim){el.style.transition='none';requestAnimationFrame(()=>requestAnimationFrame(()=>el.style.transition=''))}
+ let o='50% 50%',tf='none';switch(c?.cam){
+  case'zoom':tf='scale(1.18)';o='50% 48%';break;
+  case'close':{const x=camFigX(c.sp);o=`${x}% 30%`;tf='scale(1.55)';break}
+  case'focus':{const x=camFigX(c.sp);o=`${x}% 55%`;tf='scale(1.22)';break}
+  case'pl':tf='scale(1.14) translateX(5%)';break;case'pr':tf='scale(1.14) translateX(-5%)';break;
+  case'tilt':tf='scale(1.12) rotate(-3.5deg)';break;case'low':o='50% 100%';tf='scale(1.16) translateY(3%)';break}
+ if(c?.cam!=='drift'){el.style.transformOrigin=o;el.style.transform=tf}else{el.style.transform='';el.style.transformOrigin=''}}
+function camPunch(){const el=$('#tkCam');if(!el||+FXSET.cam===0)return;reFx(el,'cam-punch');setTimeout(()=>el.classList.remove('cam-punch'),400)}
+
+// 파티클: 캔버스 하나에 그리고, 스탠딩 탭이 보일 때만 움직인다
+const PTCS=[['dust','먼지'],['ember','불씨'],['ash','재'],['rain','비'],['snow','눈'],['petal','꽃잎'],['mote','빛 입자'],['fog','안개'],['blood','핏방울']];
+const PTC={cur:null,p:[],raf:0,last:0,cv:null,
+ set(c){const key=c?c.t+':'+c.n:'';if(key===(this.key||''))return this.kick();this.key=key;this.cur=c;this.p=[];this.kick()},
+ kick(){if(!this.raf&&this.cur)this.raf=requestAnimationFrame(t=>this.frame(t));if(!this.cur){const cv=$('#tkPtc');cv?.getContext('2d').clearRect(0,0,cv.width,cv.height)}},
+ want(){const base={dust:40,ember:46,ash:50,rain:170,snow:90,petal:34,mote:42,fog:9,blood:22}[this.cur.t]||40;return Math.round(base*[0,.45,1,1.9][this.cur.n||2]*[0,.4,1][+FXSET.ptc])},
+ spawn(W,H,init){const t=this.cur.t,r=Math.random,o={x:r()*W,y:init?r()*H:-20,a:1,life:0};
+  switch(t){case'dust':Object.assign(o,{s:1+r()*2.2,vx:(r()-.5)*.15,vy:(r()-.4)*.12,al:.15+r()*.35,tw:r()*6});o.y=r()*H;break;
+   case'ember':Object.assign(o,{y:init?r()*H:H+10,s:1.2+r()*2.6,vx:(r()-.5)*.6,vy:-(.5+r()*1.4),al:.6+r()*.4,tw:r()*6});break;
+   case'ash':Object.assign(o,{s:1.5+r()*3,vx:.2+r()*.5,vy:.35+r()*.7,al:.35+r()*.4,rot:r()*6,vr:(r()-.5)*.05});break;
+   case'rain':Object.assign(o,{s:10+r()*16,vx:-2.2,vy:13+r()*7,al:.18+r()*.25});break;
+   case'snow':Object.assign(o,{s:1.5+r()*3.2,vx:(r()-.5)*.4,vy:.5+r()*1.1,al:.5+r()*.45,tw:r()*6});break;
+   case'petal':Object.assign(o,{s:4+r()*5,vx:.6+r()*1,vy:.6+r()*.9,al:.75,rot:r()*6,vr:(r()-.5)*.08,tw:r()*6});break;
+   case'mote':Object.assign(o,{y:init?r()*H:H*(.4+r()*.6),s:1.4+r()*2.8,vx:(r()-.5)*.25,vy:-(.15+r()*.45),al:0,tw:r()*6,max:.5+r()*.5});break;
+   case'fog':Object.assign(o,{x:init?r()*W:-W*.3,y:H*(.35+r()*.6),s:W*(.18+r()*.2),vx:.18+r()*.3,vy:0,al:.05+r()*.06});break;
+   case'blood':Object.assign(o,{s:2+r()*3,vx:(r()-.5)*.3,vy:2+r()*3,al:.8});break}
+  return o},
+ frame(ts){this.raf=0;const cv=$('#tkPtc');if(!this.cur||!cv||!+FXSET.ptc){cv&&cv.getContext('2d').clearRect(0,0,cv.width,cv.height);return}
+  if(UI.tab!=='talk'||document.hidden){this.raf=0;setTimeout(()=>this.kick(),500);return}
+  const dpr=Math.min((devicePixelRatio||1)*UIZ.z,2),W=cv.clientWidth,H=cv.clientHeight;if(!W)return void(this.raf=requestAnimationFrame(t=>this.frame(t)));
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+  const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
+  const dt=Math.min(3,(ts-(this.last||ts))/16.7||1);this.last=ts;const want=this.want(),t=this.cur.t,sc=W/1600;
+  if(!this.p.length)for(let i=0;i<want;i++)this.p.push(this.spawn(W,H,true));
+  while(this.p.length<want&&Math.random()<.5)this.p.push(this.spawn(W,H,false));if(this.p.length>want)this.p.length=want;
+  x.globalCompositeOperation=t==='ember'||t==='mote'?'lighter':'source-over';
+  for(let i=0;i<this.p.length;i++){const p=this.p[i];p.life+=dt;p.x+=p.vx*dt*sc*1.6;p.y+=p.vy*dt*sc*1.6;if(p.vr)p.rot+=p.vr*dt;
+   if(t==='ember'||t==='petal'||t==='snow')p.x+=Math.sin(p.life*.03+p.tw)*.35*sc;
+   const sz=p.s*Math.max(.6,sc);let al=p.al;
+   if(t==='dust'||t==='snow')al*=.6+.4*Math.sin(p.life*.04+p.tw);
+   if(t==='ember'){al*=Math.max(0,1-p.life/260);}
+   if(t==='mote'){p.al=Math.min(p.max,p.al+.006*dt);al=p.al*(.5+.5*Math.sin(p.life*.05+p.tw))}
+   const out=p.y>H+40||p.y<-60||p.x>W+(t==='fog'?W*.5:40)||p.x<-(t==='fog'?W*.6:40)||(t==='ember'&&p.life>260)||(t==='mote'&&p.y<H*.1);
+   if(out){this.p[i]=this.spawn(W,H,false);continue}
+   x.globalAlpha=Math.max(0,Math.min(1,al));
+   switch(t){
+    case'dust':x.fillStyle='#ffeccc';x.beginPath();x.arc(p.x,p.y,sz,0,7);x.fill();break;
+    case'ember':{const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,sz*3.2);g.addColorStop(0,'#fff1b0');g.addColorStop(.3,'#ff9a2e');g.addColorStop(1,'rgba(255,60,0,0)');x.fillStyle=g;x.fillRect(p.x-sz*3.2,p.y-sz*3.2,sz*6.4,sz*6.4);break}
+    case'ash':x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.fillStyle='#8f8a86';x.fillRect(-sz,-sz*.5,sz*2,sz);x.restore();break;
+    case'rain':x.strokeStyle='#bcd2ea';x.lineWidth=Math.max(1,sc);x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x+p.vx*sz*.12,p.y-sz*sc*1.4);x.stroke();break;
+    case'snow':x.fillStyle='#fff';x.beginPath();x.arc(p.x,p.y,sz,0,7);x.fill();break;
+    case'petal':x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.scale(1,.55+.45*Math.sin(p.life*.06+p.tw));x.fillStyle='#e7a2ae';x.beginPath();x.ellipse(0,0,sz,sz*.55,0,0,7);x.fill();x.restore();break;
+    case'mote':{const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,sz*3);g.addColorStop(0,'#fffbe0');g.addColorStop(.35,'#ffd34d');g.addColorStop(1,'rgba(255,200,60,0)');x.fillStyle=g;x.fillRect(p.x-sz*3,p.y-sz*3,sz*6,sz*6);break}
+    case'fog':{const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s);g.addColorStop(0,'rgba(210,205,200,1)');g.addColorStop(1,'rgba(210,205,200,0)');x.fillStyle=g;x.fillRect(p.x-p.s,p.y-p.s,p.s*2,p.s*2);break}
+    case'blood':x.fillStyle='#8a0d0d';x.beginPath();x.ellipse(p.x,p.y,sz*.7,sz*1.4,0,0,7);x.fill();break}}
+  x.globalAlpha=1;x.globalCompositeOperation='source-over';this.raf=requestAnimationFrame(t=>this.frame(t))}};
+document.addEventListener('visibilitychange',()=>PTC.kick());
+
+/* ---------- 창 크기에 맞춘 화면 확대 (§55) ----------
+   1600×900을 기준으로 화면 전체를 비율대로 키우고 줄인다. 창을 줄여도 배치가 그대로 유지되고, 큰 모니터에서는 글자가 커진다.
+   CSS의 vh·vw는 var(--uz)로 나눠 두어 확대 아래에서도 실제 창 크기를 가리키고, getBoundingClientRect는 확대 전 좌표로 돌려준다. */
+const UIZ={z:1,on:false};
+for(const P of [Element.prototype,Range.prototype]){const raw=P.getBoundingClientRect;P.getBoundingClientRect=function(){const r=raw.call(this);if(UIZ.z===1)return r;const z=UIZ.z;return new DOMRect(r.x/z,r.y/z,r.width/z,r.height/z)}}
+function uiZoom(){const m=+FXSET.uiz,W=innerWidth,H=innerHeight;let z=1;UIZ.on=!!m&&W>=700;if(UIZ.on)z=Math.max(.55,Math.min(2.2,Math.min(W/1600,H/900)*m));z=Math.round(z*1000)/1000;
+ if(z!==UIZ.z){UIZ.z=z;document.documentElement.style.zoom=z===1?'':z;document.documentElement.style.setProperty('--uz',z)}cutScale();clearTimeout(window.__fitR);window.__fitR=setTimeout(()=>fitScan(document.body),120)}
+addEventListener('resize',()=>{clearTimeout(UIZ.t);UIZ.t=setTimeout(uiZoom,60)});uiZoom();
+
+// 내 결정 차례(대응·보호·반격 등)인데 다른 탭에 있으면 위쪽에 알림을 띄운다
+function myDecisionBanner(){let el=$('#myDecide');const t=typeof ATK==='function'&&ATK(),need=NET.on&&!NET.gm&&t&&t.phase&&t.phase!=='declare'&&t.phase!=='done'&&deciders().some(mineU);
+ document.body.classList.toggle('my-decide',!!need);
+ if(!need||UI.tab==='battle'){el?.remove();return}
+ if(!el){el=document.createElement('button');el.id='myDecide';el.dataset.a='tab';el.dataset.v='battle';document.body.appendChild(el);if(sfxHas('voice'))SFX.play('voice');else SFX.play('bell')}
+ el.innerHTML='<b>내 결정 차례예요</b><span>전투 탭에서 대응을 골라 주세요 →</span>'}
+setInterval(()=>{try{myDecisionBanner()}catch{}},700);
 // 컷인 글자 크기: 화면 크기에 맞춰 늘고 줄며(1600px 기준), 긴 이름은 글자 수만큼 줄여 화면 밖으로 밀리지 않게
-function cutScale(){document.documentElement.style.setProperty('--cz',Math.max(.6,Math.min(1.6,Math.min(innerWidth/1600,innerHeight/900))).toFixed(3))}
+function cutScale(){document.documentElement.style.setProperty('--cz',UIZ.on?'1':Math.max(.6,Math.min(1.6,Math.min(innerWidth/1600,innerHeight/900))).toFixed(3))}
 cutScale();addEventListener('resize',cutScale);
 const _cutPlayNF=cutPlay;cutPlay=function(p){_cutPlayNF(p);const el=$('#cutin');if(!el)return;
  [['.ci-bname',9],['.ci-name',11],['.ci-actt',9],['.jg-sin b',7],['.jg-grade',7],['.jg-who b',14]].forEach(([q,k])=>el.querySelectorAll(q).forEach(n=>{const L=Array.from(n.textContent.trim()).length;if(L>k)n.style.setProperty('--nf',Math.max(.45,k/L).toFixed(3))}))};
