@@ -693,6 +693,8 @@ label.use input{flex:none;margin-top:2px}
 .cs-body{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;transition:transform .14s,filter .14s}
 .cs-fig.r .cs-body{transform:scaleX(-1)}
 .cs-fig.pic.r .cs-body{transform:none}
+/* 자세 그림은 오른쪽을 보게 그린다 → 오른쪽 자리에서는 좌우를 뒤집어 상대를 보게 (스탠딩 대체 그림은 그대로) */
+.cs-fig.r.posed .cs-body img{transform:scaleX(-1)}
 .cs-body{will-change:transform}.cs-body img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 0 3px var(--fc))}
 .cs-fig.r img{filter:drop-shadow(0 0 3px #ff6a3d)}
 .sil{height:94%;width:auto;overflow:visible}.sil g{stroke:currentColor;fill:currentColor}.sil .core{color:#0e0705}.sil .rim{color:var(--fc)}.sil .glow{color:var(--fc);opacity:.14}.sil .glow2{color:var(--fc);opacity:.3}.sil .bl-g{stroke:var(--fc);opacity:.35}.sil .bl-r{stroke:var(--fc)}
@@ -2405,9 +2407,9 @@ const csUnit=k=>{const u=uOf(k);if(!u)return{name:'?',side:'foe',P:{},base:''};c
  for(const[p]of POSES){const im=pImg(c.poses?.[p]);if(im)P[p]=im}
  return{name:uName(u),side:u.side,P,base:uImg(u)||pImg((c.stands||[])[0]?.img)||''}};
 function figHtml(U,s){const img=U.P.idle||U.base;
- return`<div class="cs-fig ${s} ${img?'pic':'sil-on'}"><div class="cs-card"><span>${esc(U.name)}</span></div><div class="cs-body">${img?`<img src="${esc(img)}" alt="">`:silSvg('idle')}</div></div>`}
+ return`<div class="cs-fig ${s} ${img?'pic':'sil-on'}${U.P.idle?' posed':''}"><div class="cs-card"><span>${esc(U.name)}</span></div><div class="cs-body">${img?`<img src="${esc(img)}" alt="">`:silSvg('idle')}</div></div>`}
 function setPose(f,U,pose){if(!f)return;f.dataset.pose=pose;const im=$('img',f);
- if(im){const src=U.P[pose]||U.P.idle||U.base;f.classList.toggle('real',!!U.P[pose]);if(im.getAttribute('src')!==src)im.src=src}
+ if(im){const src=U.P[pose]||U.P.idle||U.base;f.classList.toggle('real',!!U.P[pose]);f.classList.toggle('posed',!!(U.P[pose]||U.P.idle));if(im.getAttribute('src')!==src)im.src=src}
  else $('.cs-body',f).innerHTML=silSvg(pose)}
 // x는 자기 너비 기준 %. 0=제자리, 음수/양수=왼쪽/오른쪽
 function slide(f,x,ms,ease){f.style.transition=`transform ${ms*(FXSET.fast?.55:1)}ms ${ease||'cubic-bezier(.2,.8,.2,1)'}`;f.style.transform=`translateX(${x}%)`}
