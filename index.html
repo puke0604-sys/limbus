@@ -1577,12 +1577,8 @@ const SH={
    :`<div class="pv-tag">${label}</div>${c[key].map(x=>`<div class="pv-ban">${esc(x.name||'이름 없음')}</div>${passiveView(x)}<div class="sk-desc">${hl(x.desc)}</div>`).join('')}`;
   if(at==='gear')return subs+items('gear','장비');
   if(at==='passive')return subs+items('passives','패시브');
-  const x=c.skills[at];if(!x)return subs+'<p class="muted">스킬이 없어요. 편집 모드에서 추가할 수 있어요.</p>';const p=`${P}/skills/${at}`,r=+x.range||0;
-  if(ed)return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><input class="sk-name" aria-label="스킬 이름" placeholder="스킬 이름" data-b="${p}/name" value="${esc(x.name)}"><div class="row">${imgBtn(p+'/img','스킬 이미지 넣기')}</div></div></div>
-   <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}" title="${esc(rangeHint(x))}"></label>${sel('반응 역할',p+'/role',x.role,['일반','공격·반격','수비','반격 전용','기회공격 전용','양쪽'])}</div><p class="small muted range-h">사거리: ${esc(rangeHint(x))}</p>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${P}/skills" data-v="${at}">스킬 삭제</button></div>`;
-  return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><div class="sk-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><span class="swd">${svg(ICONS.sword)}</span><b>${esc(x.kind)}</b><small>사거리</small><span class="wsq">${'<i></i>'.repeat(clamp(r,0,8))}</span></div></div></div>
-  ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`},
- ego(c,P,ed){const k=UI.shEgo,x=c[k],q=`${P}/${k}`,im=pImg(x.img);
+  const x=c.skills[at];if(!x)return subs+'<p class="muted">스킬이 없어요. 편집 모드에서 추가할 수 있어요.</p>';return subs+skPane(x,`${P}/skills/${at}`,`${P}/skills`,at,ed)},
+ ego0(c,P,ed){const k=UI.shEgo,x=c[k],q=`${P}/${k}`,im=pImg(x.img);
   const subs=`<div class="subtabs"><button class="${k==='ego'?'on':''}" style="--c:#a07a1e" data-a="shEgo" data-v="ego">E.G.O</button><button class="${k==='twist'?'on':''}" style="--c:#a81e1a" data-a="shEgo" data-v="twist">뒤틀림</button></div>`;
   if(ed)return subs+`${c.foe?bossEditor(c,P)+'<hr class="sh-hr">':''}<h4 class="sh-h">단계</h4>${pips(q+'/lv',+x.lv||0,0,4)}<div class="row" style="margin:10px 0">${imgBtn(q+'/img')}</div><div class="f2">${fld('이름',q+'/name',x.name)}${fld('형태',q+'/form',x.form)}</div>${fld('효과',q+'/effect',x.effect,1)}${fld('연출',q+'/show',x.show,1)}<hr class="sh-hr">${cutEditor(c,P,k)}<hr class="sh-hr">${tokenEditor(c,P)}`;
   return subs+`<div class="sk"><span class="ring-img lg" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':'<i></i>'}</span><div class="grow"><div class="pv-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><b class="num roman-s">${ROMAN[+x.lv||0]}</b><small>${esc(x.form)}</small></div></div></div><div class="sk-desc">${hl(x.effect)}</div>${x.show?`<div class="sk-desc muted">${hl(x.show)}</div>`:''}<div class="row" style="margin-top:10px"><button class="btn sm" data-a="cutTest" data-v="${k}">▶ 컷인 미리보기</button>${c.foe&&c.boss?.on?`<button class="btn sm" data-a="cutTest" data-v="boss">▶ 보스 등장 미리보기</button>`:''}${(c.tokens||[]).length?`<span class="small muted">토큰 ${c.tokens.length}개</span>`:''}</div>${sheetLocked(c.id)?'':'<p class="small muted">컷인 연출·영상·토큰·보스 설정은 편집 모드(i)에서 바꿔요.</p>'}`},
@@ -1905,7 +1901,7 @@ function sampleFoe(){const c=blankChar(),sk=(o)=>({...blankSkill(),...o});c.foe=
 /* 전투 화면: 림버스 전투 화면 배치 (격자 무대 + HUD) */
 function battlePage(){return`<section class="bt"><div class="bt-bgimg" id="btBg"></div><div class="bt-vig"></div><div class="bt-wrap"><div class="bt-board" id="btBoard"></div></div><div class="hud" id="btHud"></div><div class="bt-pops" id="btPops"></div><div id="btCs"></div></section>`}
 function paintBattle(){const bg=pImg(BT().bg),b=$('#btBg');if(b)b.style.backgroundImage=bg?`url('${bg}')`:'';paintBoard();paintHud();fxPump()}
-function hudSkillIcon(o,k,on,off,re){const u=uOf(k),s=o.opt.startsWith('s')&&srcOf(u)?CH(srcOf(u))?.skills?.[+o.opt.slice(1)]:null,i=SINS.findIndex(x=>x[0]===s?.sin),im=pImg(s?.img);
+function hudSkillIcon(o,k,on,off,re){const u=uOf(k),s=o.opt.startsWith('s')&&srcOf(u)?skAt(CH(srcOf(u)),+o.opt.slice(1)):null,i=SINS.findIndex(x=>x[0]===s?.sin),im=pImg(s?.img);
  return`<button class="hs ${on?'on':''}${re?' re':''}" data-a="hudSkill" data-v="${o.opt}" ${off?'disabled':''} title="${esc(o.label)} · ${esc(o.kind)} ${o.range}"><span class="hs-tag" style="--c:${s?sinColor(s.sin):'#6b5138'}">${esc(o.label)}</span>
  <span class="hs-ic" style="${i>=0?`--fr:var(--w${i})`:''}"><s style="${im?`background-image:url('${esc(im)}')`:i>=0?`background-image:var(--s${i})`:o.opt==='custom'?'background-image:var(--a-cross)':'background-image:var(--a-ic-battle)'}"></s></span><em>${esc(o.kind==='원거리'?'원':o.kind==='근접'?'근':'?')}${o.range}</em></button>`}
 function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,round=+B.round||0,o=(B.order||[]).filter(k=>unitRaw(k)),turn=+(B.turn??-1),act=turn>=0&&cur,t=ATK(),M=UI.master;
@@ -1944,7 +1940,7 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
   else if(t&&t.phase!=='done')go={a:'',big:'WAIT',sub:'처리 중',off:true};
   else go={a:'btEnd',big:'END',sub:'턴 종료',off:false}}
  const br=`<div class="hud-br">${act?`<div class="mv"><small>이동력</small><b>${+cur.mv}</b><i>/ ${cur.dash?cur.base*2:cur.base}</i></div>
-  <div class="sub-btns"><button class="tabb ${cur.dash?'on':''}" data-a="btDash" ${cur.main||t?'disabled':''}>전력 이동</button><button class="tabb ${cur.other?'on':''}" data-a="btMain" ${cur.main||t?'disabled':''}>기타 행동</button>${cu?.char&&(+CH(cu.char)?.ego?.lv||0)>=1?`<button class="tabb ego" data-a="btEgo" ${cur.main||t?'disabled':''} title="주요 행동 · 1d6 (19.2)">E.G.O 발현</button>`:''}</div>`:''}
+  <div class="sub-btns"><button class="tabb ${cur.dash?'on':''}" data-a="btDash" ${cur.main||t?'disabled':''}>전력 이동</button><button class="tabb ${cur.other?'on':''}" data-a="btMain" ${cur.main||t?'disabled':''}>기타 행동</button>${cu?.char&&(+CH(cu.char)?.ego?.lv||0)>=1?`<button class="tabb ego" data-a="btEgo" ${cur.main||t?'disabled':''} title="주요 행동 · 1d6 (19.2)">E.G.O 발현</button>`:''}${formBtn(cu)}</div>`:''}
   <button class="start" data-a="${go.a}" ${go.off?'disabled':''}><b>${go.big}</b><small>${go.sub}</small></button></div>`;
  // 공격 카드
  const card=t?`<div class="hud-atk">${atkPanel()}</div>`:'';
@@ -2459,19 +2455,22 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   <div class="cs-head r">${none?'':csBadge(d.rMod)}<div class="cs-plate ${d.mode||'none'}"><small>${esc(B.name)}</small>${esc(mode)}</div></div>
   <div class="cs-clash"></div><div class="cs-res"></div><div class="cs-flash"></div><div class="cs-skip">클릭해서 건너뛰기${CS.q.length?` (남은 연출 ${CS.q.length}개도 함께)`:''}</div></div>`;
  const el=$('.cs',host),q=s=>$(s,el),fl=q('.cs-fig.l'),fr=q('.cs-fig.r'),bdL=q('.cs-head.l .cs-badge'),bdR=q('.cs-head.r .cs-badge');
- const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle';
+ const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  setPose(fl,A,'dash');setPose(fr,B,none?'idle':'dash');slide(fl,-130,0);slide(fr,130,0);void el.offsetWidth;
  camIn(d.by,d.to);el.classList.add('in');SFX.play('dash');slide(fl,0,420);slide(fr,0,420);await T(440);
  setPose(fl,A,'idle');setPose(fr,B,rPose);
  // 판정 주사위: 하나씩 떨어지며 가장 높은 눈이 비교값이 된다
  await Promise.all([rollBadge(bdL,d.a,d.aMod,d.aCv,d.aCrit,fast),none?0:rollBadge(bdR,d.r,d.rMod,d.rCv,d.rCrit,fast)]);await T(240);
  if(!none){setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,48,170,'cubic-bezier(.6,0,1,.6)');slide(fr,-48,170,'cubic-bezier(.6,0,1,.6)');await T(170);
-  setPose(fl,A,'atk');setPose(fr,B,d.mode==='guard'?'guard':'atk');await impact(el,d.aCrit||d.rCrit?'crit':'clang',d.aCrit||d.rCrit);slide(fl,30,260);slide(fr,-30,260);await T(300)}
+  if(ev){setPose(fl,A,'atk');setPose(fr,B,'evade');slide(fr,-14,150);afterImg(el,fr);SFX.play('miss');await T(150);slide(fl,30,260);slide(fr,-30,260);await T(300)}   // 회피: 받아치지 않고 흘려 피한다
+  else{setPose(fl,A,'atk');setPose(fr,B,'guard');await impact(el,d.aCrit||d.rCrit?'crit':'clang',d.aCrit||d.rCrit);slide(fl,30,260);slide(fr,-30,260);await T(300)}}
  // 10.2 합: 동점이면 1d6을 주고받는다
  for(const[x,y]of clash){const c=q('.cs-clash');c.innerHTML='<b>합!</b>';reAnim(c,'go');setPose(fl,A,'idle');setPose(fr,B,rPose);slide(fl,8,160);slide(fr,-8,160);await T(240);
   setNum($('b',bdL),x);setNum($('b',bdR),y);SFX.play('tick');await T(260);
-  setPose(fl,A,'atk');setPose(fr,B,d.mode==='guard'?'guard':'atk');slide(fl,48,130,'cubic-bezier(.6,0,1,.6)');slide(fr,-48,130,'cubic-bezier(.6,0,1,.6)');await T(130);
-  await impact(el,'clang');slide(fl,30,240);slide(fr,-30,240);await T(280)}
+  if(ev){setPose(fl,A,'atk');setPose(fr,B,'evade');slide(fl,48,130,'cubic-bezier(.6,0,1,.6)');slide(fr,-12,130);await T(130);
+   afterImg(el,fr);SFX.play('miss');slide(fl,30,240);slide(fr,-30,240);await T(280)}
+  else{setPose(fl,A,'atk');setPose(fr,B,'guard');slide(fl,48,130,'cubic-bezier(.6,0,1,.6)');slide(fr,-48,130,'cubic-bezier(.6,0,1,.6)');await T(130);
+   await impact(el,'clang');slide(fl,30,240);slide(fr,-30,240);await T(280)}}
  q('.cs-clash').innerHTML='';
  // 결과
  const win=d.hit,big=d.aCrit;d.done=true;
@@ -2539,7 +2538,7 @@ Object.assign(A,{
  fxDemo(e){const l=units();if(l.length<2)return toast('유닛이 둘 이상 있어야 미리볼 수 있어요',1);SFX.init();
   const v=e.dataset.v||'hit',D={by:l[0].k,to:l[1].k,label:'미리보기',sin:'분노',a:[2,5,3],aCv:5,aMod:0};
   if(v==='hit')Object.assign(D,{mode:'guard',r:[5,2],rCv:5,clash:[[4,4],[6,2]],hit:true,resolution:'clashAttackWin',dmgs:[{tier:2,n:1}]});
-  if(v==='evade')Object.assign(D,{mode:'evade',r:[3,6],rCv:6,rCrit:true,hit:false,resolution:'directResponseWin'});
+  if(v==='evade')Object.assign(D,{mode:'evade',r:[5,3],rCv:5,clash:[[3,3],[2,5]],hit:false,resolution:'clashResponseWin'});
   if(v==='none')Object.assign(D,{a:[6,1],aCv:6,aCrit:true,hit:true,resolution:'noResponse',dmgs:[{tier:3,n:1}]});
   CS.q.push(D);csRun()}
 });
@@ -3602,7 +3601,7 @@ function zoneFire(k,x,y,ev){const u=unitRaw(k);if(!u||isDown({...u,k}))return;co
 const zonePath=(k,cells)=>{for(const c of cells){if(isDown({...unitRaw(k)||{},k}))break;zoneFire(k,c.x,c.y,'enter')}};
 function zoneRound(round){for(const z of zones())if(+z.until<=round){Store.set(`${BTP}/zones/${z.id}`,null,true);btLog(`바닥 "${z.name}" 소멸 (라운드 ${round} 시작)`)}}
 /* 효과 실행 */
-const skillOf=(k,opt)=>{const u=uOf(k);return opt?.startsWith('s')&&srcOf(u)?CH(srcOf(u))?.skills?.[+opt.slice(1)]:null};
+const skillOf=(k,opt)=>{const u=uOf(k);return opt?.startsWith('s')&&srcOf(u)?skAt(CH(srcOf(u)),+opt.slice(1)):null};
 function snapAll(){return Object.fromEntries(units().map(u=>[u.k,{kw:{...kwOf(u)},charge:+u.charge||0,hp:hpCalc(hpOf(u))}]))}
 function applyFx(fx,from,to,why,o={}){const l=fx||[];
  const dmg=kwDmgAdjust(from,to,o.dmg||dmgItemsOf(l,o.post),why);for(const d of dmg)damageUnit(to,d.t,d.n,why);   // 피해 (저항 반영)
@@ -4032,10 +4031,10 @@ const ROLE_MAIN=['일반',undefined,''],ROLE_COUNTER=['반격 전용','양쪽'];
 const skillAtk=(s,i)=>({opt:'s'+i,si:i,st:isStruct(s),area:isMulti(s.area)?{...blankArea(),...s.area}:null,multi:isMulti(s.area),label:s.name||`스킬 ${i+1}`,kind:s.kind||'미지정',range:Math.max(0,+s.range||0),dmg:{t:1,n:1},sin:s.sin,
  move:s.move?.type?{type:s.move.type,n:clamp(+s.move.n||3,1,9)}:null,zone:s.zone?.on?{...s.zone,fx:(s.zone.fx||[]).filter(Boolean)}:null,reuse:s.reuse?.on==='hit'?{max:clamp(+s.reuse.max||1,1,5)}:null,unresp:!!s.unresp});
 function atkOptions(k){const u=uOf(k),out=[BASIC_ATK];
- if(srcOf(u))(CH(srcOf(u))?.skills||[]).forEach((s,i)=>{if(ROLE_MAIN.includes(s.role))out.push(skillAtk(s,i))});
+ if(srcOf(u))allSk(k).forEach(([s,i])=>{if(ROLE_MAIN.includes(s.role))out.push(skillAtk(s,i))});
  out.push({opt:'custom',label:'직접 지정',kind:'근접',range:1,dmg:{t:1,n:1}});return out}
 function counterOptions(k){const u=uOf(k),out=[{...BASIC_ATK,label:'기본 반격'}];
- if(srcOf(u))(CH(srcOf(u))?.skills||[]).forEach((s,i)=>{if(ROLE_COUNTER.includes(s.role))out.push(skillAtk(s,i))});return out}
+ if(srcOf(u))allSk(k).forEach(([s,i])=>{if(ROLE_COUNTER.includes(s.role))out.push(skillAtk(s,i))});return out}
 const helpers=k=>{const me=uOf(k);return units().filter(u=>u.k!==k&&u.char&&u.side===me?.side&&!isDown(u))};
 const bonusDice=o=>(o.push?1:0)+(o.help?1:0);
 function payStress(k,o,what){const u=uOf(k);if(o.push&&u?.char){addStress(u.char,2);btLog(`${uName(u)} 분발 (${what}, 스트레스 +2)`,{type:'stress',k,n:2})}
@@ -5159,8 +5158,8 @@ const RSK_WHEN={use:'쓸 때 (대응 주사위 전)',win:'성공했을 때 (공�
 const RSK_FX={kwSelf:'자신에게 키워드 부여',kwFoe:'공격자에게 키워드 부여',kwDown:'자신의 키워드 줄이기',debuffRand:'자신의 해로운 키워드 하나(무작위) 줄이기',kwZero:'자신의 키워드 전부 소모',healSelf:'자신 회복',dmgFoe:'공격자에게 피해'};
 const BASE_DEBUFF=['화상','출혈','침잠','진동','파열'];
 const isDebuff=n=>BASE_DEBUFF.includes(n)||kwDef(n)?.cat==='debuff';
-const rskList=k=>{const id=srcOf(uOf(k));return(CH(id)?.skills||[]).map((s,i)=>[s,i]).filter(([s])=>s&&s.role==='수비')};
-const rskOf=(k,r)=>r?.rsk==null?null:(CH(srcOf(uOf(k)))?.skills||[])[+r.rsk]||null;
+const rskList=k=>allSk(k).filter(([s])=>s&&s.role==='수비');
+const rskOf=(k,r)=>r?.rsk==null?null:skAt(CH(srcOf(uOf(k))),+r.rsk)||null;
 function rskBlock(k,s){const u=uOf(k);if(!u)return'유닛 없음';const c=s.rcond||{};
  if(c.cover){const t=ATK(),me=t?.multi?(t.T||[]).find(e=>e.k===k):null;if(!(t?.prot?.k===k||me?.for))return'원호(보호)할 때만'}
  if(+c.hp&&hpPctOf(u)>+c.hp)return`HP ${c.hp}% 이하일 때만`;
@@ -5260,6 +5259,42 @@ function assistEditor(x,p){const a=x.assist||{};return`<h4 class="sh-h">원호 �
  <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/assist/on" data-r ${a.on?'checked':''}> 원호 공격 쓰기</label>${a.on?`<label class="small">아군 최대${num(p+'/assist/n',a.n||1,1,3,1)}명</label><label class="small">대상과 ${num(p+'/assist/reach',a.reach||1,1,9,1)}칸 안</label><label class="small">피해<select data-b="${p}/assist/t" data-r>${optsKV({1:'경상',2:'중상',3:'치명상',4:'4단계'},a.t||1)}</select>${num(p+'/assist/d',a.d||1,1,9,1)}칸</label>`:''}</div>
  ${a.on&&isMulti(x.area)?'<p class="small warn">범위 스킬에서는 원호 공격을 쓰지 않아요 (단일 대상만).</p>':''}`}
 {const sv=skillView;skillView=function(x){const h=sv(x),a=x?.assist;return a?.on&&x.role!=='수비'?h+`<p class="small"><b>[원호 공격]</b> 아군 ${+a.n||1}명 · 대상 ${+a.reach||1}칸 안 · 적중 시 ${TIERS[(+a.t||1)-1]} ${+a.d||1}칸</p>`:h}}
+</script>
+<script id="sk-pane">
+function skPane(x,p,delP,at,ed,extra=''){const r=+x.range||0;
+  if(ed)return`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><input class="sk-name" aria-label="스킬 이름" placeholder="스킬 이름" data-b="${p}/name" value="${esc(x.name)}"><div class="row">${imgBtn(p+'/img','스킬 이미지 넣기')}</div></div></div>
+   <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}" title="${esc(rangeHint(x))}"></label>${sel('반응 역할',p+'/role',x.role,['일반','공격·반격','수비','반격 전용','기회공격 전용','양쪽'])}</div><p class="small muted range-h">사거리: ${esc(rangeHint(x))}</p>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${extra}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${delP}" data-v="${at}">스킬 삭제</button></div>`;
+  return`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><div class="sk-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><span class="swd">${svg(ICONS.sword)}</span><b>${esc(x.kind)}</b><small>사거리</small><span class="wsq">${'<i></i>'.repeat(clamp(r,0,8))}</span></div></div></div>
+  ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`}
+</script>
+<script id="form-skill">
+/* §73 E.G.O · 뒤틀림 전용 스킬
+   데이터: c.ego.skills / c.twist.skills = [일반 스킬과 같은 구조 + need(필요 단계 1~4) + free(발현하지 않아도 사용)]
+   전투: E.G.O(뒤틀림)를 발현하면 그 유닛에 form='ego'|'twist'. 발현 중이고 단계가 need 이상이면 공격·반격·수비 목록에 붙는다.
+   스킬 번호: 0~99 일반, 100+j E.G.O, 200+j 뒤틀림 (opt 's100' 식이라 기존 처리 그대로) */
+const FORM_L={ego:'E.G.O',twist:'뒤틀림'},FORM_BASE={ego:100,twist:200};
+const formSk=(c,k)=>{const L=c?.[k]?.skills;return Array.isArray(L)?L:L&&typeof L==='object'?Object.values(L):[]};
+function skAt(c,i){if(!c||!Number.isFinite(i))return null;if(i<100)return c.skills?.[i]||null;return(i<200?formSk(c,'ego')[i-100]:formSk(c,'twist')[i-200])||null}
+function allSk(k){const u=uOf(k),c=CH(srcOf(u||{}));if(!c)return[];const out=(c.skills||[]).map((s,i)=>[s,i]).filter(([s])=>s),f=unitRaw(k)?.form;
+ for(const kd of['ego','twist']){const lv=+c[kd]?.lv||0;formSk(c,kd).forEach((s,j)=>{if(s&&(+s.need||1)<=lv&&(s.free||f===kd))out.push([s,FORM_BASE[kd]+j])})}return out}
+BLANKS.formSkill=()=>({...blankSkill(),need:1});
+{const fc0=fixChar;fixChar=function(c){const o=fc0(c);for(const k of['ego','twist'])if(o[k])o[k].skills=formSk(o,k).filter(Boolean).map(s=>({...s,fx:Array.isArray(s.fx)?s.fx:[],rules:Array.isArray(s.rules)?s.rules:[]}));return o}}
+// 발현하면 전투 유닛에 표시
+{const mf0=manifest;manifest=function(c,kind,lv,label){mf0.apply(this,arguments);try{for(const u of units().filter(u=>u.char===c.id)){Store.set(`${BTP}/units/${u.k}/form`,kind,true);
+ const n=formSk(CH(c.id)||c,kind).filter(s=>s&&(+s.need||1)<=(+lv||0)).length;btLog(`${uName(u)} ${FORM_L[kind]} 발현 중${n?` — 전용 스킬 ${n}개 사용 가능`:''}`,{type:'status',k:u.k,key:'form',on:true})}}catch(e){console.error(e)}}}
+function formBtn(cu){const f=cu&&unitRaw(cu.k)?.form;if(!f)return'';return`<button class="tabb ${f==='ego'?'ego ':''}on" data-a="btFormOff" title="${FORM_L[f]} 발현을 끝내요 — 전용 스킬이 목록에서 빠져요">${FORM_L[f]} 해제</button>`}
+// 시트 E.G.O 탭 아래 전용 스킬
+SH.ego=function(c,P,ed){const k=UI.shEgo,base=SH.ego0(c,P,ed),L=formSk(c,k),at=Math.max(0,Math.min(+UI.shEgoSk||0,L.length-1)),q=`${P}/${k}/skills`,nm=FORM_L[k];
+ const tabs=`<div class="subtabs">${L.map((x,i)=>`<button class="${at===i?'on':''}" style="--c:${sinColor(x?.sin)}" data-a="shEgoSk" data-v="${i}">${ROMAN[clamp(+x?.need||1,1,4)]} · ${esc(x?.name||'스킬'+(i+1))}</button>`).join('')}${ed?`<button class="add" data-a="itemAdd" data-p="${q}" data-v="formSkill" aria-label="${nm} 스킬 추가">+</button>`:''}</div>`;
+ const x=L[at],need=clamp(+x?.need||1,1,4);
+ const extra=x&&ed?`<div class="f2"><label class="f"><span>필요 단계</span><select data-b="${q}/${at}/need" data-r>${[1,2,3,4].map(n=>`<option value="${n}" ${need===n?'selected':''}>${n}단계 이상</option>`).join('')}</select></label><label class="row small" style="align-self:end"><input type="checkbox" data-b="${q}/${at}/free" data-r ${x.free?'checked':''}> 발현하지 않아도 사용 (단계만 충족)</label></div>`:'';
+ const note=x&&!ed?`<p class="small ${(+c[k].lv||0)>=need?'':'muted'}">${need}단계 이상 · ${x.free?'발현하지 않아도 사용':`${nm} 발현 중에만`}${(+c[k].lv||0)<need?` — 지금 ${+c[k].lv||0}단계라 아직 못 써요`:''}</p>`:'';
+ return base+`<hr class="sh-hr"><h4 class="sh-h">${nm} 전용 스킬 <small>${nm}를 발현하면 단계에 맞는 스킬이 전투 스킬 목록에 붙어요</small></h4>`+tabs+(x?note+skPane(x,`${q}/${at}`,q,at,ed,extra):`<p class="muted small">${ed?'+ 를 눌러 스킬을 추가하세요.':'아직 전용 스킬이 없어요. 편집 모드에서 추가할 수 있어요.'}</p>`)};
+Object.assign(A,{
+ shEgoSk(e){UI.shEgoSk=+e.dataset.v||0;renderSheet()},
+ btFormOff(){const cu=BT().cur,u=cu&&unitRaw(cu.k);if(!u?.form)return;const c=CH(u.char);if(NET.on&&!NET.gm&&c?.owner!==ME)return toast('자기 캐릭터만 해제할 수 있어요',1);
+  const f=u.form;Store.set(`${BTP}/units/${cu.k}/form`,null);btLog(`${uName({...u,k:cu.k})} ${FORM_L[f]} 해제`,{type:'status',k:cu.k,key:'form',on:false})}
+});
 </script>
 <script id="char-file">
 /* §71 캐릭터 파일: 명단에서 시트를 파일로 내보내고, 파일의 시트를 이 방에 '새 시트로 추가'한다 (방 데이터는 지우지 않음)
