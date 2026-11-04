@@ -4571,7 +4571,7 @@ function kwActText_v1(a,nm){const t=kwToText(a),A=kwAmtText(a),s=+a.sign<0?'-':'
  case'status':return`${t} ${ST_L[a.key]||a.key} ${String(a.on)==='0'?'해제':''}`;case'note':return`알림: ${a.text||''}`}return a.type}
 const kwIfText_v1=(c,nm)=>{const w=(KWWHO[c.who||'self']||'').replace(/ \(.*\)/,''),v=+c.v||0;switch(c.kind){case'stackMin':return`${nm} ${v} 이상`;case'stackMax':return`${nm} ${v} 이하`;case'stackTol':return`${nm} 내성치 이상`;case'gainMin':return`받은 양 ${v} 이상`;
  case'kwMin':return`${w} ${c.kw} ${v} 이상`;case'kwMax':return`${w} ${c.kw} ${v} 이하`;case'chargeMin':return`${w} 충전 ${v} 이상`;case'chargeMax':return`${w} 충전 ${v} 이하`;case'hpAtMost':return`${w} HP ${v} 이하`;case'hpPct':return`${w} HP ${v}% 이하`;
- case'sideFoe':return`${w}가 적`;case'sideAlly':return`${w}가 아군`;case'roundEvery':return`${v}의 배수 라운드`;case'd6':return`1d6 ${v} 이상`;case'grade':return'공격 결과 6 이상';case'crit':return'크리티컬'}return'항상'};
+ case'sideFoe':return`${w}가 적`;case'sideAlly':return`${w}가 아군`;case'roundEvery':return`${v}의 배수 라운드`;case'd6':return`1d6 ${v} 이상`;case'grade':return'공격 결과 6 이상';case'crit':return'크리티컬';case'notSameAtk':return'이 키워드를 붙인 공격이 아닐 때'}return'항상'};
 const kwRuleText_v1=(r,nm)=>`[${KWW_L[r.when]||r.when}${r.when==='otherGained'&&r.kwf?` (${r.kwf})`:''}] ${(r.ifs||[]).length?r.ifs.map(c=>kwIfText(c,nm)).join(r.join==='or'?' 또는 ':' 그리고 ')+' → ':''}${(r.acts||[]).map(a=>kwActText(a,nm)).join(', ')||'(효과 없음)'}${r.limit&&r.limit!=='any'?' · '+KWLIM_L[r.limit]:''}`;
 function kwCfgText_v1(d){const c=d.cfg||{},o=[];if(+c.max)o.push(`최대 ${c.max}`);if(c.tol?.on)o.push(`내성치 사용 (기본 ${+c.tol.def||10})`);if(c.decay?.at&&c.decay.at!=='none')o.push(`${KWDECAY_AT[c.decay.at]}마다 ${c.decay.mode==='half'?'절반':c.decay.mode==='zero'?'0으로':'-'+(+c.decay.n||1)}`);if(c.keep)o.push('전투 뒤에도 유지');return o.join(' · ')}
 function kwWarn_v1(d){const w=[],c=d.cfg||{};(d.rules||[]).forEach((r,i)=>{if(!r)return;const acts=r.acts||[];
@@ -4791,7 +4791,7 @@ function kwActText(a,nm){const t=kwToText(a),A=kwAmtText(a),s=+a.sign<0?'-':'+';
 const kwIfText=(c,nm)=>{const w=(KWWHO[c.who||'self']||'').replace(/ \(.*\)/,''),v=+c.v||0;switch(c.kind){case'stackMin':return`${nm} ${v} 이상`;case'stackMax':return`${nm} ${v} 이하`;case'cntMin':return`${nm} 횟수 ${v} 이상`;case'cntMax':return`${nm} 횟수 ${v} 이하`;case'stackTol':return`${nm} 내성치 이상`;case'gainMin':return`받은 양 ${v} 이상`;
  case'respMode':return`${RESP[c.m||'evade']}할 때`;case'atkKind':return`${c.m||'근접'} 공격일 때`;
  case'kwMin':return`${w} ${c.kw} ${v} 이상`;case'kwMax':return`${w} ${c.kw} ${v} 이하`;case'chargeMin':return`${w} 충전 ${v} 이상`;case'chargeMax':return`${w} 충전 ${v} 이하`;case'hpAtMost':return`${w} HP ${v} 이하`;case'hpPct':return`${w} HP ${v}% 이하`;
- case'sideFoe':return`${w}가 적`;case'sideAlly':return`${w}가 아군`;case'roundEvery':return`${v}의 배수 라운드`;case'd6':return`1d6 ${v} 이상`;case'grade':return'공격 결과 6 이상';case'crit':return'크리티컬'}return'항상'};
+ case'sideFoe':return`${w}가 적`;case'sideAlly':return`${w}가 아군`;case'roundEvery':return`${v}의 배수 라운드`;case'd6':return`1d6 ${v} 이상`;case'grade':return'공격 결과 6 이상';case'crit':return'크리티컬';case'notSameAtk':return'이 키워드를 붙인 공격이 아닐 때'}return'항상'};
 const kwRuleText=(r,nm)=>`[${r.pass?'상시':KWW_L[r.when]||r.when}${r.when==='otherGained'&&r.kwf?` (${r.kwf})`:''}] ${(r.ifs||[]).length?r.ifs.map(c=>kwIfText(c,nm)).join(r.join==='or'?' 또는 ':' 그리고 ')+' → ':''}${(r.acts||[]).map(a=>kwActText(a,nm)).join(', ')||'(효과 없음)'}${+r.spend?` · ${nm} ${r.spend} 소비`:''}${r.ask==='ask'&&KWW_PRE.includes(r.when)?' · 물어보고 사용':''}${r.limit&&r.limit!=='any'?' · '+KWLIM_L[r.limit]:''}`;
 function kwPassText(p,nm){const r=kwPassRule(p);if(!r)return'';const a=r.acts[0];const base=p.type==='atkDice'?`공격 주사위 ${+p.sign<0?'-':'+'}${kwAmtText(a)}`:p.type==='respDice'?`대응 주사위 ${+p.sign<0?'-':'+'}${kwAmtText(a)}`:p.type==='atkRes'?`공격 결과 ${+p.sign<0?'-':'+'}${kwAmtText(a)}`:p.type==='respRes'?`대응 결과 ${+p.sign<0?'-':'+'}${kwAmtText(a)}`:p.type==='dmgOut'?`주는 피해 ${tierName(p.t)} ${+p.sign<0?'-':'+'}${kwAmtText(a)}칸`:p.type==='dmgIn'?`받는 피해 ${tierName(p.t)} ${+p.sign<0?'-':'+'}${kwAmtText(a)}칸`:`턴 시작 이동력 ${+p.sign<0?'-':'+'}${kwAmtText(a)}`;
  return`${p.mode&&p.mode!=='any'?RESP[p.mode]+'할 때 ':''}${p.kind&&p.kind!=='any'?p.kind+' 공격일 때 ':''}${base}${p.use?` · 적용될 때마다 ${nm} 1 소비`:''}${r.ask==='ask'?' · 물어보고 사용':''}`}
@@ -5526,6 +5526,20 @@ Object.assign(A,{
  btXact(){const c=BT().cur;if(!c||!(+c.xmain>0)||!c.main)return;Store.set(`${BTP}/cur`,{...c,main:false,dash:false,other:false,xmain:+c.xmain-1});btLog(`${atkName(c.k)} 추가 행동 — 주요 행동 한 번 더`,{type:'status',k:c.k})}});
 NET_DECIDE.add('supGo');NET_DECIDE.add('btXact');
 </script>
+<script id="kw-fresh">
+/* §82 '이번 공격으로 막 붙은 키워드'가 같은 공격에서 바로 발동하지 않게 하는 조건
+   공격마다 ATK().aid, 키워드를 줄 때 units/k/kwAt/<키워드> = 그 aid. 조건 '이 키워드를 붙인 공격이 아님(notSameAtk)' */
+Object.assign(KWIF_L,{notSameAtk:'이 키워드를 붙인 공격이 아님'});KWIF_NOV.push('notSameAtk');
+{const ad1=atkDeclare;atkDeclare=function(){const r=ad1.apply(this,arguments),t=ATK();if(t&&!t.aid&&t.phase&&t.phase!=='declare')Store.set(`${BTP}/atk/aid`,uid(),true);return r}}
+{const ka1=kwApply;kwApply=function(k,kw){const a=ATK()?.aid;if(a)Store.set(`${BTP}/units/${k}/kwAt/${kw}`,a,true);return ka1.apply(this,arguments)}}
+{const kc0=kwCond;kwCond=function(c,ctx,tag){if(c?.kind==='notSameAtk'){const a=ATK()?.aid;return!a||unitRaw(ctx.self)?.kwAt?.[ctx.def.name]!==a}return kc0.apply(this,arguments)}}
+
+// 조직원 파일을 예전에 불러온 방: 몸값·시세가 붙인 공격에서 바로 터지던 것을 고친다 (설명이 원래 것일 때만)
+function kwFreshMigrate(){if(NET.on&&!NET.gm)return;for(const d of kwDefs()){if(!d?.k||!['몸값','시세'].includes(d.name)||!/^\((플람베|아이시)\)/.test(d.desc||''))continue;
+ const L=d.rules||[];let ch=false;const R=L.map(r=>{if(r?.when!=='hitTaken'||(r.ifs||[]).some(c=>c.kind==='notSameAtk'))return r;ch=true;return{...r,ifs:[...(r.ifs||[]),{kind:'notSameAtk'}]}});
+ if(ch)Store.set(`play/kwdefs/${d.k}/rules`,R)}}
+{const p1=paint;let did='';paint=function(){const r=p1.apply(this,arguments);if(UI.room&&did!==UI.room){did=UI.room;setTimeout(kwFreshMigrate,900)}return r}}
+</script>
 <script id="char-file">
 /* §71 캐릭터 파일: 명단에서 시트를 파일로 내보내고, 파일의 시트를 이 방에 '새 시트로 추가'한다 (방 데이터는 지우지 않음)
    파일: {type:'limbus-chars',v:1,chars:[시트],kwdefs:[자작 키워드],imgs:{id:그림}}. 시트에 쓰인 자작 키워드·그림을 같이 담는다.
@@ -5555,6 +5569,12 @@ Object.assign(A,{
  charFileOne(){const c=CH(UI.charId);if(c)charFileSave([c.id],'limbus-시트-'+(c.info?.name||'이름없음'))},
  charFileTab(e){const k=e.dataset.v,L=rosterList(k);if(L.length)charFileSave(L.map(c=>c.id),'limbus-시트-'+KIND_L[k])}
 });
+</script>
+<script id="late-bind">
+/* §82 A 객체가 처음 만들 때의 함수를 붙잡고 있던 것: 덧씌운 기능(사용 조건·지난 턴 스킬·공격 표식·전투 시작 시점)이 버튼에서도 돌게 다시 연결 */
+A.atkDeclare=function(){return atkDeclare.apply(this,arguments)};
+A.btRound=function(){return btStartRound.apply(this,arguments)};
+{const cu0=charUnpack;charUnpack=async function(){const r=await cu0.apply(this,arguments);try{kwFreshMigrate()}catch{}return r}}
 </script>
 </body>
 </html>
