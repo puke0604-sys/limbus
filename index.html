@@ -1594,20 +1594,20 @@ const SH={
    <div class="f2">${fld('사용하는 무기',P+'/fight/weapon',c.fight.weapon)}${fld('전투 역할',P+'/fight/role',c.fight.role)}</div>${fld('주로 쓰는 키워드',P+'/fight/keywords',c.fight.keywords)}${fld('주로 사용하는 전투 방식',P+'/fight/style',c.fight.style,1)}`;
   if(t==='story')return subs+fld('외형',P+'/info/look',c.info.look,1)+fld('성격',P+'/info/personality',c.info.personality,1)+fld('백스토리',P+'/info/backstory',c.info.backstory,1);
   return subs+`<div class="dos-head"><b>수감자 기록</b><small>No. ${String(chars().findIndex(x=>x.id===c.id)+1).padStart(2,'0')}</small></div>${fld('이름',P+'/info/name',c.info.name)}<div class="f2">${fld('나이',P+'/info/age',c.info.age)}${fld('직업 / 소속',P+'/info/job',c.info.job)}</div>${fld('한 줄 콘셉트',P+'/info/concept',c.info.concept)}<p class="dos-note">직업 / 소속은 스탠딩 이름표 위에 표시됩니다.</p>
-  <div class="mfoot">${pImg(c.portrait)?'<button class="btn sm danger" data-a="charArtDel" style="margin-right:auto">일러스트 지우기</button>':''}<button class="btn sm" data-a="charAdd">새 캐릭터</button><button class="btn sm danger" data-a="charDel">이 캐릭터 삭제</button></div>`}
+  <div class="mfoot">${pImg(c.portrait)?'<button class="btn sm danger" data-a="charArtDel" style="margin-right:auto">일러스트 지우기</button>':''}<button class="btn sm" data-a="rosterNew" data-v="${kindOf(c)}">＋ 새 ${KIND_L[kindOf(c)]}</button><button class="btn sm danger" data-a="charDel">이 캐릭터 삭제</button></div>`}
 };
 function renderSheet(){if(UI.shEdit&&sheetLocked(UI.charId))UI.shEdit=false;renderSheet0();const el=$('#sheet');if(!UI.sheet||!el)return;const lk=sheetLocked(UI.charId);el.classList.toggle('ro',lk);
  if(lk)el.insertAdjacentHTML('beforeend',`<div class="sh-ro">${esc(CH(UI.charId)?.owner||'주인 없음')}의 캐릭터 · 보기 전용</div>`)}
 function renderSheet0(){
  const el=$('#sheet');if(!UI.sheet){el.className='';el.innerHTML='';el.removeAttribute('role');return}
- const list=chars(),c=CH(UI.charId)||list[0],sy=$('.sh-scroll',el)?.scrollTop||0;
+ const list=rosterList(CH(UI.charId)?kindOf(CH(UI.charId)):'pc'),c=CH(UI.charId)||list[0]||rosterAll()[0],sy=$('.sh-scroll',el)?.scrollTop||0;
  el.className='ov';el.setAttribute('role','dialog');el.setAttribute('aria-label','캐릭터 시트');
  const icon=(a,i,label,on)=>`<button class="ib a-${i} ${on?'on':''}" data-a="${a}" aria-label="${label}" title="${label}"></button>`;
- if(!c){el.innerHTML=`<div class="sh-art"><div class="sh-top">${icon('closeSheet','back','닫기')}</div></div><div class="sh-side"><div class="soon"><p class="muted">아직 캐릭터가 없어요.</p><button class="btn pri" data-a="charAdd">새 캐릭터</button></div></div>`;return}
+ if(!c){el.innerHTML=`<div class="sh-art"><div class="sh-top">${icon('closeSheet','back','닫기')}</div></div><div class="sh-side"><div class="soon"><p class="muted">아직 시트가 없어요.</p><div class="row" style="justify-content:center">${kindsICanMake().map(k=>`<button class="btn pri" data-a="rosterNew" data-v="${k}">＋ 새 ${KIND_L[k]}</button>`).join('')}</div></div></div>`;return}
  UI.charId=c.id;
  const P=`chars/${c.id}`,hp=hpCalc(c.hp),specs=SINS.filter(([s])=>c.sins[s].on),main=specs[0]?.[0],art=pImg(c.portrait),s=+c.stress||0,many=list.length>1,ed=UI.shEdit,info=UI.shTab==='info';
  el.innerHTML=`<div class="sh-art">${art?`<div class="sh-img"><img src="${esc(art)}" alt="${esc(c.info.name)}"></div>`:`<button class="sh-noimg" data-a="charArt">일러스트를 올려 주세요</button>`}
-  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ed-btn ${ed?'on':''}" data-a="shEdit" title="시트·스킬 편집 (스킬 제작기)" aria-pressed="${ed}">${ed?'✓ 편집 끝':'✎ 편집'}</button></div>
+  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ed-btn ${ed?'on':''}" data-a="shEdit" title="시트·스킬 편집 (스킬 제작기)" aria-pressed="${ed}">${ed?'✓ 편집 끝':'✎ 편집'}</button><button class="ii ed-btn ros-btn" data-a="rosterOpen" title="플레이어·적·NPC 시트 목록">☰ 명단</button><button class="ii ed-btn ros-btn" data-a="rosterNew" data-v="${kindOf(c)}" title="새 시트 만들기">＋ 새 시트</button></div>
   <div class="sh-icons"><button class="ib a-book ${info?'on':''}" data-a="shTab" data-v="${info?'sum':'info'}" aria-label="캐릭터 설정" title="캐릭터 설정"></button>${icon('charArt','sync','일러스트 변경')}${icon('rollOpen','cross','7죄악 판정')}${icon('standOpen','stack','스탠딩 편집')}${icon('poseOpen','shield','전투 자세 (합 연출 그림)')}</div>
   ${many?`<button class="sh-arrow l" data-a="shMove" data-v="-1" aria-label="이전 캐릭터">◀</button>`:''}
   ${UI.shTab==='skill'?`<button class="passive ${UI.shSub==='passive'?'on':''}" data-a="shPassive">패시브</button>`:''}
@@ -1616,7 +1616,7 @@ function renderSheet0(){
  <div class="sh-side" style="--c:${sinColor(main)}"><div class="sh-head cut"><div class="ghost" aria-hidden="true">${esc(c.info.concept||'수감자')}</div>
    <div class="sh-vert" aria-hidden="true">${esc(c.info.job||'LIMBUS')}</div>
    <div class="sh-tags"><i>${svg(ICONS.search)}</i>${c.info.job?`<span>${esc(c.info.job)}</span>`:''}${specs.map(([x])=>`<span>${x}</span>`).join('')}<em aria-label="전문 속성 ${specs.length}개">${'0'.repeat(specs.length)}</em></div>
-   <div class="sh-title"><span class="emblem">${oct(main,main?main[0]:'?')}</span><div class="sh-name">${esc(c.info.name||'이름 없음')}</div>${c.foe?'<span class="sh-foe">적</span>':''}</div>
+   <div class="sh-title"><span class="emblem">${oct(main,main?main[0]:'?')}</span><div class="sh-name">${esc(c.info.name||'이름 없음')}</div><span class="sh-kind k-${kindOf(c)}" title="시트 종류">${KIND_L[kindOf(c)]}</span></div>
    <div class="sh-gauges"><div class="lv"><div class="lvt"><span>ST</span><b class="num">${s}</b><em class="num">${s}/10</em></div><div class="lvbar"><i style="width:${s*10}%"></i></div></div><div class="grade" title="E.G.O 단계"><small>E.G.O</small><b class="num">${ROMAN[+c.ego.lv||0]}</b></div><div class="roman" title="가장 높은 단계">${Math.max(+c.ego.lv||0,+c.twist.lv||0)?ROMAN[Math.max(+c.ego.lv||0,+c.twist.lv||0)]:''}</div><div class="grade" title="뒤틀림 단계"><small>뒤틀림</small><b class="num">${ROMAN[+c.twist.lv||0]}</b></div></div></div>
   <div class="stabs" role="tablist">${SH_TABS.map(([k,n,cl])=>`<button class="stab ${cl} ${UI.shTab===k?'on':''}" role="tab" aria-selected="${UI.shTab===k}" data-a="shTab" data-v="${k}">${n}</button>`).join('')}</div>
   <div class="sh-panel cut"><div class="sh-scroll">${SH[UI.shTab](c,P,ed)}</div></div>${many?`<button class="sh-arrow r" data-a="shMove" data-v="1" aria-label="다음 캐릭터">▶</button>`:''}</div>`;
@@ -1670,7 +1670,7 @@ const A={
  shImg(e){const p=e.dataset.p,big=/\/(ego|twist)\/img$|\/boss\/|\/phases\//.test(p);pickImg(big?1600:512,img=>Store.set(p,img))},
  shPassive(){UI.shTab='skill';UI.shSub='passive';renderSheet()},
  shEgo(e){UI.shTab='ego';UI.shEgo=e.dataset.v;renderSheet()},
- shMove(e){const l=chars(),i=l.findIndex(x=>x.id===UI.charId);UI.charId=l[(i+ +e.dataset.v+l.length)%l.length].id;UI.shSub=0;renderSheet()},
+ shMove(e){const cur=CH(UI.charId),l=rosterList(cur?kindOf(cur):'pc'),i=l.findIndex(x=>x.id===UI.charId);UI.charId=l[(i+ +e.dataset.v+l.length)%l.length].id;UI.shSub=0;renderSheet()},
  charArt(){const id=UI.charId;pickImg(1600,img=>Store.set(`chars/${id}/portrait`,img))},
  charArtDel(){if(confirm('이 캐릭터의 일러스트를 지울까요?'))Store.set(`chars/${UI.charId}/portrait`,'')},
  standOpen(){const id=UI.charId;openModal('스탠딩',()=>standsEditor(`chars/${id}/stands`,CH(id)?.stands)+'<div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>')},
@@ -2039,9 +2039,9 @@ function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boole
  <div class="f2"><label class="f">가로 칸<input type="number" min="4" max="40" data-c="btSize" data-k="w" value="${btW()}"></label><label class="f">세로 칸<input type="number" min="4" max="30" data-c="btSize" data-k="h" value="${btH()}"></label></div>
  <div class="row"><button class="btn sm ${m==='wall'?'on':''}" data-a="btMode" data-v="wall" aria-pressed="${m==='wall'}">벽 칠하기</button><button class="btn sm ${m==='free'?'on':''}" data-a="btMode" data-v="free" aria-pressed="${m==='free'}">자유 배치</button>${m==='free'?`<label class="row small"><input type="checkbox" data-c="btGmDmg" ${UI.bt.gmDmg?'checked':''}> 이탈 피해 적용</label>`:''}</div>
  <p class="small muted bt-hint">${m==='wall'?'칸을 누르거나 끌어서 벽을 칠하고 지웁니다.':m==='free'?'토큰을 고른 뒤 빈 칸을 누르면 이동력 없이 옮깁니다 (GM 수동 이동).':'현재 턴 캐릭터를 고르면 갈 수 있는 칸이 표시됩니다.'}</p>
- <label class="f">PC 배치<select data-c="btPc"><option value="">${free.length?'캐릭터 선택':'배치할 캐릭터 없음'}</option>${free.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
+ <label class="f">아군 배치 (플레이어·NPC)<select data-c="btPc"><option value="">${free.length?'시트 선택':'배치할 시트 없음'}</option>${[['pc','플레이어'],['npc','NPC']].map(([k,n])=>{const L=free.filter(c=>kindOf(c)===k);return L.length?`<optgroup label="${n}">${L.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</optgroup>`:''}).join('')}</select></label>
  <label class="f">적 배치 (적 시트에서 꺼내기, 체력은 개체마다 따로)<select data-c="btFoe"><option value="">${foes.length?'적 시트 선택':'적 시트 없음'}</option>${foes.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
- <div class="row"><button class="btn sm" data-a="foeNew">적 시트 만들기</button><button class="btn sm" data-a="foeSample">예시 적 만들기</button></div>
+ <div class="row"><button class="btn sm" data-a="foeNew">적 시트 만들기</button><button class="btn sm" data-a="rosterNew" data-v="npc">NPC 시트 만들기</button><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="foeSample">예시 적 만들기</button></div>
  <div class="row"><button class="btn sm" data-a="btAdd" data-v="foe">이름만 있는 적</button><button class="btn sm" data-a="btAdd" data-v="pc">아군 NPC 추가</button></div>
  <div class="row"><button class="btn sm" data-a="battleBg">배경 이미지</button>${B.bg?'<button class="btn sm danger" data-a="battleBgDel">배경 지우기</button>':''}<button class="btn sm danger" data-a="btReset">전투 종료·초기화</button><button class="btn sm danger" data-a="btWallClear">벽 전부 지우기</button></div>${zones().length?`<div class="bt-h">바닥 효과</div>${zones().map(z=>`<div class="row small"><span style="flex:1">${esc(z.name)} · ${(z.cells||[]).length}칸 · ${esc(zoneText(z))}</span><button class="btn sm danger" data-a="zoneDel" data-v="${esc(z.id)}">지우기</button></div>`).join('')}`:''}</div>`}
 
@@ -5095,6 +5095,46 @@ Object.assign(A,{
 });
 {const p0=paint;paint=function(){artApply();return p0.apply(this,arguments)}}
 artApply();
+</script>
+<style id="roster-css">
+.sh-kind{flex:none;margin-left:8px;padding:2px 10px;font:400 14px var(--fk);color:#fff3df;border:1px solid}
+.sh-kind.k-pc{background:linear-gradient(#2f6fa8,#18406a);border-color:#8cc4ff}.sh-kind.k-foe{background:linear-gradient(#c2271f,#7c1411);border-color:#ff8a70}.sh-kind.k-npc{background:linear-gradient(#6b7a3a,#3b4520);border-color:#c8d88a}
+.ros-btn{margin-left:6px}
+.ros-tabs{display:flex;gap:6px;margin-bottom:10px}.ros-tabs button{flex:1;padding:8px;font:400 15px var(--fk);color:#e8d7bf;background:#1a120d;border:1px solid #5a4636;cursor:pointer}
+.ros-tabs button.on.k-pc{background:#18406a;border-color:#8cc4ff;color:#fff}.ros-tabs button.on.k-foe{background:#7c1411;border-color:#ff8a70;color:#fff}.ros-tabs button.on.k-npc{background:#3b4520;border-color:#c8d88a;color:#fff}
+.ros-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:52vh;overflow:auto}
+.ros-it{display:flex;align-items:center;gap:8px;padding:6px;background:#120c09;border:1px solid #5a4636;cursor:pointer;color:inherit;font:inherit;text-align:left}
+.ros-it:hover,.ros-it.ros-cur{border-color:#ffb13b}.ros-it i{flex:none;width:40px;height:40px;background:#2a1e16 center/cover no-repeat;border:1px solid #6a5240}
+.ros-it b{display:block;font-size:14px}.ros-it small{display:block;font-size:11px;opacity:.7}
+.ros-empty{grid-column:1/-1;padding:18px;text-align:center;opacity:.7}
+</style>
+<script id="roster">
+/* 시트 종류: 플레이어(pc) · 적(foe) · NPC(npc). 예전 시트는 foe 값으로 읽는다. 적이면 foe:true를 함께 둬서 기존 처리와 맞춘다 */
+const KIND_L={pc:'플레이어',foe:'적',npc:'NPC'},KINDS=['pc','foe','npc'];
+const kindOf=c=>c?.kind||(c?.foe?'foe':'pc');
+const isGmLike=()=>!NET.on||NET.gm;
+const kindsICanSee=()=>isGmLike()?KINDS:['pc'];
+const kindsICanMake=()=>isGmLike()?KINDS:['pc'];
+const rosterAll=()=>chars().filter(c=>kindsICanSee().includes(kindOf(c)));
+const rosterList=k=>chars().filter(c=>kindOf(c)===k&&kindsICanSee().includes(k));
+UI.rosK=UI.rosK||'pc';
+function rosterModal(){const k=kindsICanSee().includes(UI.rosK)?UI.rosK:'pc',L=rosterList(k);
+ return`<div class="ros-tabs">${kindsICanSee().map(x=>`<button class="k-${x} ${x===k?'on':''}" data-a="rosterTab" data-v="${x}">${KIND_L[x]} <small>${rosterList(x).length}</small></button>`).join('')}</div>
+ <div class="ros-list">${L.map(c=>{const im=pImg(c.portrait);return`<button class="ros-it ${c.id===UI.charId&&UI.sheet?'ros-cur':''}" data-a="rosterPick" data-v="${c.id}"><i ${im?`style="background-image:url('${esc(im)}')"`:''}></i><span><b>${esc(c.info?.name||'이름 없음')}</b><small>${esc(c.info?.job||'')}${NET.on&&c.owner?` · ${esc(c.owner)}`:''}</small></span></button>`}).join('')||`<div class="ros-empty">아직 ${KIND_L[k]} 시트가 없어요.</div>`}</div>
+ <div class="mfoot">${kindsICanMake().includes(k)?`<button class="btn pri" data-a="rosterNew" data-v="${k}" style="margin-right:auto">＋ 새 ${KIND_L[k]}</button>`:''}${UI.sheet&&CH(UI.charId)&&isGmLike()?`<label class="row small">지금 시트 종류 <select data-c="rosterKind">${KINDS.map(x=>`<option value="${x}" ${kindOf(CH(UI.charId))===x?'selected':''}>${KIND_L[x]}</option>`).join('')}</select></label>`:''}<button class="btn" data-a="closeModal">닫기</button></div>`}
+function rosterMake(k){const c=blankChar();c.kind=k;c.foe=k==='foe';if(k==='foe')c.info.name='새 적';if(k==='npc')c.info.name='새 NPC';
+ Store.set('chars/'+c.id,c);UI.charId=c.id;UI.rosK=k;
+ if(k==='foe'){UI.shTab='skill';UI.shSub=0;UI.shEdit=true}else{UI.shTab='info';UI.shInfo='basic'}
+ closeModal();A.openSheet();toast(`새 ${KIND_L[k]} 시트를 만들었어요`)}
+Object.assign(A,{
+ rosterOpen(){const c=CH(UI.charId);if(c&&UI.sheet)UI.rosK=kindOf(c);openModal('시트 명단',rosterModal)},
+ rosterTab(e){UI.rosK=e.dataset.v;drawModal()},
+ rosterPick(e){UI.charId=e.dataset.v;UI.shSub=0;closeModal();A.openSheet()},
+ rosterNew(e){const k=e.dataset.v||'pc';if(!kindsICanMake().includes(k))return toast('적·NPC 시트는 마스터만 만들 수 있어요',1);rosterMake(k)},
+ charAdd(){rosterMake('pc')},
+ foeNew(){rosterMake('foe')}
+});
+CHANGE.rosterKind=el=>{const c=CH(UI.charId);if(!c||!isGmLike())return;Store.set(`chars/${c.id}/kind`,el.value);Store.set(`chars/${c.id}/foe`,el.value==='foe');UI.rosK=el.value;drawModal();renderSheet()};
 </script>
 </body>
 </html>
