@@ -1576,7 +1576,7 @@ const SH={
   if(at==='passive')return subs+items('passives','패시브');
   const x=c.skills[at];if(!x)return subs+'<p class="muted">스킬이 없어요. 편집 모드에서 추가할 수 있어요.</p>';const p=`${P}/skills/${at}`,r=+x.range||0;
   if(ed)return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><input class="sk-name" aria-label="스킬 이름" placeholder="스킬 이름" data-b="${p}/name" value="${esc(x.name)}"><div class="row">${imgBtn(p+'/img','스킬 이미지 넣기')}</div></div></div>
-   <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}" title="${esc(rangeHint(x))}"></label>${sel('반응 역할',p+'/role',x.role,['일반','반격 전용','기회공격 전용','양쪽'])}</div><p class="small muted range-h">사거리: ${esc(rangeHint(x))}</p>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${P}/skills" data-v="${at}">스킬 삭제</button></div>`;
+   <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}" title="${esc(rangeHint(x))}"></label>${sel('반응 역할',p+'/role',x.role,['일반','수비','반격 전용','기회공격 전용','양쪽'])}</div><p class="small muted range-h">사거리: ${esc(rangeHint(x))}</p>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${P}/skills" data-v="${at}">스킬 삭제</button></div>`;
   return subs+`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><div class="sk-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><span class="swd">${svg(ICONS.sword)}</span><b>${esc(x.kind)}</b><small>사거리</small><span class="wsq">${'<i></i>'.repeat(clamp(r,0,8))}</span></div></div></div>
   ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`},
  ego(c,P,ed){const k=UI.shEgo,x=c[k],q=`${P}/${k}`,im=pImg(x.img);
@@ -2659,7 +2659,7 @@ function parseNetCfg(txt){txt=String(txt||'').trim();if(!txt)return null;
 const NET_GM=new Set(['invUsedReset','invMove','invPtDel','invRollReset','invImg','invImgDel','pgAdd','pgDel','pgMove','clueAdd','invPtTest','dbgOpen','dbgHeal','dbgDown','dbgHealAll','dbgCharHeal','dbgReuse','dbgNextTurn','dbgReInit','dbgZones','dbgLogClear','dbgStressAll','dbgVoiceClear','dbgStage','dbgFig','dbgTalkClear','dbgChatClear','dbgCutLog','dbgSync','cutSendBtn','voiceScene','bossIntro','scrNew','scrEdit','scrCheck','scrSave','scrDel','scrNext','scrSkip','scrBack','scrReset','dirFx','dirScene','dirTitle','dirBgm','dirWait','dirAudioAdd','dirAudioDel','dirBgPick','dirBgAdd','dockClear','zoneDel','sceneAdd','sceneDel','sceneUse','sceneOff','npcAdd','npcDel','npcOpen','routeEdit','routeUndo','routeClear','railMap','railImg','invAdd','invBg','invDel','invReset','capShow','snapSave','snapLoad','snapDel','btAdd','btDel','btMode','btOrd','btReset','btWallClear','btDmg','btHeal','btKw','btCell2','btHpStep','btImg','battleBg','battleBgDel','foeNew','foeSample','btRound','undo','redo','master',
  'dbgAtkKill','dbgDone','dbgMain','dbgOpp','dbgOrd','dbgResort','dbgRules','dbgSettle','dbgSt','dbgTurn','importAll']);
 const NET_GM_C=new Set(['invBudget','invSin','clueDel','dbgLv','dbgCS','dbgVU','dbgPos','dbgTok','dbgPh','dbgRig','scrPick','presetKind','stageN','invCur','btChMax','btFoe','btPc','btName','btSide','btSize','btStat','btGmDmg','btDmgN','btDmgT','btKwN','btKwSel','dbgInit','dbgKw','dbgMv','dbgRound','dbgStress','dbgTol','netOwner']);
-const NET_DECIDE=new Set(['btEgo','atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
+const NET_DECIDE=new Set(['assistAct','atkRsk','btEgo','atkNoDash','mReactOk','btDash','btMain','btEnd','hudSkill','atkDeclare','atkCancel','oppAct','protAct','reactOk','atkMode','atkRespond','atkCounter','atkClose','resistAct','mRespond','mProtOk','mCounter']);
 const NET_DECIDE_C=new Set(['atkKwB','aKwUse','rKwUse','atkCustom','atkDmg','atkOpt','atkPUse','atkRupt','atkSel','atkUse','cnSel','dUse','mProt','mPush','rPUse','rsCustom','rsMode','rsNote']);
 const ownerOf=k=>{const u=unitRaw(k);return u?.char?CH(u.char)?.owner||'':''};
 const mineU=k=>!!k&&ownerOf(k)===ME;
@@ -2699,7 +2699,7 @@ function netBlocked(n,el,isC){if(!NET.on||NET.gm)return false;
  if(n==='btUnit')return picking()&&!canDecide()?wait():false;
  if(n==='protAct'){const t=ATK(),v=el.dataset.v||'';if(t?.phase==='protect')return mineU(t.to)||(v&&mineU(v))?false:netDeny(v?`${atkName(v)}의 주인이나 ${atkName(t.to)}의 주인만 고를 수 있어요`:`${atkName(t.to)}의 주인만 보호 없음을 고를 수 있어요`)}
  if(n==='mProt'){const t=ATK(),c=el.dataset.k;return t&&(mineU(c)||(el.value&&mineU(el.value)))?false:netDeny(`${atkName(c)}의 주인이나 보호하는 쪽만 고를 수 있어요`)}
- if(n==='mMode'||n==='mPush'||n==='mOpt'||n==='mdUse'||n==='mKwUse'){const e=ATK()?.T?.[+el.dataset.i];return e&&mineU(e.k)?false:netDeny(`${atkName(e?.k)}의 주인만 고를 수 있어요`)}
+ if(n==='mMode'||n==='mRsk'||n==='mPush'||n==='mOpt'||n==='mdUse'||n==='mKwUse'){const e=ATK()?.T?.[+el.dataset.i];return e&&mineU(e.k)?false:netDeny(`${atkName(e?.k)}의 주인만 고를 수 있어요`)}
  if(isC?NET_DECIDE_C.has(n):NET_DECIDE.has(n))return canDecide()?false:wait();
  return false}
 
@@ -3451,7 +3451,7 @@ Object.assign(A,{
 });
 /* 화면에서도 잠근다: 결정권이 없는 사람에게는 버튼·선택칸을 끄고 누구 차례인지 적는다 (클릭 차단은 netBlocked가 따로 함) */
 function ctlLocked(x){if(!NET.on||NET.gm)return false;const n=x.dataset.a||x.dataset.c,isC=!x.dataset.a,t=ATK();if(!n)return false;
- if(['mMode','mPush','mOpt','mdUse','mKwUse'].includes(n)){const e=t?.T?.[+x.dataset.i];return!(e&&mineU(e.k))}
+ if(['mMode','mRsk','mPush','mOpt','mdUse','mKwUse'].includes(n)){const e=t?.T?.[+x.dataset.i];return!(e&&mineU(e.k))}
  if(n==='mProt'){const c=x.dataset.k;return!(mineU(c)||mProtOpts(t,c).some(p=>mineU(p.k)))}
  if(n==='protAct'&&t?.phase==='protect'){const v=x.dataset.v||'';return!(mineU(t.to)||(v&&mineU(v)))}
  if(isC?NET_GM_C.has(n):NET_GM.has(n))return true;
@@ -3715,7 +3715,7 @@ function skillEditor(x,p){
  ${mv.type==='cell'&&isMulti(x.area)&&!isOrigin(x.area)?`<p class="small muted">사거리를 0으로 두면 착지한 칸이 범위의 중심이 돼요 (예: 돌진 후 착지점 주변 3×3).</p>`:''}
  ${zoneEditor(x,p)}
  <h4 class="sh-h">재사용</h4>
- <div class="fxr"><select data-b="${p}/reuse/on" data-r>${optsKV({'':'없음',hit:'적중하면 한 번 더 사용 가능'},ru.on||'')}</select>${ru.on?`<label class="small">턴당 최대${num(`${p}/reuse/max`,ru.max||1,1,5)}회</label>`:''}</div>
+ <div class="fxr"><select data-b="${p}/reuse/on" data-r>${optsKV({'':'없음',hit:'적중하면 한 번 더 사용 가능'},ru.on||'')}</select>${ru.on?`<label class="small">턴당 최대${num(`${p}/reuse/max`,ru.max||1,1,5)}회</label>`:''}</div>${assistEditor(x,p)}
  <h4 class="sh-h">대응</h4>
  <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/unresp" data-r ${x.unresp?'checked':''}> 대응 불가 — 대상은 회피·방어를 할 수 없고 비대응으로만 받아요 (보호·반격 규칙은 그대로)</label></div>
  <h4 class="sh-h">적중 시 기본 효과 <small>16.4 · 적중한 대상마다 실행${x.area?.next?' · 확산 대상은 범위의 2단계 확산 설정을 따라요':''}</small></h4>
@@ -3883,13 +3883,15 @@ function mDeclare(t){const by=uOf(t.by);if(!t.aim)return toast('조준할 칸을
 // 13.1 보호를 먼저 처리해 최종 대상을 확정. 보호자는 한 공격에 한 명만 보호
 const mProtOpts=(t,c)=>{const to=uOf(c);return units().filter(u=>u.k!==c&&u.k!==t.by&&u.side===to.side&&!isDown(u)&&!noResp(u)&&cheb(u,to)<=2)};
 function mProtectStart(){const t=ATK();t.cand=(t.cand||[]).filter(k=>uOf(k)&&!isDown(uOf(k)));
- if(t.cand.some(c=>mProtOpts(t,c).length))return Store.set(`${BTP}/atk`,{...t,phase:'mprotect',pp:{}});
- mBuild({})}
+ const pp={},ppAuto={},used=new Set();for(const c of t.cand){const au=autoCover(c,mProtOpts(t,c).filter(u=>!used.has(u.k)));if(au){pp[c]=au;ppAuto[c]=au;used.add(au)}}
+ const manual=t.cand.some(c=>!pp[c]&&mProtOpts(t,c).some(u=>!used.has(u.k)));
+ if(manual)return Store.set(`${BTP}/atk`,{...t,phase:'mprotect',pp,ppAuto});
+ Store.set(`${BTP}/atk`,{...t,ppAuto},true);mBuild(pp)}
 function mBuild(pp){const t=ATK(),T=[],prots=[],usedP=new Set();
  for(const c of t.cand){const p=pp[c];
-  if(p&&!usedP.has(p)&&uOf(p)){usedP.add(p);const pu=uOf(p),cu=uOf(c);if(pu.char)addStress(pu.char,2);
+  if(p&&!usedP.has(p)&&uOf(p)){usedP.add(p);const pu=uOf(p),cu=uOf(c),au=t.ppAuto?.[c]===p,cc=coverPay(p,au);
    prots.push({k:p,orig:c,from:{x:+pu.x,y:+pu.y}});Store.set(`${BTP}/units/${p}`,{...unitRaw(p),x:+cu.x,y:+cu.y},true);
-   btLog(`${uName(pu)} 보호 → ${uName(cu)} 대신 대상${pu.char?' (스트레스 +2)':''} — 보호 이동, 이탈 피해 없음${t.cand.includes(p)?' · 자신의 몫도 따로 처리':''}`,{type:'protect',k:p,to:c});
+   btLog(`${uName(pu)} ${au?'자동 원호':'보호'} → ${uName(cu)} 대신 대상${cc} — 보호 이동, 이탈 피해 없음${t.cand.includes(p)?' · 자신의 몫도 따로 처리':''}`,{type:'protect',k:p,to:c});
    T.push({k:p,for:c,s2:(t.s2||[]).includes(c)})}
   else T.push({k:c,s2:(t.s2||[]).includes(c)})}
  Store.set(`${BTP}/atk`,{...t,T:T.map(e=>({...e,mode:cantResp(t,uOf(e.k))?'none':'',push:false,help:'',adv:0})),prots,pp:null},true);mReactOrRoll()}
@@ -3914,10 +3916,11 @@ function mStep(){let t=ATK();const by=uOf(t.by),line=t.area.shape==='line',pierc
    btLog(t.s2ok?`확산: ${shapeText(t.area.next)}`:`확산 조건(${t.firstK?'첫 대상':'1단계'} 적중) 미충족 — 확산 대상 취소 (비용 없음)`);Store.set(`${BTP}/atk`,t,true)}
   if((t.stop&&!e.s2)||(e.s2&&!t.s2ok)||!u||isDown(u)){e.cancel=true;if(t.stop&&!e.s2)btLog(`${atkName(e.k)}: 공격이 앞에서 멈춰 선언 취소 (비용 없음)`);t.T[i]=e;t.i++;Store.set(`${BTP}/atk`,t,true);continue}   // 13.3
   const none=e.mode==='none'||cantResp(t,u);let rr=null;
-  if(!none){payStress(e.k,{push:e.push,help:e.help},RESP[e.mode]);const rm=runPassives(e.k,'beforeResponseRoll',{attacker:t.by,rmode:e.mode,kwAsk:e.kwu});rr=judge(rollN(Math.max(1,2+bonusDice(e)-(+t.trdice?.[i]||0)+rm.dice)),(+e.adv||0)+rm.res)}
+  if(!none){payStress(e.k,{push:e.push,help:e.help},RESP[e.mode]);const rm=runPassives(e.k,'beforeResponseRoll',{attacker:t.by,rmode:e.mode,kwAsk:e.kwu});rskFire(e.k,e,'use',t.by);rr=judge(rollN(Math.max(1,2+bonusDice(e)-(+t.trdice?.[i]||0)+rm.dice+rskMod(e.k,e,'dice'))),(+e.adv||0)+rm.res+rskMod(e.k,e,'res'))}
   const out=resolveAtk(t.aRoll,rr,undefined,!!stOf(u).행동불능);Object.assign(e,{rRoll:rr,...out,mode:none?'none':e.mode});
   btLog(`${uName(by)} ${t.label} → ${uName(u)}${e.for?` (${atkName(e.for)} 보호)`:''}: 공격 ${fmtRoll(t.aRoll)} / ${RESP[e.mode]}${rr?' '+fmtRoll(rr):''}${out.clash?` / 합 ${out.clash.map(([a,r])=>a+':'+r).join(' → ')}`:''} → ${RESO[out.resolution]}${out.counterEligible?', 반격 기회':''}`,
    {type:'reveal',by:t.by,to:e.k,a:t.aRoll.rawDice,r:rr?.rawDice||null,crit:t.aRoll.critical||!!rr?.critical,clash:out.clash,resolution:out.resolution,hit:out.hit,label:t.label,sin:t.sin||'',mode:e.mode,aCv:t.aRoll.compareValue,rCv:rr?.compareValue,aCrit:t.aRoll.critical,rCrit:!!rr?.critical,aMod:+t.a.adv||0,rMod:+e.adv||0,multi:true});
+  if(!none)rskFire(e.k,e,out.hit?'lose':'win',t.by);
   if(line&&!pierce&&(out.hit||e.mode==='guard')){t.stop=true;btLog(`공격선이 ${uName(u)}에게서 멈춤 (${out.hit?'적중':'방어'})`)}   // 13.3 회피는 통과, 방어·적중은 정지
   t.T[i]=e;Store.set(`${BTP}/atk`,t,true);                                   // 결과·정지 여부를 먼저 저장
   if(out.hit){const sk=skillOf(t.by,t.opt),items=reduceItems(isStruct(sk)?dmgItemsOf(fxFor(t,e,sk),t.post):[{t:+t.dmg.t,n:+t.dmg.n},...dmgItemsOf([],t.post)],e.dmgDown||[]);
@@ -3959,7 +3962,7 @@ function mOptRow(e,i,t){const me=uOf(e.k),hs=helpers(e.k),cut=+t.trdice?.[i]||0;
  ${me?.char?`<label class="small"><input type="checkbox" data-c="mPush" data-i="${i}" ${e.push?'checked':''}> 분발</label>`:''}
  ${hs.length?`<select data-c="mOpt" data-i="${i}" data-k="help" aria-label="도움"><option value="">도움 없음</option>${hs.map(h=>`<option value="${esc(h.k)}" ${h.k===e.help?'selected':''}>도움: ${esc(uName(h))}</option>`).join('')}</select>`:''}
  <select data-c="mOpt" data-i="${i}" data-k="adv" aria-label="보정">${[[-1,'불리 -1'],[0,'보정 없음'],[1,'유리 +1']].map(([v,n])=>`<option value="${v}" ${v===(+e.adv||0)?'selected':''}>${n}</option>`).join('')}</select>
- <small class="muted">${Math.max(1,2+bonusDice(e)-cut)}d6${cut?` (침잠 -${cut})`:''}</small></div>`}
+ <small class="muted">${Math.max(1,2+bonusDice(e)-cut+(typeof rskMod==='function'?rskMod(e.k,e,'dice'):0))}d6${cut?` (침잠 -${cut})`:''}</small></div>`}
 function mPanel(t){const by=uOf(t.by),head=`<div class="bt-atk-h"><b>${esc(uName(by))}</b><span>${esc(t.label)} ▶</span><b class="foe">${t.T?t.T.length+'명':t.aim?mCands(t).length+'명':'조준'}</b></div><p class="small muted">${esc(t.kind)} · ${esc(areaText(t.area,t.range))}</p>`;
  const row=(e,i,inner)=>`<div class="mrow ${e.cancel?'off':''}"><b>${esc(atkName(e.k))}</b>${e.s2?'<small class="s2">확산</small>':''}${e.for?`<small>(${esc(atkName(e.for))} 보호)</small>`:''}${inner}</div>`;
  let body='';
@@ -3971,13 +3974,13 @@ function mPanel(t){const by=uOf(t.by),head=`<div class="bt-atk-h"><b>${esc(uName
   ${pUseChecks(pUses(t.by,P_ATK),t.a.pu,'atkPUse',{k:t.by,label:'보유'})+kwAskChecks(t.by,'attackRoll',t.a?.kwu,'aKwUse',null,'')}${optRow('a',t.a,t.by,'공격')}<div class="row"><button class="btn sm pri" data-a="atkDeclare" ${t.aim?'':'disabled'}>${t.aim&&!c.length?'바닥에 사용':'공격 선언 · 굴림'}</button><button class="btn sm" data-a="atkCancel">취소</button></div>`}
  else if(t.phase==='opp')return'';
  else if(t.phase==='mprotect')body=`<div class="bt-step">보호 선언 (14.4 · 13.1)</div><p class="small muted">후보마다 주변 2칸 안의 같은 편이 대신 맞을 수 있어요. 범위 안에 있던 보호자는 자신의 몫도 따로 받아요.</p>
-  ${t.cand.map(c=>{const ps=mProtOpts(t,c);return ps.length?`<label class="f">${esc(atkName(c))}<select data-c="mProt" data-k="${esc(c)}"><option value="">보호 없음</option>${ps.map(p=>`<option value="${esc(p.k)}" ${t.pp?.[c]===p.k?'selected':''}>${esc(uName(p))}${p.char?' (스트레스 +2)':''}</option>`).join('')}</select></label>`:`<p class="small muted">${esc(atkName(c))}: 보호할 수 있는 아군 없음</p>`}).join('')}
+  ${t.cand.map(c=>{const ps=mProtOpts(t,c);return ps.length?`<label class="f">${esc(atkName(c))}<select data-c="mProt" data-k="${esc(c)}"><option value="">보호 없음</option>${ps.map(p=>`<option value="${esc(p.k)}" ${t.pp?.[c]===p.k?'selected':''}>${esc(uName(p))}${coverCostText(p)}${t.ppAuto?.[c]===p.k?' · 자동':''}</option>`).join('')}</select></label>`:`<p class="small muted">${esc(atkName(c))}: 보호할 수 있는 아군 없음</p>`}).join('')}
   <div class="row"><button class="btn sm pri" data-a="mProtOk">보호 확정 · 공격 굴림</button></div>`;
  else if(t.phase==='mreact'){const have=+kwOf(by)['침잠']||0;body=`<div class="bt-step">대상별 반응 (15.4 침잠 · 공격 주사위 전)</div><p class="small muted">${esc(uName(by))}에게 쌓인 침잠(${have})을 소비해 이 공격을 약하게 만들 수 있어요. 공격 주사위 감소는 모든 대상에게 함께 적용되고, 피해 감소는 선언한 대상의 몫에만 적용돼요. 침잠은 선언한 순서대로 차감돼요.</p>
   ${t.T.map((e,i)=>{const l=mReactOpts(t,e.k);return l.length?row(e,i,`<div class="m-react">${l.map(x=>`<label class="row small use"><input type="checkbox" data-c="mdUse" data-i="${i}" data-id="${esc(x.id)}" ${t.md?.[i]?.[x.id]?'checked':''}> ${esc(pUseText(x.use,x.name))}</label>`).join('')}</div>`):''}).join('')}
   <div class="row"><button class="btn sm pri" data-a="mReactOk">반응 확정 · 공격 굴림</button></div>`}
  else if(t.phase==='mrespond')body=`<div class="bt-hidden">공격 주사위 ${t.aRoll.rawDice.length}개 — <b>결과 비공개</b> · 모든 대상이 같은 결과를 받음</div><div class="bt-step">대상별 대응 선택</div>
-  ${t.T.map((e,i)=>row(e,i,`<span class="row">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${e.mode===k?'on':''}" data-a="mMode" data-i="${i}" data-v="${k}" ${k!=='none'&&cantResp(t,uOf(e.k))?'disabled':''}>${n}</button>`).join('')}</span>${e.mode&&e.mode!=='none'?mOptRow(e,i,t)+kwAskChecks(e.k,'respRoll',e.kwu,'mKwUse',i,e.mode):''}`)).join('')}
+  ${t.T.map((e,i)=>row(e,i,`<span class="row">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${e.mode===k&&e.rsk==null?'on':''}" data-a="mMode" data-i="${i}" data-v="${k}" ${k!=='none'&&cantResp(t,uOf(e.k))?'disabled':''}>${n}</button>`).join('')}</span>${rskRow(t,e.k,e,i)}${e.mode&&e.mode!=='none'?mOptRow(e,i,t)+kwAskChecks(e.k,'respRoll',e.kwu,'mKwUse',i,e.mode):''}`)).join('')}
   ${t.area.shape==='line'?`<p class="small muted">직선: 가까운 순서로 처리. 회피 성공은 통과, ${t.area.pierce?'관통이라 계속 진행':'방어 성공·적중이면 멈추고 뒤쪽은 취소(비용 없음)'}.</p>`:''}
   <div class="row"><button class="btn sm pri" data-a="mRespond" ${t.T.some(e=>!e.mode)?'disabled':''}>대응 확정 · 결과 공개</button></div>`;
  else{const res=`<div class="bt-res"><div><small>공격</small>${rollChips(t.aRoll)}</div></div>${t.T.map((e,i)=>row(e,i,e.cancel?'<small class="muted">취소</small>':e.resolution?`<small>${RESP[e.mode]}${e.rRoll?' '+e.rRoll.rawDice.join(','):''}</small><em class="${e.hit?'hit':'miss'}">${e.hit?'적중':'미적중'}</em>`:'<small class="muted">대기</small>')).join('')}`;
@@ -4123,10 +4126,11 @@ function atkRespond(){const t=ATK();if(!t||t.phase!=='respond'||!t.r.mode)return
  if(!none&&cantResp(t,uOf(t.to)))return toast(t.unresp?'대응 불가 공격이라 비대응만 할 수 있어요':'대응 불능 상태라 비대응만 할 수 있어요',1);
  let rr=null;if(!none){payStress(t.to,t.r,RESP[t.r.mode]);const rm=runPassives(t.to,'beforeResponseRoll',{attacker:t.by,rmode:t.r?.mode,kwAsk:t.r?.kwu});
   for(const x of pUses(t.to,P_RESP)){if(!t.r.pu?.[x.id])continue;if(payPUse(x,t.to,'대응 판정 전'))for(const f of x.use.fx||[])if(f.type==='rdiceUp')rm.dice+=+f.n||0}
-  rr=judge(rollN(Math.max(1,2+bonusDice(t.r)-(+t.rdice||0)+rm.dice)),(+t.r.adv||0)+rm.res)}
+  rskFire(t.to,t.r,'use',t.by);rr=judge(rollN(Math.max(1,2+bonusDice(t.r)-(+t.rdice||0)+rm.dice+rskMod(t.to,t.r,'dice'))),(+t.r.adv||0)+rm.res+rskMod(t.to,t.r,'res'))}
  const out=resolveAtk(t.aRoll,rr,undefined,!!stOf(uOf(t.to)).행동불능),by=uOf(t.by),to=uOf(t.to);
  btLog(`${uName(by)} ${t.label} → ${uName(to)}: 공격 ${fmtRoll(t.aRoll)} / ${RESP[t.r.mode]}${rr?' '+fmtRoll(rr):''}${out.clash?` / 합 ${out.clash.map(([a,r])=>a+':'+r).join(' → ')}`:''} → ${RESO[out.resolution]}${out.counterEligible?', 반격 기회':''}`,
   {type:'reveal',by:t.by,to:t.to,a:t.aRoll.rawDice,r:rr?.rawDice||null,crit:t.aRoll.critical||!!rr?.critical,clash:out.clash,resolution:out.resolution,hit:out.hit,label:t.label,sin:t.sin||'',mode:t.r.mode,aCv:t.aRoll.compareValue,rCv:rr?.compareValue,aCrit:t.aRoll.critical,rCrit:!!rr?.critical,aMod:+t.a.adv||0,rMod:rr?+t.r.adv||0:0});
+ if(!none)rskFire(t.to,t.r,out.hit?'lose':'win',t.by);
  const rec={...t,rRoll:rr,...out,counterUsed:false};
  if(out.hit){const sk=skillOf(t.by,t.opt),items=reduceItems(isStruct(sk)?dmgItemsOf(sk.fx,t.post):[{t:+t.dmg.t,n:+t.dmg.n},...dmgItemsOf([],t.post)],t.dmgDown);
   if(canResist(t.to,items)){Store.set(`${BTP}/atk`,{...rec,phase:'resist',rs:{k:t.to,items,src:'hit'}});return}   // 14.5 피해가 확정되는 순간
@@ -4184,7 +4188,7 @@ function resistAct(use){const t=ATK();if(!t||t.phase!=='resist')return;const rs=
 
 /* 14.4 보호: 공격 판정 전, 대상 주변 2칸 안의 같은 편이 스트레스 2로 대신 대상이 된다 */
 function protectors(t){const to=uOf(t.to);if(!to||t.prot)return[];return units().filter(u=>u.k!==t.to&&u.k!==t.by&&u.side===to.side&&!isDown(u)&&!noResp(u)&&cheb(u,to)<=2)}
-function atkPreRoll(){const t=ATK();if(t.multi)return mProtectStart();if(protectors(t).length&&!t.protAsked)return Store.set(`${BTP}/atk`,{...t,phase:'protect',protAsked:true});atkReactOrRoll()}
+function atkPreRoll(){const t=ATK();if(t.multi)return mProtectStart();const ps=protectors(t);if(ps.length&&!t.protAsked){const au=autoCover(t.to,ps);if(au){Store.set(`${BTP}/atk`,{...t,phase:'protect',protAsked:true,autoK:au},true);return protAct(au)}return Store.set(`${BTP}/atk`,{...t,phase:'protect',protAsked:true})}atkReactOrRoll()}
 // 15.4 침잠: 공격받는 쪽이 공격자의 침잠을 소비해 공격 주사위·피해·충전을 줄인다 (공격 주사위 전, E06)
 function atkReactOrRoll(){const t=ATK(),have=+kwOf(uOf(t.by))['침잠']||0,l=pUses(t.to,P_DEF).filter(x=>(+x.use.cost||0)<=have);
  if(l.length&&!t.reactAsked)return Store.set(`${BTP}/atk`,{...t,phase:'react',reactAsked:true,d:{uses:{}}});atkRoll()}
@@ -4198,9 +4202,9 @@ function reactOk(){const t=ATK(),sel=t.d?.uses||{};let adice=0;const downs=[];
 function protAct(k){const t=ATK();if(!t||t.phase!=='protect')return;
  if(!k){btLog(`보호 없음 — ${atkName(t.to)}이(가) 그대로 대상`);Store.set(`${BTP}/atk/phase`,'declare',true);return atkReactOrRoll()}
  const p=uOf(k),o=uOf(t.to);if(!p||!o)return;
- if(p.char){addStress(p.char,2)}
+ const cc=coverPay(k,t.autoK===k);
  Store.set(`${BTP}/units/${k}`,{...unitRaw(k),x:+o.x,y:+o.y},true);                 // protect 이동: 이동력·이탈 피해·기회공격 없음
- btLog(`${uName(p)} 보호 → ${uName(o)} 대신 대상이 됨${p.char?' (스트레스 +2)':''} — 보호 이동, 이탈 피해 없음`,{type:'protect',k,to:t.to});
+ btLog(`${uName(p)} ${t.autoK===k?'자동 원호':'보호'} → ${uName(o)} 대신 대상이 됨${cc} — 보호 이동, 이탈 피해 없음`,{type:'protect',k,to:t.to});
  Store.set(`${BTP}/atk`,{...t,to:k,prot:{k,orig:t.to,from:{x:+p.x,y:+p.y}},phase:'declare',r:{mode:'',push:false,help:'',adv:0}},true);atkReactOrRoll()}
 // 공격이 끝나면 겹친 보호자를 보호받은 아군 옆 빈칸(원래 자리에서 가장 가까운 칸)으로 옮긴다
 function protCleanup(t){if(t?.prots){for(const p of t.prots)protCleanup({prot:p});}if(!t?.prot)return;const p=unitRaw(t.prot.k),o=unitRaw(t.prot.orig);if(!p||!o||+p.x!==+o.x||+p.y!==+o.y)return;
@@ -4224,7 +4228,7 @@ function optRow(path,o,k,what){const hs=helpers(k),me=uOf(k);return`<div class="
  ${me?.char?`<label class="row small"><input type="checkbox" data-c="atkOpt" data-p="${path}" data-k="push" ${o.push?'checked':''}> 분발 (스트레스 +2)</label>`:''}
  ${hs.length?`<label class="f">도움 (스트레스 +2)<select data-c="atkOpt" data-p="${path}" data-k="help"><option value="">없음</option>${hs.map(h=>`<option value="${esc(h.k)}" ${h.k===o.help?'selected':''}>${esc(uName(h))}</option>`).join('')}</select></label>`:''}
  <label class="f">${what} 보정<select data-c="atkOpt" data-p="${path}" data-k="adv">${[[-1,'불리 -1'],[0,'없음'],[1,'유리 +1']].map(([v,n])=>`<option value="${v}" ${v===(+o.adv||0)?'selected':''}>${n}</option>`).join('')}</select></label>
- <p class="small muted">주사위 ${2+bonusDice(o)}d6</p></div>`}
+ <p class="small muted">주사위 ${Math.max(1,2+bonusDice(o)+(path==='r'&&typeof rskMod==='function'?rskMod(k,o,'dice')-(+ATK()?.rdice||0):0))}d6</p></div>`}
 const rollChips=j=>`<span class="bt-dice">${j.rawDice.map(d=>`<i class="${d===6?'six':''}">${d}</i>`).join('')}</span><b>${esc(j.grade)}</b><em>${j.compareValue}</em>`;
 function skillSummary(s){if(!s)return'';const fx=s.fx||[],rules=(s.rules||[]).filter(r=>r.on);
  return`<div class="sk-sum">${s.unresp?'<div><b class="warn">대응 불가</b></div>':''}<div><b>적중 시</b>${fx.length?fx.map(f=>`<span>${esc(fxText(f))}</span>`).join(''):'<span class="muted">없음</span>'}</div>${s.area?.next?.own?`<div><b>확산 대상</b>${(s.area.next.fx||[]).map(f=>`<span>${esc(fxText(f))}</span>`).join('')||'<span class="muted">없음</span>'}</div>`:''}${rules.map(r=>`<div class="rl">${esc(ruleText(r))}</div>`).join('')}</div>`}
@@ -4247,13 +4251,14 @@ function atkPanel(){const t=ATK();if(!t)return'';const by=uOf(t.by),to=t.to&&uOf
   body=`<div class="bt-step">${esc(uName(e||{}))}의 기회공격 기회</div><p class="small muted">접전 중 원거리 공격 선언. 2d6 최고 눈 4 이상이면 경상 1칸. ${esc(uName(by))}은 대응할 수 없고 반격도 없어요.</p>
   ${(t.oppLog||[]).map(l=>`<p class="small">${esc(atkName(l.k))}: ${l.skip?'하지 않음':`[${l.dice.join(',')}] ${l.hit?'적중':'빗나감'}`}</p>`).join('')}
   <div class="row"><button class="btn sm pri" data-a="oppAct" data-v="1">기회공격</button><button class="btn sm" data-a="oppAct" data-v="0">하지 않음</button></div>`}
+ else if(t.phase==='assist')body=assistHTML(t);
  else if(t.phase==='protect'){const ps=protectors({...t,prot:null}),o=uOf(t.to);
   body=`<div class="bt-step">보호 선언 (14.4)</div><p class="small muted">${esc(uName(o))} 주변 2칸 안의 같은 편이 대신 대상이 될 수 있어요. 보호한 쪽이 대응을 고르고, 원래 대상은 대응하지 않아요. 보호 이동은 이탈 피해·기회공격이 없어요.</p>
-  <div class="row">${ps.map(u=>`<button class="btn sm pri" data-a="protAct" data-v="${esc(u.k)}">${esc(uName(u))} 보호${u.char?' (스트레스 +2)':''}</button>`).join('')}<button class="btn sm" data-a="protAct" data-v="">보호 없음</button></div>`}
+  <div class="row">${ps.map(u=>`<button class="btn sm pri" data-a="protAct" data-v="${esc(u.k)}">${esc(uName(u))} 보호${coverCostText(u)}</button>`).join('')}<button class="btn sm" data-a="protAct" data-v="">보호 없음</button></div>`}
  else if(t.phase==='react'){body=`<div class="bt-step">${esc(uName(to))}의 반응 (15.4 침잠 · 공격 주사위 전)</div><p class="small muted">${esc(uName(by))}에게 쌓인 침잠을 소비해 이 공격을 약하게 만들 수 있어요. 공격 주사위를 굴린 뒤에는 쓸 수 없어요 (E06).</p>
   ${pUseChecks(pUses(t.to,P_DEF),t.d?.uses,'dUse',{k:t.by,label:'상대 침잠'})}<div class="row"><button class="btn sm pri" data-a="reactOk">확정 · 공격 굴림</button></div>`}
  else if(t.phase==='respond')body=`<div class="bt-hidden">공격 주사위 ${t.aRoll.rawDice.length}개 — <b>결과 비공개</b></div><div class="bt-step">${esc(uName(to))}의 대응 선택</div>
-  <div class="row bt-seg">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${t.r.mode===k?'on':''}" data-a="atkMode" data-v="${k}" ${k!=='none'&&cantResp(t,to)?'disabled':''}>${n}</button>`).join('')}</div>${t.unresp&&!noResp(to)?`<p class="small warn">대응 불가 공격 — 회피·방어할 수 없어요 (비대응)</p>`:''}${noResp(to)?`<p class="small warn">${esc(uName(to))}: ${stOf(to).행동불능?'행동 불능 — 결과 1만 빗나감':'대응 불능'} (비대응만 가능)</p>`:''}${+t.rdice?`<p class="small warn">침잠 소비로 대응 주사위 -${t.rdice}</p>`:''}
+  <div class="row bt-seg">${Object.entries(RESP).map(([k,n])=>`<button class="btn sm ${t.r.mode===k&&t.r.rsk==null?'on':''}" data-a="atkMode" data-v="${k}" ${k!=='none'&&cantResp(t,to)?'disabled':''}>${n}</button>`).join('')}</div>${rskRow(t,t.to,t.r,null)}${t.unresp&&!noResp(to)?`<p class="small warn">대응 불가 공격 — 회피·방어할 수 없어요 (비대응)</p>`:''}${noResp(to)?`<p class="small warn">${esc(uName(to))}: ${stOf(to).행동불능?'행동 불능 — 결과 1만 빗나감':'대응 불능'} (비대응만 가능)</p>`:''}${+t.rdice?`<p class="small warn">침잠 소비로 대응 주사위 -${t.rdice}</p>`:''}
   ${t.r.mode&&t.r.mode!=='none'?pUseChecks(pUses(t.to,P_RESP),t.r.pu,'rPUse',{k:t.to,label:'보유'})+kwAskChecks(t.to,'respRoll',t.r?.kwu,'rKwUse',null,t.r.mode)+optRow('r',t.r,t.to,'대응'):t.r.mode==='none'?'<p class="small muted">대응 판정을 굴리지 않고 공격 결과만으로 정합니다. 공격이 1~3이면 반격 기회.</p>':''}
   <div class="row"><button class="btn sm pri" data-a="atkRespond" ${t.r.mode?'':'disabled'}>대응 확정 · 결과 공개</button></div>`;
  else if(t.cancelled)body=`${(t.oppLog||[]).map(l=>`<p class="small">${esc(atkName(l.k))} 기회공격: ${l.skip?'하지 않음':`[${l.dice.join(',')}] ${l.hit?'적중':'빗나감'}`}</p>`).join('')}<div class="bt-verdict miss">공격자 전투 불능 — 공격 취소</div><div class="row"><button class="btn sm" data-a="atkClose">닫기</button></div>`;
@@ -4276,9 +4281,9 @@ function atkPanel(){const t=ATK();if(!t)return'';const by=uOf(t.by),to=t.to&&uOf
 Object.assign(A,{
  atkPick:atkStart,atkDeclare,atkRespond,
  protAct(e){protAct(e.dataset.v)},reactOk,
- mMode(e){const t=ATK();if(e.dataset.v!=='none'&&cantResp(t,uOf(t.T[+e.dataset.i]?.k)))return toast('비대응만 할 수 있어요',1);Store.set(`${BTP}/atk/T/${e.dataset.i}/mode`,e.dataset.v)},mRespond,mProtOk(){mBuild(ATK().pp||{})},mReactOk(){mReactOk()},mCounter(e){mCounter(e.dataset.v==='1')},resistAct(e){resistAct(e.dataset.v==='1')},
+ mMode(e){const t=ATK();if(e.dataset.v!=='none'&&cantResp(t,uOf(t.T[+e.dataset.i]?.k)))return toast('비대응만 할 수 있어요',1);Store.set(`${BTP}/atk/T/${e.dataset.i}/rsk`,null,true);Store.set(`${BTP}/atk/T/${e.dataset.i}/mode`,e.dataset.v)},mRespond,mProtOk(){mBuild(ATK().pp||{})},mReactOk(){mReactOk()},mCounter(e){mCounter(e.dataset.v==='1')},resistAct(e){resistAct(e.dataset.v==='1')},
  oppAct(e){oppAct(e.dataset.v==='1')},
- atkMode(e){Store.set(`${BTP}/atk/r/mode`,e.dataset.v)},
+ atkMode(e){Store.set(`${BTP}/atk/r/rsk`,null,true);Store.set(`${BTP}/atk/r/mode`,e.dataset.v)},
  atkCounter(e){atkCounter(e.dataset.v==='1')},
  atkCancel(){Store.set(`${BTP}/atk`,null)},
  atkClose(){const t=ATK();protCleanup(t);grantReuse(t);Store.set(`${BTP}/atk`,null)},
@@ -5135,6 +5140,123 @@ Object.assign(A,{
  foeNew(){rosterMake('foe')}
 });
 CHANGE.rosterKind=el=>{const c=CH(UI.charId);if(!c||!isGmLike())return;Store.set(`chars/${c.id}/kind`,el.value);Store.set(`chars/${c.id}/foe`,el.value==='foe');UI.rosK=el.value;drawModal();renderSheet()};
+</script>
+<style id="rsk-css">
+.rsk-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 2px}.rsk-row>small{opacity:.75}
+.rsk-b{padding:4px 10px;font:400 13px var(--fb);color:#e8f4ff;background:#16283a;border:1px solid #4f7fa8;cursor:pointer}
+.rsk-b.on{background:#2f6fa8;border-color:#9fd0ff;color:#fff}.rsk-b[disabled]{opacity:.45;cursor:not-allowed}
+.rsk-b em{font-style:normal;font-size:11px;opacity:.8;margin-left:4px}
+.rsk-ed{border:1px solid #4f7fa8;background:rgba(22,40,58,.35);padding:10px 12px;margin-top:8px}
+.rsk-ed .fxr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+</style>
+<script id="resp-skill">
+/* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
+   데이터: skill.rk 'evade'|'guard', rdice/rres(부호 rds/rrs), rfx [{when:'use'|'win'|'lose', type, kw, n, t}], rcond {hp, kw, kn} */
+const RSK_WHEN={use:'쓸 때 (대응 주사위 전)',win:'성공했을 때 (공격이 빗나감)',lose:'실패했을 때 (공격에 맞음)'};
+const RSK_FX={kwSelf:'자신에게 키워드 부여',kwFoe:'공격자에게 키워드 부여',kwDown:'자신의 키워드 줄이기',debuffRand:'자신의 해로운 키워드 하나(무작위) 줄이기',kwZero:'자신의 키워드 전부 소모',healSelf:'자신 회복',dmgFoe:'공격자에게 피해'};
+const BASE_DEBUFF=['화상','출혈','침잠','진동','파열'];
+const isDebuff=n=>BASE_DEBUFF.includes(n)||kwDef(n)?.cat==='debuff';
+const rskList=k=>{const id=srcOf(uOf(k));return(CH(id)?.skills||[]).map((s,i)=>[s,i]).filter(([s])=>s&&s.role==='수비')};
+const rskOf=(k,r)=>r?.rsk==null?null:(CH(srcOf(uOf(k)))?.skills||[])[+r.rsk]||null;
+function rskBlock(k,s){const u=uOf(k);if(!u)return'유닛 없음';const c=s.rcond||{};
+ if(c.cover){const t=ATK(),me=t?.multi?(t.T||[]).find(e=>e.k===k):null;if(!(t?.prot?.k===k||me?.for))return'원호(보호)할 때만'}
+ if(+c.hp&&hpPctOf(u)>+c.hp)return`HP ${c.hp}% 이하일 때만`;
+ if(c.kw&&kwCntOf(u,c.kw)<(+c.kn||1))return`${c.kw} ${+c.kn||1} 이상일 때만`;return''}
+const hpPctOf=u=>{try{const h=hpCalc(hpOf(u));return h.max?Math.round(h.left/h.max*100):100}catch{return 100}};
+function rskRow(t,k,r,i){const L=rskList(k);if(!L.length||cantResp(t,uOf(k)))return'';
+ return`<div class="rsk-row"><small>수비 스킬</small>${L.map(([s,si])=>{const b=rskBlock(k,s);return`<button class="rsk-b ${r?.rsk!=null&&+r.rsk===si?'on':''}" data-a="${i==null?'atkRsk':'mRsk'}" ${i==null?'':`data-i="${i}"`} data-v="${si}" ${b?`disabled title="${esc(b)}"`:`title="${esc(rskText(s))}"`}>${esc(s.name||'수비 스킬')}<em>${RESP[s.rk||'guard']}${rskModText(s)}</em></button>`}).join('')}</div>`}
+const rskModText=s=>{const d=(+s.rds<0?-1:1)*(+s.rdice||0),r=(+s.rrs<0?-1:1)*(+s.rres||0);return`${d?` 주사위${d>0?'+':''}${d}`:''}${r?` 결과${r>0?'+':''}${r}`:''}`};
+function rskText(s){const fx=(s.rfx||[]).filter(Boolean).map(f=>`[${{use:'쓸 때',win:'성공',lose:'실패'}[f.when]||'쓸 때'}] ${rskFxText(f)}`);const c=s.rcond||{};
+ return`${RESP[s.rk||'guard']}${rskModText(s)}${fx.length?' · '+fx.join(' · '):''}${c.cover?' · 원호할 때만':''}${+c.hp?` · HP ${c.hp}% 이하`:''}${c.kw?` · ${c.kw} ${+c.kn||1} 이상`:''}`}
+function rskFxText(f){const n=+f.n||1;switch(f.type){case'kwSelf':return`자신 ${f.kw||'?'} ${n}`;case'kwFoe':return`공격자 ${f.kw||'?'} ${n}`;case'kwDown':return`자신 ${f.kw||'?'} -${n}`;case'debuffRand':return`해로운 키워드 하나 -${n}`;case'kwZero':return`자신 ${f.kw||'?'} 전부 소모`;case'healSelf':return`자신 ${TIERS[(+f.t||1)-1]||'경상'} 회복 ${n}칸`;case'dmgFoe':return`공격자 ${TIERS[(+f.t||1)-1]||'경상'} ${n}칸`}return''}
+function rskMod(k,r,what){const s=rskOf(k,r);if(!s)return 0;return what==='dice'?(+s.rds<0?-1:1)*(+s.rdice||0):(+s.rrs<0?-1:1)*(+s.rres||0)}
+function rskFire(k,r,when,att){const s=rskOf(k,r);if(!s)return;const fx=(s.rfx||[]).filter(f=>f&&(f.when||'use')===when);if(when==='use')btLog(`${atkName(k)} 수비 스킬 「${s.name||'수비 스킬'}」 (${RESP[s.rk||'guard']})`);
+ const why=`${atkName(k)}의 ${s.name||'수비 스킬'}`,u=()=>uOf(k);
+ for(const f of fx){const n=Math.max(1,+f.n||1);
+  switch(f.type){
+   case'kwSelf':if(f.kw)addKw(k,f.kw,n,why);break;
+   case'kwFoe':if(f.kw&&att&&uOf(att))addKw(att,f.kw,n,why);break;
+   case'kwDown':if(f.kw)rskDown(k,f.kw,n,why);break;
+   case'kwZero':if(f.kw)rskDown(k,f.kw,9999,why);break;
+   case'debuffRand':{const L=Object.keys(kwOf(u())||{}).filter(x=>isDebuff(x)&&kwCntOf(u(),x)>0);if(!L.length){btLog(`${why}: 줄일 해로운 키워드 없음`);break}
+    const x=L[Math.floor(Math.random()*L.length)];rskDown(k,x,n,why+' (무작위)');break}
+   case'healSelf':healUnit(k,+f.t||1,n,why);break;
+   case'dmgFoe':if(att&&uOf(att))damageUnit(att,+f.t||1,n,why);break}}
+ if(fx.length)settleKw([k,att].filter(Boolean),why)}
+function rskDown(k,name,n,why){const u=uOf(k);if(!u)return;if(kwVT(kwDef(name))==='pc'){const c=kwC(u,name);kwSetCnt(k,name,c-n,`${why}: ${name} 횟수 ${c} → ${Math.max(0,c-n)}`)}else{const v=kwP(u,name);kwSet(k,name,v-n,`${why}: ${name} ${v} → ${Math.max(0,v-n)}`)}}
+Object.assign(A,{
+ atkRsk(e){const t=ATK();if(!t)return;const s=(CH(srcOf(uOf(t.to)))?.skills||[])[+e.dataset.v];if(!s)return;const b=rskBlock(t.to,s);if(b)return toast(b,1);
+  if(t.r?.rsk!=null&&+t.r.rsk===+e.dataset.v){Store.set(`${BTP}/atk/r/rsk`,null);return}
+  Store.set(`${BTP}/atk/r/rsk`,+e.dataset.v,true);Store.set(`${BTP}/atk/r/mode`,s.rk||'guard')},
+ mRsk(e){const t=ATK(),i=+e.dataset.i,en=t?.T?.[i];if(!en)return;const s=(CH(srcOf(uOf(en.k)))?.skills||[])[+e.dataset.v];if(!s)return;const b=rskBlock(en.k,s);if(b)return toast(b,1);
+  if(en.rsk!=null&&+en.rsk===+e.dataset.v){Store.set(`${BTP}/atk/T/${i}/rsk`,null);return}
+  Store.set(`${BTP}/atk/T/${i}/rsk`,+e.dataset.v,true);Store.set(`${BTP}/atk/T/${i}/mode`,s.rk||'guard')},
+ rskFxAdd(e){const p=e.dataset.p,L=Store.get(p+'/rfx')||[];Store.set(p+'/rfx',[...(Array.isArray(L)?L:Object.values(L)),{when:'use',type:'kwSelf',kw:'침잠',n:1}]);renderSheet()},
+ rskFxDel(e){const p=e.dataset.p,L=[...(Store.get(p+'/rfx')||[])];L.splice(+e.dataset.v,1);Store.set(p+'/rfx',L);renderSheet()}
+});
+function rskEditor(x,p){const fx=Array.isArray(x.rfx)?x.rfx:Object.values(x.rfx||{}),c=x.rcond||{},kws=[...KW,...kwDefs().map(d=>d.name)];
+ const sg=(path,v)=>`<select data-b="${path}" data-r>${optsKV({'1':'+','-1':'-'},String(+v<0?-1:1))}</select>`;
+ return`<div class="rsk-ed"><h4 class="sh-h">수비 스킬 <small>대응할 때 회피·방어 대신 고르는 스킬 · 판정은 대응 2d6 그대로, 아래 보정과 효과가 붙어요</small></h4>
+ <div class="fxr"><label class="small">판정<select data-b="${p}/rk" data-r>${optsKV({guard:'방어로 판정',evade:'회피로 판정'},x.rk||'guard')}</select></label>
+  <label class="small">주사위 ${sg(p+'/rds',x.rds)}${num(p+'/rdice',x.rdice,0,4,1)}</label><label class="small">결과 ${sg(p+'/rrs',x.rrs)}${num(p+'/rres',x.rres,0,4,1)}</label></div>
+ <div class="sh-h small" style="margin-top:6px">효과</div>
+ ${fx.map((f,j)=>{const q=`${p}/rfx/${j}`,kwSel=['kwSelf','kwFoe','kwDown','kwZero'].includes(f.type),tier=['healSelf','dmgFoe'].includes(f.type);
+  return`<div class="fxr"><select data-b="${q}/when" data-r>${optsKV(RSK_WHEN,f.when||'use')}</select><select data-b="${q}/type" data-r>${optsKV(RSK_FX,f.type||'kwSelf')}</select>${kwSel?`<select data-b="${q}/kw" data-r>${optsL(kws,f.kw||'')}</select>`:''}${tier?`<select data-b="${q}/t" data-r>${optsKV({1:'경상',2:'중상',3:'치명상',4:'4단계'},f.t||1)}</select>`:''}${f.type!=='kwZero'?`${num(q+'/n',f.n||1,1,20,1)}${tier?'칸':''}`:''}<button class="btn sm danger" data-a="rskFxDel" data-p="${p}" data-v="${j}">✕</button></div>`}).join('')||'<p class="small muted">효과 없음 — 보정만 있는 수비 스킬이에요.</p>'}
+ <button class="btn sm" data-a="rskFxAdd" data-p="${p}">＋ 효과</button>
+ <div class="sh-h small" style="margin-top:8px">사용 조건 <small>(비우면 언제나)</small></div>
+ <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/rcond/cover" data-r ${c.cover?'checked':''}> 원호(보호)해서 대신 받을 때만</label></div>
+ <div class="fxr"><label class="small">HP${num(p+'/rcond/hp',c.hp,0,100,1)}% 이하일 때만 (0 = 조건 없음)</label></div>
+ <div class="fxr"><label class="small">자신의 <select data-b="${p}/rcond/kw" data-r>${optsKV({'':'키워드 조건 없음',...Object.fromEntries(kws.map(k=>[k,k]))},c.kw||'')}</select></label>${c.kw?`<label class="small">${num(p+'/rcond/kn',c.kn||1,1,99,1)} 이상일 때만</label>`:''}</div>
+ <p class="small muted">미리보기: ${esc(rskText(x))}</p></div>`}
+{const se=skillEditor;skillEditor=function(x,p){return x?.role==='수비'?rskEditor(x,p):se(x,p)}}
+{const sv=skillView;skillView=function(x){return x?.role==='수비'?`<p class="small"><b>[수비 스킬]</b> ${esc(rskText(x))}</p>`:sv(x)}}
+</script>
+<script id="cover">
+/* 원호 방어 (14.4 보호의 특별판)
+   - 원호 방어 N: 보호할 때 스트레스 2 대신 원호 방어 1을 쓴다
+   - 자동 원호 N: 2칸 안 아군이 공격받으면 자동으로 보호(묻지 않음), 자동 원호 1을 쓴다. 바감 "강제 원호", 글록 "도발" 같은 효과
+   두 키워드는 자작 키워드로 방에 자동 등록된다(횟수형, 이로운) */
+const COVER_KW='원호 방어',AUTO_KW='자동 원호';
+const coverHas=(u,n)=>!!u&&kwCntOf(u,n)>0;
+function coverCostText(u){return coverHas(u,COVER_KW)?` (원호 방어 1 사용, 남은 ${kwCntOf(u,COVER_KW)})`:u?.char?' (스트레스 +2)':''}
+function coverPay(k,auto){const u=uOf(k);if(!u)return'';
+ if(auto&&coverHas(u,AUTO_KW)){rskDown(k,AUTO_KW,1,`${uName(u)} 자동 원호`);return' (자동 원호 1 사용)'}
+ if(coverHas(u,COVER_KW)){rskDown(k,COVER_KW,1,`${uName(u)} 원호 방어`);return' (원호 방어 1 사용)'}
+ if(u.char){addStress(u.char,2);return' (스트레스 +2)'}return''}
+function autoCover(target,list){const to=uOf(target);const L=(list||[]).filter(u=>coverHas(u,AUTO_KW));if(!L.length||!to)return null;L.sort((a,b)=>cheb(a,to)-cheb(b,to));return L[0].k}
+function ensureCoverKw(){try{if(NET.on&&!NET.gm)return;const have=kwDefs().map(d=>d.name);
+ const D=[[COVER_KW,'보호할 때 스트레스 2 대신 1을 써서 근처(2칸) 아군의 공격을 대신 받는다 (14.4)'],[AUTO_KW,'근처(2칸) 아군이 공격받으면 묻지 않고 자동으로 대신 받는다. 1회마다 1 소모']];
+ for(const[n,desc]of D)if(!have.includes(n))Store.push('play/kwdefs',{name:n,cat:'buff',desc,img:'',owner:ME,at:nowT(),cfg:{vt:'count',keep:false}})}catch{}}
+{const p0=paint;let done='';paint=function(){if(UI.room&&done!==UI.room){done=UI.room;setTimeout(ensureCoverKw,800)}return p0.apply(this,arguments)}}
+</script>
+<script id="assist">
+/* 원호 공격 (③): 스킬에 명시했을 때만. 본 공격 판정 전에, 공격자가 고른 아군이 같은 대상에게 기본 공격 1회.
+   판정은 기회공격과 같은 2d6(최고 눈 4 이상 적중), 대상은 대응할 수 없고 반격도 없다. 다중 대상 스킬에서는 쓰지 않는다(첫 판본)
+   skill.assist = {on, n(아군 수 1~3), reach(대상과의 거리 1~9), t, d(피해 단계·칸)} */
+const assistOf=t=>{if(!t||t.multi)return null;const s=skillOf(t.by,t.opt);return s?.assist?.on?s.assist:null};
+function assistCands(t){const a=assistOf(t),by=uOf(t.by),to=uOf(t.to);if(!a||!by||!to)return[];const used=new Set(t.assistUsed||[]);
+ return units().filter(u=>u.k!==t.by&&u.k!==t.to&&u.side===by.side&&!isDown(u)&&!noResp(u)&&!used.has(u.k)&&cheb(u,to)<=(+a.reach||1))}
+function assistHTML(t){const a=assistOf(t),L=assistCands(t),left=(+a.n||1)-(t.assistUsed||[]).length,to=uOf(t.to);
+ return`<div class="bt-step">원호 공격 — ${esc(uName(to))}에게 (남은 ${left}명)</div><p class="small muted">${esc(uName(to))}에게서 ${+a.reach||1}칸 안의 아군이 먼저 기본 공격을 해요. 2d6 최고 눈 4 이상이면 ${esc(TIERS[(+a.t||1)-1])} ${+a.d||1}칸. 대상은 대응할 수 없고, 반격도 없어요.</p>
+ <div class="row">${L.map(u=>`<button class="btn sm pri" data-a="assistAct" data-v="${esc(u.k)}">${esc(uName(u))} 원호 공격</button>`).join('')}<button class="btn sm" data-a="assistAct" data-v="">${(t.assistUsed||[]).length?'그만하고 본 공격':'원호 없이 본 공격'}</button></div>`}
+function assistAct(k){const t=ATK();if(!t||t.phase!=='assist')return;const a=assistOf(t);
+ if(k){const u=uOf(k),to=uOf(t.to);if(!u||!to)return;const dice=rollN(2),hit=oppHit(dice);
+  btLog(`${uName(u)} 원호 공격 → ${uName(to)}: [${dice.join(',')}] ${hit?'적중':'빗나감'} (대응 불가, 반격 없음)`,{type:'opp',by:k,to:t.to,dice,hit});
+  if(hit){withSrc(k,()=>damageUnit(t.to,+a.t||1,+a.d||1,`${uName(u)}의 원호 공격`));runPassives(k,'afterHit',{target:t.to,attacker:k,fired:{}});runPassives(t.to,'onHitTaken',{attacker:k});settleKw([t.to,k],'원호 공격')}
+  const used=[...(t.assistUsed||[]),k],nt={...ATK(),assistUsed:used};
+  if(isDown(uOf(t.to))){btLog(`${atkName(t.to)} 전투 불능 — 본 공격 취소 (주요 행동은 소비)`);Store.set(`${BTP}/atk`,null);return toast('대상이 쓰러져 본 공격은 하지 않아요')}
+  if(used.length<(+a.n||1)&&assistCands(nt).length)return Store.set(`${BTP}/atk`,nt);
+  Store.set(`${BTP}/atk`,{...nt,assistDone:true,phase:'declare'},true);return atkPreRoll()}
+ if(!(t.assistUsed||[]).length)btLog('원호 공격 없이 진행');
+ Store.set(`${BTP}/atk`,{...t,assistDone:true,phase:'declare'},true);atkPreRoll()}
+{const ap=atkPreRoll;atkPreRoll=function(){const t=ATK();if(t&&!t.multi&&assistOf(t)&&!t.assistDone){
+  if(!assistCands(t).length){btLog('원호 공격: 대상 근처에 원호할 아군이 없음');Store.set(`${BTP}/atk`,{...t,assistDone:true},true);return ap()}
+  return Store.set(`${BTP}/atk`,{...t,phase:'assist'})}return ap()}}
+A.assistAct=e=>assistAct(e.dataset.v||'');
+function assistEditor(x,p){const a=x.assist||{};return`<h4 class="sh-h">원호 공격 <small>본 공격 전에 아군이 같은 대상을 기본 공격 · 2d6 최고 4 이상 적중 · 대응·반격 없음 · 단일 대상 스킬만</small></h4>
+ <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/assist/on" data-r ${a.on?'checked':''}> 원호 공격 쓰기</label>${a.on?`<label class="small">아군 최대${num(p+'/assist/n',a.n||1,1,3,1)}명</label><label class="small">대상과 ${num(p+'/assist/reach',a.reach||1,1,9,1)}칸 안</label><label class="small">피해<select data-b="${p}/assist/t" data-r>${optsKV({1:'경상',2:'중상',3:'치명상',4:'4단계'},a.t||1)}</select>${num(p+'/assist/d',a.d||1,1,9,1)}칸</label>`:''}</div>
+ ${a.on&&isMulti(x.area)?'<p class="small warn">범위 스킬에서는 원호 공격을 쓰지 않아요 (단일 대상만).</p>':''}`}
+{const sv=skillView;skillView=function(x){const h=sv(x),a=x?.assist;return a?.on&&x.role!=='수비'?h+`<p class="small"><b>[원호 공격]</b> 아군 ${+a.n||1}명 · 대상 ${+a.reach||1}칸 안 · 적중 시 ${TIERS[(+a.t||1)-1]} ${+a.d||1}칸</p>`:h}}
 </script>
 </body>
 </html>
