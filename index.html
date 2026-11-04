@@ -3534,7 +3534,7 @@ const IF_L={always:'항상',keywordMin:'키워드 이상',keywordMax:'키워드 
 const DO_L={diceModifier:'주사위 수',resultModifier:'결과 보정',spendCharge:'충전 소비',damage:'피해',heal:'회복',keyword:'키워드 부여'};
 const DO_PRE=['diceModifier','resultModifier','spendCharge'],DO_POST=['spendCharge','damage','heal','keyword']; // 16.7 시점 제한
 const LIM_IN={perTarget:'대상별 1회',oncePerAction:'처리당 1회'},LIM_CNT={any:'제한 없음',oncePerTurn:'자신의 턴당 1회',oncePerCombat:'전투당 1회'};
-const RSIDE={same:'같은 편',opp:'상대 편',all:'자신 제외 전체'};
+const RSIDE={same:'같은 편',ally:'자신 제외 같은 편',opp:'상대 편',all:'자신 제외 전체'};
 const blankFx=type=>({type,t:1,n:1,kw:'화상'});
 const blankRule=()=>({on:true,when:'afterHit',join:'and',ifs:[],do:{type:'damage',t:1,n:1,sign:1,kw:'화상',to:'target',radius:0,rside:'opp'},limit:{inner:'perTarget',count:'any',dur:0}});
 const isStruct=s=>!!s&&Array.isArray(s.fx);
@@ -3630,7 +3630,7 @@ function limitOk(r,key,ctx,commit){const B=BT(),st=B.rs?.[key]||{},te=+B.te?.[ct
  if(commit){Store.set(`${BTP}/rs/${key}`,{n:(st.n||0)+1,teAt:te,te0:st.te0??te},true);ctx.fired[key]=[...(f||[]),ctx.target]}
  return true}
 function recipients(d,ctx){if(+d.radius>0){const me=uOf(ctx.self);if(!me)return[];
-  return units().filter(u=>cheb(me,u)<=+d.radius&&(d.rside==='same'?u.side===me.side:d.rside==='opp'?u.side!==me.side:u.k!==me.k)).map(u=>u.k)}
+  return units().filter(u=>cheb(me,u)<=+d.radius&&(d.rside==='same'?u.side===me.side:d.rside==='ally'?u.side===me.side&&u.k!==me.k:d.rside==='opp'?u.side!==me.side:u.k!==me.k)).map(u=>u.k)}
  return ctx[d.to]?[ctx[d.to]]:[]}
 // ctx: {self, target, attacker, si, skill, snap, roll, fired, mods, label}
 function runRules(when,ctx){runRuleList(when,ctx.skill?.rules||[],`${ctx.self}_${ctx.si}`,ctx.label,ctx)}
