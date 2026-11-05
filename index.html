@@ -2402,10 +2402,10 @@ function silSvg(pose){const j=SIL[pose]||SIL.idle,L=(a,b,w)=>`<line x1="${a[0]}"
  return`<svg class="sil" viewBox="-30 0 260 360" preserveAspectRatio="xMidYMax meet">${blade(22,'bl-g')}<g class="glow" stroke-linecap="round">${body(26)}</g><g class="glow2" stroke-linecap="round">${body(12)}</g><g class="rim" stroke-linecap="round">${body(6)}</g>${blade(11,'bl-r')}<g class="core" stroke-linecap="round">${body(0)}</g>${blade(5,'blade')}</svg>`}
 const csUnit=k=>{const u=uOf(k);if(!u)return{name:'?',side:'foe',P:{},base:''};const c=CH(srcOf(u))||{},P={};
  for(const[p]of POSES){const im=pImg(c.poses?.[p]);if(im)P[p]=im}
- return{name:uName(u),side:u.side,P,base:uImg(u)||pImg((c.stands||[])[0]?.img)||''}};
+ return{name:uName(u),side:u.side,P,adj:c.poseAdj||{},base:uImg(u)||pImg((c.stands||[])[0]?.img)||''}};
 function figHtml(U,s){const img=U.P.idle||U.base;
  return`<div class="cs-fig ${s} ${img?'pic':'sil-on'}${U.P.idle?' posed':''}"><div class="cs-card"><span>${esc(U.name)}</span></div><div class="cs-body">${img?`<img src="${esc(img)}" alt="">`:silSvg('idle')}</div></div>`}
-function setPose(f,U,pose){if(!f)return;f.dataset.pose=pose;const im=$('img',f);
+function setPose(f,U,pose){if(!f)return;f.dataset.pose=pose;const im=$('img',f);{const pk=U.P[pose]?pose:'idle',j=U.adj?.[pk]||{};f.style.setProperty('--ps',(+j.s||100)/100);f.style.setProperty('--py',(+j.y||0)+'%')}
  if(im){const src=U.P[pose]||U.P.idle||U.base;f.classList.toggle('real',!!U.P[pose]);f.classList.toggle('posed',!!(U.P[pose]||U.P.idle));if(im.getAttribute('src')!==src)im.src=src}
  else $('.cs-body',f).innerHTML=silSvg(pose)}
 // x는 자기 너비 기준 %. 0=제자리, 음수/양수=왼쪽/오른쪽
@@ -2488,12 +2488,24 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   res.innerHTML=`<b class="miss">${d.mode==='guard'?'방어!':'막아냄'}</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  await T(win?1150:950);
  el.classList.add('out');camOut();await sleep(280);host.innerHTML='';CS.cur=null}
-function poseEditor(id){const P=CH(id)?.poses||{};return`<p class="small muted" style="margin:0 0 10px">합 연출에서 장면마다 바꿔 끼울 전신 그림이에요. 빈 칸은 '대기' 그림, 그다음 일러스트로 대신하고, 아무 그림도 없으면 실루엣으로 나와요. 오른쪽을 보는 배경 투명 PNG를 권장해요.</p>
- <div class="pose-grid">${POSES.map(([k,n])=>{const im=pImg(P[k]);return`<div class="pose"><button class="pose-img" data-a="poseSet" data-v="${k}" aria-label="${n} 그림 넣기">${im?`<img src="${esc(im)}" alt="">`:silSvg(k)}</button><b>${n}</b>${im?`<button class="btn sm danger" data-a="poseDel" data-v="${k}">지우기</button>`:'<span class="small muted">비어 있음</span>'}</div>`}).join('')}</div>
+function poseEditor(id){const c=CH(id)||{},P=c.poses||{},J=c.poseAdj||{},q=`chars/${id}/poseAdj`;
+ const tile=(k,n)=>{const im=pImg(P[k]),j=J[k]||{},st=`--ps:${(+j.s||100)/100};--py:${+j.y||0}%`;
+  return`<div class="pose"><button class="pose-img pose-std" data-a="poseSet" data-v="${k}" aria-label="${n} 그림 넣기" style="${st}"><i class="pg-h" aria-hidden="true"></i><i class="pg-f" aria-hidden="true"></i>${im?`<img src="${esc(im)}" alt="">`:silSvg(k)}</button><b>${n}</b>
+  ${im?`<label class="pose-adj"><span>크기 ${+j.s||100}%</span><input type="range" min="60" max="140" step="1" value="${+j.s||100}" data-b="${q}/${k}/s" data-r></label><label class="pose-adj"><span>높이 ${+j.y>0?'+':''}${+j.y||0}%</span><input type="range" min="-20" max="20" step="1" value="${+j.y||0}" data-b="${q}/${k}/y" data-r></label><button class="btn sm danger" data-a="poseDel" data-v="${k}">지우기</button>`:'<span class="small muted">비어 있음</span>'}</div>`};
+ const row=POSES.filter(([k])=>pImg(P[k])).map(([k,n])=>{const j=J[k]||{};return`<span class="pr-c" style="--ps:${(+j.s||100)/100};--py:${+j.y||0}%" title="${n}"><img src="${esc(pImg(P[k]))}" alt="${n}"><small>${n}</small></span>`}).join('');
+ return`<details class="pose-spec" open><summary>그림 규격 (모든 자세 공통)</summary><ul>
+ <li><b>캔버스 세로 1500 px 고정, 가로 1000 px 이상</b> — 창·불꽃처럼 옆으로 넓은 자세는 가로만 넓혀요 (세로는 그대로). 배경 투명 PNG 또는 WebP</li>
+ <li><b>오른쪽을 보게</b> 그리기 — 오른쪽 자리에서는 툴이 좌우를 뒤집어요</li>
+ <li><b>발끝 = 아래에서 60px</b>(1440px 선), <b>정수리 = 위에서 150px</b>(150px 선) — 서 있는 키가 캔버스 높이의 약 86%</li>
+ <li>그림은 가로 가운데. 돌진·공격처럼 팔·무기가 뻗어도 <b>같은 축척</b>으로, 캔버스 밖으로 나가지 않게</li>
+ <li>여섯 자세 모두 같은 크기의 캔버스, 같은 축척. 웅크린 자세(방어·피격)는 키가 작아져도 축척은 그대로</li></ul>
+ <p class="small muted">아래 칸의 점선이 정수리·발끝 기준선이에요. 규격과 다른 그림은 '크기'·'높이'로 맞추면 합 연출에도 그대로 적용돼요.</p></details>
+ <div class="pose-grid">${POSES.map(([k,n])=>tile(k,n)).join('')}</div>
+ ${row?`<h4 class="sh-h" style="margin-top:12px">한 줄로 비교 <small>같은 기준선에서 크기가 맞는지</small></h4><div class="pose-row"><i class="pg-h"></i><i class="pg-f"></i>${row}</div>`:''}
  <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 Object.assign(A,{
  poseOpen(){const id=UI.charId;openModal('전투 자세',()=>poseEditor(id))},
- poseSet(e){const id=UI.charId,k=e.dataset.v;pickImg(1200,img=>Store.set(`chars/${id}/poses/${k}`,img))},
+ poseSet(e){const id=UI.charId,k=e.dataset.v;pickImg(1500,async img=>{Store.set(`chars/${id}/poses/${k}`,img);try{const im=await loadImgEl(pImg(img)),r=im.naturalWidth/im.naturalHeight;if(r<2/3-.03)toast(`그림 비율이 ${im.naturalWidth}×${im.naturalHeight}이에요. 규격(세로 1500에 가로 1000 이상)보다 좁아 크기가 어긋날 수 있어요 — '크기'·'높이'로 맞춰 주세요`,1)}catch{}})},
  poseDel(e){Store.set(`chars/${UI.charId}/poses/${e.dataset.v}`,'')}});
 async function csRun(){if(CS.busy)return;CS.busy=true;try{while(CS.q.length){const d=CS.q.shift();try{await playClash(d)}catch(e){console.error(e);camOut()}}}finally{CS.busy=false;CS.cur=null;CS.skip=false;const h=$('#btCs');if(h)h.innerHTML=''}}
 // 토큰 위 숫자 팝업
@@ -5169,6 +5181,16 @@ CHANGE.rosterKind=el=>{const c=CH(UI.charId);if(!c||!isGmLike())return;Store.set
 #tkCast:not([hidden])~#invTop{top:76px}
 @media (max-width:760px){#tkCast{left:8px;right:48px;top:6px;overflow-x:auto}.cast-t{width:40px;height:46px;flex:none}.cast-t span{display:none}}
 .hs.sup .hs-tag{background:#2f5a85!important}.sup-l{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+/* §83 합 연출 자세 그림 규격: 1000×1500(2:3), 높이 기준으로 같은 축척, 자세별 크기·높이 보정 */
+.cs-fig.posed .cs-body img{height:100%;width:auto;max-width:none;max-height:none;object-fit:contain;transform-origin:50% 100%;transform:translateY(var(--py,0%)) scale(var(--ps,1))}
+.cs-fig.r.posed .cs-body img{transform:translateY(var(--py,0%)) scale(calc(-1*var(--ps,1)),var(--ps,1))}
+.cs-fig.posed .cs-body{overflow:visible}
+.pose-spec{margin:0 0 12px;padding:8px 12px;border:1px solid #6a5038;background:rgba(12,8,6,.6)}.pose-spec summary{cursor:pointer;font:700 14px var(--fk);color:#e8c48a}.pose-spec ul{margin:8px 0 6px;padding-left:18px;font-size:13px;line-height:1.7}
+.pose-std{position:relative;aspect-ratio:2/3;padding:0;overflow:hidden;place-items:end center}.pose-std img{position:absolute;bottom:0;left:50%;height:100%;width:auto;max-width:none;max-height:none;transform-origin:50% 100%;transform:translateX(-50%) translateY(var(--py,0%)) scale(var(--ps,1))}.pose-std .sil{height:86%;margin-bottom:4%}
+.pg-h,.pg-f{position:absolute;left:0;right:0;border-top:1px dashed rgba(232,196,138,.45);pointer-events:none;z-index:2}.pg-h{top:10%}.pg-f{top:96%}
+.pose-adj{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center;width:100%;font-size:11px;color:#c9b08f}.pose-adj input{width:100%}
+.pose-row{position:relative;display:flex;align-items:flex-end;gap:0;height:220px;padding:0 8px;overflow-x:auto;background:radial-gradient(ellipse at 50% 80%,#2a160b,#0d0705);border:1px solid #6a5038}.pose-row .pg-h{top:10%}.pose-row .pg-f{top:96%}
+.pr-c{position:relative;flex:none;height:100%;display:flex;align-items:flex-end;justify-content:center}.pr-c img{height:100%;width:auto;transform-origin:50% 100%;transform:translateY(var(--py,0%)) scale(var(--ps,1))}.pr-c small{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:10px;color:#c9b08f;text-shadow:0 0 3px #000}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
