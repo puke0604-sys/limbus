@@ -5331,6 +5331,13 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .hi-sk.on .hi-skb b{color:#ffcf6a}.hi-sk.hid .hi-skb b{color:#c9a8e8}
 .hi-skd{flex-basis:100%;padding:4px 4px 8px;font-size:13.5px}.hi-skd .sk-desc{font-size:13.5px;line-height:1.6;margin:4px 0}.hi-skd .skc{font-size:12px}.hi-skd .sk-auto summary{font-size:12.5px}
 .skc.nc{color:#ff9a8c;border-color:#7a3a33}
+/* §103 정보창 스킬 두 단계 접기 */
+.hi-grp{margin:3px 0;border:1px solid rgba(106,80,56,.6);background:rgba(0,0,0,.25)}
+.hi-grph{width:100%;display:flex;align-items:baseline;gap:7px;padding:6px 8px;background:none;border:0;color:#e8c48a;cursor:pointer;text-align:left}
+.hi-grph em{font-style:normal;color:#a8875a;width:10px}.hi-grph b{font:400 14px var(--fk)}.hi-grph span{margin-left:auto;font-size:12px;color:#a8987e}
+.hi-grp.open>.hi-grph{border-bottom:1px solid rgba(106,80,56,.5)}.hi-grpb{padding:0 6px 4px}
+.hi-ar{font-style:normal;color:#8f7f68;width:10px;flex:none}
+.foe-act{flex-direction:column;align-items:center}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6060,12 +6067,16 @@ const IDN_WHAT=w=>w==='hp'?'체력':w==='tol'?'내성치':/^p:/.test(w)?`패시�
 function idnTgtPath(id,w){if(w==='hp')return`chars/${id}/idnHp/lv`;if(w==='tol')return`chars/${id}/idnTol/lv`;if(/^p:/.test(w))return`chars/${id}/passives/${+w.slice(2)}/idn/lv`;const p=idnPath(id,+w.slice(2));return p?p+'/idn/lv':''}
 // 정보창: 스킬 목록 + 체력·내성치 가리기 + 식별 버튼
 UI.hiSk=UI.hiSk||{};
-function hiSkills(su){const c=CH(srcOf(su));if(!c)return'';const pl=!!hidFor(su),rows=[];
- (c.skills||[]).forEach((x,i)=>x&&rows.push(['s:'+i,x]));for(const k of['ego','twist'])formSk(c,k).forEach((x,j)=>x&&rows.push(['s:'+((k==='ego'?100:200)+j),x]));(c.passives||[]).forEach((x,i)=>x&&rows.push(['p:'+i,x]));
- if(!rows.length)return'';const op=UI.hiSk[su.k];
- return`<div class="hi-sks"><div class="hi-sks-h">스킬 <small>눌러서 펼치기</small></div>${rows.map(([key,x])=>{const hid=!!x._mask,lv=hid?x._mask-1:2,isP=key[0]==='p';
-  return`<div class="hi-sk ${op===key?'on':''} ${hid?'hid':''}"><button class="hi-skb" data-a="hiSk" data-v="${key}"><i style="--c:${sinColor(x.sin)||'#8a6a3a'}"></i><b>${esc(x.name||(isP?'패시브':'스킬'))}</b><small>${hid&&!lv?'미식별':`${isP?'패시브':`${esc(x.kind||'')} ${+x.range||0}칸`}${hid?' · 일부 식별':''}${!hid&&x.noCounter?' · 반격 불가':''}`}</small></button>${pl&&lv<2?`<button class="btn sm idn-b" data-a="idnRoll" data-t="${key}" title="이 항목을 노려 식별 판정">식별</button>`:''}
-  ${op===key?`<div class="hi-skd">${skCard(x)}</div>`:''}</div>`}).join('')}</div>`}
+function hiSkills(su){const c=CH(srcOf(su));if(!c)return'';const pl=!!hidFor(su);
+ // §103 두 단계 접기: 묶음(액티브·E.G.O/뒤틀림·패시브) → 스킬 이름 → 설명
+ const G={act:[],form:[],pas:[]};(c.skills||[]).forEach((x,i)=>x&&G.act.push(['s:'+i,x]));for(const k of['ego','twist'])formSk(c,k).forEach((x,j)=>x&&G.form.push(['s:'+((k==='ego'?100:200)+j),x]));(c.passives||[]).forEach((x,i)=>x&&G.pas.push(['p:'+i,x]));
+ if(!G.act.length&&!G.form.length&&!G.pas.length)return'';const op=UI.hiSk[su.k],go=UI.hiGrp[su.k]||{};
+ const row=([key,x])=>{const hid=!!x._mask,lv=hid?x._mask-1:2,isP=key[0]==='p';
+  return`<div class="hi-sk ${op===key?'on':''} ${hid?'hid':''}"><button class="hi-skb" data-a="hiSk" data-v="${key}"><em class="hi-ar">${op===key?'▾':'▸'}</em><i style="--c:${sinColor(x.sin)||'#8a6a3a'}"></i><b>${esc(x.name||(isP?'패시브':'스킬'))}</b><small>${hid&&!lv?'미식별':`${isP?'':`${esc(x.kind||'')} ${+x.range||0}칸`}${hid?' · 일부 식별':''}${!hid&&x.noCounter?' · 반격 불가':''}`}</small></button>${pl&&lv<2?`<button class="btn sm idn-b" data-a="idnRoll" data-t="${key}" title="이 항목을 노려 식별 판정">식별</button>`:''}
+  ${op===key?`<div class="hi-skd">${skCard(x)}</div>`:''}</div>`};
+ const grp=(id,name,L)=>{if(!L.length)return'';const open=!!go[id],unk=L.filter(([,x])=>x._mask).length;
+  return`<div class="hi-grp ${open?'open':''}"><button class="hi-grph" data-a="hiGrp" data-v="${id}"><em>${open?'▾':'▸'}</em><b>${name}</b><span>${L.length}개${unk?` · 미식별 ${unk}`:''}</span></button>${open?`<div class="hi-grpb">${L.map(row).join('')}</div>`:''}</div>`};
+ return`<div class="hi-sks"><div class="hi-sks-h">스킬 <small>묶음을 펼치고, 이름을 누르면 설명</small></div>${grp('act','액티브',G.act)}${grp('form','E.G.O · 뒤틀림',G.form)}${grp('pas','패시브',G.pas)}</div>`}
 function hiPatch(){const su=UI.bt.sel&&uOf(UI.bt.sel),box=$('#btHud .hud-info');if(!su||!box||box.dataset.p)return;box.dataset.p=1;const hc=hidFor(su);
  if(hc){const hl=idnHpLv(hc),pc=hpCalc(hpOf(su)).pct;
   if(hl<2){const sp=$('.hi-hp span',box),bar=$('.hi-hp i',box);if(sp)sp.textContent=hl?hpState(pc):'체력 ???';if(bar){bar.style.width=hl?hpStateW(pc)+'%':'100%';bar.classList.toggle('idn-unk',!hl)}$('.hi-tiers',box)?.remove();
@@ -6088,7 +6099,8 @@ function idnReqPump(){if(!isGmLike())return;const R=Store.get('play/idnReq');if(
   if(lv>cur)Store.set(p,lv);const nm=atkName(q.k)||c.info?.name||'',what=IDN_WHAT(q.what),how=lv>=2?'전부 공개':q.what==='hp'?'대략 공개':'이름만 공개';
   btLog(`식별 성공(${q.grade}) — ${q.who}: ${nm}의 ${what} ${how}`);toast(`식별: ${q.who} → ${nm} ${what} ${how}. 식별 관리에서 되돌릴 수 있어요`)}}
 setInterval(idnReqPump,700);
-Object.assign(A,{hiSk(e){const k=UI.bt.sel;UI.hiSk[k]=UI.hiSk[k]===e.dataset.v?'':e.dataset.v;paintHud()}});
+UI.hiGrp=UI.hiGrp||{};
+Object.assign(A,{hiSk(e){const k=UI.bt.sel;UI.hiSk[k]=UI.hiSk[k]===e.dataset.v?'':e.dataset.v;paintHud()},hiGrp(e){const k=UI.bt.sel,g=(UI.hiGrp[k]??={});g[e.dataset.v]=!g[e.dataset.v];paintHud()}});
 </script>
 <script id="counter-skills">
 /* §102 반격에 스킬 사용 (사용자 결정 — 룰북 11.2는 v1.4에서 고침)
