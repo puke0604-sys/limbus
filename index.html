@@ -2339,7 +2339,7 @@ function passiveTest(eq){
 }
 
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
-const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,bgm:o.bgm??0.45,shk:o.shk??2,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1}})();
+const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1}})();
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2457,39 +2457,48 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   <div class="cs-clash"></div><div class="cs-res"></div><div class="cs-flash"></div><div class="cs-skip">클릭해서 건너뛰기${CS.q.length?` (남은 연출 ${CS.q.length}개도 함께)`:''}</div></div>`;
  const el=$('.cs',host),q=s=>$(s,el),fl=q('.cs-fig.l'),fr=q('.cs-fig.r'),bdL=q('.cs-head.l .cs-badge'),bdR=q('.cs-head.r .cs-badge');
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
- // §99 동작 정리: 등장(돌진) → 주사위(둘 다 대기) → 부딪칠 때마다 같은 동작(공격자 돌진→공격→대기로 물러남 / 회피=뒤로 빠짐 / 방어=제자리 버팀) → 마무리
- const EI='cubic-bezier(.6,0,1,.6)';
+ // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
+ // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
+ const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK));
+ const hold=async ms=>{if(!SK)return;el.classList.add('stop');await HS(ms);el.classList.remove('stop')};
+ // 코인: 부딪칠 때마다 하나씩. 진 쪽 코인이 깨지고, 동점이면 둘 다 튕긴다
+ const nC=none?0:clash.length+1,coinRow=side=>{const h=q(`.cs-head.${side}`);if(!h||!nC)return null;const r=document.createElement('div');r.className='cs-coins';r.innerHTML='<i class="cs-coin"></i>'.repeat(nC);h.append(r);return r};
+ const cL=coinRow('l'),cR=coinRow('r');let ci=0;
+ function coinHit(w){const a=cL?.children[ci],b=cR?.children[ci];ci++;if(!a||!b)return;
+  const brk=c=>{c.classList.add('break');const h=c.offsetParent||c.parentNode;for(let i=0;i<7;i++){const sh=document.createElement('i');sh.className='shard coin-sh';const t=Math.random()*Math.PI*2,r=26+Math.random()*44;sh.style.cssText=`left:${c.offsetLeft+c.offsetWidth/2}px;top:${c.offsetTop+c.offsetHeight/2}px;--dx:${Math.cos(t)*r}px;--dy:${Math.sin(t)*r}px;--rz:${Math.random()*540-270}deg`;c.parentNode.append(sh);setTimeout(()=>sh.remove(),700)}};
+  if(w==='A'){a.classList.add('hold');brk(b)}else if(w==='B'){b.classList.add('hold');brk(a)}else{a.classList.add('clink');b.classList.add('clink')}}
  setPose(fl,A,'dash');setPose(fr,B,none?'idle':'dash');slide(fl,-130,0);slide(fr,none?0:130,0);void el.offsetWidth;
  camIn(d.by,d.to);el.classList.add('in');SFX.play('dash');slide(fl,0,420);if(!none)slide(fr,0,420);await T(440);
  setPose(fl,A,'idle');setPose(fr,B,'idle');
  await Promise.all([rollBadge(bdL,d.a,d.aMod,d.aCv,d.aCrit,fast),none?0:rollBadge(bdR,d.r,d.rMod,d.rCv,d.rCrit,fast)]);await T(240);
- // 한 번 부딪치기 (첫 충돌과 합마다 똑같이)
- async function exchange(crit){
-  setPose(fl,A,'dash');if(!ev)setPose(fr,B,'guard');slide(fl,48,170,EI);await T(170);
+ async function exchange(w,crit){
+  setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);await T(170);
   setPose(fl,A,'atk');
-  if(ev){setPose(fr,B,'evade');afterImg(el,fr);slide(fr,24,160);SFX.play('miss');await T(200)}
-  else{slide(fr,6,140);await impact(el,crit?'crit':'clang',crit)}
-  setPose(fl,A,'idle');slide(fl,6,260);setPose(fr,B,'idle');slide(fr,0,260);await T(300)}
- if(!none)await exchange(d.aCrit||d.rCrit);
+  if(ev){setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,-4,140);reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(70);coinHit(w);await T(150)}
+  else{setPose(fr,B,'guard');await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}
+  // 반동: 둘 다 대기 그림으로 튕겨 물러남
+  setPose(fl,A,'idle');setPose(fr,B,'idle');fr.classList.remove('cs-dodge');slide(fl,-8,280);slide(fr,8,280);await T(300);slide(fl,0,160);slide(fr,0,160);await T(150)}
+ if(!none)await exchange(clash.length?'T':(d.hit?'A':'B'),d.aCrit||d.rCrit);
  // 10.2 합: 동점이면 1d6을 주고받는다
  for(const[x,y]of clash){const c=q('.cs-clash');c.innerHTML='<b>합!</b>';reAnim(c,'go');await T(200);
-  setNum($('b',bdL),x);setNum($('b',bdR),y);SFX.play('tick');await T(260);await exchange(false)}
+  setNum($('b',bdL),x);setNum($('b',bdR),y);SFX.play('tick');await T(260);await exchange(x>y?'A':x<y?'B':'T',false)}
  q('.cs-clash').innerHTML='';
  // 결과
  const win=d.hit,big=d.aCrit;d.done=true;
  if(!none){(win?bdL:bdR).classList.add('win');shatter(win?bdR:bdL);SFX.play('shatter')}
  const res=q('.cs-res');
- // 마무리 공격: 숨 고르기 → 돌진 → 공격
- setPose(fl,A,'idle');await T(110);setPose(fl,A,'dash');slide(fl,40,150,EI);await T(150);setPose(fl,A,'atk');
- if(win){slide(fl,none?62:70,130,EI);await T(110);
-  setPose(fr,B,'hurt');fr.classList.add('cs-hit');cutFx(el,fr,big);slide(fr,26,380);
-  await impact(el,big?'heavy':'hit',true);
+ // 마무리: 숨 고르기 → 둘 다 달려듦(대응 없음이면 공격자만) → 승부
+ await T(120);setPose(fl,A,'dash');slide(fl,44,170,EI);if(!none){setPose(fr,B,'dash');slide(fr,-30,170,EI)}await T(170);setPose(fl,A,'atk');
+ if(win){if(big){q('.cs-stage').classList.add('cs-zoom');await hold(140)}
+  slide(fl,none?62:68,120,EI);await T(100);
+  setPose(fr,B,'hurt');fr.classList.add('cs-hit');cutFx(el,fr,big);slide(fr,34,420);
+  await impact(el,big?'heavy':'hit',true);await hold(big?120:60);q('.cs-stage').classList.remove('cs-zoom');
   dmgFx(el,fr,d.dmgs);res.innerHTML=`<b class="hit">${big?'CRITICAL':'적중'}</b>`}
  else if(none){slide(fl,80,260);await T(200);SFX.play('miss');res.innerHTML='<b class="miss">빗나감</b>'}
- else if(ev){slide(fl,66,200,EI);setPose(fr,B,'evade');afterImg(el,fr);slide(fr,42,240);fr.classList.add('cs-ghost');SFX.play('miss');await T(240);
-  setPose(fl,A,'idle');slide(fl,58,260);
+ else if(ev){slide(fl,72,200,EI);setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,46,260);fr.classList.add('cs-ghost');reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(60);await T(220);
+  setPose(fl,A,'idle');slide(fl,62,260);
   res.innerHTML=`<b class="miss">회피!</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
- else{slide(fl,48,120,EI);setPose(fr,B,'guard');await T(110);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-14,320);slide(fr,8,200);await impact(el,'block');
+ else{setPose(fr,B,'guard');await impact(el,'block',false);await hold(70);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-16,340);slide(fr,10,240);
   res.innerHTML=`<b class="miss">${d.mode==='guard'?'방어!':'막아냄'}</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  await T(win?1150:950);
  el.classList.add('out');camOut();await sleep(280);host.innerHTML='';CS.cur=null}
@@ -5295,6 +5304,21 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .mk-sec[open]>summary{border-bottom:1px solid #3a2c1e}.mk-sec>:not(summary){margin-left:12px;margin-right:12px}.mk-sec[open]{padding-bottom:10px}
 .mk-prev{margin:10px 0;border:1px dashed #6a5038;background:rgba(0,0,0,.3)}.mk-prev>summary{padding:7px 12px;cursor:pointer;color:#c9b08f;font-size:14px}.mk-prev>div{padding:0 12px 8px}
 .skr-l>span{font-family:var(--fk);letter-spacing:0}
+/* §100 림버스식 합: 코인·회피 대각선·크리티컬 확대 */
+.cs-coins{position:absolute;top:calc(100% + 8px);display:flex;gap:7px}.cs-head.l .cs-coins{left:4px}.cs-head.r .cs-coins{right:4px;flex-direction:row-reverse}
+.cs-coin{position:relative;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d0,#f0b84a 45%,#a8661a 80%);border:2px solid #4a2e08;box-shadow:0 0 7px rgba(255,190,60,.65),inset 0 -2px 3px rgba(0,0,0,.4)}
+.cs-coin::after{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(90,50,10,.55)}
+.cs-coin.hold{animation:coinHold .5s ease-out}.cs-coin.clink{animation:coinClink .35s}
+.cs-coin.break{animation:coinBreak .42s forwards}
+@keyframes coinHold{30%{transform:scale(1.35) rotateY(180deg);box-shadow:0 0 16px #ffd76a}100%{transform:none}}
+@keyframes coinClink{30%{transform:translateY(-8px) rotate(-14deg)}60%{transform:translateY(0) rotate(8deg)}}
+@keyframes coinBreak{0%{transform:scale(1.25);filter:brightness(2)}35%{transform:scale(1.1) rotate(12deg);clip-path:polygon(0 0,55% 0,40% 45%,62% 100%,0 100%)}100%{transform:scale(.6) rotate(30deg);opacity:0;filter:grayscale(1)}}
+.shard.coin-sh{width:9px;height:7px;margin:-3px 0 0 -4px;background:linear-gradient(135deg,#ffe08a,#8a5a12)}
+.cs-fig.cs-dodge .cs-body{transform:translateY(-5%) rotate(-4deg);transition:transform .14s}
+.cs-fig.r.cs-dodge .cs-body{transform:translateY(-5%) rotate(4deg)}
+.cs-fig.r:not(.pic).cs-dodge .cs-body{transform:scaleX(-1) translateY(-5%) rotate(-4deg)}
+.cs-stage.cs-zoom{transform:scale(1.07);transition:transform .14s ease-out}
+.cs-stage{transition:transform .25s}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
