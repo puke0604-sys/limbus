@@ -1434,9 +1434,9 @@ const dlgActive=()=>UI.tab==='talk'&&!document.hidden&&!UI.log;
 function dlgPresent(m){if(m.kind==='fx')return dirPresent(m);clearTimeout(DLG.hold);DLG.hold=null;DLG.holdDone=false;DLG.cur=m;DLG.at[m.k]=Date.now();DLG.shown=[...DLG.shown,m].slice(-60);dlgType.done=false;paintTalkStage();dlgType.start(m.txt)}
 function dlgNext(){if(!DLG.pending.length)return false;dlgPresent(DLG.pending.shift());return true}
 function dlgHold(){if(!dlgActive()||DLG.hold)return;if(DLG.holdDone){dlgNext();return}DLG.hold=setTimeout(()=>{DLG.hold=null;DLG.holdDone=true;if(dlgActive())dlgNext()},1500)}
-function dlgNew(m){if(m.kind==='fx'&&m.fx==='bgm'&&(!dlgActive()||(!DLG.pending.length&&!DLG.fxBusy&&(dlgType.done||!DLG.cur)))){DLG.shown=[...DLG.shown,m].slice(-60);dirRun(m);return}if(DLG.pending.some(x=>x.k&&x.k===m.k)||(m.k&&DLG.shown.some(x=>x.k===m.k)))return;DLG.pending.push(m);if(!DLG.fxBusy&&(!DLG.cur||(dlgType.done&&DLG.holdDone&&dlgActive())))dlgNext()}
+function dlgNew(m){m._at=m._at||Date.now();if(m.kind==='fx'&&m.fx==='bgm'&&(!dlgActive()||(!DLG.pending.length&&!DLG.fxBusy&&(dlgType.done||!DLG.cur)))){DLG.shown=[...DLG.shown,m].slice(-60);dirRun(m);return}if(DLG.pending.some(x=>x.k&&x.k===m.k)||(m.k&&DLG.shown.some(x=>x.k===m.k)))return;DLG.pending.push(m);if(!DLG.fxBusy&&(!DLG.cur||(dlgType.done&&DLG.holdDone&&dlgActive())))dlgNext()}
 function dlgSeed(){const l=talkList();DLG.shown=l.slice(-60);DLG.cur=l.filter(m=>m.kind!=='fx').at(-1)||null;DLG.pending=[];DLG.scene=null;DLG.st={...(Store.get('play/stagefx')||{})};dirApplyState(false);BGM.want(DLG.st.bgm||null);DLG.holdDone=true;dlgType.chars=Array.from(String(DLG.cur?.txt||''));dlgType.i=dlgType.chars.length;dlgType.done=true}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&UI.tab==='talk')dlgHold()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&UI.tab==='talk'&&!dlgCatchUp())dlgHold()});
 const spKey=m=>m.sp||'nar';
 function speaker(m){const sp=spKey(m);
  if(sp.startsWith('c:')){const c=CH(sp.slice(2)),L=c?.stands||[];return{name:c?.info.name||m.name||'?',sub:c?.info.job,img:pImg((L[m.ex||0]||L[0]||{}).img)}}
@@ -1451,7 +1451,7 @@ function paintTalkStage(){
  const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog"><div class="log-h"><b>대사 기록</b><button class="btn sm" data-a="talkLog">닫기</button></div>${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;if(m.kind==='roll'&&m.roll){const s=speaker(m),g=m.roll.grade;return`<div class="log-row roll"><b>${esc(s.name)}</b><span class="lr-dice">${dieChips(m.roll.rawDice)}</span><em style="color:${JUDGE_COL[g]||'#e8c48a'}">${esc(g)}</em><small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small></div>`}const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${!NET.on||NET.gm?`<label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(n=>`<option value="${n}" ${stageN()===n?'selected':''}>${n}명</option>`).join('')}</select></label><button class="btn sm" data-a="sceneOpen">배경</button><button class="btn sm ${invModeOn()?'on':''}" data-a="invMode" title="이 무대를 그대로 조사 장면으로 씁니다">조사 모드 ${invModeOn()?'끄기':'켜기'}</button><label class="row small"><input type="checkbox" data-c="castSet" ${castOn()?'checked':''}> 진영 배치 (왼쪽 아군 · 오른쪽 NPC)</label>`:''}${UI.master?'<button class="btn sm" data-a="npcOpen">NPC</button><button class="btn sm" data-a="dbgOpen">디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${isGmLike()?'<button class="btn sm pri" data-a="gmcOpen" data-v="stage">GM 콘솔 — 무대·NPC·디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -1565,7 +1565,7 @@ const SH={
  sum(c,P,ed){const hp=hpCalc(c.hp),e=c.passives[0],g=c.gear;return`<div class="rings">
   ${ring(c.ego.img,'E.G.O','z',+c.ego.lv?ROMAN[c.ego.lv]:'',c.ego.name,['shEgo','ego'],P+'/ego/img',ed)}${ring(c.twist.img,'뒤틀림','a',+c.twist.lv?ROMAN[c.twist.lv]:'',c.twist.name,['shEgo','twist'],P+'/twist/img',ed)}
   ${e?ring(e.img,'패시브','t','',e.name,['shPassive',''],P+'/passives/0/img',ed):''}${g[0]?ring(g[0].img,'장비','h','',g[0].name,['shSub','gear'],P+'/gear/0/img',ed):''}${g[1]?ring(g[1].img,'장비','w','',g[1].name,['shSub','gear'],P+'/gear/1/img',ed):''}</div>
-  <div class="sec-h"><span>스킬</span></div><div class="skrow">${c.skills.map((x,i)=>`<button class="skb" data-a="${ed?'shImg':'shJump'}" ${ed?`data-p="${P}/skills/${i}/img"`:`data-v="${i}"`} aria-label="${esc(x.name||'스킬 '+(i+1))}"><i class="num">${+x.range||0}</i>${skOct(x)}<span class="skb-rm">${ROMAN[i+1]||i+1}</span></button>`).join('')||'<span class="muted small">스킬이 없어요.</span>'}</div>
+  <div class="sec-h"><span>스킬</span><small>숫자 = 사거리(칸) · 눌러서 자세히</small></div><div class="skrow">${c.skills.map((x,i)=>`<button class="skb" data-a="${ed?'shImg':'shJump'}" ${ed?`data-p="${P}/skills/${i}/img"`:`data-v="${i}"`} aria-label="${esc(x.name||'스킬 '+(i+1))}"><i class="num" title="사거리 ${+x.range||0}칸">${+x.range||0}</i>${skOct(x)}<span class="skb-rm">${ROMAN[i+1]||i+1}</span><span class="skb-nm">${esc(x.name||'스킬 '+(i+1))}</span></button>`).join('')||'<span class="muted small">스킬이 없어요.</span>'}</div>
   <div class="more" aria-hidden="true">▼</div>
   <div class="sec-h"><span>7죄악 판정</span><small>카드를 눌러 판정</small></div><div class="sincards mini">${SINS.map(([s,sub,col],i)=>`<button class="sincard ${c.sins[s].on?'on':''}" style="--c:${col}" data-a="rollOpen" data-v="${s}"><span class="sc-ic" style="background-image:var(--s${i})"></span><b>${s}</b><em>${c.sins[s].on?'2d6':'1d6'}</em></button>`).join('')}</div>
   <div class="sec-h"><span>체력</span></div><div class="hpbox"><div class="hp-top"><b class="num">${hp.left}</b><i class="num">/ ${hp.max}</i><em class="num">${hp.pct==null?'-':Math.round(hp.pct)+'%'}</em></div><div class="hp-bar ${hp.pct!=null&&hp.pct<=30?'low':''}"><i style="width:${hp.pct??0}%"></i></div>
@@ -1573,7 +1573,7 @@ const SH={
   ${[3,2,1,0].filter(i=>ed||c.hp[i].length).map(i=>`<div class="hpr t${i}"><span class="hp-tier"><b>${i+1}</b>${TIERS[i]}</span><div class="hp-cells">${c.hp[i].map((v,j)=>`<button class="cell s${v}" data-a="hpCell" data-i="${i}" data-j="${j}" aria-label="${TIERS[i]} ${j+1}칸 ${CELLN[v]}" title="${CELLN[v]}"></button>`).join('')}</div>${ed?`<span class="hp-step"><button class="btn sm" data-a="hpStep" data-i="${i}" data-v="-1" aria-label="${TIERS[i]} 칸 줄이기">-</button><button class="btn sm" data-a="hpStep" data-i="${i}" data-v="1" aria-label="${TIERS[i]} 칸 늘리기">+</button></span>`:''}</div>`).join('')}
   <p class="dos-note" style="margin:8px 0 0">칸을 누르면 빈칸, 피해, 잠금 순으로 바뀝니다.</p></div>`},
  skill(c,P,ed){const at=UI.shSub;
-  const subs=`<div class="subtabs">${c.skills.map((x,i)=>`<button class="${at===i?'on':''}" style="--c:${sinColor(x.sin)}" data-a="shSub" data-v="${i}">스킬${i+1}</button>`).join('')}<button class="${at==='gear'?'on':''}" style="--c:#8a6a3a" data-a="shSub" data-v="gear">장비</button>${ed?`<button class="add" data-a="itemAdd" data-p="${P}/skills" data-v="skill" aria-label="스킬 추가">+</button>`:''}</div>`+tolRow(c,P,ed);
+  const subs=`<div class="subtabs">${c.skills.map((x,i)=>`<button class="${at===i?'on':''}" style="--c:${sinColor(x.sin)}" data-a="shSub" data-v="${i}">스킬${i+1}</button>`).join('')}<button class="${at==='passive'?'on':''}" style="--c:#8f7a3a" data-a="shSub" data-v="passive">패시브</button><button class="${at==='gear'?'on':''}" style="--c:#8a6a3a" data-a="shSub" data-v="gear">장비</button>${ed?`<button class="add" data-a="itemAdd" data-p="${P}/skills" data-v="skill" aria-label="스킬 추가">+</button>`:''}</div>`+tolRow(c,P,ed);
   const items=(key,label)=>ed?listEditor(label,key,c,(x,p)=>`<div class="row" style="margin-bottom:6px">${imgBtn(p+'/img')}</div>`+fld('이름',p+'/name',x.name)+fld('설명',p+'/desc',x.desc,1)+passiveMaker(x,p),'item')
    :`<div class="pv-tag">${label}</div>${c[key].map(x=>`<div class="pv-ban">${esc(x.name||'이름 없음')}</div>${passiveView(x)}<div class="sk-desc">${hl(x.desc)}</div>`).join('')}`;
   if(at==='gear')return subs+items('gear','장비');
@@ -1582,7 +1582,7 @@ const SH={
  ego0(c,P,ed){const k=UI.shEgo,x=c[k],q=`${P}/${k}`,im=pImg(x.img);
   const subs=`<div class="subtabs"><button class="${k==='ego'?'on':''}" style="--c:#a07a1e" data-a="shEgo" data-v="ego">E.G.O</button><button class="${k==='twist'?'on':''}" style="--c:#a81e1a" data-a="shEgo" data-v="twist">뒤틀림</button></div>`;
   if(ed)return subs+`${c.foe?bossEditor(c,P)+'<hr class="sh-hr">':''}<h4 class="sh-h">단계</h4>${pips(q+'/lv',+x.lv||0,0,4)}<div class="row" style="margin:10px 0">${imgBtn(q+'/img')}</div><div class="f2">${fld('이름',q+'/name',x.name)}${fld('형태',q+'/form',x.form)}</div>${fld('효과',q+'/effect',x.effect,1)}${fld('연출',q+'/show',x.show,1)}<hr class="sh-hr">${cutEditor(c,P,k)}<hr class="sh-hr">${tokenEditor(c,P)}`;
-  return subs+`<div class="sk"><span class="ring-img lg" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':'<i></i>'}</span><div class="grow"><div class="pv-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><b class="num roman-s">${ROMAN[+x.lv||0]}</b><small>${esc(x.form)}</small></div></div></div><div class="sk-desc">${hl(x.effect)}</div>${x.show?`<div class="sk-desc muted">${hl(x.show)}</div>`:''}<div class="row" style="margin-top:10px"><button class="btn sm" data-a="cutTest" data-v="${k}">▶ 컷인 미리보기</button>${c.foe&&c.boss?.on?`<button class="btn sm" data-a="cutTest" data-v="boss">▶ 보스 등장 미리보기</button>`:''}${(c.tokens||[]).length?`<span class="small muted">토큰 ${c.tokens.length}개</span>`:''}</div>${sheetLocked(c.id)?'':'<p class="small muted">컷인 연출·영상·토큰·보스 설정은 편집 모드(i)에서 바꿔요.</p>'}`},
+  return subs+`<div class="sk"><span class="ring-img lg" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':'<i></i>'}</span><div class="grow"><div class="pv-ban ${x.name?'':'unnamed'}">${esc(x.name||'이름 미정')}</div><div class="sk-sub"><b class="num roman-s">${ROMAN[+x.lv||0]}</b><small>${esc(x.form)}</small></div></div></div><div class="sk-desc">${hl(x.effect)}</div>${x.show?`<div class="sk-desc muted">${hl(x.show)}</div>`:''}<div class="row" style="margin-top:10px"><button class="btn sm" data-a="cutTest" data-v="${k}">▶ 컷인 미리보기</button>${c.foe&&c.boss?.on?`<button class="btn sm" data-a="cutTest" data-v="boss">▶ 보스 등장 미리보기</button>`:''}${(c.tokens||[]).length?`<span class="small muted">토큰 ${c.tokens.length}개</span>`:''}</div>${sheetLocked(c.id)?'':'<p class="small muted">컷인 연출·영상·토큰·보스 설정은 편집 모드(i)에서 바꿔요.</p>'}`},
  mind(c,P,ed){const s=+c.stress||0,D=c.desire,rows=[['가장 원하는 것','want'],['욕망이 생긴 이유','why'],['욕망 때문에 하는 행동','act'],['욕망이 위험해지는 순간','danger']];
   return`<h4 class="sh-h">스트레스 <small>${s} / 10${s>=10?' · 목소리 장면':''}</small></h4>${pips(P+'/stress',s,0,10)}<div class="row" style="margin:8px 0"><button class="btn sm ${s>=10?'pri':''}" data-a="voiceOpen" data-v="${c.id}">목소리 판정</button>${c.voiceUsed?'<span class="small muted">이 장면에서 판정함</span>':''}${!NET.on||NET.gm?'<button class="btn sm" data-a="voiceScene">새 장면 (판정 기록 초기화)</button>':''}</div><hr class="sh-hr"><h4 class="sh-h">욕망</h4>${ed?rows.map(([l,k])=>fld(l,`${P}/desire/${k}`,D[k])).join('')+fld('동료들과 함께하는 이유',P+'/bond',c.bond):rows.map(([l,k])=>`<div class="kv"><b>${l}</b><span>${esc(D[k])||'-'}</span></div>`).join('')+`<div class="kv"><b>동료들과 함께하는 이유</b><span>${esc(c.bond)||'-'}</span></div>`}`},
  info(c,P){const t=UI.shInfo,specs=SINS.filter(([s])=>c.sins[s].on),n=specs.length,tabs=[['basic','기본 기록'],['sin','전문 속성'],['fight','전투 방식'],['story','서사']];
@@ -1607,17 +1607,17 @@ function renderSheet0(){
  UI.charId=c.id;
  const P=`chars/${c.id}`,hp=hpCalc(c.hp),specs=SINS.filter(([s])=>c.sins[s].on),main=specs[0]?.[0],art=pImg(c.portrait),s=+c.stress||0,many=list.length>1,ed=UI.shEdit,info=UI.shTab==='info';
  el.innerHTML=`<div class="sh-art">${art?`<div class="sh-img"><img src="${esc(art)}" alt="${esc(c.info.name)}"></div>`:`<button class="sh-noimg" data-a="charArt">일러스트를 올려 주세요</button>`}
-  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ed-btn ${ed?'on':''}" data-a="shEdit" title="시트·스킬 편집 (스킬 제작기)" aria-pressed="${ed}">${ed?'✓ 편집 끝':'✎ 편집'}</button><button class="ii ed-btn ros-btn" data-a="rosterOpen" title="플레이어·적·NPC 시트 목록">☰ 명단</button><button class="ii ed-btn ros-btn" data-a="rosterNew" data-v="${kindOf(c)}" title="새 시트 만들기">＋ 새 시트</button></div>
-  <div class="sh-icons"><button class="ib a-book ${info?'on':''}" data-a="shTab" data-v="${info?'sum':'info'}" aria-label="캐릭터 설정" title="캐릭터 설정"></button>${icon('charArt','sync','일러스트 변경')}${icon('rollOpen','cross','7죄악 판정')}${icon('standOpen','stack','스탠딩 편집')}${icon('poseOpen','shield','전투 자세 (합 연출 그림)')}</div>
+  <div class="sh-top">${icon('closeSheet','back','닫기')}<button class="ii ed-btn ${ed?'on':''}" data-a="shEdit" title="시트·스킬 편집 (스킬 제작기)" aria-pressed="${ed}">${ed?'✓ 편집 끝':'✎ 편집'}</button><button class="ii ed-btn ros-btn" data-a="rosterOpen" title="플레이어·적·NPC 시트 목록">☰ 명단</button><button class="ii ed-btn ros-btn" data-a="rosterNew" data-v="${kindOf(c)}" title="새 시트 만들기">＋ 새 시트</button><button class="ii ed-btn tour-q" data-a="tourStart" data-v="sheet" title="시트 보는 법 (처음 안내 다시 보기)">？ 보는 법</button></div>
+  <div class="sh-icons"><label class="ibl"><button class="ib a-book ${info?'on':''}" data-a="shTab" data-v="${info?'sum':'info'}" aria-label="캐릭터 설정" title="캐릭터 설정 (이름·전문 속성·서사)"></button><span>${info?'요약으로':'캐릭터 설정'}</span></label><label class="ibl">${icon('charArt','sync','일러스트 바꾸기')}<span>일러스트</span></label><label class="ibl">${icon('rollOpen','cross','7죄악 판정 굴리기')}<span>판정</span></label><label class="ibl">${icon('standOpen','stack','스탠딩 그림·표정 편집')}<span>스탠딩</span></label><label class="ibl">${icon('poseOpen','shield','전투 자세 (합 연출 그림)')}<span>전투 자세</span></label></div>
   ${many?`<button class="sh-arrow l" data-a="shMove" data-v="-1" aria-label="이전 캐릭터">◀</button>`:''}
-  ${UI.shTab==='skill'?`<button class="passive ${UI.shSub==='passive'?'on':''}" data-a="shPassive">패시브</button>`:''}
-  <div class="sh-stats"><div><span class="plank tag">스테이터스</span><div class="statrow"><span class="st-ic a-heart" title="환산 HP"></span><b class="num big">${hp.left}</b><span class="st-ic a-boot" title="전투 거리"></span><b class="rng">${esc(c.fight.range)}</b><span class="st-ic a-shield" title="최대 환산 HP"></span><b class="num big ul">${hp.max}</b></div></div>
+  
+  <div class="sh-stats"><div><span class="plank tag">스테이터스</span><div class="statrow"><span class="stl" title="남은 체력(환산)"><span class="st-ic a-heart"></span><b class="num big">${hp.left}</b><small>체력</small></span><span class="stl" title="전투 거리"><span class="st-ic a-boot"></span><b class="rng">${esc(c.fight.range)}</b><small>거리</small></span><span class="stl" title="최대 체력(환산)"><span class="st-ic a-shield"></span><b class="num big ul">${hp.max}</b><small>최대 체력</small></span></div></div>
   <div><span class="plank tag">전문 속성</span><div class="statrow">${specs.map(([x])=>`<span class="resist">${oct(x)}<small><b>${x}</b><br>[2d6]</small></span>`).join('')||'<span class="muted small">책 아이콘에서 선택</span>'}</div></div></div></div>
  <div class="sh-side" style="--c:${sinColor(main)}"><div class="sh-head cut"><div class="ghost" aria-hidden="true">${esc(c.info.concept||'수감자')}</div>
    <div class="sh-vert" aria-hidden="true">${esc(c.info.job||'LIMBUS')}</div>
    <div class="sh-tags"><i>${svg(ICONS.search)}</i>${c.info.job?`<span>${esc(c.info.job)}</span>`:''}${specs.map(([x])=>`<span>${x}</span>`).join('')}<em aria-label="전문 속성 ${specs.length}개">${'0'.repeat(specs.length)}</em></div>
    <div class="sh-title"><span class="emblem">${oct(main,main?main[0]:'?')}</span><div class="sh-name">${esc(c.info.name||'이름 없음')}</div><span class="sh-kind k-${kindOf(c)}" title="시트 종류">${KIND_L[kindOf(c)]}</span></div>
-   <div class="sh-gauges"><div class="lv"><div class="lvt"><span>ST</span><b class="num">${s}</b><em class="num">${s}/10</em></div><div class="lvbar"><i style="width:${s*10}%"></i></div></div><div class="grade" title="E.G.O 단계"><small>E.G.O</small><b class="num">${ROMAN[+c.ego.lv||0]}</b></div><div class="roman" title="가장 높은 단계">${Math.max(+c.ego.lv||0,+c.twist.lv||0)?ROMAN[Math.max(+c.ego.lv||0,+c.twist.lv||0)]:''}</div><div class="grade" title="뒤틀림 단계"><small>뒤틀림</small><b class="num">${ROMAN[+c.twist.lv||0]}</b></div></div></div>
+   <div class="sh-gauges"><div class="lv"><div class="lvt" title="스트레스 — 10이 되면 목소리 장면"><span class="lvt-k">스트레스</span><b class="num">${s}</b><em class="num">${s}/10</em></div><div class="lvbar"><i style="width:${s*10}%"></i></div></div><div class="grade" title="E.G.O 단계 (0~Ⅳ)"><small>E.G.O 단계</small><b class="num">${ROMAN[+c.ego.lv||0]}</b></div><div class="roman" title="가장 높은 단계">${Math.max(+c.ego.lv||0,+c.twist.lv||0)?ROMAN[Math.max(+c.ego.lv||0,+c.twist.lv||0)]:''}</div><div class="grade" title="뒤틀림 단계 (0~Ⅳ)"><small>뒤틀림 단계</small><b class="num">${ROMAN[+c.twist.lv||0]}</b></div></div></div>
   <div class="stabs" role="tablist">${SH_TABS.map(([k,n,cl])=>`<button class="stab ${cl} ${UI.shTab===k?'on':''}" role="tab" aria-selected="${UI.shTab===k}" data-a="shTab" data-v="${k}">${n}</button>`).join('')}</div>
   <div class="sh-panel cut"><div class="sh-scroll">${SH[UI.shTab](c,P,ed)}</div></div>${many?`<button class="sh-arrow r" data-a="shMove" data-v="1" aria-label="다음 캐릭터">▶</button>`:''}</div>`;
  const b=$('.sh-scroll',el);if(b)b.scrollTop=sy;
@@ -1650,7 +1650,7 @@ function validBackup(b){return okMap(b)&&b.v===1&&okMap(b.data)&&okMap(b.data.ch
 
 /* ---------- 액션 ---------- */
 const A={
- tab(e){if(UI.tab==='talk')UI.draft=$('#tkTxt')?.value||'';UI.tab=e.dataset.v;UI.log=false;renderNav();renderMain();if(UI.tab==='talk')dlgHold()},
+ tab(e){if(UI.tab==='talk')UI.draft=$('#tkTxt')?.value||'';UI.tab=e.dataset.v;UI.log=false;renderNav();renderMain();if(UI.tab==='talk'&&!dlgCatchUp())dlgHold()},
  master(){UI.master=!UI.master;UI.routeEdit=false;UI.bt.mode='';renderNav();if(UI.tab==='rail'||UI.tab==='battle')renderMain();else paint()},
  backup(){openModal('백업',backupModal);M.wide=NET.on&&NET.gm;drawModal()},
  openSheet(){UI.sheet=true;renderSheet()},closeSheet(){UI.sheet=false;renderSheet();paint()},
@@ -1694,7 +1694,7 @@ const A={
   if(!speaker({sp,ex}).img)return toast('스탠딩 이미지가 없어요. 시트에서 먼저 넣어 주세요',1);
   Store.set('play/fig/'+sp,{on:true,ex,at:nowT()})},
  talkMenu(){UI.talkMenu=!UI.talkMenu;paintTalkStage()},
- talkLog(){UI.log=!UI.log;UI.talkMenu=false;paintTalkStage();if(!UI.log)dlgHold()},
+ talkLog(){UI.log=!UI.log;UI.talkMenu=false;paintTalkStage();if(!UI.log&&!dlgCatchUp())dlgHold()},
  sceneOpen(){openModal('배경',sceneModal)},
  sceneAdd(){pickImg(1920,bg=>{const id=Store.push('play/scenes',{name:'',bg});openForm('장소 이름',[{k:'name',label:'이름',v:''}],o=>{Store.set(`play/scenes/${id}/name`,o.name);dirSend({fx:'scene',id,name:o.name||'',bg,mode:UI.dirMode||'fade'});openModal('배경',sceneModal)})})},
  sceneUse(e){const s=Store.get('play/scenes/'+e.dataset.v);if(s)dirSend({fx:'scene',id:e.dataset.v,name:s.name||'',bg:s.bg,mode:UI.dirMode||'fade'})},
@@ -1904,19 +1904,19 @@ function battlePage(){return`<section class="bt"><div class="bt-bgimg" id="btBg"
 function paintBattle(){const bg=pImg(BT().bg),b=$('#btBg');if(b)b.style.backgroundImage=bg?`url('${bg}')`:'';paintBoard();paintHud();fxPump()}
 function hudSkillIcon(o,k,on,off,re){const u=uOf(k),s=o.opt.startsWith('s')&&srcOf(u)?skAt(CH(srcOf(u)),+o.opt.slice(1)):null,i=SINS.findIndex(x=>x[0]===s?.sin),im=pImg(s?.img);
  return`<button class="hs ${on?'on':''}${re?' re':''}" data-a="hudSkill" data-v="${o.opt}" ${off?'disabled':''} title="${esc(o.label)} · ${esc(o.kind)} ${o.range}"><span class="hs-tag" style="--c:${s?sinColor(s.sin):'#6b5138'}">${esc(o.label)}</span>
- <span class="hs-ic" style="${i>=0?`--fr:var(--w${i})`:''}"><s style="${im?`background-image:url('${esc(im)}')`:i>=0?`background-image:var(--s${i})`:o.opt==='custom'?'background-image:var(--a-cross)':'background-image:var(--a-ic-battle)'}"></s></span><em>${esc(o.kind==='원거리'?'원':o.kind==='근접'?'근':'?')}${o.range}</em></button>`}
+ <span class="hs-ic" style="${i>=0?`--fr:var(--w${i})`:''}"><s style="${im?`background-image:url('${esc(im)}')`:i>=0?`background-image:var(--s${i})`:o.opt==='custom'?'background-image:var(--a-cross)':'background-image:var(--a-ic-battle)'}"></s></span><em title="${esc(o.kind)} · 사거리 ${o.range}칸">${esc(o.kind==='원거리'?'원거리':o.kind==='근접'?'근접':'')} ${o.range}칸</em></button>`}
 function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,round=+B.round||0,o=(B.order||[]).filter(k=>unitRaw(k)),turn=+(B.turn??-1),act=turn>=0&&cur,t=ATK(),M=UI.master;
  const cu=act&&uOf(cur.k),all=units(),allies=all.filter(u=>u.side!=='foe'),foes=all.filter(u=>u.side==='foe');
  const keepScroll=$('.bt-drawer .dr-body',el)?.scrollTop||0;
  // 왼쪽 위: WAVE/TURN 자리
  const tl=`<div class="hud-tl"><div class="wv"><b>ROUND</b><span>${round}</span></div><div class="wv"><b>TURN</b><span>${act?turn+1:0}<i>/${o.length}</i></span></div>
-  <div class="cnt"><i style="background-image:var(--a-heart)"></i>${allies.filter(u=>!isDown(u)).length}</div><div class="cnt"><i style="background-image:var(--a-ic-battle)"></i>${foes.filter(u=>!isDown(u)).length}</div></div>`;
+  <div class="cnt" title="쓰러지지 않은 아군"><i style="background-image:var(--a-heart)"></i>${allies.filter(u=>!isDown(u)).length}</div><div class="cnt" title="남은 적"><i style="background-image:var(--a-ic-battle)"></i>${foes.filter(u=>!isDown(u)).length}</div></div>`;
  // 왼쪽: 행동 순서
- const left=o.length?`<div class="hud-left">${o.map((k,i)=>{const u=uOf(k),sp=u.init?.speed||'',im=uImg(u),j=i,same=d=>{const x=unitRaw(o[j+d]);return x&&x.init?.speed===sp&&j+d>turn};
+ const left=o.length?`<div class="hud-left" title="행동 순서 — 위에서부터 차례로 행동해요"><small class="hl-h">순서</small>${o.map((k,i)=>{const u=uOf(k),sp=u.init?.speed||'',im=uImg(u),j=i,same=d=>{const x=unitRaw(o[j+d]);return x&&x.init?.speed===sp&&j+d>turn};
   return`<div class="ord ${i===turn?'on':''}${i<turn?' past':''}${isDown(u)?' down':''} ${u.side==='foe'?'foe':''}"><button class="ord-face" data-a="btUnit" data-v="${esc(k)}" title="${esc(uName(u))} · ${esc(sp)}" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</button><b class="bt-sp${SPEED_RANK[sp]??''}">${u.init?.final??'-'}</b>${j>turn?`<span class="ud"><button data-a="btOrd" data-v="${esc(k)}" data-d="-1" ${same(-1)?'':'disabled'} aria-label="위로">▲</button><button data-a="btOrd" data-v="${esc(k)}" data-d="1" ${same(1)?'':'disabled'} aria-label="아래로">▼</button></span>`:''}</div>`}).join('')}</div>`:'';
  // 오른쪽: 7죄악 (현재 턴 캐릭터의 전문 속성)
  const cc=cu?.char&&CH(cu.char);
- const right=`<div class="hud-right">${SINS.map(([s,sub],i)=>`<i class="${cc?.sins?.[s]?.on?'on':''}" style="background-image:var(--s${i})" title="${s} (${sub})${cc?.sins?.[s]?.on?' · 전문':''}"></i>`).join('')}</div>`;
+ const right=cu?`<div class="hud-right" title="${esc(uName(cu))}의 전문 속성 — 밝은 것이 전문(판정 2d6)"><small class="hr-h">전문</small>${SINS.map(([s,sub],i)=>`<i class="${cc?.sins?.[s]?.on?'on':''}" style="background-image:var(--s${i})" title="${s} (${sub})${cc?.sins?.[s]?.on?' · 전문 2d6':' · 1d6'}">${cc?.sins?.[s]?.on?`<small>${s}</small>`:''}</i>`).join('')}</div>`:'';
  // 오른쪽 위 버튼
  const wait=netWaitPill();const tr=wait+`<div class="hud-tr"><button class="hb tx ${UI.bt.drawer==='set'?'on':''}" data-a="hudDrawer" data-v="set" title="소리·연출">♪</button>${NET.on&&!NET.gm?'':`<button class="hb tx" data-a="undo" title="되돌리기 (Ctrl+Z)${UNDO.past.length?' — '+esc(UNDO.past.at(-1).label):''}" ${UNDO.past.length?'':'disabled'}>↶</button><button class="hb tx" data-a="redo" title="다시 하기 (Ctrl+Shift+Z)" ${UNDO.future.length?'':'disabled'}>↷</button>`}<button class="hb ${UI.bt.drawer==='log'?'on':''}" data-a="hudDrawer" data-v="log" title="전투 기록" style="--ic:var(--a-book)"></button>${M?`<button class="hb ${UI.bt.drawer==='gm'?'on':''}" data-a="hudDrawer" data-v="gm" title="마스터 도구" style="--ic:var(--a-stack)"></button><button class="hb ${UI.bt.drawer==='dbg'?'on':''}" data-a="hudDrawer" data-v="dbg" title="디버그 (직접 수정)" style="--ic:var(--a-sync)"></button>`:''}</div>`;
  // 선택 유닛 정보 (원작의 적 이름·체력 자리)
@@ -1932,16 +1932,16 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  const canUse=op=>act&&(!cur.main||(cur.reuse===op.opt&&!t?.dashed))&&(!t||t.phase==='declare')&&!t?.dashed,opts=act?atkOptions(cur.k):[];
  const skills=act&&!isDown(cu)?`<div class="hs-row">${opts.map(op=>hudSkillIcon(op,cur.k,t?.phase==='declare'&&t.opt===op.opt,!canUse(op),cur.reuse===op.opt)).join('')}</div>`:'';
  const cards=allies.map(u=>{const c=hpCalc(hpOf(u)),sc=u.char&&CH(u.char),im=uImg(u),isCur=act&&cur.k===u.k;
-  return`<div class="card-slot ${isCur?'now':''}">${isCur?skills:''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span><b class="pc-hp">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
- const foeSkills=act&&cu?.side==='foe'&&!isDown(cu)?`<div class="foe-act"><span class="fa-name">${esc(uName(cu))}의 행동</span>${skills}</div>`:'';
+  return`<div class="card-slot ${isCur?'now':''}">${isCur?skills:''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span><b class="pc-hp" title="체력">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
+ const foeSkills=act&&cu?.side==='foe'&&!isDown(cu)&&(!NET.on||NET.gm||mineU(cu.k))?`<div class="foe-act"><span class="fa-name">${esc(uName(cu))}의 행동</span>${skills}</div>`:'';
  const bottom=`<div class="hud-bottom">${foeSkills}<div class="cards">${cards||'<p class="small muted">아군이 없어요. 마스터 도구에서 배치하세요.</p>'}</div></div>`;
  // 오른쪽 아래: START 와 보조 버튼
  let go={a:'btRound',big:'START',sub:round?'다음 라운드':'전투 시작',off:!all.length};
  if(act){if(t?.phase==='declare')go={a:'atkDeclare',big:'ATTACK',sub:'공격 선언',off:!(t.multi?t.aim:t.to)};
   else if(t&&t.phase!=='done')go={a:'',big:'WAIT',sub:'처리 중',off:true};
   else go={a:'btEnd',big:'END',sub:'턴 종료',off:false}}
- const br=`<div class="hud-br">${act?`<div class="mv"><small>이동력</small><b>${+cur.mv}</b><i>/ ${cur.dash?cur.base*2:cur.base}</i></div>
-  <div class="sub-btns"><button class="tabb ${cur.dash?'on':''}" data-a="btDash" ${cur.main||t?'disabled':''}>전력 이동</button><button class="tabb ${cur.other?'on':''}" data-a="btMain" ${cur.main||t?'disabled':''}>기타 행동</button>${cu?.char&&(+CH(cu.char)?.ego?.lv||0)>=1?`<button class="tabb ego" data-a="btEgo" ${cur.main||t?'disabled':''} title="주요 행동 · 1d6 (19.2)">E.G.O 발현</button>`:''}${formBtn(cu)}</div>`:''}
+ const br=`<div class="hud-br">${act?`<div class="mv" title="이번 턴에 남은 이동 칸 수 — 토큰을 누르고 칸을 눌러 이동"><small>남은 이동</small><b>${+cur.mv}</b><i>/ ${cur.dash?cur.base*2:cur.base}</i></div>
+  <div class="sub-btns"><button class="tabb ${cur.dash?'on':''}" data-a="btDash" ${cur.main||t?'disabled':''} title="이동력을 한 번 더 받아요(두 배). 대신 이번 턴 주요 행동(공격 등)을 써요">전력 이동</button><button class="tabb ${cur.other?'on':''}" data-a="btMain" ${cur.main||t?'disabled':''} title="공격 대신 다른 주요 행동(물건 쓰기·상호작용 등)을 했다고 표시해요">기타 행동</button>${cu?.char&&(+CH(cu.char)?.ego?.lv||0)>=1?`<button class="tabb ego" data-a="btEgo" ${cur.main||t?'disabled':''} title="주요 행동 · 1d6 (19.2)">E.G.O 발현</button>`:''}${formBtn(cu)}</div>`:''}
   <button class="start" data-a="${go.a}" ${go.off?'disabled':''}><b>${go.big}</b><small>${go.sub}</small></button></div>`;
  // 공격 카드
  const card=t?`<div class="hud-atk">${atkPanel()}</div>`:'';
@@ -1950,7 +1950,7 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  else if(UI.bt.drawer==='gm'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">마스터 도구<button class="x" data-a="hudDrawer" data-v="gm">✕</button></div><div class="dr-body">${masterPanel(B)}${su?unitPanel(su,true):''}</div></div>`;
  else if(UI.bt.drawer==='set')dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">소리·연출<button class="x" data-a="hudDrawer" data-v="set">✕</button></div><div class="dr-body">${fxSetPanel()}</div></div>`;
  else if(UI.bt.drawer==='dbg'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">디버그 · 직접 수정<button class="x" data-a="hudDrawer" data-v="dbg">✕</button></div><div class="dr-body">${dbgPanel()}</div></div>`;
- const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':needDash(t)?`파란 칸 중 착지할 칸을 누르세요 (직선 최대 ${t.move.n}칸) · 자기 말을 누르면 제자리`:t?.phase==='declare'?(t.multi?(t.aim?(t.range||isOrigin(t.area)?'다른 칸을 눌러 다시 조준 · START로 선언':'착지한 칸이 중심 · START로 선언'):(isOrigin(t.area)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'START를 눌러 공격을 선언하세요':t.move?.type==='target'?'대상을 누르세요 — 직선 위 대상에게는 돌진해서 공격 · Esc 취소':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
+ const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':needDash(t)?`파란 칸 중 착지할 칸을 누르세요 (직선 최대 ${t.move.n}칸) · 자기 말을 누르면 제자리`:t?.phase==='declare'?(t.multi?(t.aim?(t.range||isOrigin(t.area)?'다른 칸을 눌러 다시 조준 · ATTACK으로 선언':'착지한 칸이 중심 · ATTACK으로 선언'):(isOrigin(t.area)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'오른쪽 아래 ATTACK을 눌러 공격을 선언하세요':t.move?.type==='target'?'대상을 누르세요 — 직선 위 대상에게는 돌진해서 공격 · Esc 취소':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
  el.innerHTML=bossBarHTML()+tl+left+right+tr+info+bottom+br+card+dr+(hint?`<div class="hud-hint">${esc(hint)}${t?.phase==='declare'?atkLegend(t):''}</div>`:'');
  netLockHud(el);const db=$('.bt-drawer .dr-body',el);if(db)db.scrollTop=keepScroll;
  const ac=$('.hud-atk',el),ph=t?t.phase+(t.rs?'r':''):'';if(ac){if(UI.bt.atkPh!==ph)ac.scrollTop=ac.scrollHeight;else ac.scrollTop=UI.bt.atkScroll||0;ac.onscroll=()=>UI.bt.atkScroll=ac.scrollTop}UI.bt.atkPh=ph}
@@ -2511,7 +2511,7 @@ async function csRun(){if(CS.busy)return;CS.busy=true;try{while(CS.q.length){con
 // 토큰 위 숫자 팝업
 function popAt(k,txt,cls){const tok=$(`.bt-unit[data-v="${k}"]`),host=$('#btPops');if(!tok||!host)return;const r=tok.getBoundingClientRect(),h=host.getBoundingClientRect();
  const p=document.createElement('div');p.className='pop '+(cls||'');p.textContent=txt;p.style.left=(r.left+r.width/2-h.left)+'px';p.style.top=(r.top-h.top)+'px';host.append(p);setTimeout(()=>p.remove(),1400)}
-document.addEventListener('limbus-fx',e=>{const d=e.detail;if(UI.tab!=='battle')return;
+document.addEventListener('limbus-fx',e=>{const d=e.detail;if(UI.tab!=='battle'||document.hidden)return;   // 숨긴 탭: 합 연출·숫자·소리를 쌓지 않는다(결과는 기록에 이미 반영)
  const inCs=CS.busy||CS.q.length;
  switch(d.type){
   case'reveal':if(FXSET.cs){CS.q.push(d);csRun()}else{SFX.play(d.hit?'hit':d.r?'clang':'miss')}break;
@@ -5201,6 +5201,78 @@ CHANGE.rosterKind=el=>{const c=CH(UI.charId);if(!c||!isGmLike())return;Store.set
 .pf-ghost{opacity:.4;filter:grayscale(1) brightness(1.6);z-index:2;mix-blend-mode:screen}
 .pf-h,.pf-f{position:absolute;left:-10%;right:-10%;border-top:1px dashed rgba(232,196,138,.55);pointer-events:none}.pf-h{top:10%}.pf-f{top:96%}
 .pf-tip{position:absolute;left:50%;top:8px;transform:translateX(-50%);font-size:12px;color:#c9b08f;background:rgba(0,0,0,.5);padding:2px 8px;pointer-events:none}
+/* §87 시트 읽기 쉽게 */
+.sh-icons{gap:6px}.ibl{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}.ibl>span{font:400 13px var(--fk);color:#e6d3ae;text-shadow:0 1px 3px #000,0 0 6px #000;white-space:nowrap}.ibl:hover>span{color:#ffcf6a}
+.sh-vert{display:none}.sh-tags em{display:none}.sh-tags span{font-size:14px;color:#d4ad6e}
+.sh-head .ghost{color:color-mix(in srgb,var(--c) 55%,#6a5444);top:2px!important;left:calc(5% + 84px)!important;z-index:0;text-shadow:0 0 8px #000,0 2px 4px #000;font-size:clamp(24px,calc(2.3vw/var(--uz,1)),38px);max-width:56%}.sh-head .ghost.g2{-webkit-line-clamp:1}.sh-title{margin-top:calc(1.2vh/var(--uz,1))}.sh-name{text-shadow:0 2px 6px #000,0 0 14px #000}.sh-title{position:relative;z-index:2}
+.lvt .lvt-k{font:400 18px var(--fk)!important;color:#c9b08f}
+.grade small{font-family:var(--fk);font-size:13px}
+.stl{display:inline-grid;grid-template-columns:auto auto;align-items:center;column-gap:6px;margin-right:12px}.stl .st-ic{grid-row:1;grid-column:1}.stl>b{grid-row:1;grid-column:2}.stl small{grid-row:2;grid-column:1/3;text-align:center;margin-top:7px;font:400 13px var(--fk);color:#d8bf94;line-height:1;text-shadow:0 1px 3px #000}
+.skrow{row-gap:22px}.skb{flex-direction:row;padding-bottom:44px}.skb-nm{position:absolute;left:0;right:0;bottom:2px;text-align:center;font:400 13px var(--fk);color:#e6d3ae;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:18px}.skb-rm{bottom:22px;font-size:18px}
+.sec-h small{font-size:13px;color:#b9a587}
+.skchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}.skc{padding:2px 10px;font-size:15px;border:1px solid;background:rgba(0,0,0,.35)}.skc.g{color:#8fe05c;border-color:#4e7a33}.skc.r{color:#f0bf7c;border-color:#7a5a33}
+.sk-auto{margin:8px 0 12px;border:1px solid #4d3c2a;background:rgba(10,7,4,.55)}.sk-auto summary{padding:7px 12px;cursor:pointer;font-size:15px;color:#e8c48a;list-style:none}.sk-auto summary::-webkit-details-marker{display:none}.sk-auto summary::before{content:'▸ ';color:#a8875a}.sk-auto[open] summary::before{content:'▾ '}.sk-auto summary small{margin-left:6px;font-size:12.5px;color:#a8987e}.sk-auto>:not(summary){padding:0 12px}.sk-auto .sk-fxv{padding-bottom:8px}.sk-auto>p{margin:4px 0;font-size:15px;color:#d6cbb6}
+.pv-ban.unnamed{opacity:.55;font-size:.8em}
+#sheet .small,#sheet .dos-note,#sheet .muted{font-size:max(13px,1em)}#sheet .muted{color:#a8987e}#sheet .dos-note{color:#b3a283}
+/* §88 처음 안내 */
+#tour{position:fixed;inset:0;z-index:9000;pointer-events:auto}
+#tour .tr-hole{position:fixed;border:2px solid #ffb13b;box-shadow:0 0 0 9999px rgba(5,3,2,.72),0 0 18px rgba(255,177,59,.7);border-radius:3px;transition:all .22s ease;pointer-events:none}
+#tour .tr-card{position:fixed;width:min(380px,90vw);padding:14px 16px 12px;background:linear-gradient(#21180f,#140e09);border:2px solid #8f7a3a;box-shadow:inset 0 0 0 1px #000,0 6px 24px rgba(0,0,0,.8);color:#efe3cf;transition:left .22s,top .22s}
+#tour .tr-h{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}#tour .tr-h b{font:400 20px var(--fk);color:#ffcf6a}#tour .tr-h small{margin-left:auto;color:#a8987e;font-size:13px}
+#tour p{margin:0 0 12px;font-size:15.5px;line-height:1.65;color:#e8dcc4;word-break:keep-all}
+#tour .tr-f{display:flex;gap:6px;align-items:center}
+.tour-q{font-size:15px!important}
+/* §89 내 차례 알림 */
+#turnCue{position:fixed;left:50%;top:52px;transform:translateX(-50%);z-index:15;pointer-events:none;max-width:min(860px,70vw)}
+.tc-bar{display:flex;align-items:baseline;gap:12px;padding:6px 18px;background:linear-gradient(90deg,transparent,rgba(12,8,5,.9) 12%,rgba(12,8,5,.9) 88%,transparent);color:#cbb898;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-bar b{font:400 18px var(--fk);color:#e8dcc4}.tc-bar em{font-style:normal;color:#9a8a70}
+.tc-bar.mine{background:linear-gradient(90deg,transparent,rgba(58,34,10,.95) 10%,rgba(58,34,10,.95) 90%,transparent);border-top:1px solid #ffb13b;border-bottom:1px solid #ffb13b;animation:tcGlow 1.6s ease-in-out infinite}
+.tc-bar.mine b{color:#ffcf6a;font-size:20px;text-shadow:0 0 8px rgba(255,177,59,.8)}.tc-bar.mine span{color:#f3e7cf;font-size:16px}.tc-bar.mine em{color:#ffdca0;font-size:15px}
+@keyframes tcGlow{50%{box-shadow:0 0 18px rgba(255,177,59,.55)}}
+.tc-go{pointer-events:auto;cursor:pointer;padding:8px 18px;background:linear-gradient(#4a2c0e,#2a1806);border:2px solid #ffb13b;color:#f3e7cf;font-size:15px;box-shadow:0 0 16px rgba(255,177,59,.6);animation:tcGlow 1.6s ease-in-out infinite}
+.tc-go b{font:400 18px var(--fk);color:#ffcf6a;margin-right:6px}.tc-go u{margin-left:10px;color:#ffcf6a}
+.tc-flash{position:fixed;inset:0;z-index:35;display:grid;place-items:center;pointer-events:none;animation:tcF 2.3s ease forwards}
+.tc-flash>div{display:grid;justify-items:center;gap:4px;padding:22px 90px;background:linear-gradient(90deg,transparent,rgba(20,12,6,.92) 18%,rgba(20,12,6,.92) 82%,transparent);border-top:2px solid #ffb13b;border-bottom:2px solid #ffb13b}
+.tc-flash small{font:400 14px var(--fn);letter-spacing:.3em;color:#e2732e}.tc-flash b{font:400 54px var(--fk);color:#ffcf6a;text-shadow:0 0 14px rgba(255,140,40,.9)}.tc-flash span{font-size:20px;color:#f3e7cf}.tc-flash em{font-style:normal;font-size:16px;color:#d8c39c}
+body:has(#turnCue>*) #dicePop{top:112px}
+@keyframes tcF{0%{opacity:0;transform:scale(1.08)}12%{opacity:1;transform:scale(1)}78%{opacity:1}100%{opacity:0}}
+/* §90 전투 화면 읽기 쉽게 */
+.hud-right{gap:9px;overflow:visible}.hud-right .hr-h,.hud-left .hl-h{display:block;text-align:center;font:400 12px var(--fk);color:#d8bf94;letter-spacing:.05em}
+.hud-right i{position:relative;overflow:visible}.hud-right i small{position:absolute;right:38px;top:50%;transform:translateY(-50%);padding:1px 7px;font:400 13px var(--fk);color:#ffe2a8;background:rgba(10,6,3,.85);border:1px solid #8a6a48;white-space:nowrap;filter:none}
+.hud-left .hl-h{margin:0 0 4px}
+.hs-tag{max-width:96px;font-size:12px;padding:2px 8px}
+.hs em{font:400 11.5px var(--fk);padding:0 4px;white-space:nowrap}
+.mv small{font-family:var(--fk)}
+body:has(#turnCue>*) .hud-hint{top:96px}
+.hud-hint{font-size:15px;padding:6px 22px}
+.hud:has(.hud-atk) .hud-right{display:none}
+/* §91 식별 · §92 행동 줄 */
+.skc.idn{color:#d9a3ff;border-color:#6a3f8a}
+.idn-row{padding:8px 0;border-bottom:1px solid #3a2c1e}.idn-h{display:flex;align-items:center;gap:10px}.idn-h small{color:#a8987e;min-width:58px}.idn-h b{flex:1;font-size:15px}.idn-row .f{margin:6px 0 0}
+.idn-q{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:13px;color:#c9b08f}.idn-q .segb button{padding:2px 10px;font-size:13px}
+.idn-b{border-color:#8a5ab0!important;color:#e6c8ff!important}
+.act-bar{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2}
+.act-bar .hs-row{position:static;transform:none}
+.foe-act .act-bar{position:static;transform:none}
+.act-top{display:flex;align-items:center;gap:8px;padding:4px 8px;background:rgba(10,6,3,.7);border:1px solid rgba(138,106,72,.55)}
+.act-top .mv{align-self:auto;border:0;background:none;padding:0 6px}
+.act-top .sub-btns{flex-direction:row}
+/* §93 GM 콘솔 */
+#gmcHandle{position:fixed;right:0;top:42%;z-index:16;display:grid;justify-items:center;gap:1px;padding:10px 6px 9px 8px;background:linear-gradient(90deg,#3a2410,#1f140a);border:2px solid #8f7a3a;border-right:0;color:#ffcf6a;cursor:pointer;box-shadow:-3px 0 10px rgba(0,0,0,.6)}
+#gmcHandle b{font:400 16px var(--fn);letter-spacing:.05em}#gmcHandle small{font:400 11px var(--fk);color:#d8bf94}#gmcHandle.on{display:none}#gmcHandle[hidden]{display:none}
+#gmc{position:fixed;right:0;top:0;bottom:88px;width:384px;z-index:16;display:flex;flex-direction:column;background:linear-gradient(#1c140c,#120c07);border-left:2px solid #8f7a3a;box-shadow:-8px 0 24px rgba(0,0,0,.7);color:#efe3cf}
+.gmc-h{display:flex;align-items:center;padding:10px 14px 6px}.gmc-h b{flex:1;font:400 20px var(--fk);color:#ffcf6a}.gmc-h .x{background:none;border:0;color:#c9b08f;font-size:18px;cursor:pointer}
+.gmc-t{display:flex;gap:2px;padding:0 10px;border-bottom:1px solid #4d3c2a}.gmc-t button{flex:1;padding:7px 0;background:#1d140d;border:1px solid #4d3c2a;border-bottom:0;color:#c9b08f;font:400 14px var(--fk);cursor:pointer}.gmc-t button.on{background:#3a2410;color:#ffcf6a;border-color:#8f7a3a}
+.gmc-b{flex:1;overflow:auto;padding:10px 14px 16px}
+.gmc-sec{margin:0 0 14px;padding:0 0 12px;border-bottom:1px dashed #3d2f21}.gmc-sec h5{margin:0 0 8px;font:400 15px var(--fk);color:#e8c48a}.gmc-sec p{margin:4px 0 8px;font-size:14px;line-height:1.6}.gmc-sec .row{flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.gmc-me{font-style:normal;color:#ffcf6a;border:1px solid #8f7a3a;padding:0 6px;margin-left:4px}
+#gmc .bt-h{font:400 15px var(--fk);color:#e8c48a;margin:4px 0 8px}#gmc .plate{background:none;border:0;padding:0}
+.hud-tr [data-v=gm],.hud-tr [data-v=dbg]{display:none}
+body.gmc-open #main{margin-right:384px}
+/* §94 */
+.act-me{display:flex;align-items:baseline;gap:10px;padding:0 10px 0 4px;border-right:1px solid #5a4430;font-size:14px;color:#e8dcc4;white-space:nowrap}.act-me b{font:400 16px var(--fk);color:#ffcf6a}.act-me span{color:#f3e7cf}.act-me i{font-style:normal;color:#a89578;font-size:12px}
+.tour-qb{font-size:20px!important}
+.act-top .mv small{white-space:nowrap}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -5316,7 +5388,14 @@ function skPane(x,p,delP,at,ed,extra=''){const r=+x.range||0;
   if(ed)return`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><input class="sk-name" aria-label="스킬 이름" placeholder="스킬 이름" data-b="${p}/name" value="${esc(x.name)}"><div class="row">${imgBtn(p+'/img','스킬 이미지 넣기')}</div></div></div>
    <div class="f2">${sel('죄악',p+'/sin',x.sin,SINS.map(s=>s[0]),'data-r')}${sel('공격 종류',p+'/kind',x.kind,['근접','원거리','미지정'])}<label class="f"><span>사거리(칸)</span><input type="number" min="0" data-b="${p}/range" data-r value="${r}" title="${esc(rangeHint(x))}"></label>${sel('반응 역할',p+'/role',x.role,['일반','공격·반격','수비','반격 전용','기회공격 전용','양쪽'])}</div><p class="small muted range-h">사거리: ${esc(rangeHint(x))}</p>${fld('전투 태그',p+'/tags',x.tags)}${fld('자유 설명',p+'/desc',x.desc,1)}${extra}${skillEditor(x,p)}<div class="mfoot"><button class="btn sm danger" data-a="itemDel" data-p="${delP}" data-v="${at}">스킬 삭제</button></div>`;
   return`<div class="sk" style="--c:${sinColor(x.sin)}"><span class="sk-rng num">${r}</span>${skOct(x,1)}<div class="grow"><div class="sk-ban">${esc(x.name||'이름 없음')}</div><div class="sk-sub"><span class="swd">${svg(ICONS.sword)}</span><b>${esc(x.kind)}</b><small>사거리</small><span class="wsq">${'<i></i>'.repeat(clamp(r,0,8))}</span></div></div></div>
-  ${x.tags?`<p class="hl-g">[${esc(x.tags)}]</p>`:''}${x.role!=='일반'?`<p class="hl-r">${esc(x.role)}</p>`:''}${skillView(x)}<div class="sk-desc">${hl(x.desc)}</div>${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`}
+  ${skCard(x)}${sheetLocked(UI.charId)?'':`<button class="btn sk-editgo" data-a="shEditSkill">✎ 이 스킬 편집 <small>범위 · 돌진 · 재사용 · 적중 효과 · 조건부 규칙</small></button>`}`}
+</script>
+<script id="sheet-ux">
+/* §87 시트 읽기 쉽게: 스킬 카드 = 태그 칩 + 본문 + 접힌 '자동 처리' */
+function skCard(x){if(x?._mask)return idnCard(x);const L=String(x.desc||'').split('\n'),tool=L.filter(l=>/^\s*\[툴\]/.test(l)),body=L.filter(l=>!/^\s*\[툴\]/.test(l)).join('\n').replace(/^\n+|\n+$/g,'');
+ const auto=skillView(x),n=(auto.match(/<p[ >]/g)||[]).length+tool.length;
+ const chips=[x.tags?`<span class="skc g">${esc(x.tags)}</span>`:'',x.role&&x.role!=='일반'?`<span class="skc r">${esc(x.role)}</span>`:''].join('');
+ return`${chips?`<div class="skchips">${chips}</div>`:''}${body?`<div class="sk-desc">${hl(body)}</div>`:'<p class="muted small">설명이 없어요.</p>'}${n?`<details class="sk-auto"><summary>⚙ 자동 처리 규칙 <b>${n}</b>개 <small>눌러서 보기 — 툴이 알아서 적용해요</small></summary>${auto}${tool.map(l=>`<p>${hl(l.replace(/^\s*\[툴\]\s*/,''))}</p>`).join('')}</details>`:''}`}
 </script>
 <script id="form-skill">
 /* §73 E.G.O · 뒤틀림 전용 스킬
@@ -5643,5 +5722,216 @@ A.atkDeclare=function(){return atkDeclare.apply(this,arguments)};
 A.btRound=function(){return btStartRound.apply(this,arguments)};
 {const cu0=charUnpack;charUnpack=async function(){const r=await cu0.apply(this,arguments);try{kwFreshMigrate()}catch{}return r}}
 </script>
+<script id="tour-js">
+/* §88 처음 안내(코치 마크): 화면의 한 곳씩 밝혀 짚어 준다. 처음 한 번 자동, '？ 보는 법'으로 다시.
+   TOURS[이름] = [{s:선택자, t:제목, d:설명, tab?:시트 탭}] — 없는 칸은 건너뜀. 다른 화면(전투 등)도 같은 틀로 늘린다. */
+const TOURS={
+ sheet:[
+  {s:'#sheet .sh-title',t:'이름과 한마디',d:'캐릭터 이름이에요. 위의 흐린 글씨는 이 캐릭터를 나타내는 한마디(한 줄 콘셉트)예요.',tab:'sum'},
+  {s:'#sheet .sh-gauges',t:'스트레스 · 단계',d:'스트레스는 0~10이에요. 10이 되면 "목소리" 장면이 와요.\nE.G.O 단계·뒤틀림 단계는 각각 몇 단계까지 열렸는지예요.'},
+  {s:'#sheet .stabs',t:'탭',d:'요약 — 한눈에 보기\n스킬 — 스킬·패시브·장비 자세히\nE.G.O — E.G.O와 뒤틀림\n정신력 — 스트레스와 욕망'},
+  {s:'#sheet .skrow',t:'스킬',d:'스킬 하나를 누르면 그 스킬 설명으로 바로 가요.\n옆의 숫자는 사거리(몇 칸까지 닿는지)예요. 위 꼬리표는 그 스킬의 죄악 속성이에요.',tab:'sum'},
+  {s:'#sheet .sh-stats',t:'체력과 전문 속성',d:'하트 = 지금 체력, 방패 = 최대 체력, 신발 = 근거리/원거리.\n전문 속성은 잘하는 죄악이에요. 판정할 때 주사위 2개(2d6)를 굴려요. 나머지는 1개(1d6)예요.'},
+  {s:'#sheet .sh-icons',t:'바로가기',d:'캐릭터 설정(이름·속성·서사), 일러스트 바꾸기, 7죄악 판정 굴리기, 스탠딩 그림, 전투 자세 그림이에요.'},
+  {s:'#sheet .sincards',t:'판정',d:'판정이 필요하면 여기서 해당 죄악 카드를 누르면 굴려져요. 마스터가 "○○ 판정" 하면 그 카드를 누르세요.',tab:'sum'},
+  {s:'#sheet .ed-btn[data-a=shEdit]',t:'편집',d:'내용을 고치고 싶을 때 눌러요. 스킬도 여기서 만들어요. 다 고치면 "편집 끝".'},
+  {s:'#sheet .sh-arrow.r',t:'다른 캐릭터',d:'양옆 화살표로 다른 캐릭터 시트로 넘어가요. ☰ 명단에서 고를 수도 있어요.'},
+  {s:'#sheet .tour-q',t:'다시 보기',d:'이 안내는 언제든 "？ 보는 법"을 눌러 다시 볼 수 있어요.'}],
+ battle:[
+  {s:'#turnCue>*',t:'지금 누구 차례?',d:'위쪽 띠에 지금 누가 무엇을 할 차례인지 나와요.\n내 차례면 금색으로 빛나고, 차례가 오면 가운데에 "당신의 차례"가 크게 떠요.'},
+  {s:'#btHud .hud-left',t:'행동 순서',d:'라운드마다 굴린 순서예요. 위에서부터 차례로 행동해요. 동그라미 옆 숫자가 이번 라운드 순서 값이에요.'},
+  {s:'#btBoard',t:'지도와 이동',d:'내 차례에 내 토큰을 누르면 갈 수 있는 칸이 밝게 보여요. 칸을 누르면 그만큼 이동해요.\n적 옆을 지나가면 기회공격을 받을 수 있어요.'},
+  {s:'#btHud .act-top',t:'내 상태와 행동',d:'지금 차례 캐릭터의 체력·스트레스, 남은 이동 칸이에요.\n전력 이동 = 이동력을 한 번 더(대신 공격 못 함). 기타 행동 = 공격 대신 다른 행동을 했다고 표시.'},
+  {s:'#btHud .act-bar .hs-row',t:'스킬로 공격',d:'스킬을 하나 고르면 지도에 사거리(빨간 칸)가 보여요. 빨간 칸 안의 적을 누르고 → 오른쪽 아래 ATTACK.\n아이콘 아래 "근접 1칸"은 종류와 사거리예요.'},
+  {s:'#btHud .hud-br .start',t:'큰 버튼',d:'상황에 따라 바뀌어요. START = 전투/라운드 시작, ATTACK = 공격 선언, END = 내 턴 끝내기, WAIT = 처리 중.'},
+  {s:'#btHud .hud-right',t:'전문 속성',d:'지금 차례 캐릭터가 잘하는 죄악이에요. 식별·기믹 해결 같은 판정에서 주사위 2개를 굴려요.'},
+  {s:'#btHud .cards',t:'아군 카드',d:'우리 편 캐릭터예요. 왼쪽 아래 숫자 = 체력, 파란 동그라미 = 스트레스. 누르면 그 캐릭터 정보가 떠요.'},
+  {s:'#btHud .hud-tr',t:'오른쪽 위',d:'♪ 소리·연출 설정, 되돌리기, 📖 전투 기록이에요.\n적을 누르면 오른쪽에 정보창이 뜨고, 거기서 "식별"로 적의 스킬을 알아낼 수 있어요.'},
+  {s:'#btHud .tour-qb',t:'다시 보기',d:'이 안내는 오른쪽 위 "？"를 눌러 언제든 다시 볼 수 있어요.'}]};
+const TOUR={on:null,i:0,list:[]};
+const tourSeen=k=>{try{return localStorage.getItem('limbus-tour-'+k)==='1'}catch{return true}};
+const tourMark=k=>{try{localStorage.setItem('limbus-tour-'+k,'1')}catch{}};
+function tourStart(k){const L=TOURS[k];if(!L)return;TOUR.on=k;TOUR.list=L;TOUR.i=0;tourShow(0)}
+function tourEnd(){if(TOUR.on)tourMark(TOUR.on);TOUR.on=null;$('#tour')?.remove()}
+function tourShow(i,dir=1){const L=TOUR.list;
+ for(;i>=0&&i<L.length;i+=dir){const st=L[i];if(st.tab&&UI.sheet&&UI.shTab!==st.tab){UI.shTab=st.tab;renderSheet()}const el=$(st.s);if(el&&el.getClientRects().length)break}
+ if(i<0||i>=L.length)return tourEnd();TOUR.i=i;const st=L[i],el=$(st.s);el.scrollIntoView({block:'nearest'});
+ let o=$('#tour');if(!o){o=document.createElement('div');o.id='tour';document.body.append(o)}
+ const n=L.filter(x=>$(x.s)).length,k=L.slice(0,i+1).filter(x=>$(x.s)).length;
+ o.innerHTML=`<div class="tr-hole"></div><div class="tr-card" role="dialog" aria-label="안내"><div class="tr-h"><b>${esc(st.t)}</b><small>${k} / ${n}</small></div><p>${esc(st.d).replace(/\n/g,'<br>')}</p><div class="tr-f"><button class="btn sm" data-tour="end">건너뛰기</button><span style="flex:1"></span>${k>1?'<button class="btn sm" data-tour="prev">이전</button>':''}<button class="btn sm pri" data-tour="next">${k>=n?'다 봤어요':'다음'}</button></div></div>`;
+ tourPlace()}
+function tourPlace(){const o=$('#tour');if(!o||!TOUR.on)return;const el=$(TOUR.list[TOUR.i].s);if(!el)return tourShow(TOUR.i+1);
+ const r=el.getBoundingClientRect(),h=o.querySelector('.tr-hole'),c=o.querySelector('.tr-card'),pad=8,W=innerWidth,H=innerHeight;
+ Object.assign(h.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
+ const cw=c.offsetWidth,ch=c.offsetHeight;let x=r.left+r.width/2-cw/2,y=r.bottom+pad+14;
+ if(y+ch>H-10)y=r.top-pad-14-ch;if(y<10){y=clamp(r.top,10,H-ch-10);x=r.right+pad+14;if(x+cw>W-10)x=r.left-pad-14-cw}
+ c.style.left=clamp(x,10,W-cw-10)+'px';c.style.top=clamp(y,10,H-ch-10)+'px'}
+document.addEventListener('click',e=>{const b=e.target.closest?.('[data-tour]');if(!b)return;e.stopPropagation();const v=b.dataset.tour;
+ if(v==='end')tourEnd();else if(v==='next')tourShow(TOUR.i+1,1);else tourShow(TOUR.i-1,-1)},true);
+document.addEventListener('keydown',e=>{if(!TOUR.on)return;if(e.key==='Escape'){e.stopPropagation();tourEnd()}else if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();tourShow(TOUR.i+1,1)}else if(e.key==='ArrowLeft')tourShow(TOUR.i-1,-1)},true);
+addEventListener('resize',()=>tourPlace());
+Object.assign(A,{tourStart(e){tourStart(e?.dataset?.v||'sheet')}});
+// 시트를 처음 열면 자동으로 한 번. 다시 그려지면 자리만 다시 맞춘다
+{const rs=renderSheet;renderSheet=function(){const r=rs.apply(this,arguments);
+ if(!UI.sheet){if(TOUR.on==='sheet'){TOUR.on=null;$('#tour')?.remove()}return r}
+ if(TOUR.on)requestAnimationFrame(tourPlace);
+ else if(!tourSeen('sheet')&&$('#sheet .sh-title')&&!M.fn){tourMark('sheet');setTimeout(()=>{if(UI.sheet&&!TOUR.on)tourStart('sheet')},450)}
+ return r}}
+</script>
+<script id="turn-cue">
+/* §89 내 차례 알림
+   - 위쪽 띠: 전투 중 지금 누가 무엇을 할 차례인지 항상 표시. 내가 할 차례면 금색으로 빛나고 할 일을 알려 줌.
+   - 큰 글씨: 내 차례가 새로 오면 화면 가운데 "당신의 차례"가 잠깐 뜨고 종소리(플레이어 화면만).
+   - 다른 탭(스탠딩 등)에 있을 때 내 차례면 띠가 "전투로 가기" 버튼이 됨. 브라우저 탭 제목에도 ● 표시.
+   '내 것' 판정: 플레이어 = 내가 주인인 캐릭터, 마스터(혼자 쓸 때 포함) = 주인 없는 캐릭터(적·NPC)와 마스터가 주인인 캐릭터 */
+const TURN_DO={'':'이동하거나 스킬을 골라 행동하세요',declare:'스킬과 대상을 정해 공격하세요',mresolve:'공격을 이어서 진행하세요',opp:'기회공격을 할지 정하세요',
+ protect:'동료를 보호할지 정하세요',mprotect:'동료를 보호할지 정하세요',react:'공격받았어요 — 어떻게 받을지 고르세요',mreact:'공격받았어요 — 어떻게 받을지 고르세요',
+ respond:'공격받았어요 — 대응을 고르세요',mrespond:'공격받았어요 — 대응을 고르세요',counter:'반격할지 정하세요',mcounter:'반격할지 정하세요',resist:'저항 판정을 하세요',assist:'원호할지 정하세요'};
+const TC={key:'',mine:false,title:document.title};
+const tcMine=k=>{if(!k)return false;const o=ownerOf(k);if(!NET.on)return true;return NET.gm?(!o||o===ME):o===ME};
+function tcState(){const B=BT();if(!(+B.round>0))return null;let d=[];try{d=deciders().filter(Boolean)}catch{return null}if(!d.length)return null;
+ const t=B.atk,ph=t&&t.phase!=='done'?t.phase:'',mine=d.filter(tcMine),turnK=B.cur?.k;
+ return{d,ph,mine,turnK,key:[B.round,B.turn,ph,d.join(',')].join('|')}}
+function tcHTML(S){const nm=k=>esc(atkName(k)),who=S.mine.length?S.mine:S.d,names=who.slice(0,3).map(nm).join(' · ')+(who.length>3?` 외 ${who.length-3}`:'');
+ const doTxt=TURN_DO[S.ph]??'선택이 필요해요';
+ if(S.mine.length){const you=NET.on?(NET.gm?'마스터 차례':'당신의 차례'):'차례';
+  if(UI.tab!=='battle')return`<button class="tc-go" data-a="tab" data-v="battle"><b>⚔ ${you}</b> ${names} — ${doTxt} <u>전투로 가기</u></button>`;
+  return NET.on?`<div class="tc-bar mine"><b>▶ ${you}</b><span>${names}</span><em>${doTxt}</em></div>`:`<div class="tc-bar mine"><b>▶ ${names}의 차례</b><em>${doTxt}</em></div>`}
+ if(UI.tab!=='battle')return'';
+ const turnName=S.turnK?nm(S.turnK):names;return`<div class="tc-bar"><b>${turnName}의 차례</b>${S.ph?`<span>${names} ${S.d.length>1?'중에서':''} 선택 중</span>`:''}<em>기다리는 중…</em></div>`}
+function tcFlash(S){if(!(NET.on&&!NET.gm))return;const f=document.createElement('div');f.className='tc-flash';
+ f.innerHTML=`<div><small>${esc(S.ph&&S.turnK&&!S.mine.includes(S.turnK)?'응답할 차례':'YOUR TURN')}</small><b>당신의 차례</b><span>${S.mine.slice(0,2).map(k=>esc(atkName(k))).join(' · ')}</span><em>${esc(TURN_DO[S.ph]??'')}</em></div>`;
+ document.body.append(f);setTimeout(()=>f.remove(),2300);try{SFX.play('bell')}catch{}}
+function turnTick(){let el=$('#turnCue');if(!el){el=document.createElement('div');el.id='turnCue';document.body.append(el)}
+ const S=$("#main")?tcState():null;
+ const vis=S?tcHTML(S):'',html=UI.sheet||M.fn?'':vis;if(el._h!==html){el._h=html;el.innerHTML=html}
+ const mine=!!S?.mine.length;
+ if(S&&S.key!==TC.key){const was=TC.mine;TC.key=S.key;TC.mine=mine;if(mine&&(!was||S.ph===''))TC.pend=S.key}
+ else if(!S){TC.key='';TC.mine=false}
+ if(TC.pend){if(!S||TC.pend!==S.key||!mine)TC.pend='';else if(!$('#cutin')&&!CS.busy&&!CS.q.length&&!document.hidden&&UI.tab==='battle'){TC.pend='';tcFlash(S)}}
+ const want=mine&&NET.on&&!NET.gm?'● 내 차례 — '+TC.title:TC.title;if(document.title!==want)document.title=want}
+setInterval(turnTick,300);
+</script>
+<script id="idn">
+/* §91 적 식별 (룰북 3.5)
+   데이터: 적·NPC 시트의 스킬/패시브마다 idn={lv:0 숨김 | 1 이름만 | 2 전부, memo:'식별로 알려 준 내용'}, omen='전조(숨김일 때 보이는 문구)'
+   - 플레이어에게 내려가는 공개본(foeStub)에서 숨김/일부 스킬의 이름·설명·태그·그림을 가린다(전투 계산용 값은 그대로)
+   - 적이 스킬을 실제로 쓰면(공격 선언) 그 스킬은 자동으로 전부 공개
+   - 플레이어: 적 정보창 '식별' → 7죄악 판정(맥락 '식별 · 이름'). 마스터: '식별 관리'에서 공개 정도·메모·전조를 정한다 */
+const IDN_L=['숨김','이름만','전부'];
+const idnLv=x=>clamp(+x?.idn?.lv||0,0,2);
+function idnMask(x){if(!x||typeof x!=='object')return x;const lv=idnLv(x);if(lv>=2)return x;
+ return{...x,name:lv?x.name:'???',desc:lv?(x.idn?.memo||''):(x.omen||''),tags:'',img:lv?x.img:'',show:'',_mask:lv+1}}
+function idnMaskChar(o){o.skills=(o.skills||[]).map(idnMask);o.passives=(o.passives||[]).map(idnMask);
+ for(const k of['ego','twist'])if(o[k]&&o[k].skills)o[k].skills=formSk(o,k).map(idnMask);return o}
+{const fs0=foeStub;foeStub=function(c,lv){const o=fs0.apply(this,arguments);return lv>=2&&kindOf(c)==='foe'?idnMaskChar(o):o}}
+function idnCard(x){const lv=x._mask-1;return`<div class="skchips"><span class="skc idn">${lv?'일부 식별':'미식별'}</span></div>${x.desc?`<div class="sk-desc">${hl(x.desc)}</div>`:`<p class="muted small">${lv?'식별로 알아낸 내용이 아직 없어요.':'아직 정체를 모르는 스킬이에요. 적이 쓰거나 식별에 성공하면 공개돼요.'}</p>`}`}
+// 공격 선언 = 그 스킬 공개
+function idnPath(id,i){const c=CH(id);if(!c)return'';if(i<100)return`chars/${id}/skills/${i}`;const k=i<200?'ego':'twist',L=c[k]?.skills;if(!L)return'';const keys=Array.isArray(L)?L.map((_,j)=>j):Object.keys(L);const j=keys[i-(i<200?100:200)];return j==null?'':`chars/${id}/${k}/skills/${j}`}
+function idnRevealUse(t){if(!t||!isGmLike())return;const u=unitRaw(t.by),id=srcOf(u),c=CH(id);if(!c||kindOf(c)!=='foe'||!/^s\d+$/.test(t.opt||''))return;const i=+t.opt.slice(1),x=skAt(c,i),p=idnPath(id,i);if(x&&p&&idnLv(x)<2){Store.set(p+'/idn/lv',2);btLog(`${atkName(t.by)}의 「${x.name||'스킬'}」이 드러났다`)}}
+{const ad=atkDeclare;atkDeclare=function(){const t0=ATK(),r=ad.apply(this,arguments);try{const t=ATK();if(t0&&t&&t.phase!=='declare')idnRevealUse(t0)}catch(e){console.error(e)}return r}}
+// 마스터: 식별 관리
+function idnRows(c){const id=c.id,rows=[];(c.skills||[]).forEach((x,i)=>x&&rows.push([`스킬 ${i+1}`,x,`chars/${id}/skills/${i}`]));
+ for(const k of['ego','twist'])formSk(c,k).forEach((x,j)=>{const p=idnPath(id,(k==='ego'?100:200)+j);x&&p&&rows.push([`${FORM_L[k]} ${j+1}`,x,p])});
+ (c.passives||[]).forEach((x,i)=>x&&rows.push([`패시브 ${i+1}`,x,`chars/${id}/passives/${i}`]));return rows}
+function idnModal(){const c=CH(UI.idnId);if(!c)return'<p>시트를 찾을 수 없어요.</p>';const rows=idnRows(c);
+ return`<p class="small muted">플레이어 화면에 이 적의 스킬이 얼마나 보일지 정해요. <b>숨김</b>은 이름 대신 ??? 와 전조만, <b>이름만</b>은 이름·속성·사거리와 아래 메모만, <b>전부</b>는 모든 설명이 보여요. 적이 스킬을 쓰면 자동으로 전부 공개돼요.</p>
+ ${rows.length?rows.map(([lb,x,p])=>{const lv=idnLv(x);return`<div class="idn-row"><div class="idn-h"><small>${lb}</small><b>${esc(x.name||'(이름 없음)')}</b><span class="segb">${IDN_L.map((n,v)=>`<button class="${lv===v?'on':''}" data-a="setVal" data-p="${p}/idn/lv" data-v="${v}">${n}</button>`).join('')}</span></div>
+  ${lv===0?`<label class="f"><span>전조 (숨김일 때 보이는 문구)</span><input type="text" data-b="${p}/omen" value="${esc(x.omen||'')}" placeholder="예: 기를 모으며 무기가 붉게 달아오른다"></label>`:''}${lv===1?`<label class="f"><span>식별로 알려 준 내용</span><input type="text" data-b="${p}/idn/memo" value="${esc(x.idn?.memo||'')}" placeholder="예: 맞으면 출혈이 쌓인다 · 체력이 절반 아래일 때만 쓴다"></label>`:''}</div>`}).join(''):'<p class="muted">스킬·패시브가 없어요.</p>'}
+ <div class="mfoot"><button class="btn" data-a="idnAll" data-v="0">모두 숨김</button><button class="btn" data-a="idnAll" data-v="2">모두 공개</button><button class="btn pri" data-a="closeModal">닫기</button></div>`}
+Object.assign(A,{
+ idnOpen(){const u=unitRaw(UI.bt.sel);const id=srcOf(u)||UI.charId;if(!CH(id))return;UI.idnId=id;M.wide=true;openModal(`식별 관리 · ${CH(id).info?.name||''}`,idnModal)},
+ idnAll(e){const c=CH(UI.idnId);if(!c)return;for(const[,x,p]of idnRows(c))if(idnLv(x)!==+e.dataset.v)Store.set(p+'/idn/lv',+e.dataset.v);drawModal()},
+ idnRoll(){const k=UI.bt.sel,foe=uOf(k);if(!foe)return;const B=BT(),cur=B.cur?.k&&uOf(B.cur.k),mc=myChars().filter(c=>kindOf(c)==='pc');
+  const me=cur&&cur.char&&(!NET.on||NET.gm||mineU(cur.k))?CH(cur.char):mc[0];if(!me)return toast('판정할 내 캐릭터가 없어요',1);
+  const spec=SINS.find(([s])=>me.sins[s]?.on)?.[0]||'탐식';UI.roll={id:me.id,sin:spec,push:false,adv:false,help:'',res:null,ctx:`식별 · ${uName(foe)}`};openModal('식별 판정',rollModal)}});
+// 적 정보창에 버튼
+{const ph=paintHud;paintHud=function(){const r=ph.apply(this,arguments);const el=$('#btHud'),info=$('#btHud .hud-info.foe .hi-row');const su=UI.bt.sel&&uOf(UI.bt.sel);
+ if(info&&su&&CH(srcOf(su))&&kindOf(CH(srcOf(su)))==='foe'&&!$('#btHud [data-a=idnRoll]')){info.insertAdjacentHTML('beforeend',`<button class="btn sm idn-b" data-a="idnRoll" title="7죄악 판정으로 이 적의 스킬·기믹을 알아내요(룰북 3.5)">식별</button>${isGmLike()?'<button class="btn sm" data-a="idnOpen" title="플레이어에게 보이는 스킬 정보를 정해요">식별 관리</button>':''}`)}
+ actBarMove();return r}}
+// §92 행동 줄: 남은 이동·전력 이동·기타 행동을 스킬 줄 위로 모은다(END/ATTACK 큰 버튼은 그대로)
+function actBarMove(){const row=$('#btHud .card-slot.now .hs-row')||$('#btHud .foe-act .hs-row'),mv=$('#btHud .hud-br .mv'),sb=$('#btHud .hud-br .sub-btns');
+ if(!row||(!mv&&!sb))return;const bar=document.createElement('div');bar.className='act-bar';const top=document.createElement('div');top.className='act-top';
+ const ck=BT().cur?.k,u=ck&&uOf(ck);if(u){const h=hpCalc(hpOf(u)),sc=u.char&&CH(u.char),st=document.createElement('div');st.className='act-me';st.innerHTML=`<b>${esc(uName(u))}</b><span title="체력">♥ ${h.pct==null?'-':h.left}<i>/${h.max}</i></span>${sc?`<span title="스트레스 (10이 되면 목소리 장면)">스트레스 ${+sc.stress||0}<i>/10</i></span>`:''}`;top.append(st)}
+ if(mv)top.append(mv);if(sb)top.append(sb);row.replaceWith(bar);bar.append(top,row)}
+// 시트(마스터, 적): 스킬 칸에 공개 정도 표시
+{const sp=skPane;skPane=function(x,p,delP,at,ed,extra){const h=sp.apply(this,arguments);const c=CH(UI.charId);if(ed||!isGmLike()||!c||kindOf(c)!=='foe'||!p||x?._mask)return h;const lv=idnLv(x);
+ return`<div class="idn-q">플레이어에게: <span class="segb">${IDN_L.map((n,v)=>`<button class="${lv===v?'on':''}" data-a="setVal" data-p="${p}/idn/lv" data-v="${v}">${n}</button>`).join('')}</span></div>`+h}}
+</script>
+<script id="gm-console">
+/* §93 GM 콘솔: 흩어진 마스터 기능을 오른쪽 서랍 하나에. 화면 오른쪽 'GM' 손잡이(마스터·혼자 쓸 때만)로 연다.
+   탭: 진행 / 무대 / 전투 / 시트. 버튼은 원래 기능(data-a)을 그대로 부른다 — 기능을 새로 만든 게 아니라 한곳에 모은 것 */
+UI.gmc=false;UI.gmcTab='play';
+const GMC_T=[['play','진행'],['stage','무대'],['battle','전투'],['sheet','시트']];
+function gmcBody(){const B=BT(),t=UI.gmcTab,tabNm={talk:'스탠딩',battle:'전투',rail:'철도'}[UI.tab]||UI.tab;
+ const go=(v,n)=>`<button class="btn sm ${UI.tab===v?'on':''}" data-a="tab" data-v="${v}">${n}</button>`;
+ if(t==='play'){let S=null;try{S=tcState()}catch{}
+  return`<div class="gmc-sec"><h5>지금</h5><p>화면: <b>${tabNm}</b>${+B.round?` · 전투 ${B.round}라운드 ${+(B.turn??-1)+1}/${(B.order||[]).length}턴`:' · 전투 전'}${S?`<br>선택할 사람: <b>${S.d.map(k=>esc(atkName(k))).join(', ')}</b>${S.mine.length?' <em class="gmc-me">마스터 차례</em>':''}`:''}</p>
+  <div class="row">${go('talk','스탠딩')}${go('battle','전투')}${go('rail','철도')}</div></div>
+  <div class="gmc-sec"><h5>되돌리기</h5><div class="row"><button class="btn sm" data-a="undo" ${UNDO.past.length?'':'disabled'} title="${UNDO.past.length?esc(UNDO.past.at(-1).label):''}">↶ 되돌리기</button><button class="btn sm" data-a="redo" ${UNDO.future.length?'':'disabled'}>↷ 다시 하기</button><button class="btn sm" data-a="backup">백업</button></div></div>
+  <div class="gmc-sec"><h5>모드</h5><div class="row"><button class="btn sm ${UI.master?'on':''}" data-a="master">마스터 모드 ${UI.master?'켜짐':'꺼짐'}</button></div><p class="small muted">마스터 모드가 켜져 있어야 지도·노선 편집, 자유 배치 같은 마스터 조작이 보여요.</p></div>`}
+ if(t==='stage'){const n=stageN();
+  return`<div class="gmc-sec"><h5>무대 (스탠딩·조사)</h5><label class="f">스탠딩 인원<select data-c="stageN">${[1,2,3,4].map(k=>`<option value="${k}" ${n===k?'selected':''}>${k}명</option>`).join('')}</select></label>
+  <label class="row small"><input type="checkbox" data-c="castSet" ${castOn()?'checked':''}> 진영 배치 (왼쪽 아군 · 오른쪽 NPC)</label>
+  <div class="row"><button class="btn sm" data-a="sceneOpen">배경</button><button class="btn sm ${invModeOn()?'on':''}" data-a="invMode">조사 모드 ${invModeOn()?'끄기':'켜기'}</button><button class="btn sm" data-a="npcOpen">NPC</button></div></div>
+  <div class="gmc-sec"><h5>연출</h5><div class="row"><button class="btn sm" data-a="gmcDir">연출 패널 열기</button><button class="btn sm" data-a="gmcLog">대사 기록</button></div><p class="small muted">연출 패널은 스탠딩 화면 아래에 열려요.</p></div>
+  <div class="gmc-sec"><h5>고치기</h5><div class="row"><button class="btn sm" data-a="dbgOpen">디버그 (직접 수정)</button></div></div>`}
+ if(t==='battle'){const su=UI.bt.sel&&uOf(UI.bt.sel),sc=su&&CH(srcOf(su));
+  return`${UI.tab!=='battle'?`<p class="small muted">전투 화면이 아니에요. ${go('battle','전투로 가기')}</p>`:''}
+  ${su?`<div class="gmc-sec"><h5>고른 유닛 · ${esc(uName(su))}</h5><div class="row">${sc&&kindOf(sc)==='foe'?'<button class="btn sm" data-a="idnOpen">식별 관리</button>':''}${srcOf(su)?'<button class="btn sm" data-a="btSheet">시트</button>':''}</div>${unitPanel(su,true)}</div>`:'<p class="small muted">지도에서 유닛을 누르면 여기서 그 유닛을 바로 고칠 수 있어요.</p>'}
+  ${masterPanel(B)}<div class="gmc-sec"><h5>고치기</h5><div class="row"><button class="btn sm" data-a="dbgOpen">디버그 (직접 수정)</button><button class="btn sm" data-a="hudDrawer" data-v="log">전투 기록</button></div></div>`}
+ return`<div class="gmc-sec"><h5>시트</h5><div class="row"><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="openSheet">시트 열기</button></div>
+  <div class="row"><button class="btn sm" data-a="rosterNew" data-v="pc">＋ 플레이어</button><button class="btn sm" data-a="foeNew">＋ 적</button><button class="btn sm" data-a="rosterNew" data-v="npc">＋ NPC</button><button class="btn sm" data-a="foeSample">예시 적</button></div>
+  <div class="row"><button class="btn sm" data-a="charFileLoad">⇧ 캐릭터 파일 불러오기</button></div></div>`}
+function paintGmc(force){let h=$('#gmcHandle'),el=$('#gmc');const can=isGmLike()&&!!$('#main');
+ if(!h){h=document.createElement('button');h.id='gmcHandle';h.dataset.a='gmcToggle';h.title='GM 콘솔 — 마스터 기능 모음';h.innerHTML='<b>GM</b><small>콘솔</small>';document.body.append(h)}
+ h.hidden=!can||UI.sheet;h.classList.toggle('on',UI.gmc);
+ const open=can&&UI.gmc&&!UI.sheet;if(document.body.classList.contains('gmc-open')!==open){document.body.classList.toggle('gmc-open',open);setTimeout(()=>dispatchEvent(new Event('resize')),30)}
+ if(!open){if(el)el.remove();return}
+ if(!el){el=document.createElement('aside');el.id='gmc';el.setAttribute('aria-label','GM 콘솔');document.body.append(el);force=true}
+ if(!force&&el.contains(document.activeElement)&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))return;
+ const sy=el.querySelector('.gmc-b')?.scrollTop||0;
+ const html=`<div class="gmc-h"><b>GM 콘솔</b><button class="x" data-a="gmcToggle" aria-label="닫기">✕</button></div><div class="gmc-t">${GMC_T.map(([k,n])=>`<button class="${UI.gmcTab===k?'on':''}" data-a="gmcTab" data-v="${k}">${n}</button>`).join('')}</div><div class="gmc-b">${gmcBody()}</div>`;
+ if(el._h!==html){el._h=html;el.innerHTML=html;el.querySelector('.gmc-b').scrollTop=sy}}
+Object.assign(A,{
+ gmcToggle(){UI.gmc=!UI.gmc;if(UI.gmc&&!UI.master){UI.master=true;renderNav();if(UI.tab==='rail'||UI.tab==='battle')renderMain();else paint()}paintGmc(true)},
+ gmcOpen(e){UI.gmc=true;UI.talkMenu=false;if(e?.dataset?.v)UI.gmcTab=e.dataset.v;if(!UI.master){UI.master=true;renderNav()}paint();paintGmc(true)},
+ gmcTab(e){UI.gmcTab=e.dataset.v;paintGmc(true)},
+ gmcDir(){if(UI.tab!=='talk')A.tab({dataset:{v:'talk'}});setTimeout(()=>{if(!UI.dir)A.dirOpen()},50)},
+ gmcLog(){if(UI.tab!=='talk')A.tab({dataset:{v:'talk'}});setTimeout(()=>{if(!UI.log)A.talkLog()},50)}});
+{const p0=paint;paint=function(){const r=p0.apply(this,arguments);paintGmc();return r}}
+{const p1=paintHud;paintHud=function(){const r=p1.apply(this,arguments);paintGmc();return r}}
+{const r0=renderSheet;renderSheet=function(){const r=r0.apply(this,arguments);paintGmc();return r}}
+setInterval(()=>paintGmc(),1000);
+</script>
+<script id="tour-battle">
+/* §94 전투 처음 안내 + 오른쪽 위 ？ */
+{const ph=paintHud;paintHud=function(){const r=ph.apply(this,arguments);const tr=$('#btHud .hud-tr');
+ if(tr&&!$('#btHud .tour-qb'))tr.insertAdjacentHTML('afterbegin','<button class="hb tx tour-qb" data-a="tourStart" data-v="battle" title="전투 화면 보는 법">？</button>');
+ if(TOUR.on==='battle')requestAnimationFrame(tourPlace);
+ else if(!TOUR.on&&!TOUR.pendB&&!tourSeen('battle')&&$('#btHud .act-bar')&&!M.fn&&!UI.sheet&&!$('#cutin')&&!CS.busy){TOUR.pendB=1;setTimeout(()=>{TOUR.pendB=0;if(!TOUR.on&&!tourSeen('battle')&&UI.tab==='battle'&&!M.fn&&!UI.sheet&&!$('#cutin')&&!CS.busy&&$('#btHud .act-bar')&&!document.hidden){tourMark('battle');tourStart('battle')}},900)}
+ return r}}
+</script>
+<script id="fx-catchup">
+/* §86 뒷북 방지
+   스탠딩: 비운 사이 밀린 대사·연출이 3개 이상이거나 가장 오래된 것이 5초 넘게 기다렸으면,
+           밀린 것은 대사 기록으로만 넘기고 무대 상태(배경·암전·색조·위치·카메라·입자·BGM)는 조용히 맞춘 뒤 마지막 대사만 바로 보여 준다.
+           흔들기·번쩍임·제목·효과음 같은 순간 연출은 건너뛴다. 1~2개이고 방금 온 것은 원래대로 재생.
+   전투: 브라우저 탭이 숨겨진 동안 들어온 합 연출·피해 숫자·효과음은 재생하지 않고, 숨길 때 진행 중이던 합 연출은 바로 끝낸다. */
+const CATCH={n:3,ms:5000};
+function dlgCatchUp(){if(!dlgActive())return false;const P=DLG.pending;if(!P.length)return false;
+ const old=Date.now()-Math.min(...P.map(m=>m._at||Date.now()));if(P.length<CATCH.n&&old<CATCH.ms)return false;
+ clearTimeout(DLG.hold);DLG.hold=null;clearTimeout(DLG.fxT);DLG.fxBusy=false;
+ const now=Date.now(),lines=P.filter(m=>m.kind!=='fx');for(const m of P)DLG.at[m.k]=now;DLG.shown=[...DLG.shown,...P].slice(-60);DLG.pending=[];
+ DLG.st={...(Store.get('play/stagefx')||{})};const sc=Store.get('play/scene')||{};DLG.scene={id:sc.id||'',name:sc.name||'',bg:sc.bg||''};dirApplyState(false);BGM.want(DLG.st.bgm||null);
+ if(lines.length)DLG.cur=lines.at(-1);paintTalkStage();
+ if(DLG.cur){dlgType.show(DLG.cur.txt);dlgType.done=true}DLG.holdDone=true;
+ if(lines.length||P.length)toast(`자리를 비운 사이 ${lines.length?`대사 ${lines.length}줄`:''}${lines.length&&P.length>lines.length?' · ':''}${P.length>lines.length?`연출 ${P.length-lines.length}개`:''}를 건너뛰었어요 — 대사 기록에서 볼 수 있어요`);
+ return true}
+function csDrop(){CS.q.length=0;if(CS.busy)CS.skip=true}
+document.addEventListener('visibilitychange',csDrop);
+{const t=A.tab;A.tab=function(e){if(e?.dataset?.v!=='battle')csDrop();return t.apply(this,arguments)}}
+</script>
+
 </body>
 </html>
