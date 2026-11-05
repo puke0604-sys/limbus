@@ -3745,8 +3745,9 @@ function skillEditor(x,p){
  ${zoneEditor(x,p)}
  <h4 class="sh-h">재사용</h4>
  <div class="fxr"><select data-b="${p}/reuse/on" data-r>${optsKV({'':'없음',hit:'적중하면 한 번 더 사용 가능'},ru.on||'')}</select>${ru.on?`<label class="small">턴당 최대${num(`${p}/reuse/max`,ru.max||1,1,5)}회</label>`:''}</div>${assistEditor(x,p)}
- <h4 class="sh-h">대응</h4>
+ <h4 class="sh-h">대응·반격</h4>
  <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/unresp" data-r ${x.unresp?'checked':''}> 대응 불가 — 대상은 회피·방어를 할 수 없고 비대응으로만 받아요 (보호·반격 규칙은 그대로)</label></div>
+ <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/noCounter" data-r ${x.noCounter?'checked':''}> 반격에 사용 불가 — 너무 강한 스킬은 체크하세요. 반격할 때 목록에 뜨지 않아요</label></div>
  <h4 class="sh-h">적중 시 기본 효과 <small>16.4 · 적중한 대상마다 실행${x.area?.next?' · 확산 대상은 범위의 2단계 확산 설정을 따라요':''}</small></h4>
  ${fx.map((f,j)=>fxRow(f,`${p}/fx/${j}`,j,`${p}/fx`)).join('')||'<p class="small muted">효과 없음</p>'}
  <div class="row">${Object.entries(FX_L).map(([k,n])=>`<button class="btn sm" data-a="skFxAdd" data-p="${p}/fx" data-v="${k}">+ ${n}</button>`).join('')}</div>
@@ -5319,6 +5320,17 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .cs-fig.r:not(.pic).cs-dodge .cs-body{transform:scaleX(-1) translateY(-5%) rotate(-4deg)}
 .cs-stage.cs-zoom{transform:scale(1.07);transition:transform .14s ease-out}
 .cs-stage{transition:transform .25s}
+/* §101 정보창 스킬·식별 */
+.hud-info{max-height:calc(100vh - 220px);overflow:auto;pointer-events:auto}
+.hi-hp i.idn-unk{background:repeating-linear-gradient(45deg,#3a2c1e 0 6px,#2a1f15 6px 12px)!important}
+.hi-idn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0 6px}.hi-idn small{flex:1;color:#b9a587;font-size:12.5px}
+.hi-sks{margin-top:8px;border-top:1px solid #4d3c2a;padding-top:6px}.hi-sks-h{font:400 14px var(--fk);color:#e8c48a;margin-bottom:4px}.hi-sks-h small{font-size:11.5px;color:#8f7f68;margin-left:6px}
+.hi-sk{display:flex;flex-wrap:wrap;align-items:center;gap:4px;border-bottom:1px solid rgba(77,60,42,.5)}
+.hi-skb{flex:1;display:flex;align-items:baseline;gap:6px;padding:5px 2px;background:none;border:0;color:#efe3cf;text-align:left;cursor:pointer;min-width:0}
+.hi-skb i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c);align-self:center}.hi-skb b{font-weight:400;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hi-skb small{margin-left:auto;font-size:11.5px;color:#a8987e;white-space:nowrap}
+.hi-sk.on .hi-skb b{color:#ffcf6a}.hi-sk.hid .hi-skb b{color:#c9a8e8}
+.hi-skd{flex-basis:100%;padding:4px 4px 8px;font-size:13.5px}.hi-skd .sk-desc{font-size:13.5px;line-height:1.6;margin:4px 0}.hi-skd .skc{font-size:12px}.hi-skd .sk-auto summary{font-size:12.5px}
+.skc.nc{color:#ff9a8c;border-color:#7a3a33}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -5440,7 +5452,7 @@ function skPane(x,p,delP,at,ed,extra=''){const r=+x.range||0;
 /* §87 시트 읽기 쉽게: 스킬 카드 = 태그 칩 + 본문 + 접힌 '자동 처리' */
 function skCard(x){if(x?._mask)return idnCard(x);const L=String(x.desc||'').split('\n'),tool=L.filter(l=>/^\s*\[툴\]/.test(l)),body=L.filter(l=>!/^\s*\[툴\]/.test(l)).join('\n').replace(/^\n+|\n+$/g,'');
  const auto=skillView(x),n=(auto.match(/<p[ >]/g)||[]).length+tool.length;
- const chips=[x.tags?`<span class="skc g">${esc(x.tags)}</span>`:'',x.role&&x.role!=='일반'?`<span class="skc r">${esc(x.role)}</span>`:''].join('');
+ const chips=[x.tags?`<span class="skc g">${esc(x.tags)}</span>`:'',x.role&&x.role!=='일반'?`<span class="skc r">${esc(x.role)}</span>`:'',x.noCounter?'<span class="skc nc">반격 불가</span>':''].join('');
  return`${chips?`<div class="skchips">${chips}</div>`:''}${body?`<div class="sk-desc">${hl(body)}</div>`:'<p class="muted small">설명이 없어요.</p>'}${n?`<details class="sk-auto"><summary>⚙ 자동 처리 규칙 <b>${n}</b>개 <small>눌러서 보기 — 툴이 알아서 적용해요</small></summary>${auto}${tool.map(l=>`<p>${hl(l.replace(/^\s*\[툴\]\s*/,''))}</p>`).join('')}</details>`:''}`}
 </script>
 <script id="form-skill">
@@ -5906,13 +5918,15 @@ function idnModal(){const c=CH(UI.idnId);if(!c)return'<p>시트를 찾을 수 �
  const sw=`<div class="idn-sw"><label class="row"><input type="checkbox" data-c="idnSet" ${on?'checked':''}> ${npc?'이 NPC도 식별 대상으로 (적대 NPC — 스킬을 플레이어에게 숨김)':'식별 대상 (끄면 이 적의 스킬은 처음부터 전부 보여요)'}</label></div>`;
  if(!on)return sw+`<div class="mfoot"><button class="btn pri" data-a="closeModal">닫기</button></div>`;
  return sw+`<p class="small muted">플레이어 화면에 이 적의 스킬이 얼마나 보일지 정해요. <b>숨김</b>은 이름 대신 ??? 와 전조만, <b>이름만</b>은 이름·속성·사거리와 아래 메모만, <b>전부</b>는 모든 설명이 보여요. 적이 스킬을 쓰면 자동으로 전부 공개돼요.</p>
+ <div class="idn-row"><div class="idn-h"><small>체력</small><b>숫자·칸</b><span class="segb">${['숨김','대략','전부'].map((n,v)=>`<button class="${idnHpLv(c)===v?'on':''}" data-a="setVal" data-p="chars/${c.id}/idnHp/lv" data-v="${v}">${n}</button>`).join('')}</span></div><p class="small muted">대략 = 양호 · 지침 · 빈사만 보여요</p></div>
+ <div class="idn-row"><div class="idn-h"><small>내성치</small><b>키워드 내성치</b><span class="segb">${[['숨김',0],['전부',2]].map(([n,v])=>`<button class="${idnTolLv(c)===v?'on':''}" data-a="setVal" data-p="chars/${c.id}/idnTol/lv" data-v="${v}">${n}</button>`).join('')}</span></div></div>
  ${rows.length?rows.map(([lb,x,p])=>{const lv=idnLv(x);return`<div class="idn-row"><div class="idn-h"><small>${lb}</small><b>${esc(x.name||'(이름 없음)')}</b><span class="segb">${IDN_L.map((n,v)=>`<button class="${lv===v?'on':''}" data-a="setVal" data-p="${p}/idn/lv" data-v="${v}">${n}</button>`).join('')}</span></div>
   ${lv===0?`<label class="f"><span>전조 (숨김일 때 보이는 문구)</span><input type="text" data-b="${p}/omen" value="${esc(x.omen||'')}" placeholder="예: 기를 모으며 무기가 붉게 달아오른다"></label>`:''}${lv===1?`<label class="f"><span>식별로 알려 준 내용</span><input type="text" data-b="${p}/idn/memo" value="${esc(x.idn?.memo||'')}" placeholder="예: 맞으면 출혈이 쌓인다 · 체력이 절반 아래일 때만 쓴다"></label>`:''}</div>`}).join(''):'<p class="muted">스킬·패시브가 없어요.</p>'}
  <div class="mfoot"><button class="btn" data-a="idnAll" data-v="0">모두 숨김</button><button class="btn" data-a="idnAll" data-v="2">모두 공개</button><button class="btn pri" data-a="closeModal">닫기</button></div>`}
 Object.assign(CHANGE,{idnSet(el){const c=CH(UI.idnId);if(!c)return;if(kindOf(c)==='npc')Store.set(`chars/${c.id}/idnOn`,!!el.checked);else Store.set(`chars/${c.id}/idnOff`,!el.checked);setTimeout(drawModal,30)}});
 Object.assign(A,{
  idnOpen(){const u=unitRaw(UI.bt.sel);const id=srcOf(u)||UI.charId;if(!CH(id))return;UI.idnId=id;M.wide=true;openModal(`식별 관리 · ${CH(id).info?.name||''}`,idnModal)},
- idnAll(e){const c=CH(UI.idnId);if(!c)return;for(const[,x,p]of idnRows(c))if(idnLv(x)!==+e.dataset.v)Store.set(p+'/idn/lv',+e.dataset.v);drawModal()},
+ idnAll(e){const c=CH(UI.idnId);if(!c)return;const v=+e.dataset.v;for(const[,x,p]of idnRows(c))if(idnLv(x)!==v)Store.set(p+'/idn/lv',v);Store.set(`chars/${c.id}/idnHp/lv`,v);Store.set(`chars/${c.id}/idnTol/lv`,v);drawModal()},
  idnRoll(){const k=UI.bt.sel,foe=uOf(k);if(!foe)return;const B=BT(),cur=B.cur?.k&&uOf(B.cur.k),mc=myChars().filter(c=>kindOf(c)==='pc');
   const me=cur&&cur.char&&(!NET.on||NET.gm||mineU(cur.k))?CH(cur.char):mc[0];if(!me)return toast('판정할 내 캐릭터가 없어요',1);
   // 전투 중 식별 = 자기 턴의 주요 행동 (마스터는 예외로 굴릴 수 있음)
@@ -5923,7 +5937,7 @@ Object.assign(A,{
  try{if(k&&r.res){const c=BT().cur;if(c&&c.k===k&&!c.main){Store.set(`${BTP}/cur`,{...c,main:true,other:true});btLog(`${atkName(k)} 식별 판정 (주요 행동 사용)`)}r.idnTurn=''}}catch(e){console.error(e)}return out}}
 // 적 정보창에 버튼
 {const ph=paintHud;paintHud=function(){const r=ph.apply(this,arguments);const el=$('#btHud'),info=$('#btHud .hud-info.foe .hi-row');const su=UI.bt.sel&&uOf(UI.bt.sel);
- const sc0=su&&CH(srcOf(su));if(info&&sc0&&['foe','npc'].includes(kindOf(sc0))&&!$('#btHud [data-a=idnOpen],#btHud [data-a=idnRoll]')&&(idnOn(sc0)||isGmLike())){info.insertAdjacentHTML('beforeend',`${idnOn(sc0)?'<button class="btn sm idn-b" data-a="idnRoll" title="7죄악 판정으로 이 적의 스킬·기믹을 알아내요(룰북 3.5)">식별</button>':''}${isGmLike()?'<button class="btn sm" data-a="idnOpen" title="플레이어에게 보이는 스킬 정보를 정해요">식별 관리</button>':''}`)}
+ const sc0=su&&CH(srcOf(su));if(info&&sc0&&['foe','npc'].includes(kindOf(sc0))&&!$('#btHud [data-a=idnOpen],#btHud [data-a=idnRoll]')&&(idnOn(sc0)||isGmLike())){info.insertAdjacentHTML('beforeend',`${idnOn(sc0)?'<button class="btn sm idn-b" data-a="idnRoll" title="숨겨진 기믹 등 그 밖의 것을 식별해요 — 결과는 마스터가 판단 (룰북 3.5)">기믹 식별</button>':''}${isGmLike()?'<button class="btn sm" data-a="idnOpen" title="플레이어에게 보이는 스킬 정보를 정해요">식별 관리</button>':''}`)}
  try{idnWatch()}catch(e){console.error(e)}actBarMove();return r}}
 // §92 행동 줄: 남은 이동·전력 이동·기타 행동을 스킬 줄 위로 모은다(END/ATTACK 큰 버튼은 그대로)
 function actBarMove(){const row=$('#btHud .card-slot.now .hs-row')||$('#btHud .foe-act .hs-row'),mv=$('#btHud .hud-br .mv'),sb=$('#btHud .hud-br .sub-btns');
@@ -6008,7 +6022,7 @@ function mkSum(title,x,sec){const t=title,n=(a)=>Array.isArray(a)?a.length:a&&ty
  if(t.startsWith('이동 결합'))return x.move?.type?[(x.move.type==='target'?'대상에게 돌진':'돌진 후 공격')+` 최대 ${+x.move.n||3}칸`,1]:['없음',0];
  if(t.startsWith('바닥 효과'))return x.zone?.on?[x.zone.name||'있음',1]:['없음',0];
  if(t.startsWith('재사용'))return x.reuse?.on?[`적중하면 한 번 더 (턴당 ${+x.reuse.max||1}회)`,1]:['없음',0];
- if(t.startsWith('대응'))return x.unresp?['대응 불가',1]:['보통',0];
+ if(t.startsWith('대응')){const v=[x.unresp?'대응 불가':'',x.noCounter?'반격 불가':''].filter(Boolean);return v.length?[v.join(' · '),1]:['보통',0]}
  if(t.startsWith('적중 시'))return n(x.fx)?[(x.fx||[]).map(fxText).join(' · '),1]:['없음',0];
  if(t.startsWith('조건부 규칙'))return n(x.rules)?[`${n(x.rules)}개 · ${(x.rules||[]).filter(r=>r.on).length}개 켜짐`,1]:['없음',0];
  if(t.startsWith('키워드 소비'))return n(x.uses)?[(x.uses||[]).map(u=>u.kw||'').join(' · ')||`${n(x.uses)}개`,1]:['없음',0];
@@ -6032,6 +6046,57 @@ function shEditUx(){const el=$('#sheet');if(!el||!UI.sheet||!UI.shEdit)return;mk
  const sc=$('.sh-scroll',el);if(sc&&!$('.ed-band',el)){sc.insertAdjacentHTML('afterbegin',`<div class="ed-band"><b>✎ 편집 중</b> 글·숫자·그림을 눌러 바로 바꿔요. 저장은 자동이에요. 다 고치면 왼쪽 위 <b>✓ 편집 끝</b>.</div>`)}
  if(UI.shTab==='skill'&&typeof UI.shSub==='number'){const c=CH(UI.charId),x=c?.skills?.[UI.shSub],mk=$('.sk-maker',el);if(x&&mk&&!$('.mk-prev',el)){mk.insertAdjacentHTML('beforebegin',`<details class="mk-prev"><summary>👁 플레이어에게 이렇게 보여요</summary><div class="sk-desc-wrap">${skCard(x)}</div></details>`)}}}
 {const rs=renderSheet;renderSheet=function(){const r=rs.apply(this,arguments);try{shEditUx()}catch(e){console.error(e)}return r}}
+</script>
+<script id="idn2">
+/* §101 식별 확장: 체력·내성치도 식별 대상 + 정보창 스킬 목록(눌러서 펼침) + 항목을 콕 집어 식별
+   데이터(적 시트): idnHp={lv:0 숨김|1 대략(양호·지침·빈사)|2 전부}, idnTol={lv:0 숨김|2 전부}
+   식별 결과(자동 공개 — 결정 ㄷ): 크리티컬·완전한 성공 → 전부 / 애매한 성공 → 스킬·패시브 이름만, 체력 대략, 내성치 전부 / 실패 → 그대로
+   공개는 마스터 화면이 처리(플레이어는 적 원본을 못 고치므로 play/idnReq에 요청을 남김). 마스터는 식별 관리에서 되돌릴 수 있다 */
+const idnHpLv=c=>clamp(+c?.idnHp?.lv||0,0,2),idnTolLv=c=>clamp(+c?.idnTol?.lv||0,0,2)?2:0;
+const idnPl=()=>NET.on&&!NET.gm;
+const hidFor=u=>{const c=CH(srcOf(u));return idnPl()&&idnOn(c)?c:null};
+const hpState=p=>p==null?'?':p>66?'양호':p>33?'지침':'빈사',hpStateW=p=>p>66?100:p>33?58:24;
+const IDN_WHAT=w=>w==='hp'?'체력':w==='tol'?'내성치':/^p:/.test(w)?`패시브 ${+w.slice(2)+1}`:(()=>{const i=+w.slice(2);return i<100?`스킬 ${i+1}`:i<200?`E.G.O 스킬 ${i-99}`:`뒤틀림 스킬 ${i-199}`})();
+function idnTgtPath(id,w){if(w==='hp')return`chars/${id}/idnHp/lv`;if(w==='tol')return`chars/${id}/idnTol/lv`;if(/^p:/.test(w))return`chars/${id}/passives/${+w.slice(2)}/idn/lv`;const p=idnPath(id,+w.slice(2));return p?p+'/idn/lv':''}
+// 정보창: 스킬 목록 + 체력·내성치 가리기 + 식별 버튼
+UI.hiSk=UI.hiSk||{};
+function hiSkills(su){const c=CH(srcOf(su));if(!c)return'';const pl=!!hidFor(su),rows=[];
+ (c.skills||[]).forEach((x,i)=>x&&rows.push(['s:'+i,x]));for(const k of['ego','twist'])formSk(c,k).forEach((x,j)=>x&&rows.push(['s:'+((k==='ego'?100:200)+j),x]));(c.passives||[]).forEach((x,i)=>x&&rows.push(['p:'+i,x]));
+ if(!rows.length)return'';const op=UI.hiSk[su.k];
+ return`<div class="hi-sks"><div class="hi-sks-h">스킬 <small>눌러서 펼치기</small></div>${rows.map(([key,x])=>{const hid=!!x._mask,lv=hid?x._mask-1:2,isP=key[0]==='p';
+  return`<div class="hi-sk ${op===key?'on':''} ${hid?'hid':''}"><button class="hi-skb" data-a="hiSk" data-v="${key}"><i style="--c:${sinColor(x.sin)||'#8a6a3a'}"></i><b>${esc(x.name||(isP?'패시브':'스킬'))}</b><small>${hid&&!lv?'미식별':`${isP?'패시브':`${esc(x.kind||'')} ${+x.range||0}칸`}${hid?' · 일부 식별':''}${!hid&&x.noCounter?' · 반격 불가':''}`}</small></button>${pl&&lv<2?`<button class="btn sm idn-b" data-a="idnRoll" data-t="${key}" title="이 항목을 노려 식별 판정">식별</button>`:''}
+  ${op===key?`<div class="hi-skd">${skCard(x)}</div>`:''}</div>`}).join('')}</div>`}
+function hiPatch(){const su=UI.bt.sel&&uOf(UI.bt.sel),box=$('#btHud .hud-info');if(!su||!box||box.dataset.p)return;box.dataset.p=1;const hc=hidFor(su);
+ if(hc){const hl=idnHpLv(hc),pc=hpCalc(hpOf(su)).pct;
+  if(hl<2){const sp=$('.hi-hp span',box),bar=$('.hi-hp i',box);if(sp)sp.textContent=hl?hpState(pc):'체력 ???';if(bar){bar.style.width=hl?hpStateW(pc)+'%':'100%';bar.classList.toggle('idn-unk',!hl)}$('.hi-tiers',box)?.remove();
+   $('.hi-hp',box)?.insertAdjacentHTML('afterend',`<div class="hi-idn"><small>${hl?'대략적인 상태만 알아요':'체력을 몰라요'}</small><button class="btn sm idn-b" data-a="idnRoll" data-t="hp">체력 식별</button></div>`)}
+  if(idnTolLv(hc)<2){box.querySelectorAll('.hi-kw small').forEach(x=>{if(/^\/\d/.test(x.textContent))x.textContent='/?'});const r=$('.hi-idn',box);const h=`<button class="btn sm idn-b" data-a="idnRoll" data-t="tol" title="키워드 내성치를 알아내요">내성치 식별</button>`;if(r)r.insertAdjacentHTML('beforeend',h);else $('.hi-hp',box)?.insertAdjacentHTML('afterend',`<div class="hi-idn"><small>내성치를 몰라요</small>${h}</div>`)}}
+ box.insertAdjacentHTML('beforeend',hiSkills(su))}
+{const ph=paintHud;paintHud=function(){const r=ph.apply(this,arguments);try{hiPatch()}catch(e){console.error(e)}return r}}
+// 지도 토큰의 체력 막대
+{const pb=paintBoard;paintBoard=function(){const r=pb.apply(this,arguments);try{if(idnPl())$$('#btBoard .bt-unit.s-foe').forEach(t=>{const u=uOf(t.dataset.v),hc=u&&hidFor(u);if(!hc)return;const hl=idnHpLv(hc),b=t.querySelector('.bt-hp');if(!b||hl>=2)return;if(!hl)b.remove();else{const i=b.querySelector('b');if(i)i.style.width=hpStateW(hpCalc(hpOf(u)).pct)+'%'}})}catch(e){console.error(e)}return r}}
+// 시트(플레이어가 보는 적 시트)
+{const rs=renderSheet;renderSheet=function(){const r=rs.apply(this,arguments);try{const c=CH(UI.charId);if(UI.sheet&&idnPl()&&idnOn(c)){if(idnHpLv(c)<2)$$('#sheet .hpbox').forEach(b=>{b.innerHTML='<p class="muted">체력: 식별되지 않았어요</p>'});if(idnTolLv(c)<2)$$('#sheet .tolrow em').forEach(e=>e.textContent='?')}}catch(e){console.error(e)}return r}}
+// 항목을 노린 식별 판정
+{const ir=A.idnRoll;A.idnRoll=function(e){const t=e?.dataset?.t||'';const r=ir.apply(this,arguments);if(t&&UI.roll&&M.fn){const su=uOf(UI.bt.sel);UI.roll.idnTgt={k:UI.bt.sel,id:srcOf(su),what:t};UI.roll.ctx=UI.roll.ctx.replace(/^식별 · ([^·]+)/,`식별 · $1· ${IDN_WHAT(t)} `).replace(/\s+·\s+/g,' · ');drawModal()}return r}}
+{const rd=A.rollDo;A.rollDo=function(){const r=UI.roll,tg=r?.idnTgt;const out=rd.apply(this,arguments);
+ try{if(tg&&r.res){const g=r.res.grade,full=g==='크리티컬'||g==='완전한 성공',part=g==='애매한 성공';let lv=full?2:part?(tg.what==='tol'?2:1):0;
+  if(lv)Store.push('play/idnReq',{...tg,lv,grade:g,who:CH(r.id)?.info?.name||'',t:nowT()});else toast('식별 실패 — 알아낸 것이 없어요');r.idnTgt=null}}catch(e){console.error(e)}return out}}
+// 마스터 화면: 요청을 받아 공개
+function idnReqPump(){if(!isGmLike())return;const R=Store.get('play/idnReq');if(!R||typeof R!=='object')return;
+ for(const[key,q]of Object.entries(R)){if(!q)continue;Store.set('play/idnReq/'+key,null);const c=CH(q.id),p=c&&idnTgtPath(q.id,q.what);if(!p)continue;const cur=+Store.get(p)||0,lv=Math.max(cur,+q.lv||0);
+  if(lv>cur)Store.set(p,lv);const nm=atkName(q.k)||c.info?.name||'',what=IDN_WHAT(q.what),how=lv>=2?'전부 공개':q.what==='hp'?'대략 공개':'이름만 공개';
+  btLog(`식별 성공(${q.grade}) — ${q.who}: ${nm}의 ${what} ${how}`);toast(`식별: ${q.who} → ${nm} ${what} ${how}. 식별 관리에서 되돌릴 수 있어요`)}}
+setInterval(idnReqPump,700);
+Object.assign(A,{hiSk(e){const k=UI.bt.sel;UI.hiSk[k]=UI.hiSk[k]===e.dataset.v?'':e.dataset.v;paintHud()}});
+</script>
+<script id="counter-skills">
+/* §102 반격에 스킬 사용 (사용자 결정 — 룰북 11.2는 v1.4에서 고침)
+   반격 목록 = 기본 반격 + 모든 공격 스킬. 빠지는 것: '반격에 사용 불가'(noCounter) · 수비 · 기회공격 전용 · 지원 스킬.
+   범위·돌진 스킬도 그대로 둠(막고 싶으면 반격 불가 체크). 사용 조건이 안 맞으면 목록엔 보이되 버튼 잠김(사거리 밖과 같음) */
+counterOptions=function(k){const u=uOf(k),out=[{...BASIC_ATK,label:'기본 반격'}];
+ if(srcOf(u))allSk(k).forEach(([s,i])=>{if(!s||s.noCounter===true||s.noCounter==='true'||['수비','기회공격 전용'].includes(s.role)||s.sup?.on)return;out.push(skillAtk(s,i))});return out};
+{const cb0=counterBlock;counterBlock=function(t,o){const b=cb0.apply(this,arguments);if(b||!o||!/^s\d+$/.test(o.opt||''))return b;try{const c=CH(srcOf(unitRaw(t.to))),sk=skAt(c,+o.opt.slice(1)),f=useFail(sk,t.to,t.by);if(f)return`${o.label} 사용 조건이 맞지 않음 (${f})`}catch(e){}return''}}
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
