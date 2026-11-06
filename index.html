@@ -2339,7 +2339,9 @@ function passiveTest(eq){
 }
 
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
-const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1}})();
+const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1,v112:o.v112}})();
+if(!FXSET.v112){if(+FXSET.fl===2)FXSET.fl=1;FXSET.v112=1;try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}}
+const CSK=()=>[1.35,1.15,.55][clamp(+FXSET.csp,0,2)]??1.15;
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2385,7 +2387,7 @@ document.addEventListener('pointerdown',()=>{if(FXSET.snd)SFX.init()},{once:true
 
 /* 합 연출 */
 const CS={q:[],busy:false,skip:false,cur:null};
-const sleep=ms=>new Promise(r=>setTimeout(r,CS.skip?0:ms*(FXSET.fast?.55:1)));
+const sleep=ms=>new Promise(r=>setTimeout(r,CS.skip?0:ms*CSK()));
 const reAnim=(el,c)=>{if(!el)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
 const POSES=[['idle','대기'],['dash','돌진'],['atk','공격'],['guard','방어'],['evade','회피'],['hurt','피격']];
 // 그림이 없을 때 쓰는 실루엣: 관절 좌표(오른쪽을 보는 자세)
@@ -2409,7 +2411,7 @@ function setPose(f,U,pose){if(!f)return;f.dataset.pose=pose;const im=$('img',f);
  if(im){const anyP=Object.values(U.P||{}).find(Boolean),src=U.P[pose]||U.P.idle||anyP||U.base;f.classList.toggle('real',!!U.P[pose]);f.classList.toggle('posed',!!anyP);if(im.getAttribute('src')!==src)im.src=src}
  else $('.cs-body',f).innerHTML=silSvg(pose)}
 // x는 자기 너비 기준 %. 0=제자리, 음수/양수=왼쪽/오른쪽
-function slide(f,x,ms,ease){f.style.transition=`transform ${ms*(FXSET.fast?.55:1)}ms ${ease||'cubic-bezier(.2,.8,.2,1)'}`;f.style.transform=`translateX(${x}%)`}
+function slide(f,x,ms,ease){f.style.transition=`transform ${ms*CSK()}ms ${ease||'cubic-bezier(.2,.8,.2,1)'}`;f.style.transform=`translateX(${x}%)`}
 function csBadge(mod){return`<div class="cs-badge">${mod?`<em>${mod>0?'+':''}${mod}</em>`:''}<b>·</b><div class="cs-dice"></div></div>`}
 const setNum=(b,v)=>{b.textContent=v;reAnim(b,'bump')};
 async function rollBadge(bd,dice,mod,cv,crit,fast){if(!bd)return;const b=$('b',bd),box=$('.cs-dice',bd);let mx=0;
@@ -2549,7 +2551,7 @@ function fxSetPanel(){return`<div class="bt-h">소리·연출</div><div class="p
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="snd" ${FXSET.snd?'checked':''}> 효과음 켜기 (합성음, 파일 없음)</label>
  ${mixHTML()}
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="cs" ${FXSET.cs?'checked':''}> 합 연출 화면 보기</label>
- <label class="row small"><input type="checkbox" data-c="fxSet" data-k="fast" ${FXSET.fast?'checked':''}> 연출 빠르게</label>
+ <label class="f">합 연출 속도<select data-c="fxSet" data-k="csp">${[[0,'느리게'],[1,'보통'],[2,'빠르게']].map(([v,n])=>`<option value="${v}" ${+FXSET.csp===v?'selected':''}>${n}</option>`).join('')}</select></label>
  ${fxPrefsHTML()}
  <div class="row"><button class="btn sm" data-a="fxTest" data-v="clang">칭 소리 듣기</button><button class="btn sm" data-a="fxTest" data-v="hit">타격</button></div><div class="row"><span class="small muted">미리보기</span><button class="btn sm" data-a="fxDemo" data-v="hit">합→적중</button><button class="btn sm" data-a="fxDemo" data-v="evade">회피</button><button class="btn sm" data-a="fxDemo" data-v="none">치명타</button></div>
  <div class="bt-h" style="margin-top:10px">효과음 바꾸기</div>${sfxListHTML()}
@@ -2992,7 +2994,7 @@ document.addEventListener('keydown',ev=>{if(UI.tab!=='talk'||M.fn||ev.ctrlKey||e
 
 
 function fxPrefsHTML(){const o=(k,L)=>`<select data-c="fxSet" data-k="${k}">${L.map(([v,n])=>`<option value="${v}" ${+FXSET[k]===v?'selected':''}>${n}</option>`).join('')}</select>`;
- return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
+ return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'강 (부딪히는 곳 + 화면 옅게)'],[1,'약 (부딪히는 곳만)'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
 function richHelpModal(){const r=[['{떨림}무, 무슨…{/}','떨리는 글자'],['{외침}멈춰!{/}','크고 굵게 떨림'],['{속삭임}비밀이야{/}','작고 흐리게'],['{크게} {작게} {굵게} {기울임} {흐림}','모양'],['{빨강} {파랑} {금색} {회색}','색'],['{물결}두둥실{/}','물결치는 글자'],['{/}','마지막으로 연 모양 닫기 (겹쳐 쓸 수 있어요)'],['{느리게} {빠르게} {보통}','여기부터 타자 속도'],['그래서{쉼 1.5}결국…','잠깐 멈춤 (초, 생략하면 0.6)'],['안 돼!{흔들림 강}','그 글자에 닿으면 흔들림 (약·중·강)'],['{섬광} {붉은 섬광}','그 순간 번쩍'],['{효과음 쾅}','그 순간 효과음'],['괜찮아…{표정 웃음}거짓말이야','말하는 중에 표정 바꾸기'],['{동작 놀람}','말하는 캐릭터 동작 (놀람·떨림·끄덕…)']];
  return`<div class="rh">${r.map(([c,d])=>`<code>${esc(c)}</code><span>${esc(d)}</span>`).join('')}</div><p class="small muted" style="margin-top:10px">대사 기록에는 꾸미기 표시가 빠진 글만 남아요. '…', 마침표 뒤에는 자동으로 살짝 쉬어요. 대본에서도 그대로 쓸 수 있어요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 A.richHelp=()=>openModal('대사 꾸미기',richHelpModal);
@@ -5441,6 +5443,15 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .bt-drawer .dr-h{display:flex;align-items:center;gap:6px}
 /* §111 돌진 예정 */
 .bt-unit.bt-pre{opacity:.72;outline:2px dashed #4fc3ff;outline-offset:2px}
+/* §113 번쩍임: 합은 부딪히는 중심에서만 둥글게 · 약이 기본 */
+.cs-flash{background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.95) 0,color-mix(in srgb,var(--c) 55%,#fff) 5vmin,color-mix(in srgb,var(--c) 25%,transparent) 13vmin,transparent 24vmin)!important;filter:none!important;mix-blend-mode:screen}
+@keyframes csflash{0%{opacity:.9;transform:scale(.7)}100%{opacity:0;transform:scale(1.25)}}
+@keyframes csflash2{0%{opacity:1;transform:scale(.6)}40%{opacity:.75;transform:scale(1.15)}100%{opacity:0;transform:scale(1.45)}}
+.cs-flash.go{animation:csflash .22s ease-out}.cs-flash.go2{animation:csflash2 .36s ease-out}
+body:not(.fx-flash-1):not(.fx-flash-0) .cs-flash{background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.95) 0,color-mix(in srgb,var(--c) 55%,#fff) 5vmin,color-mix(in srgb,var(--c) 25%,transparent) 13vmin,transparent 24vmin),rgba(255,255,255,.1)!important}
+.fx-flash-0 .cs-flash{display:none}
+.fx-flash-1 .ci-flash,.fx-flash-1 .cm-flash{filter:opacity(.35)}
+.fx-flash-0 .ci-flash,.fx-flash-0 .cm-flash{display:none}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
