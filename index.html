@@ -1932,7 +1932,7 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  const canUse=op=>act&&(!cur.main||(cur.reuse===op.opt&&!t?.dashed))&&(!t||t.phase==='declare')&&!t?.dashed,opts=act?atkOptions(cur.k):[];
  const skills=act&&!isDown(cu)?`<div class="hs-row">${opts.map(op=>hudSkillIcon(op,cur.k,t?.phase==='declare'&&t.opt===op.opt,!canUse(op),cur.reuse===op.opt)).join('')}</div>`:'';
  const cards=allies.map(u=>{const c=hpCalc(hpOf(u)),sc=u.char&&CH(u.char),im=uImg(u),isCur=act&&cur.k===u.k;
-  return`<div class="card-slot ${isCur?'now':''}${u.form?` formed f-${u.form}`:''}${formOut(u.k)?' unform':''}" ${u.form?`style="--fc:${formColor(u)}"`:''}>${isCur?skills:''}${u.form?formAura():''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span>${u.form?'<i class="pc-aura"></i>':''}${u.form==='twist'?'<i class="pc-crk"></i>':''}<b class="pc-hp" title="체력">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
+  return`<div class="card-slot ${isCur?'now':''}${u.form?` formed f-${u.form}`:''}${formOut(u.k)?' unform':''}" ${u.form?`style="--fc:${formColor(u)}"`:''}>${isCur?skills:''}${u.form?formAura():''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')${fpBgU(u,im,1)}"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span>${u.form?'<i class="pc-aura"></i>':''}${u.form==='twist'?'<i class="pc-crk"></i>':''}<b class="pc-hp" title="체력">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
  const foeSkills=act&&cu?.side==='foe'&&!isDown(cu)&&(!NET.on||NET.gm||mineU(cu.k))?`<div class="foe-act"><span class="fa-name">${esc(uName(cu))}의 행동</span>${skills}</div>`:'';
  const bottom=`<div class="hud-bottom">${foeSkills}<div class="cards">${cards||'<p class="small muted">아군이 없어요. 마스터 도구에서 배치하세요.</p>'}</div></div>`;
  // 오른쪽 아래: START 와 보조 버튼
@@ -1970,7 +1970,7 @@ function paintBoard(){const el=$('#btBoard');if(!el)return;const B=BT(),w=btW(),
  const pct=(v,n)=>v/n*100;
  el.innerHTML=`<div class="bt-grid">${cells}</div>${atk&&unitRaw(atk.by)&&atk.to&&unitRaw(atk.to)?(()=>{const a=unitRaw(atk.by),b=unitRaw(atk.to),x1=+a.x+.5,y1=+a.y+.5,x2=+b.x+.5,y2=+b.y+.5,d=Math.hypot(x2-x1,y2-y1),cx=(x1+x2)/2,cy=Math.min(y1,y2)-.35-d*.35,col=atk.phase==='declare'||atk.phase==='opp'?'#efe4cc':atk.r?.mode==='none'?'#4fc3ff':atk.r?.mode?'#ffc23b':'#efe4cc';
  return`<svg class="bt-path bt-arc" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width=".16"/><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="${col}" stroke-width=".08" class="bt-atkline"/><circle cx="${x2}" cy="${y2-.3}" r=".13" fill="${col}"/></svg>`})():''}${atkLines(atk,w,h)}<svg class="bt-path" id="btPath" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"></svg>
- ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}${u.form?` formed f-${u.form}`:''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%${u.form?`;--fc:${formColor(u)}`:''}" aria-label="${esc(nm)}">${u.form?'<i class="bt-aura"></i>':''}${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
+ ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}${u.form?` formed f-${u.form}`:''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%${u.form?`;--fc:${formColor(u)}`:''}" aria-label="${esc(nm)}">${u.form?'<i class="bt-aura"></i>':''}${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')${fpBgU(u,im)}"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
  <div class="bt-tip" id="btTip"></div>`;
  paintPreview()}
 function paintPreview(){const svg=$('#btPath'),tip=$('#btTip');if(!svg)return;svg.innerHTML='';tip.className='bt-tip';hvClear();const v=UI.bt.hov,t=ATK();
@@ -3021,7 +3021,7 @@ function cutPump(){if(!dockLogged())return;const L=cutList();if(!CUT.t0){CUT.t0=
  for(const e of L)if(!CUT.seen.has(e.k)){CUT.seen.add(e.k);if((e.t||0)>=CUT.t0-5000&&!(e.kind==='judge'&&FXSET.jc===false))CUT.q.push(e)}cutNext()}
 function cutNext(){if(CUT.busy||!CUT.q.length)return;if(CS.busy||CS.q.length){setTimeout(cutNext,400);return}cutPlay(CUT.q.shift())}
 const ciA=(an,d,du)=>`ci-a" style="--an:${an};--d:${d}s${du?`;--du:${du}s`:''}`;   // class="${ciA(...)}" 형태로 씀
-const ciImg=(ref,cls='')=>{const u=pImg(ref);return u?`<img class="ci-img ${cls}" src="${esc(u)}" alt="">`:`<div class="ci-sil ${cls}">${silSvg('atk')}</div>`};
+const ciImg=(ref,cls='',sty='')=>{const u=pImg(ref);return u?`<img class="ci-img ${cls}" src="${esc(u)}" alt=""${sty?` style="${sty}"`:''}>`:`<div class="ci-sil ${cls}">${silSvg('atk')}</div>`};
 const pipsH=(n,on,cls='')=>`<span class="ci-pips ${cls}">${Array.from({length:n},(_,i)=>`<u class="${i<on?'on':''}"></u>`).join('')}</span>`;
 const barTxt=t=>`<div class="ci-bar t"><span>${(t+' · ').repeat(16)}</span></div><div class="ci-bar b"><span>${(t+' · ').repeat(16)}</span></div>`;
 const CUT_HTML={
@@ -3146,7 +3146,7 @@ function cutEditor(c,P,k){const q=`${P}/${k}/cut`,cu=c[k].cut||{},st=CUT_STYLES[
  <div class="f2">${fld('투명 영상 WebM 주소 (선택)',q+'/vid',cu.vid)}${fld('사파리용 MOV(HEVC 알파) 주소 (선택)',q+'/vid2',cu.vid2)}</div>
  <div class="f2"><label class="f"><span>영상 위치</span><select data-b="${q}/vmode">${optsKV(Object.fromEntries(VMODES),cu.vmode||'art')}</select></label><label class="row small" style="align-self:end"><input type="checkbox" data-b="${q}/vsnd" ${cu.vsnd?'checked':''}> 영상 소리 사용 (기본 효과음 대신)</label></div>
  <details class="cut-lv"><summary>단계별로 다르게 (대사·영상)</summary>${[1,2,3,4].map(n=>`<div class="f3"><b>${n}단계</b>${fld('대사',`${q}/lv/${n}/line`,cu.lv?.[n]?.line)}${fld('WebM',`${q}/lv/${n}/vid`,cu.lv?.[n]?.vid)}${fld('MOV',`${q}/lv/${n}/vid2`,cu.lv?.[n]?.vid2)}</div>`).join('')}</details>
- <div class="row"><button class="btn sm" data-a="cutTest" data-v="${k}">▶ 내 화면에서 미리보기</button></div>`}
+ <div class="row"><button class="btn sm" data-a="cutTest" data-v="${k}">▶ 내 화면에서 미리보기</button><button class="btn sm" data-a="fpOpen" data-v="${k}" title="그림에서 보여 줄 곳(얼굴 등)을 찍고 확대를 정해요 — 컷인·카드·토큰에 모두 적용">◎ 그림 초점 맞추기</button></div>`}
 function tokenEditor(c,P){const L=c.tokens||[];return`<h4 class="sh-h">토큰 이미지 <small>전투에서 한 번 눌러 바꿔요 · 발현하면 자동으로</small></h4>
  <div class="toks">${L.map((t,i)=>`<div class="tok">${pImg(t.img)?`<img src="${esc(pImg(t.img))}" alt="">`:'<span></span>'}<input type="text" aria-label="토큰 이름" data-b="${P}/tokens/${i}/n" value="${esc(t.n)}" placeholder="이름"><button class="btn sm danger" data-a="tokDel" data-p="${P}/tokens" data-v="${i}">삭제</button></div>`).join('')}<button class="btn sm" data-a="tokAdd" data-p="${P}/tokens">＋ 토큰 추가</button></div>
  ${L.length?`<div class="f2"><label class="f"><span>E.G.O 발현 시 토큰</span><select data-b="${P}/tokE"><option value="">바꾸지 않음</option>${L.map((t,i)=>`<option value="${i}" ${String(c.tokE)===String(i)?'selected':''}>${esc(t.n||'토큰 '+(i+1))}</option>`).join('')}</select></label><label class="f"><span>뒤틀림 발현 시 토큰</span><select data-b="${P}/tokT"><option value="">바꾸지 않음</option>${L.map((t,i)=>`<option value="${i}" ${String(c.tokT)===String(i)?'selected':''}>${esc(t.n||'토큰 '+(i+1))}</option>`).join('')}</select></label></div>`:''}`}
@@ -5415,6 +5415,22 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .cx-mirrorT .cm-g{font-family:var(--fk);font-size:72px;color:#ffd6d0}
 #gmc .gmc-dbg>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}#gmc .gmc-dbg>summary::-webkit-details-marker{display:none}
 #gmc .gmc-dbg>summary h5{margin:0}#gmc .gmc-dbg>summary h5::before{content:'▸ ';color:#b9a587}#gmc .gmc-dbg[open]>summary h5::before{content:'▾ '}#gmc .gmc-dbg[open]>summary{margin-bottom:8px}
+/* §109 그림 초점 + 컷인 그림 반 잘림 수정 */
+.cm-base img.ci-img,.cm-sh img.ci-img,.cm-bloom img.ci-img,.cq-img img.ci-img{left:0;top:0;bottom:auto;right:auto;max-width:none}
+.cm-base,.cm-sh,.cm-bloom{overflow:hidden}
+.cq-img{top:0!important;height:100%!important;overflow:hidden}
+.cq-img img.ci-img{position:absolute;inset:0;width:100%;height:100%}
+.cq-img{-webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 82%,transparent)}.cq-img img{-webkit-mask:none!important}
+.fp{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}
+.fp-src{position:relative;cursor:crosshair;touch-action:none;user-select:none;background:#000;border:1px solid #5a4630;max-height:62vh;display:flex;justify-content:center}
+.fp-src img{display:block;max-width:100%;max-height:62vh;pointer-events:none}
+.fp-src{width:fit-content;margin:8px auto 0}
+.fp-dot{position:absolute;width:22px;height:22px;margin:-11px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #000,0 0 12px #ffcf6a;pointer-events:none}
+.fp-dot::after{content:'';position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px;background:#ffcf6a;border-radius:50%}
+.fp-r{display:grid;gap:4px}.fp-r small{color:#b9a587}
+.fp-pv{position:relative;overflow:hidden;background:#0c0806;border:1px solid #8f7a3a}
+.fp-pv img{position:absolute;inset:0;width:100%;height:100%}
+.fp-m{width:150px;height:170px}.fp-q{width:260px;height:96px}.fp-c{width:82px;height:94px;clip-path:polygon(10% 0,100% 0,100% 90%,90% 100%,0 100%,0 10%)}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6225,7 +6241,7 @@ const FORMS={prev:{},out:{}};const formOut=k=>(FORMS.out[k]||0)>Date.now();
 setInterval(()=>{const U=BT().units||{};let ch=false;for(const[k,u]of Object.entries(U)){const f=u?.form||'';if(FORMS.prev[k]&&!f){FORMS.out[k]=Date.now()+850;ch=true;setTimeout(()=>{try{paintHud()}catch{}},900)}FORMS.prev[k]=f}if(ch)try{paintHud()}catch{}},300);
 // 컷인 스타일 고르기: 전투 발현 = quick, 단계 상승 = 거울 개화(시트에서 스타일을 직접 골랐으면 그대로)
 {const cf=cutFromChar;cutFromChar=function(c,kind,lv,label){const p=cf.apply(this,arguments),cu=c?.[kind]?.cut||{};
- if(label==='발현')p.style='quick';else if(!cu.style)p.style=kind==='ego'?'mirror':'mirrorT';if(!p.col)p.col=formColorOf(c,kind);return p}}
+ if(label==='발현')p.style='quick';else if(!cu.style)p.style=kind==='ego'?'mirror':'mirrorT';if(!p.col)p.col=formColorOf(c,kind);p.f1=fpOf(c,p.art);p.f2=fpOf(c,p.art2);return p}}
 CUT_STYLES.ego.unshift(['mirror','거울 개화 (기본)']);CUT_STYLES.twist.unshift(['mirrorT','붉은 균열 깨짐 (기본)']);
 Object.assign(CUT_DUR,{quick:1500,mirror:4500,mirrorT:4500});
 Object.assign(CUT_SFX,{quick:[[0,'whoosh'],[.22,'bell']],mirror:[[.02,'whoosh'],[1.05,'glass'],[1.42,'glass'],[1.46,'heavy'],[1.75,'bell']],mirrorT:[[.02,'static'],[1.05,'glass'],[1.42,'boom'],[1.46,'glass'],[1.8,'heart']]});
@@ -6236,16 +6252,46 @@ const MIRROR=(()=>{const cx=50,cy=38,R=[0,13,29,50,150],N=10,j=(i,k)=>Math.sin(i
  return{sh,lines,cx,cy}})();
 function mirrorHTML(p,tw){const base=p.art,bloom=p.art2||p.art,top=tw?(p.lv>=4?'LOST':'DISTORTION'):(p.lv>=4?'FULL AWAKENING':'E.G.O BLOOM');
  return`${barTxt(top)}<div class="cm-glow"></div><div class="cm-rays"></div>
- <div class="cm-bloom">${ciImg(bloom)}</div>
- <div class="cm-panel"><div class="cm-streak"></div><div class="cm-base">${ciImg(base)}<i class="cm-sheen"></i></div>
-  ${MIRROR.sh.map(s=>`<div class="cm-sh" style="clip-path:polygon(${s.poly});--dx:${s.dx}px;--dy:${s.dy}px;--r:${s.r}deg;--dl:${s.dl}s">${ciImg(base)}</div>`).join('')}
+ <div class="cm-bloom">${ciImg(bloom,'',fpImg(p.art2?p.f2:p.f1))}</div>
+ <div class="cm-panel"><div class="cm-streak"></div><div class="cm-base">${ciImg(base,'',fpImg(p.f1))}<i class="cm-sheen"></i></div>
+  ${MIRROR.sh.map(s=>`<div class="cm-sh" style="clip-path:polygon(${s.poly});--dx:${s.dx}px;--dy:${s.dy}px;--r:${s.r}deg;--dl:${s.dl}s">${ciImg(base,'',fpImg(p.f1))}</div>`).join('')}
   <svg class="cm-crack" viewBox="0 0 100 100" preserveAspectRatio="none">${MIRROR.lines.map(l=>`<polyline points="${l}" pathLength="100"/>`).join('')}</svg>
   <i class="cm-hit" style="left:${MIRROR.cx}%;top:${MIRROR.cy}%"></i></div>
  <div class="cm-flash"></div>
  <div class="cm-info"><div class="cm-tag"><b>${tw?'뒤틀림':'E.G.O'} · ${esc(p.label||'')}</b></div><div class="cm-g">${tw?esc(p.lv>=4?'LOST':p.lv+'단계'):esc(p.grade)}</div><div class="cm-name">${esc(p.name)}</div>
   <div class="cm-lv">${tw?'뒤틀림':'E.G.O'} ${p.lv}단계 ${pipsH(4,p.lv)}</div>${p.line?`<div class="cm-line">“${esc(p.line)}”</div>`:''}<div class="cm-who">— ${esc(p.who)}</div></div>`}
 CUT_HTML.mirror=p=>mirrorHTML(p,false);CUT_HTML.mirrorT=p=>mirrorHTML(p,true);
-CUT_HTML.quick=p=>{const tw=p.kind==='twist';return`<div class="cq-band"><div class="cq-img">${ciImg(p.art2||p.art)}</div><i class="cq-line"></i><div class="cq-txt"><small>${tw?'뒤틀림 발현':'E.G.O 발현'}</small><b>${esc(p.name)}</b><span>${tw?'':esc(p.grade)+' · '}${p.lv}단계 · ${esc(p.who)}</span></div></div>`};
+CUT_HTML.quick=p=>{const tw=p.kind==='twist';return`<div class="cq-band"><div class="cq-img">${ciImg(p.art2||p.art,'',fpImg(p.art2?p.f2:p.f1))}</div><i class="cq-line"></i><div class="cq-txt"><small>${tw?'뒤틀림 발현':'E.G.O 발현'}</small><b>${esc(p.name)}</b><span>${tw?'':esc(p.grade)+' · '}${p.lv}단계 · ${esc(p.who)}</span></div></div>`};
+</script>
+<script id="focus-fit">
+/* §109 그림 초점: 그림마다 보여 줄 곳(x,y %)과 확대(z) 하나 → 거울 개화·발현 띠·카드·토큰에 공통 적용. chars/<id>/focus/<vimg:ref> */
+const FP0={x:50,y:22,z:1};
+const fpOf=(c,ref)=>ref&&c?.focus?.[ref]?{...FP0,...c.focus[ref]}:{...FP0};
+const fpImg=f=>{f=f||FP0;return`object-fit:cover;object-position:${f.x}% ${f.y}%;transform:scale(${f.z||1});transform-origin:${f.x}% ${f.y}%`};
+function fpBgU(u,im,zoom){if(!u.form)return'';const c=CH(srcOf(u)),ref=c?.[u.form]?.img;if(!ref||pImg(ref)!==im)return'';const f=fpOf(c,ref);return`;background-size:cover;background-position:${f.x}% ${f.y}%${zoom&&f.z>1?`;transform:scale(${f.z});transform-origin:${f.x}% ${f.y}%`:''}`}
+function fpRefs(c,k){const L=[];if(c?.[k]?.img)L.push([c[k].img,k==='ego'?'E.G.O 그림':'뒤틀림 그림']);const a=artOf(c);if(a&&a!==c?.[k]?.img)L.push([a,'스탠딩 (거울 개화 첫 장면)']);return L}
+function fpModal(){const F=UI.fp,c=CH(F?.id);if(!c)return'<p>캐릭터가 없어요</p>';const L=fpRefs(c,F.k);
+ if(!L.length)return`<p>${F.k==='ego'?'E.G.O':'뒤틀림'} 칸에 그림이 없어요. 시트에서 그림을 먼저 넣어 주세요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`;
+ if(!L.some(([r])=>r===F.ref))F.ref=L[0][0];const u=pImg(F.ref),f=fpOf(c,F.ref),st=fpImg(f);
+ return`<div class="fp">
+ <div class="fp-l"><div class="row">${L.map(([r,n])=>`<button class="btn sm ${r===F.ref?'on':''}" data-a="fpRef" data-v="${esc(r)}">${n}</button>`).join('')}</div>
+  <div class="fp-src" onpointerdown="fpPick(event)" onpointermove="event.buttons&&fpPick(event)"><img src="${esc(u)}" alt="" draggable="false"><i class="fp-dot" style="left:${f.x}%;top:${f.y}%"></i></div>
+  <p class="small muted">보여 주고 싶은 곳(얼굴 등)을 누르거나 끌어요.</p>
+  <label class="f"><span>확대 ${(+f.z||1).toFixed(2)}배</span><input type="range" min="1" max="2.5" step=".05" value="${f.z||1}" oninput="fpZoom(this.value)"></label>
+  <div class="row"><button class="btn sm" data-a="fpReset">기본값 (가운데 위)</button></div></div>
+ <div class="fp-r"><small>거울 개화 틀</small><div class="fp-pv fp-m"><img src="${esc(u)}" style="${st}" alt=""></div>
+  <small>발현 띠</small><div class="fp-pv fp-q"><img src="${esc(u)}" style="${st}" alt=""></div>
+  <small>카드</small><div class="fp-pv fp-c"><img src="${esc(u)}" style="${st}" alt=""></div></div></div>
+ <div class="mfoot"><button class="btn" data-a="cutTest" data-v="${F.k}">▶ 컷인 미리보기</button><button class="btn pri" data-a="closeModal">닫기</button></div>`}
+function fpSet(f){const F=UI.fp,c=CH(F?.id);if(!c||!F.ref)return;const v={x:Math.round(f.x),y:Math.round(f.y),z:+(+f.z).toFixed(2)};
+ if(v.x===FP0.x&&v.y===FP0.y&&v.z===1)Store.set(`chars/${c.id}/focus/${F.ref}`,null);else Store.set(`chars/${c.id}/focus/${F.ref}`,v);drawModal()}
+function fpPick(e){const r=e.currentTarget.getBoundingClientRect(),c=CH(UI.fp?.id);if(!c)return;e.preventDefault();const f=fpOf(c,UI.fp.ref);
+ fpSet({...f,x:clamp((e.clientX/(UIZ?.z||1)-r.left)/r.width*100,0,100),y:clamp((e.clientY/(UIZ?.z||1)-r.top)/r.height*100,0,100)})}
+function fpZoom(v){const c=CH(UI.fp?.id);if(!c)return;fpSet({...fpOf(c,UI.fp.ref),z:+v})}
+Object.assign(A,{
+ fpOpen(e){const c=CH(UI.charId);if(!c)return;UI.fp={id:c.id,k:e.dataset.v,ref:''};M.wide=true;openModal('그림 초점 맞추기',fpModal)},
+ fpRef(e){UI.fp.ref=e.dataset.v;drawModal()},
+ fpReset(){fpSet({...FP0})}});
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
