@@ -5413,6 +5413,8 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .cx-mirrorT .cm-bloom{animation:cmBloom .9s cubic-bezier(.2,.8,.2,1) 1.45s forwards,cmGlitch .25s steps(2) 2.4s 6}
 @keyframes cmGlitch{50%{transform:translateX(6px);filter:hue-rotate(-30deg) saturate(2)}}
 .cx-mirrorT .cm-g{font-family:var(--fk);font-size:72px;color:#ffd6d0}
+#gmc .gmc-dbg>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}#gmc .gmc-dbg>summary::-webkit-details-marker{display:none}
+#gmc .gmc-dbg>summary h5{margin:0}#gmc .gmc-dbg>summary h5::before{content:'▸ ';color:#b9a587}#gmc .gmc-dbg[open]>summary h5::before{content:'▾ '}#gmc .gmc-dbg[open]>summary{margin-bottom:8px}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6051,7 +6053,7 @@ function gmcBody(){const B=BT(),t=UI.gmcTab,tabNm={talk:'스탠딩',battle:'전�
  if(t==='battle'){const su=UI.bt.sel&&uOf(UI.bt.sel),sc=su&&CH(srcOf(su));
   return`${UI.tab!=='battle'?`<p class="small muted">전투 화면이 아니에요. ${go('battle','전투로 가기')}</p>`:''}
   ${su?`<div class="gmc-sec"><h5>고른 유닛 · ${esc(uName(su))}</h5><div class="row">${sc&&['foe','npc'].includes(kindOf(sc))?'<button class="btn sm" data-a="idnOpen">식별 관리</button>':''}${srcOf(su)?'<button class="btn sm" data-a="btSheet">시트</button>':''}</div>${unitPanel(su,true)}</div>`:'<p class="small muted">지도에서 유닛을 누르면 여기서 그 유닛을 바로 고칠 수 있어요.</p>'}
-  ${masterPanel(B)}<div class="gmc-sec"><h5>고치기</h5><div class="row"><button class="btn sm" data-a="dbgOpen">디버그 (직접 수정)</button><button class="btn sm" data-a="hudDrawer" data-v="log">전투 기록</button></div></div>`}
+  ${masterPanel(B)}<details class="gmc-sec gmc-dbg" ${UI.gmcDbg?'open':''}><summary data-a="gmcDbgT"><h5>전투 디버그 · 직접 수정</h5><small class="muted">이동력 · 행동 기회 · 키워드 · 위치 · 라운드…</small></summary>${UI.tab==='battle'?dbgPanel():''}</details><div class="gmc-sec"><h5>고치기</h5><div class="row"><button class="btn sm" data-a="dbgOpen">방 전체 디버그</button><button class="btn sm" data-a="hudDrawer" data-v="log">전투 기록</button></div></div>`}
  return`<div class="gmc-sec"><h5>시트</h5><div class="row"><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="openSheet">시트 열기</button></div>
   <div class="row"><button class="btn sm" data-a="rosterNew" data-v="pc">＋ 플레이어</button><button class="btn sm" data-a="foeNew">＋ 적</button><button class="btn sm" data-a="rosterNew" data-v="npc">＋ NPC</button><button class="btn sm" data-a="foeSample">예시 적</button></div>
   <div class="row"><button class="btn sm" data-a="charFileLoad">⇧ 캐릭터 파일 불러오기</button></div></div>`}
@@ -6067,6 +6069,7 @@ function paintGmc(force){let h=$('#gmcHandle'),el=$('#gmc');const can=isGmLike()
  if(el._h!==html){el._h=html;el.innerHTML=html;el.querySelector('.gmc-b').scrollTop=sy}}
 Object.assign(A,{
  gmcToggle(){UI.gmc=!UI.gmc;if(UI.gmc&&!UI.master){UI.master=true;renderNav();if(UI.tab==='rail'||UI.tab==='battle')renderMain();else paint()}paintGmc(true)},
+ gmcDbgT(e){e?.preventDefault?.();UI.gmcDbg=!UI.gmcDbg;paintGmc(true)},
  gmcOpen(e){UI.gmc=true;UI.talkMenu=false;if(e?.dataset?.v)UI.gmcTab=e.dataset.v;if(!UI.master){UI.master=true;renderNav()}paint();paintGmc(true)},
  gmcTab(e){UI.gmcTab=e.dataset.v;paintGmc(true)},
  gmcDir(){if(UI.tab!=='talk')A.tab({dataset:{v:'talk'}});setTimeout(()=>{if(!UI.dir)A.dirOpen()},50)},
