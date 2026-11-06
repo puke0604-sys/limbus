@@ -2341,7 +2341,7 @@ function passiveTest(eq){
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
 const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1,v112:o.v112}})();
 if(!FXSET.v112){if(+FXSET.fl===2)FXSET.fl=1;FXSET.v112=1;try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}}
-const CSK=()=>[1,.58,.45][clamp(+FXSET.csp,0,2)]??.58;   // 느리게 = 예전 보통, 보통 = 예전 빠르게보다 5% 느리게, 빠르게 = 그보다 더
+const CSK=()=>FXSET.fast?.55:1;   // §116 처음 속도로 복구 (보통 ×1, 연출 빠르게 ×0.55)
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2461,8 +2461,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
- const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK*Math.max(1,.85/CSK())));   // §115 히트스톱은 속도와 상관없이 거의 그대로 (타격감)
- el.addEventListener('animationstart',e=>{const r=1/CSK();if(r===1)return;for(const a of e.target.getAnimations?.()||[])if(a.animationName===e.animationName&&a.playbackRate!==r)a.playbackRate=r});   // 그림 효과도 같은 비율로
+ const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK));
  const hold=async ms=>{if(!SK)return;el.classList.add('stop');await HS(ms);el.classList.remove('stop')};
  // 코인: 부딪칠 때마다 하나씩. 진 쪽 코인이 깨지고, 동점이면 둘 다 튕긴다
  const nC=none?0:clash.length+1,coinRow=side=>{const h=q(`.cs-head.${side}`);if(!h||!nC)return null;const r=document.createElement('div');r.className='cs-coins';r.innerHTML='<i class="cs-coin"></i>'.repeat(nC);h.append(r);return r};
@@ -2552,7 +2551,7 @@ function fxSetPanel(){return`<div class="bt-h">소리·연출</div><div class="p
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="snd" ${FXSET.snd?'checked':''}> 효과음 켜기 (합성음, 파일 없음)</label>
  ${mixHTML()}
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="cs" ${FXSET.cs?'checked':''}> 합 연출 화면 보기</label>
- <label class="f" title="느리게 = 예전 기본 속도">합 연출 속도<select data-c="fxSet" data-k="csp">${[[0,'느리게'],[1,'보통'],[2,'빠르게']].map(([v,n])=>`<option value="${v}" ${+FXSET.csp===v?'selected':''}>${n}</option>`).join('')}</select></label>
+ <label class="row small"><input type="checkbox" data-c="fxSet" data-k="fast" ${FXSET.fast?'checked':''}> 연출 빠르게</label>
  ${fxPrefsHTML()}
  <div class="row"><button class="btn sm" data-a="fxTest" data-v="clang">칭 소리 듣기</button><button class="btn sm" data-a="fxTest" data-v="hit">타격</button></div><div class="row"><span class="small muted">미리보기</span><button class="btn sm" data-a="fxDemo" data-v="hit">합→적중</button><button class="btn sm" data-a="fxDemo" data-v="evade">회피</button><button class="btn sm" data-a="fxDemo" data-v="none">치명타</button></div>
  <div class="bt-h" style="margin-top:10px">효과음 바꾸기</div>${sfxListHTML()}
