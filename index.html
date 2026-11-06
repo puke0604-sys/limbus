@@ -6357,7 +6357,7 @@ document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&ATK()?.pre&&ATK()
 function preAuto(t,v){const o={x:+unitRaw(t.by).x,y:+unitRaw(t.by).y},C=[{...o,d:0},...dashCellsFrom(t.by,t.move.n,o.x,o.y)];
  const self=t.multi&&((!isOrigin(t.area)&&!t.range)||(t.area.shape==='custom'&&t.area.anchor!=='point'&&t.area.rot==='none')),V={x:+v.x,y:+v.y};
  const ok=c=>{if(!t.multi)return cheb(c,v)<=t.range;const aim=self?{x:c.x,y:c.y}:V;if(!aimOk(t.area,c,aim,t.range))return false;const P=areaPlan(t.area,c,aim,t.range,btCtx(),()=>false);c.aim=self?null:aim;return[...P.c1,...P.c2].some(q=>q.x===V.x&&q.y===V.y)};
- const L=C.filter(ok).sort((a,b)=>a.d-b.d||cheb(a,v)-cheb(b,v));return L[0]||null}
+ const L=C.filter(ok).sort((a,b)=>cheb(a,v)-cheb(b,v)||a.d-b.d);return L[0]||null}
 {const b0=A.btCell;A.btCell=function(e){const t=ATK();if(t?.phase==='declare'&&t.move?.type==='cell'&&!UI.bt.mode){const x=+e.dataset.x,y=+e.dataset.y;
   if(!t.dashed){const c=dashCellsFrom(t.by,t.move.n,+unitRaw(t.by).x,+unitRaw(t.by).y).find(c=>c.x===x&&c.y===y);return c?preDash(x,y,c.d):toast('파란 칸 중에서 고르세요 (직선, 사이가 비어 있어야 해요)',1)}
   if(t.pre&&!t.multi){if(x===t.pre.fx&&y===t.pre.fy)return preDash(x,y,0);const c=dashCellsFrom(t.by,t.move.n,t.pre.fx,t.pre.fy).find(c=>c.x===x&&c.y===y);if(c)return preDash(x,y,c.d)}}
@@ -6380,6 +6380,8 @@ function preReady(t){const by=uOf(t.by);if(t.kind==='미지정')return false;if(
  if(P.d){const sx=Math.sign(P.x-P.fx),sy=Math.sign(P.y-P.fy);zonePath(k,Array.from({length:P.d},(_,i)=>({x:P.fx+sx*(i+1),y:P.fy+sy*(i+1)})))}
  return r}}
 A.atkDeclare=function(){return atkDeclare.apply(this,arguments)};
+// 돌진 스킬의 거리 조건(대상과 거리 ○ 이상)은 출발 칸 기준으로 잰다 (선언하는 동안)
+{const co1=condOk;condOk=function(c,ctx){if(c?.kind==='distMin'){const t=ATK();if(t&&t.phase==='declare'&&t.dashFrom&&t.by===ctx?.self){const b=uOf(ctx.target);return!!b&&cheb(t.dashFrom,b)>=(+c.v||0)}}return co1.apply(this,arguments)}}
 // 예정 중에는 다른 공격으로 바꿀 수 있다 (예정 이동을 되돌린 뒤)
 {const so=atkSetOpt;atkSetOpt=function(v){const t=ATK();if(t?.pre&&t.phase==='declare'){const u=unitRaw(t.by);if(u)Store.set(`${BTP}/units/${t.by}`,{...u,x:t.pre.fx,y:t.pre.fy},true);PRE.id=null;const{pre,dashFrom,dashD,...rest}=t;Store.set(`${BTP}/atk`,{...rest,dashed:false},true)}return so.apply(this,arguments)}}
 // 안내 문구
