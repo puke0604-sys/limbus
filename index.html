@@ -3429,7 +3429,7 @@ const DOCK={open:false,tab:'chat',pop:true,t0:0,seenC:0,seenD:0,popped:new Set()
 try{const o=JSON.parse(localStorage.getItem('limbus-dock')||'{}');DOCK.open=!!o.open;DOCK.tab=o.tab==='dice'?'dice':'chat';DOCK.pop=o.pop!==false}catch{}
 const dockSave=()=>{try{localStorage.setItem('limbus-dock',JSON.stringify({open:DOCK.open,tab:DOCK.tab,pop:DOCK.pop}))}catch{}};
 const listOf=p=>Object.entries(Store.get(p)||{}).filter(([k,v])=>v&&typeof v==='object'&&k[0]!=='_').map(([k,v])=>({...v,k})).sort((a,b)=>(a.t||0)-(b.t||0));
-const chatList=()=>listOf('play/chat'),diceList=()=>listOf('play/dice');
+const chatList=()=>listOf('play/chat').filter(m=>!m.gmo||isGmLike()),diceList=()=>listOf('play/dice');
 const DOCK_MAX={'play/chat':200,'play/dice':120};
 function dockTrim(p){const l=listOf(p),cut=l.length-DOCK_MAX[p];for(const e of l.slice(0,Math.max(0,cut)))Store.set(`${p}/${e.k}`,null,true)}
 function diceAdd(e){Store.push('play/dice',{t:nowT(),uid:ME,...e});dockTrim('play/dice')}
@@ -3459,7 +3459,7 @@ function paintDock(){const el=$('#dock');if(!el)return;if(!dockLogged()){el.clas
  const sig=[DOCK.open,DOCK.tab,DOCK.pop,UI.tab,C.length,C.at(-1)?.k,D.length,D.at(-1)?.k,NET.gm,UI.master].join('|');if(sig===DOCK.sig)return;DOCK.sig=sig;
  el.className=(DOCK.open&&show?'on ':'')+'t-'+UI.tab;if(!DOCK.open||!show)return;
  const dN=D.filter(e=>(e.t||0)>Math.max(DOCK.seenD,DOCK.t0)).length;
- const body=DOCK.tab==='chat'?(C.length?C.map(m=>`<div class="cm ${m.uid===ME?'me':''} ${m.sys?'sys':''}"><b class="${isGmId(m.uid)?'gm':''}">${esc(m.uid||'?')}${isGmId(m.uid)?' (GM)':''}</b>${esc(m.txt||'')}<time>${hhmm(m.t)}</time>${logCan(m)?logDelB('play/chat',m.k):''}</div>`).join(''):'<p class="dk-empty">아직 채팅이 없어요. 캐릭터 대사가 아닌 플레이어끼리의 대화를 나눠요.</p>')
+ const body=DOCK.tab==='chat'?(C.length?C.map(m=>`<div class="cm ${m.uid===ME?'me':''} ${m.sys?'sys':''} ${m.gmo?'gmo':''}"><b class="${isGmId(m.uid)?'gm':''}">${esc(m.uid||'?')}${isGmId(m.uid)?' (GM)':''}</b>${esc(m.txt||'')}<time>${hhmm(m.t)}</time>${logCan(m)?logDelB('play/chat',m.k):''}</div>`).join(''):'<p class="dk-empty">아직 채팅이 없어요. 캐릭터 대사가 아닌 플레이어끼리의 대화를 나눠요.</p>')
   :(D.length?D.map(e=>logCan(e)?diceCard(e).replace(/^(<div[^>]*>)/,'$1'+logDelB('play/dice',e.k)):diceCard(e)).join(''):'<p class="dk-empty">아직 굴린 주사위가 없어요. 판정·공격·대응·이니셔티브 결과가 여기에 모여요.</p>');
  const prev=$('#dkTxt')?.value||'',focus=document.activeElement?.id==='dkTxt';
  el.innerHTML=`<div class="dk-hd"><button class="${DOCK.tab==='chat'?'on':''}" data-a="dockTab" data-v="chat">채팅</button><button class="${DOCK.tab==='dice'?'on':''}" data-a="dockTab" data-v="dice">주사위${dN&&DOCK.tab!=='dice'?`<small>+${dN}</small>`:''}</button><span class="sp"></span>${DOCK.tab==='dice'?`<button class="pp ${DOCK.pop?'on':''}" data-a="dockPop" title="새 주사위 결과를 화면 위쪽에 크게 띄우기">팝업 ${DOCK.pop?'켬':'끔'}</button>`:''}<button class="pp" data-a="logMine" data-p="${DOCK.tab==='chat'?'play/chat':'play/dice'}" title="내가 쓴·굴린 기록만 모두 지워요">내 기록 지우기</button>${isGmLike()?`<button class="pp" data-a="logAll" data-p="${DOCK.tab==='chat'?'play/chat':'play/dice'}" title="모든 사람의 기록을 지워요 (마스터)">전체 지우기</button>`:''}<button class="x" data-a="dockToggle" aria-label="닫기">×</button></div>
@@ -3747,6 +3747,8 @@ function skillEditor(x,p){
  ${zoneEditor(x,p)}
  <h4 class="sh-h">재사용</h4>
  <div class="fxr"><select data-b="${p}/reuse/on" data-r>${optsKV({'':'없음',hit:'적중하면 한 번 더 사용 가능'},ru.on||'')}</select>${ru.on?`<label class="small">턴당 최대${num(`${p}/reuse/max`,ru.max||1,1,5)}회</label>`:''}</div>${assistEditor(x,p)}
+ <h4 class="sh-h">GM 처리 메모 <small>툴이 자동으로 못 하는 부분 · 이 스킬을 쓰면 GM에게 채팅으로 자동 알림</small></h4>
+ ${fld('GM에게 보낼 내용 (비우면 알림 없음)',p+'/gmNote',x.gmNote||'')}
  <h4 class="sh-h">대응·반격</h4>
  <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/unresp" data-r ${x.unresp?'checked':''}> 대응 불가 — 대상은 회피·방어를 할 수 없고 비대응으로만 받아요 (보호·반격 규칙은 그대로)</label></div>
  <div class="fxr"><label class="row small"><input type="checkbox" data-b="${p}/noCounter" data-r ${x.noCounter?'checked':''}> 반격에 사용 불가 — 너무 강한 스킬은 체크하세요. 반격할 때 목록에 뜨지 않아요</label></div>
@@ -5452,6 +5454,9 @@ body:not(.fx-flash-1):not(.fx-flash-0) .cs-flash{background:radial-gradient(circ
 .fx-flash-0 .cs-flash{display:none}
 .fx-flash-1 .ci-flash,.fx-flash-1 .cm-flash{filter:opacity(.35)}
 .fx-flash-0 .ci-flash,.fx-flash-0 .cm-flash{display:none}
+/* §118 GM 알림 */
+#dock .cm.gmo{background:rgba(196,140,40,.12);border-left:3px solid #c8962a;padding-left:6px}
+#dock .cm.gmo b{color:#ffcf6a}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6403,6 +6408,25 @@ dashInfo=function(t){if(!t.move)return'';const n=t.move.n;
  if(t.move.type==='target')return`<p class="small dash-i">돌진: 같은 직선 위 대상에게 최대 ${n}칸 달려가 바로 앞 칸에서 공격해요. 사이 칸이 비어 있어야 해요.</p>`;
  if(t.pre)return`<div class="bt-step">돌진 예정: ${t.pre.d?t.pre.d+'칸':'제자리'}</div><p class="small dash-i">아직 움직이지 않았어요. ${t.multi?'범위를 정하고':'대상을 고르고'} ATTACK을 누르면 돌진과 공격이 한 번에 실행돼요.${t.multi?'':' 다른 파란 칸을 누르면 착지 칸이 바뀌어요.'} 자기 말을 누르거나 Esc로 착지 칸을 다시 골라요.</p>`;
  return`<div class="bt-step">돌진: 직선 최대 ${n}칸</div><p class="small dash-i">파란 칸에 마우스를 올리면 그 칸에 착지했을 때 닿는 범위가 보여요. 착지할 칸을 누르거나, 공격할 적을 바로 누르면 닿는 칸을 골라 줘요. 아직 행동은 쓰지 않아요.</p><div class="row"><button class="btn sm" data-a="atkNoDash">제자리에서 공격</button></div>`};
+</script>
+<script id="gm-note">
+/* §118 자동 처리가 안 되는 일 → GM에게 자동 알림 (GM만 보는 채팅 + 알림창)
+   ① 기록에 "GM 확인"이 붙는 모든 경우(자작 소비 효과·키워드 규칙 '알림'·실행 오류·대상 없음 등)
+   ② 스킬의 "GM 처리 메모"(쓸 때마다) ③ 효과가 구조화되지 않은 예전 글 스킬을 쓸 때 */
+const GMN={last:{},seen:new Set(),init:false};
+function gmNote(txt){txt=String(txt||'').slice(0,300);if(!txt)return;const now=Date.now();if(GMN.last[txt]&&now-GMN.last[txt]<8000)return;GMN.last[txt]=now;
+ Store.push('play/chat',{t:nowT(),uid:'GM 알림',sys:1,gmo:1,txt});try{dockTrim('play/chat')}catch{}}
+{const bl=btLog;btLog=function(txt,fx){const r=bl.apply(this,arguments);try{if(/GM 확인/.test(String(txt)))gmNote('⚙ '+String(txt))}catch{}return r}}
+// 스킬 선언이 성공하면(선언 단계를 벗어나면) 메모 알림
+{const ad=atkDeclare;atkDeclare=function(){const t=ATK(),r=ad.apply(this,arguments),t2=ATK();
+ try{if(t&&t.phase==='declare'&&(!t2||t2.id!==t.id||t2.phase!=='declare')&&String(t.opt||'').startsWith('s')){const sk=skillOf(t.by,t.opt),who=atkName(t.by),to=t.multi?'범위':(t.to?atkName(t.to):'');
+  if(sk?.gmNote)gmNote(`📝 ${who} 「${t.label}」${to?' → '+to:''}: ${sk.gmNote}`);
+  else if(sk&&!isStruct(sk)&&(sk.desc||'').trim())gmNote(`📝 ${who} 「${t.label}」${to?' → '+to:''} — 효과가 자동 처리되지 않는 스킬이에요: ${String(sk.desc).slice(0,160)}`)}}catch{}
+ return r}}
+A.atkDeclare=function(){return atkDeclare.apply(this,arguments)};
+// GM 화면: 새 알림이 오면 알림창으로도
+setInterval(()=>{if(!isGmLike())return;const L=listOf('play/chat').filter(m=>m.gmo);if(!GMN.init){L.forEach(m=>GMN.seen.add(m.k));GMN.init=true;return}
+ for(const m of L)if(!GMN.seen.has(m.k)){GMN.seen.add(m.k);if((m.t||0)>nowT()-60000)toast('GM 알림 — '+m.txt.replace(/^⚙ |^📝 /,''),1)}},700);
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
