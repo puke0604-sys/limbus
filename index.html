@@ -3907,7 +3907,7 @@ function mDeclare(t){const by=uOf(t.by);if(!t.aim)return toast('조준할 칸을
  takeMain(t);if(t.zone)placeZone(t,[...P.c1,...P.c2],t.label);
  Store.set(`${BTP}/atk`,{...t,cand,s2:P.k2,firstK:P.firstK||null,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 — ${areaText(t.area,t.range)}, 후보 ${cand.map(atkName).join(', ')}`,{type:'declare',by:t.by,to:cand[0],kind:t.kind,multi:true});
- const used=BT().cur?.opp||{},q=oppTrig(t,cand)?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];   // 7.8.2
+ const used=BT().cur?.opp||{},q=oppTrig(t,cand)?foesNear(t.by).filter(u=>!used[u.k]&&!cand.includes(u.k)).map(u=>u.k):[];   // 7.8.2 — 공격 대상은 막거나 피하느라 기회공격 안 함, 붙어 있는 다른 적만(빈틈)
  if(q.length)return Store.set(`${BTP}/atk`,{...ATK(),phase:'opp',oppQ:q,oppLog:[]});
  mProtectStart()}
 // 13.1 보호를 먼저 처리해 최종 대상을 확정. 보호자는 한 공격에 한 명만 보호
@@ -4127,7 +4127,7 @@ function atkDeclare(){const t=ATK();if(!t||t.phase!=='declare')return;if(t.multi
  Store.set(`${BTP}/atk`,{...t,snap:snapAll(),fired:{}},true);
  btLog(`${uName(by)} ${t.label} 선언 → ${uName(to)} (${t.kind} · 사거리 ${t.range} · 거리 ${cheb(by,to)})`,{type:'declare',by:t.by,to:t.to,kind:t.kind});
  // 7.8.2 접전 중 원거리 공격: 인접한 적마다 기회공격 기회. 같은 적은 이 캐릭터의 한 턴에 한 번
- const used=BT().cur?.opp||{},q=oppTrig(t,[t.to])?foesNear(t.by).filter(u=>!used[u.k]).map(u=>u.k):[];
+ const used=BT().cur?.opp||{},q=oppTrig(t,[t.to])?foesNear(t.by).filter(u=>!used[u.k]&&u.k!==t.to).map(u=>u.k):[];   // 공격 대상은 제외 — 붙어 있는 다른 적만
  if(q.length){Store.set(`${BTP}/atk`,{...ATK(),phase:'opp',oppQ:q,oppLog:[]});return}
  atkPreRoll()}
 function oppAct(use){const t=ATK();if(!t||t.phase!=='opp')return;const k=t.oppQ[0],e=uOf(k),log=[...(t.oppLog||[])];
