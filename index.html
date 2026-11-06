@@ -1785,7 +1785,7 @@ const hpOf=u=>fixHp(u.char?CH(u.char)?.hp:u.hp);
 const isDown=u=>{const c=hpCalc(hpOf(u));return c.max>0&&c.left<=0}; // 5.7
 const uName=u=>(u.char?CH(u.char)?.info?.name:u.name)||(u.side==='foe'?'적':'이름 없음');
 const srcOf=u=>u?.char||u?.tpl||'';                    // 스킬·일러스트를 가져올 시트
-const uImg=u=>{const c=CH(srcOf(u)),t=u.tok!=null&&u.tok!==''?c?.tokens?.[+u.tok]:null;return pImg(t?.img||u.img||c?.portrait)};
+const uImg=u=>{const c=CH(srcOf(u)),t=u.tok!=null&&u.tok!==''?c?.tokens?.[+u.tok]:null,f=u.form&&c?.[u.form],ft=u.form==='ego'?c?.tokE:c?.tokT;if(f&&pImg(f.img)&&(ft==null||ft===''))return pImg(f.img);return pImg(t?.img||u.img||c?.portrait)};
 const btW=()=>clamp(+BT().w||16,4,40),btH=()=>clamp(+BT().h||10,4,30);
 
 /* 5.2~5.6 피해 적용. hp는 단계별 칸 배열(0 빈칸, 1 피해, 2 잠금), t는 0부터 */
@@ -1932,7 +1932,7 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  const canUse=op=>act&&(!cur.main||(cur.reuse===op.opt&&!t?.dashed))&&(!t||t.phase==='declare')&&!t?.dashed,opts=act?atkOptions(cur.k):[];
  const skills=act&&!isDown(cu)?`<div class="hs-row">${opts.map(op=>hudSkillIcon(op,cur.k,t?.phase==='declare'&&t.opt===op.opt,!canUse(op),cur.reuse===op.opt)).join('')}</div>`:'';
  const cards=allies.map(u=>{const c=hpCalc(hpOf(u)),sc=u.char&&CH(u.char),im=uImg(u),isCur=act&&cur.k===u.k;
-  return`<div class="card-slot ${isCur?'now':''}">${isCur?skills:''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span><b class="pc-hp" title="체력">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
+  return`<div class="card-slot ${isCur?'now':''}${u.form?` formed f-${u.form}`:''}${formOut(u.k)?' unform':''}" ${u.form?`style="--fc:${formColor(u)}"`:''}>${isCur?skills:''}${u.form?formAura():''}<button class="pc ${isDown(u)?'down':''} ${UI.bt.sel===u.k?'sel':''}" data-a="btUnit" data-v="${esc(u.k)}"><span class="pc-img" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...uName(u)][0]||'?')}</span>${u.form?'<i class="pc-aura"></i>':''}${u.form==='twist'?'<i class="pc-crk"></i>':''}<b class="pc-hp" title="체력">${c.pct==null?'-':c.left}</b><b class="pc-st" title="스트레스">${sc?+sc.stress||0:'·'}</b><em>${esc(uName(u))}</em></button></div>`}).join('');
  const foeSkills=act&&cu?.side==='foe'&&!isDown(cu)&&(!NET.on||NET.gm||mineU(cu.k))?`<div class="foe-act"><span class="fa-name">${esc(uName(cu))}의 행동</span>${skills}</div>`:'';
  const bottom=`<div class="hud-bottom">${foeSkills}<div class="cards">${cards||'<p class="small muted">아군이 없어요. 마스터 도구에서 배치하세요.</p>'}</div></div>`;
  // 오른쪽 아래: START 와 보조 버튼
@@ -1970,7 +1970,7 @@ function paintBoard(){const el=$('#btBoard');if(!el)return;const B=BT(),w=btW(),
  const pct=(v,n)=>v/n*100;
  el.innerHTML=`<div class="bt-grid">${cells}</div>${atk&&unitRaw(atk.by)&&atk.to&&unitRaw(atk.to)?(()=>{const a=unitRaw(atk.by),b=unitRaw(atk.to),x1=+a.x+.5,y1=+a.y+.5,x2=+b.x+.5,y2=+b.y+.5,d=Math.hypot(x2-x1,y2-y1),cx=(x1+x2)/2,cy=Math.min(y1,y2)-.35-d*.35,col=atk.phase==='declare'||atk.phase==='opp'?'#efe4cc':atk.r?.mode==='none'?'#4fc3ff':atk.r?.mode?'#ffc23b':'#efe4cc';
  return`<svg class="bt-path bt-arc" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width=".16"/><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="${col}" stroke-width=".08" class="bt-atkline"/><circle cx="${x2}" cy="${y2-.3}" r=".13" fill="${col}"/></svg>`})():''}${atkLines(atk,w,h)}<svg class="bt-path" id="btPath" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"></svg>
- ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%" aria-label="${esc(nm)}">${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
+ ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}${u.form?` formed f-${u.form}`:''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%${u.form?`;--fc:${formColor(u)}`:''}" aria-label="${esc(nm)}">${u.form?'<i class="bt-aura"></i>':''}${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
  <div class="bt-tip" id="btTip"></div>`;
  paintPreview()}
 function paintPreview(){const svg=$('#btPath'),tip=$('#btTip');if(!svg)return;svg.innerHTML='';tip.className='bt-tip';hvClear();const v=UI.bt.hov,t=ATK();
@@ -5342,6 +5342,77 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .mix{margin:4px 0 10px;padding:8px 10px;border:1px solid #4d3c2a;background:rgba(10,7,4,.45)}.mix-h{font:400 14px var(--fk);color:#e8c48a;margin-bottom:4px}.mix-h small{font-size:11.5px;color:#8f7f68;margin-left:6px}
 .mix-r{display:grid;grid-template-columns:7.5em 1fr 3.2em 1.4em;align-items:center;gap:6px;font-size:13px;color:#d6cbb6;min-height:26px}.mix-r input{width:100%}.mix-r b{font-weight:400;text-align:right;color:#ffdca0;font-size:12.5px}.mix-r .lnk{font-size:12px;padding:0}
 .mix-r.all span{color:#ffcf6a}.mix-r.all{border-bottom:1px dashed #3d2f21;padding-bottom:4px;margin-bottom:2px}
+/* §107 발현 연출 */
+@property --fa{syntax:'<angle>';inherits:false;initial-value:0deg}
+.card-slot{position:relative}
+.card-slot.formed{filter:drop-shadow(0 0 4px var(--fc)) drop-shadow(0 0 10px color-mix(in srgb,var(--fc) 55%,transparent));animation:fmPulse 2.2s ease-in-out infinite}
+@keyframes fmPulse{50%{filter:drop-shadow(0 0 7px var(--fc)) drop-shadow(0 0 18px color-mix(in srgb,var(--fc) 75%,transparent))}}
+.pc-aura{position:absolute;inset:0;z-index:2;pointer-events:none;padding:3px;background:conic-gradient(from var(--fa),transparent 0 52%,color-mix(in srgb,var(--fc) 60%,transparent) 66%,#fff 74%,var(--fc) 80%,transparent 94%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:fmRot 2.4s linear infinite}
+.card-slot.formed .pc{border-color:var(--fc)}
+@keyframes fmRot{to{--fa:360deg}}
+.pc-emb{position:absolute;left:50%;bottom:0;width:96px;height:120px;transform:translateX(-50%);pointer-events:none;z-index:3}
+.pc-emb span{position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--fc);box-shadow:0 0 6px var(--fc),0 0 2px #fff;opacity:0;animation:fmEmb 2.6s linear infinite}
+.pc-emb span:nth-child(1){left:12%;animation-delay:0s}.pc-emb span:nth-child(2){left:30%;animation-delay:.7s}.pc-emb span:nth-child(3){left:48%;animation-delay:1.4s}.pc-emb span:nth-child(4){left:64%;animation-delay:.35s}.pc-emb span:nth-child(5){left:80%;animation-delay:1.05s}.pc-emb span:nth-child(6){left:22%;animation-delay:1.8s}.pc-emb span:nth-child(7){left:72%;animation-delay:2.2s}
+@keyframes fmEmb{0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:1}100%{transform:translate(6px,-110px) scale(.3);opacity:0}}
+.card-slot.f-twist .pc-aura{background:conic-gradient(from var(--fa),var(--fc) 0 8%,transparent 8% 20%,var(--fc) 20% 26%,transparent 26% 47%,#ff8a7a 47% 50%,transparent 50% 70%,var(--fc) 70% 80%,transparent 80%);animation:fmRot 3.6s steps(14) infinite,fmJit .18s steps(2) infinite}
+.card-slot.f-twist{animation:fmPulseT 1.4s steps(5) infinite}
+@keyframes fmPulseT{0%,100%{filter:drop-shadow(0 0 4px var(--fc)) drop-shadow(0 0 9px #400)}40%{filter:drop-shadow(1px 0 6px var(--fc)) drop-shadow(-1px 0 14px var(--fc))}60%{filter:drop-shadow(-2px 0 3px var(--fc)) drop-shadow(0 0 8px #600)}}
+@keyframes fmJit{50%{transform:translate(1px,-1px)}}
+.card-slot.f-twist .pc-emb span{background:#200;box-shadow:0 0 6px var(--fc);border-radius:1px}
+.pc-crk{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.75;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 82 94'%3E%3Cg fill='none' stroke='%23ff3b2a' stroke-width='1.2'%3E%3Cpolyline points='41,40 30,30 22,33 10,18'/%3E%3Cpolyline points='41,40 55,48 62,44 78,58'/%3E%3Cpolyline points='41,40 38,58 46,70 40,94'/%3E%3Cpolyline points='41,40 50,26 47,12 56,0'/%3E%3C/g%3E%3C/svg%3E") center/cover;animation:fmFlick 1.7s steps(6) infinite}
+@keyframes fmFlick{0%,100%{opacity:.75}30%{opacity:.35}55%{opacity:.9}70%{opacity:.5}}
+.card-slot.unform .pc{animation:fmOut .85s ease-out}
+@keyframes fmOut{0%{filter:brightness(2.4) saturate(.4)}100%{filter:none}}
+.bt-aura{position:absolute;inset:-12%;border-radius:50%;pointer-events:none;z-index:0;background:conic-gradient(from var(--fa),transparent 0 55%,var(--fc) 75%,#fff 80%,transparent 95%);-webkit-mask:radial-gradient(closest-side,transparent 78%,#000 80%,#000 96%,transparent 100%);mask:radial-gradient(closest-side,transparent 78%,#000 80%,#000 96%,transparent 100%);animation:fmRot 2.4s linear infinite;filter:drop-shadow(0 0 4px var(--fc))}
+.bt-unit.f-twist .bt-aura{animation:fmRot 3.6s steps(12) infinite,fmJit .2s steps(2) infinite}
+/* 짧은 발현 컷인 */
+.cx-quick{background:transparent!important}.cx-quick .ci-flash{display:none}
+.cq-band{position:absolute;left:0;right:0;top:33%;height:34%;overflow:hidden;background:linear-gradient(90deg,rgba(0,0,0,.92),color-mix(in srgb,var(--c) 45%,#0a0604) 50%,rgba(0,0,0,.92));border-top:2px solid var(--c);border-bottom:2px solid var(--c);animation:cqBand 1.5s cubic-bezier(.2,.9,.2,1) both;box-shadow:0 0 40px color-mix(in srgb,var(--c) 60%,transparent)}
+@keyframes cqBand{0%{transform:scaleY(0)}10%{transform:scaleY(1)}80%{transform:scaleY(1);opacity:1}100%{transform:scaleY(.2);opacity:0}}
+.cq-img{position:absolute;right:8%;top:-60%;width:46%;height:220%;animation:cqImg 1.5s cubic-bezier(.15,.9,.2,1) both}.cq-img img,.cq-img .ci-sil{width:100%;height:100%;object-fit:cover;object-position:50% 18%;-webkit-mask:linear-gradient(90deg,transparent,#000 25%,#000 80%,transparent)}
+@keyframes cqImg{0%{transform:translateX(70vw) skewX(-16deg)}22%{transform:translateX(-2%) skewX(0)}100%{transform:translateX(-6%)}}
+.cq-line{position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:cqLine .5s ease-out .05s both}@keyframes cqLine{0%{transform:scaleX(0);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.cq-txt{position:absolute;left:10%;top:50%;transform:translateY(-50%);display:grid;gap:4px;animation:cqTxt 1.5s ease both}.cq-txt small{font:400 15px var(--fn);letter-spacing:.3em;color:var(--c)}.cq-txt b{font:400 52px var(--fk);color:#fff;text-shadow:0 0 18px var(--c)}.cq-txt span{font-size:16px;color:#e8dcc4}
+@keyframes cqTxt{0%,12%{opacity:0;transform:translate(-30px,-50%)}26%{opacity:1;transform:translate(0,-50%)}85%{opacity:1}100%{opacity:0}}
+/* 거울 개화 */
+.cx-mirror,.cx-mirrorT{background:radial-gradient(ellipse at 30% 45%,color-mix(in srgb,var(--c) 22%,#000),#000 70%)}
+.cx-mirror .ci-flash,.cx-mirrorT .ci-flash{display:none}
+.cm-glow{position:absolute;inset:0;background:radial-gradient(circle at 27% 45%,color-mix(in srgb,var(--c) 55%,transparent),transparent 45%);opacity:0;animation:cmFade .6s ease 1.42s forwards}
+.cm-rays{position:absolute;left:27%;top:45%;width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;background:repeating-conic-gradient(color-mix(in srgb,var(--c) 30%,transparent) 0 3deg,transparent 3deg 12deg);opacity:0;animation:cmFade .5s ease 1.45s forwards,cmSpin 9s linear 1.45s infinite;-webkit-mask:radial-gradient(circle,#000 0,transparent 45%)}
+@keyframes cmSpin{to{transform:rotate(360deg)}}
+.cm-panel{position:absolute;left:8vw;top:11vh;width:38vw;height:78vh;animation:cmIn .38s cubic-bezier(.15,.95,.25,1) both}
+@keyframes cmIn{0%{transform:translateX(-80vw) skewX(-16deg);filter:brightness(3) blur(6px)}70%{filter:brightness(1.4) blur(0)}100%{transform:none;filter:none}}
+.cm-streak{position:absolute;left:-60vw;right:-10%;top:46%;height:16%;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--c) 70%,#fff) 70%,#fff);opacity:0;animation:cmStreak .45s ease-out both;filter:blur(4px)}
+@keyframes cmStreak{0%{opacity:.9;transform:scaleY(1)}100%{opacity:0;transform:scaleY(.1)}}
+.cm-base,.cm-sh{position:absolute;inset:0;overflow:hidden;border:2px solid color-mix(in srgb,var(--c) 70%,#fff);box-shadow:0 0 26px color-mix(in srgb,var(--c) 60%,transparent),inset 0 0 40px rgba(255,255,255,.08);background:#0c0806}
+.cm-sh{border:0;box-shadow:none;background:transparent}
+.cm-base img,.cm-sh img,.cm-bloom img,.cm-base .ci-sil,.cm-sh .ci-sil{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.cm-base{animation:cmHide 0s linear 1.42s forwards}@keyframes cmHide{to{opacity:0}}
+.cm-sheen{position:absolute;top:0;bottom:0;width:30%;left:-40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:cmSheen .6s ease .45s both}@keyframes cmSheen{to{left:120%}}
+.cm-sh{opacity:0;animation:cmShard 1.15s cubic-bezier(.2,.6,.3,1) calc(1.42s + var(--dl)) forwards;filter:brightness(1.25) contrast(1.1);will-change:transform}
+.cm-sh::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 40%,rgba(255,255,255,.15))}
+@keyframes cmShard{0%{opacity:1;transform:none}12%{opacity:1;transform:translate(calc(var(--dx)*.08),calc(var(--dy)*.08)) rotate(calc(var(--r)*.1))}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(.85)}}
+.cm-crack{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0;animation:cmCrackOn 0s linear 1.05s forwards,cmHide 0s linear 1.5s forwards}
+.cm-crack polyline{fill:none;stroke:#fff;stroke-width:2.2;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 3px var(--c));animation:cmDraw .3s ease-out 1.05s forwards}
+@keyframes cmCrackOn{to{opacity:1}}@keyframes cmDraw{to{stroke-dashoffset:0}}
+.cm-hit{position:absolute;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff;box-shadow:0 0 30px 12px #fff,0 0 60px 30px var(--c);opacity:0;animation:cmHit .35s ease-out 1.05s forwards}@keyframes cmHit{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(2.4)}}
+.cm-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;opacity:0;animation:cmFlash .5s ease-out 1.42s forwards}@keyframes cmFlash{0%{opacity:.9}100%{opacity:0}}
+.cm-bloom{position:absolute;left:5vw;top:6vh;width:44vw;height:88vh;opacity:0;animation:cmBloom .9s cubic-bezier(.2,.8,.2,1) 1.45s forwards;-webkit-mask:radial-gradient(ellipse 60% 62% at 50% 45%,#000 60%,transparent 100%)}
+@keyframes cmBloom{0%{opacity:0;transform:scale(1.25);filter:brightness(3) blur(4px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes cmFade{to{opacity:1}}
+.cm-info{position:absolute;left:56vw;right:5vw;top:24vh;display:grid;gap:10px}
+.cm-tag b{display:inline-block;padding:3px 12px;font:400 14px var(--fk);color:#000;background:var(--c)}
+.cm-g{font:400 92px/1 var(--fs,serif);color:#fff6da;letter-spacing:.04em;text-shadow:0 0 22px var(--c),0 4px 0 color-mix(in srgb,var(--c) 50%,#000)}
+.cm-name{font:400 46px var(--fk);color:#fff;text-shadow:0 0 14px var(--c)}
+.cm-lv{font-size:16px;color:#e8dcc4}.cm-line{font-size:20px;color:#f3e7cf;margin-top:6px}.cm-who{font-size:14px;color:#b9a587}
+.cm-tag,.cm-g,.cm-name,.cm-lv,.cm-line,.cm-who{opacity:0;animation:cmTxt .45s ease forwards}
+.cm-tag{animation-delay:1.55s}.cm-g{animation:cmSlam .4s cubic-bezier(.2,1.4,.4,1) 1.62s forwards}.cm-name{animation-delay:1.85s}.cm-lv{animation-delay:2s}.cm-line{animation-delay:2.35s}.cm-who{animation-delay:2.6s}
+@keyframes cmTxt{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+@keyframes cmSlam{0%{opacity:0;transform:scale(2.2)}100%{opacity:1;transform:none}}
+.cx-mirrorT .cm-crack polyline{stroke:#ff4a3a}.cx-mirrorT .cm-sh{filter:brightness(.9) sepia(.4) hue-rotate(-20deg) saturate(1.6)}.cx-mirrorT .cm-bloom{filter:sepia(.3) saturate(1.4) hue-rotate(-15deg)}
+.cx-mirrorT .cm-bloom{animation:cmBloom .9s cubic-bezier(.2,.8,.2,1) 1.45s forwards,cmGlitch .25s steps(2) 2.4s 6}
+@keyframes cmGlitch{50%{transform:translateX(6px);filter:hue-rotate(-30deg) saturate(2)}}
+.cx-mirrorT .cm-g{font-family:var(--fk);font-size:72px;color:#ffd6d0}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6138,6 +6209,40 @@ CHANGE.mixSet=el=>{mixSet(el);saveFxSet()};
 document.addEventListener('input',e=>{if(e.target?.dataset?.c==='mixSet')mixSet(e.target)},true);
 Object.assign(A,{mixTry(e){const c=e.dataset.v;if(!SFX.ok())return toast('소리가 꺼져 있어요',1);if(c==='sfx')SFX.play('clang');else if(c==='ui')SFX.play('bell');else if(c==='story')STORY.play('boom');else if(c==='type'){let i=0;const T=setInterval(()=>{typeBlip('nar','',true);if(++i>5)clearInterval(T)},70)}}});
 setTimeout(()=>{mixBuild();mixApply()},0);
+</script>
+<script id="form-fx">
+/* §107 발현 연출
+   B. 전투 중 발현(라벨 '발현'): 짧은 컷인(1.5초) + 발현하는 동안 아군 카드·지도 토큰 그림이 E.G.O/뒤틀림 그림으로, 카드 테두리·토큰 둘레에 죄악 색 효과, 해제하면 빛이 흩어짐
+   A. 단계 상승·각성(목소리 판정): 거울 개화 — 그림이 휙 들어오고 → 금이 가고 → 거울처럼 깨지며 E.G.O 그림이 피어남 (뒤틀림은 붉은 균열로 깨짐)
+   색: E.G.O/뒤틀림 컷인 설정의 죄악 색(cut.sin) → 없으면 E.G.O는 첫 전용 스킬 죄악 색, 뒤틀림은 붉은색 */
+function formColorOf(c,k){const cu=c?.[k]?.cut||{};if(cu.sin)return sinColor(cu.sin);if(k==='ego'){const s=formSk(c,'ego').find(Boolean)?.sin;if(s)return sinColor(s);return'#e0a530'}return'#d4261a'}
+const formColor=u=>formColorOf(CH(srcOf(u)),u.form);
+const formAura=()=>`<i class="pc-emb">${'<span></span>'.repeat(7)}</i>`;
+const FORMS={prev:{},out:{}};const formOut=k=>(FORMS.out[k]||0)>Date.now();
+setInterval(()=>{const U=BT().units||{};let ch=false;for(const[k,u]of Object.entries(U)){const f=u?.form||'';if(FORMS.prev[k]&&!f){FORMS.out[k]=Date.now()+850;ch=true;setTimeout(()=>{try{paintHud()}catch{}},900)}FORMS.prev[k]=f}if(ch)try{paintHud()}catch{}},300);
+// 컷인 스타일 고르기: 전투 발현 = quick, 단계 상승 = 거울 개화(시트에서 스타일을 직접 골랐으면 그대로)
+{const cf=cutFromChar;cutFromChar=function(c,kind,lv,label){const p=cf.apply(this,arguments),cu=c?.[kind]?.cut||{};
+ if(label==='발현')p.style='quick';else if(!cu.style)p.style=kind==='ego'?'mirror':'mirrorT';if(!p.col)p.col=formColorOf(c,kind);return p}}
+CUT_STYLES.ego.unshift(['mirror','거울 개화 (기본)']);CUT_STYLES.twist.unshift(['mirrorT','붉은 균열 깨짐 (기본)']);
+Object.assign(CUT_DUR,{quick:1500,mirror:4500,mirrorT:4500});
+Object.assign(CUT_SFX,{quick:[[0,'whoosh'],[.22,'bell']],mirror:[[.02,'whoosh'],[1.05,'glass'],[1.42,'glass'],[1.46,'heavy'],[1.75,'bell']],mirrorT:[[.02,'static'],[1.05,'glass'],[1.42,'boom'],[1.46,'glass'],[1.8,'heart']]});
+// 거울 조각: 같은 꼭짓점을 공유하는 고리×부채꼴 격자라 틈이 없다
+const MIRROR=(()=>{const cx=50,cy=38,R=[0,13,29,50,150],N=10,j=(i,k)=>Math.sin(i*12.9898+k*78.233)*43758.5453%1,V=R.map((r,i)=>Array.from({length:N},(_,k)=>{const a=(k+(i?j(i,k)*.45:0))/N*Math.PI*2,rr=r*(1+(i?j(k,i)*.18:0));return[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]}));
+ const sh=[];for(let i=0;i<R.length-1;i++)for(let k=0;k<N;k++){const k2=(k+1)%N,P=[V[i][k],V[i][k2],V[i+1][k2],V[i+1][k]],a=(k+.5)/N*Math.PI*2,d=140+i*150;sh.push({poly:P.map(([x,y])=>`${x.toFixed(1)}% ${y.toFixed(1)}%`).join(','),dx:Math.round(Math.cos(a)*d),dy:Math.round(Math.sin(a)*d*.8+60),r:Math.round(j(k,i+3)*140-70),dl:(i*.035+Math.abs(j(i,k))*.05).toFixed(3)})}
+ const lines=[];for(let k=0;k<N;k++)lines.push(V.slice(1,4).map(r=>r[k]).map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' '));for(const i of[1,2])lines.push([...V[i],V[i][0]].map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' '));
+ return{sh,lines,cx,cy}})();
+function mirrorHTML(p,tw){const base=p.art,bloom=p.art2||p.art,top=tw?(p.lv>=4?'LOST':'DISTORTION'):(p.lv>=4?'FULL AWAKENING':'E.G.O BLOOM');
+ return`${barTxt(top)}<div class="cm-glow"></div><div class="cm-rays"></div>
+ <div class="cm-bloom">${ciImg(bloom)}</div>
+ <div class="cm-panel"><div class="cm-streak"></div><div class="cm-base">${ciImg(base)}<i class="cm-sheen"></i></div>
+  ${MIRROR.sh.map(s=>`<div class="cm-sh" style="clip-path:polygon(${s.poly});--dx:${s.dx}px;--dy:${s.dy}px;--r:${s.r}deg;--dl:${s.dl}s">${ciImg(base)}</div>`).join('')}
+  <svg class="cm-crack" viewBox="0 0 100 100" preserveAspectRatio="none">${MIRROR.lines.map(l=>`<polyline points="${l}" pathLength="100"/>`).join('')}</svg>
+  <i class="cm-hit" style="left:${MIRROR.cx}%;top:${MIRROR.cy}%"></i></div>
+ <div class="cm-flash"></div>
+ <div class="cm-info"><div class="cm-tag"><b>${tw?'뒤틀림':'E.G.O'} · ${esc(p.label||'')}</b></div><div class="cm-g">${tw?esc(p.lv>=4?'LOST':p.lv+'단계'):esc(p.grade)}</div><div class="cm-name">${esc(p.name)}</div>
+  <div class="cm-lv">${tw?'뒤틀림':'E.G.O'} ${p.lv}단계 ${pipsH(4,p.lv)}</div>${p.line?`<div class="cm-line">“${esc(p.line)}”</div>`:''}<div class="cm-who">— ${esc(p.who)}</div></div>`}
+CUT_HTML.mirror=p=>mirrorHTML(p,false);CUT_HTML.mirrorT=p=>mirrorHTML(p,true);
+CUT_HTML.quick=p=>{const tw=p.kind==='twist';return`<div class="cq-band"><div class="cq-img">${ciImg(p.art2||p.art)}</div><i class="cq-line"></i><div class="cq-txt"><small>${tw?'뒤틀림 발현':'E.G.O 발현'}</small><b>${esc(p.name)}</b><span>${tw?'':esc(p.grade)+' · '}${p.lv}단계 · ${esc(p.who)}</span></div></div>`};
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
