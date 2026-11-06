@@ -1451,7 +1451,7 @@ function paintTalkStage(){
  const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog"><div class="log-h"><b>대사 기록</b><button class="btn sm" data-a="talkLog">닫기</button></div>${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;if(m.kind==='roll'&&m.roll){const s=speaker(m),g=m.roll.grade;return`<div class="log-row roll"><b>${esc(s.name)}</b><span class="lr-dice">${dieChips(m.roll.rawDice)}</span><em style="color:${JUDGE_COL[g]||'#e8c48a'}">${esc(g)}</em><small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small></div>`}const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
-  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${isGmLike()?'<button class="btn sm pri" data-a="gmcOpen" data-v="stage">GM 콘솔 — 무대·NPC·디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div><label class="f">BGM 음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="bgm" value="${FXSET.bgm??.45}"></label>${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="tourStart" data-v="talk">스탠딩 보는 법</button><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
+  ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${isGmLike()?'<button class="btn sm pri" data-a="gmcOpen" data-v="stage">GM 콘솔 — 무대·NPC·디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div>${mixHTML()}${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="tourStart" data-v="talk">스탠딩 보는 법</button><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
   ${last?dlgHTML({name:sp.name,sub:sp.sub,nar:sp.nar,box:'tkBox',act:'talkSkip'}):dlgHTML({nar:true,hint:'아직 대화가 없어요. 아래에서 말할 캐릭터를 고르고 대사를 입력하세요.'})}${logHTML}`;
  dlgType.draw();
  if(UI.log){const L=$('#tkLog');L.scrollTop=L.scrollHeight}
@@ -2547,7 +2547,7 @@ document.addEventListener('limbus-fx',e=>{const d=e.detail;if(UI.tab!=='battle'|
   case'declare':SFX.play('tick');break}});
 function fxSetPanel(){return`<div class="bt-h">소리·연출</div><div class="plate dbg">
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="snd" ${FXSET.snd?'checked':''}> 효과음 켜기 (합성음, 파일 없음)</label>
- <label class="f">음량<input type="range" min="0" max="1" step="0.05" data-c="fxSet" data-k="vol" value="${FXSET.vol}"></label>
+ ${mixHTML()}
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="cs" ${FXSET.cs?'checked':''}> 합 연출 화면 보기</label>
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="fast" ${FXSET.fast?'checked':''}> 연출 빠르게</label>
  ${fxPrefsHTML()}
@@ -2839,7 +2839,7 @@ Object.assign(A,{
 CHANGE.bgmVol=el=>{FXSET.bgm=+el.value;saveFxSet();BGM.vol()};
 
 /* 이야기용 효과음: 기존 합성기를 재료로 */
-const STORY={play(k,url){if(!url&&SFX.buf[k]&&SFX.ok())return SFX.play(k);if(url){if(!FXSET.snd)return;try{const a=new Audio(url);a.volume=Math.min(1,FXSET.vol);a.play().catch(()=>{})}catch{}return}
+const STORY={play(k,url){if(!url&&SFX.buf[k]&&SFX.ok())return SFX.play(k);if(url){if(!FXSET.snd)return;try{const a=new Audio(url);a.volume=Math.min(1,mixG('story'));a.play().catch(()=>{})}catch{}return}
  if(['hit','clang','bell'].includes(k))return SFX.play(k);if(k==='whoosh')return SFX.play('miss');if(!SFX.ok())return;const S=SFX,t=S.ctx.currentTime+.01;
  switch(k){
   case'boom':S.tone('sine',90,t,1,.9,28);S.band(t,1.2,900,60,.6,.9,'lowpass');break;
@@ -2992,7 +2992,7 @@ document.addEventListener('keydown',ev=>{if(UI.tab!=='talk'||M.fn||ev.ctrlKey||e
 
 
 function fxPrefsHTML(){const o=(k,L)=>`<select data-c="fxSet" data-k="${k}">${L.map(([v,n])=>`<option value="${v}" ${+FXSET[k]===v?'selected':''}>${n}</option>`).join('')}</select>`;
- return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">대사 효과음${o('tvol',[[1,'보통'],[0.5,'작게'],[0,'끄기']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
+ return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
 function richHelpModal(){const r=[['{떨림}무, 무슨…{/}','떨리는 글자'],['{외침}멈춰!{/}','크고 굵게 떨림'],['{속삭임}비밀이야{/}','작고 흐리게'],['{크게} {작게} {굵게} {기울임} {흐림}','모양'],['{빨강} {파랑} {금색} {회색}','색'],['{물결}두둥실{/}','물결치는 글자'],['{/}','마지막으로 연 모양 닫기 (겹쳐 쓸 수 있어요)'],['{느리게} {빠르게} {보통}','여기부터 타자 속도'],['그래서{쉼 1.5}결국…','잠깐 멈춤 (초, 생략하면 0.6)'],['안 돼!{흔들림 강}','그 글자에 닿으면 흔들림 (약·중·강)'],['{섬광} {붉은 섬광}','그 순간 번쩍'],['{효과음 쾅}','그 순간 효과음'],['괜찮아…{표정 웃음}거짓말이야','말하는 중에 표정 바꾸기'],['{동작 놀람}','말하는 캐릭터 동작 (놀람·떨림·끄덕…)']];
  return`<div class="rh">${r.map(([c,d])=>`<code>${esc(c)}</code><span>${esc(d)}</span>`).join('')}</div><p class="small muted" style="margin-top:10px">대사 기록에는 꾸미기 표시가 빠진 글만 남아요. '…', 마침표 뒤에는 자동으로 살짝 쉬어요. 대본에서도 그대로 쓸 수 있어요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 A.richHelp=()=>openModal('대사 꾸미기',richHelpModal);
@@ -5338,6 +5338,10 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .hi-grp.open>.hi-grph{border-bottom:1px solid rgba(106,80,56,.5)}.hi-grpb{padding:0 6px 4px}
 .hi-ar{font-style:normal;color:#8f7f68;width:10px;flex:none}
 .foe-act{flex-direction:column;align-items:center}
+/* §104 소리 조절 */
+.mix{margin:4px 0 10px;padding:8px 10px;border:1px solid #4d3c2a;background:rgba(10,7,4,.45)}.mix-h{font:400 14px var(--fk);color:#e8c48a;margin-bottom:4px}.mix-h small{font-size:11.5px;color:#8f7f68;margin-left:6px}
+.mix-r{display:grid;grid-template-columns:7.5em 1fr 3.2em 1.4em;align-items:center;gap:6px;font-size:13px;color:#d6cbb6;min-height:26px}.mix-r input{width:100%}.mix-r b{font-weight:400;text-align:right;color:#ffdca0;font-size:12.5px}.mix-r .lnk{font-size:12px;padding:0}
+.mix-r.all span{color:#ffcf6a}.mix-r.all{border-bottom:1px dashed #3d2f21;padding-bottom:4px;margin-bottom:2px}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6109,6 +6113,31 @@ Object.assign(A,{hiSk(e){const k=UI.bt.sel;UI.hiSk[k]=UI.hiSk[k]===e.dataset.v?'
 counterOptions=function(k){const u=uOf(k),out=[{...BASIC_ATK,label:'기본 반격'}];
  if(srcOf(u))allSk(k).forEach(([s,i])=>{if(!s||s.noCounter===true||s.noCounter==='true'||['수비','기회공격 전용'].includes(s.role)||s.sup?.on)return;out.push(skillAtk(s,i))});return out};
 {const cb0=counterBlock;counterBlock=function(t,o){const b=cb0.apply(this,arguments);if(b||!o||!/^s\d+$/.test(o.opt||''))return b;try{const c=CH(srcOf(unitRaw(t.to))),sk=skAt(c,+o.opt.slice(1)),f=useFail(sk,t.to,t.by);if(f)return`${o.label} 사용 조건이 맞지 않음 (${f})`}catch(e){}return''}}
+</script>
+<script id="vol-mix">
+/* §104 소리 나눠 조절: 전체 · 전투 효과음 · 이야기 효과음 · 배경음 · 대사 소리 · 알림음 (나만, 이 브라우저)
+   각 칸 0~150%. 실제 크기 = (값/100)² — 사람 귀에 맞춘 곡선이라 낮은 쪽이 훨씬 작아짐(10% = 1/100). 전체 × 칸.
+   소리 길: 전투·이야기·알림·대사 각각 따로 GainNode(버스) → 전체 → 스피커. 배경음은 원래대로 따로 */
+const MIX=[['mv_all','전체',''],['mv_sfx','전투 효과음','sfx'],['mv_story','이야기 효과음','story'],['mv_bgm','배경음 (BGM)','bgm'],['mv_type','대사 소리','type'],['mv_ui','알림음 (차례·라운드)','ui']];
+(function mixMigrate(){if(FXSET.mv_all!=null)return;const q=v=>Math.round(Math.sqrt(Math.max(0,+v||0))*100);
+ Object.assign(FXSET,{mv_all:100,mv_sfx:q(FXSET.vol??.6),mv_story:q(FXSET.vol??.6),mv_bgm:q((FXSET.bgm??.45)),mv_type:q(FXSET.tvol??1),mv_ui:q(FXSET.vol??.6)});saveFxSet()})();
+const mixP=k=>clamp(+FXSET[k]||0,0,150)/100,mixC=k=>{const p=mixP(k);return p*p};
+function mixG(cat){if(!FXSET.snd)return 0;const k=MIX.find(m=>m[2]===cat)?.[0];return mixC('mv_all')*(k?mixC(k):1)}
+function mixApply(){FXSET.tvol=+FXSET.mv_type>0?1:0;const S=SFX;if(S.ctx&&S._main){S._main.gain.value=FXSET.snd?mixC('mv_all'):0;for(const[k,,c]of MIX)if(c&&S.bus[c])S.bus[c].gain.value=mixC(k)}try{BGM.vol()}catch{}}
+function mixBuild(){const S=SFX,c=S.ctx;if(!c||S._main)return;S._main=S.master;S.bus={};for(const k of['sfx','story','ui','type']){const g=c.createGain();g.connect(S._main);S.bus[k]=g}S.master=S.bus.sfx;mixApply()}
+{const i0=SFX.init;SFX.init=function(){const c=i0.apply(this,arguments);if(c&&!this._main)mixBuild();return c}}
+SFX.ok=function(){if(!FXSET.snd)return false;const c=this.init();if(!c)return false;if(c.state==='suspended')c.resume();if(this._main)this._main.gain.value=mixC('mv_all');return true};
+const viaBus=(cat,fn)=>{const S=SFX;if(!S.bus?.[cat])return fn();const prev=S.master;S.master=S.bus[cat];S._force=cat;try{return fn()}finally{S.master=prev;S._force=null}};
+{const p0=SFX.play;SFX.play=function(k,...a){if(this._force||!this.bus)return p0.call(this,k,...a);const cat=k==='bell'?'ui':'sfx';return viaBus(cat,()=>p0.call(this,k,...a))}}
+{const sp=STORY.play;STORY.play=function(...a){return viaBus('story',()=>sp.apply(this,a))}}
+{const tb=typeBlip;typeBlip=function(...a){return viaBus('type',()=>tb.apply(this,a))}}
+BGM.v=function(){return mixG('bgm')};
+function mixHTML(){return`<div class="mix"><div class="mix-h">소리 크기 <small>나만 · 0%면 꺼짐</small></div>${MIX.map(([k,n,c])=>`<div class="mix-r ${c?'':'all'}"><span>${n}</span><input type="range" min="0" max="150" step="1" data-c="mixSet" data-k="${k}" value="${Math.round(mixP(k)*100)}" aria-label="${n}"><b data-mixv="${k}">${Math.round(mixP(k)*100)}%</b>${c&&c!=='bgm'?`<button class="lnk" data-a="mixTry" data-v="${c}" title="들어 보기">▶</button>`:'<i></i>'}</div>`).join('')}</div>`}
+const mixSet=el=>{const k=el.dataset.k;FXSET[k]=clamp(+el.value||0,0,150);document.querySelectorAll(`[data-mixv="${k}"]`).forEach(b=>b.textContent=FXSET[k]+'%');mixApply()};
+CHANGE.mixSet=el=>{mixSet(el);saveFxSet()};
+document.addEventListener('input',e=>{if(e.target?.dataset?.c==='mixSet')mixSet(e.target)},true);
+Object.assign(A,{mixTry(e){const c=e.dataset.v;if(!SFX.ok())return toast('소리가 꺼져 있어요',1);if(c==='sfx')SFX.play('clang');else if(c==='ui')SFX.play('bell');else if(c==='story')STORY.play('boom');else if(c==='type'){let i=0;const T=setInterval(()=>{typeBlip('nar','',true);if(++i>5)clearInterval(T)},70)}}});
+setTimeout(()=>{mixBuild();mixApply()},0);
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
