@@ -1448,7 +1448,7 @@ function paintTalkStage(){
  const sc=DLG.scene||Store.get('play/scene')||{},bg=pImg(sc.bg),last=DLG.cur;
  $('#tkBg').style.backgroundImage=bg?`url('${bg}')`:'';dirApplyState(false);paintDirBar();
  paintFigs();
- const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog"><div class="log-h"><b>대사 기록</b><button class="btn sm" data-a="talkLog">닫기</button></div>${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —</div>`;if(m.kind==='roll'&&m.roll){const s=speaker(m),g=m.roll.grade;return`<div class="log-row roll"><b>${esc(s.name)}</b><span class="lr-dice">${dieChips(m.roll.rawDice)}</span><em style="color:${JUDGE_COL[g]||'#e8c48a'}">${esc(g)}</em><small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small></div>`}const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div></div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
+ const sp=last?speaker(last):null,logHTML=UI.log?`<div class="log" id="tkLog"><div class="log-h"><b>대사 기록</b><span style="flex:1"></span><button class="btn sm" data-a="logMine" data-p="play/talk" title="내가 보낸 대사·연출만 모두 지워요">내 기록 지우기</button><button class="btn sm" data-a="talkLog">닫기</button></div>${talkList().map(m=>{if(m.kind==='fx')return`<div class="log-row fx">— 연출: ${esc(dirLabel(m))} —${m.uid===ME?logDelB('play/talk',m.k):''}</div>`;if(m.kind==='roll'&&m.roll){const s=speaker(m),g=m.roll.grade;return`<div class="log-row roll"><b>${esc(s.name)}</b><span class="lr-dice">${dieChips(m.roll.rawDice)}</span><em style="color:${JUDGE_COL[g]||'#e8c48a'}">${esc(g)}</em><small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small>${m.uid===ME?logDelB('play/talk',m.k):''}</div>`}const s=speaker(m);return`<div class="log-row ${s.nar?'nar':''}">${s.nar?'':`<b>${esc(s.name)}</b>`}<small>${new Date(m.t).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</small><div>${esc(richPlain(m.txt))}</div>${m.uid===ME?logDelB('play/talk',m.k):''}</div>`}).join('')||'<p class="muted">아직 기록이 없어요.</p>'}</div>`:'';
  $('#tkUI').innerHTML=`${placeHTML(sc.name)}
   <div class="menuwrap"><button class="menu-btn" data-a="talkMenu" aria-label="스탠딩 메뉴" aria-expanded="${UI.talkMenu}"><b>≡</b><i></i></button>
   ${UI.talkMenu?`<div class="menu"><div class="mn-h">무대</div>${isGmLike()?'<button class="btn sm pri" data-a="gmcOpen" data-v="stage">GM 콘솔 — 무대·NPC·디버그</button>':''}<button class="btn sm ${UI.log?'on':''}" data-a="talkLog">대사 기록</button><div class="mn-h">소리 · 보기 (나만)</div>${mixHTML()}${fxPrefsHTML()}<div class="mn-h">도움</div><button class="btn sm" data-a="tourStart" data-v="talk">스탠딩 보는 법</button><button class="btn sm" data-a="voiceSet">캐릭터 목소리 (대사음)</button><button class="btn sm" data-a="richHelp">대사 꾸미기 도움말</button><button class="btn sm" data-a="sfxOpen">효과음 바꾸기</button></div>`:''}</div>
@@ -1840,7 +1840,7 @@ function rollInit(u){const net=clamp(+u.haste||0,0,2)-clamp(+u.bind||0,0,2),n=1+
  const final=Math.max(1,Math.max(...dice)-Math.max(0,-net));return{dice,final,speed:SPEED(final)}}
 const initSort=(a,b)=>SPEED_RANK[a.init.speed]-SPEED_RANK[b.init.speed]||(a.side==='foe')-(b.side==='foe')||b.init.final-a.init.final;
 
-let LOG_T=0;function btLog(txt,fx){const t=Math.max(Date.now(),LOG_T+1);LOG_T=t;const k=Store.push(`${BTP}/log`,fx?{t,txt,fx}:{t,txt});if(fx)diceFromLog(fx);const l=Object.keys(BT().log||{});if(l.length>200)Store.set(`${BTP}/log/${l[0]}`,null,true);return k}
+let LOG_T=0;function btLog(txt,fx){const t=Math.max(Date.now(),LOG_T+1);LOG_T=t;const k=Store.push(`${BTP}/log`,fx?{t,txt,fx,uid:ME}:{t,txt,uid:ME});if(fx)diceFromLog(fx);const l=Object.keys(BT().log||{});if(l.length>200)Store.set(`${BTP}/log/${l[0]}`,null,true);return k}
 function damageUnit(k,tier,n,why){const u={...unitRaw(k),k};if(!u.side)return;
  const was=isDown(u),hp=applyDmg(hpOf(u),tier,n);
  Store.set(u.char?`chars/${u.char}/hp`:`${BTP}/units/${k}/hp`,hp);
@@ -1946,11 +1946,11 @@ function paintHud(){const el=$('#btHud');if(!el)return;const B=BT(),cur=B.cur,ro
  // 공격 카드
  const card=t?`<div class="hud-atk">${atkPanel()}</div>`:'';
  // 서랍
- let dr='';if(UI.bt.drawer==='log')dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">전투 기록<button class="x" data-a="hudDrawer" data-v="log">✕</button></div><div class="dr-body bt-log">${vals(B.log).sort((a,b)=>b.t-a.t).slice(0,120).map(l=>`<div>${esc(l.txt)}</div>`).join('')||'<div class="muted">기록 없음</div>'}</div></div>`;
+ let dr='';if(UI.bt.drawer==='log')dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">전투 기록<span style="flex:1"></span><button class="btn sm" data-a="logMine" data-p="${BTP}/log" title="내 화면에서 처리된 기록만 모두 지워요">내 기록 지우기</button><button class="x" data-a="hudDrawer" data-v="log">✕</button></div><div class="dr-body bt-log">${vals(B.log).sort((a,b)=>b.t-a.t).slice(0,120).map(l=>`<div class="lg-own">${esc(l.txt)}${l.uid===ME?logDelB(BTP+'/log',l.k):''}</div>`).join('')||'<div class="muted">기록 없음</div>'}</div></div>`;
  else if(UI.bt.drawer==='gm'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">마스터 도구<button class="x" data-a="hudDrawer" data-v="gm">✕</button></div><div class="dr-body">${masterPanel(B)}${su?unitPanel(su,true):''}</div></div>`;
  else if(UI.bt.drawer==='set')dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">소리·연출<button class="x" data-a="hudDrawer" data-v="set">✕</button></div><div class="dr-body">${fxSetPanel()}</div></div>`;
  else if(UI.bt.drawer==='dbg'&&M)dr=`<div class="bt-drawer ${t?'beside':''}"><div class="dr-h">디버그 · 직접 수정<button class="x" data-a="hudDrawer" data-v="dbg">✕</button></div><div class="dr-body">${dbgPanel()}</div></div>`;
- const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':needDash(t)?`파란 칸 중 착지할 칸을 누르세요 (직선 최대 ${t.move.n}칸) · 자기 말을 누르면 제자리`:t?.phase==='declare'?(t.multi?(t.aim?(t.range||isOrigin(t.area)?'다른 칸을 눌러 다시 조준 · ATTACK으로 선언':'착지한 칸이 중심 · ATTACK으로 선언'):(isOrigin(t.area)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'오른쪽 아래 ATTACK을 눌러 공격을 선언하세요':t.move?.type==='target'?'대상을 누르세요 — 직선 위 대상에게는 돌진해서 공격 · Esc 취소':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
+ const hint=UI.bt.mode==='wall'?'벽 칠하기 — 칸을 누르거나 끌어서 칠하고 지웁니다':UI.bt.mode==='free'?'자유 배치 — 토큰을 고르고 빈 칸을 누르세요':needDash(t)?`파란 칸 중 착지할 칸이나 공격할 적을 누르세요 (직선 최대 ${t.move.n}칸) · 자기 말을 누르면 제자리`:t?.phase==='declare'?(t.multi?(t.aim?(t.range||isOrigin(t.area)?'다른 칸을 눌러 다시 조준 · ATTACK으로 선언':'착지한 칸이 중심 · ATTACK으로 선언'):(isOrigin(t.area)?'방향을 정할 칸을 누르세요':'빨간 칸 안에서 중심을 누르세요')):t.to?'오른쪽 아래 ATTACK을 눌러 공격을 선언하세요':t.move?.type==='target'?'대상을 누르세요 — 직선 위 대상에게는 돌진해서 공격 · Esc 취소':'빨간 칸 안의 대상을 누르세요 · Esc 취소'):'';
  el.innerHTML=bossBarHTML()+tl+left+right+tr+info+bottom+br+card+dr+(hint?`<div class="hud-hint">${esc(hint)}${t?.phase==='declare'?atkLegend(t):''}</div>`:'');
  netLockHud(el);const db=$('.bt-drawer .dr-body',el);if(db)db.scrollTop=keepScroll;
  const ac=$('.hud-atk',el),ph=t?t.phase+(t.rs?'r':''):'';if(ac){if(UI.bt.atkPh!==ph)ac.scrollTop=ac.scrollHeight;else ac.scrollTop=UI.bt.atkScroll||0;ac.onscroll=()=>UI.bt.atkScroll=ac.scrollTop}UI.bt.atkPh=ph}
@@ -1965,12 +1965,12 @@ function paintBoard(){const el=$('#btBoard');if(!el)return;const B=BT(),w=btW(),
  UI.bt.reach=cur&&!busy&&UI.bt.sel===cur.k&&!UI.bt.mode&&!isDown({...unitRaw(cur.k)||{},k:cur.k})?reach(ctx,cur.k,+cur.mv||0,cur.done||{}):null;
  el.style.setProperty('--w',w);el.style.setProperty('--h',h);el.className='bt-board'+(UI.bt.mode?' m-'+UI.bt.mode:'');
  const zmap={};for(const z of zones())for(const c of z.cells||[])(zmap[c]=zmap[c]||[]).push(z);
- const dcs=needDash(atk)?new Set(dashCells(atk.by,atk.move.n).map(c=>wkey(c.x,c.y))):null;
+ const dcs=needDash(atk)?new Set(dashCells(atk.by,atk.move.n).map(c=>wkey(c.x,c.y))):atk?.pre&&!atk.multi&&atk.phase==='declare'?new Set([wkey(atk.pre.fx,atk.pre.fy),...dashCellsFrom(atk.by,atk.move.n,atk.pre.fx,atk.pre.fy).map(c=>wkey(c.x,c.y))]):null;
  let cells='';for(let y=0;y<h;y++)for(let x=0;x<w;x++){const n=UI.bt.reach?.get(wkey(x,y));const inR=me&&Math.max(Math.abs(x-me.x),Math.abs(y-me.y))<=atk?.range&&!(x==me.x&&y==me.y),ar=tg&&(atk.multi?aimZone&&inR:inR);cells+=`<div class="bt-cell${W[wkey(x,y)]?' wall':''}${n?.end?' rc':''}${ar?' ar':''}${acells?.has(wkey(x,y))?' aa':''}${acells2?.has(wkey(x,y))?' aa2':''}${dcs?.has(wkey(x,y))?' dc':''}${zmap[wkey(x,y)]?' zn':''}${atk?.aim&&atk.aim.x===x&&atk.aim.y===y?' aim':''}${picking()&&atk.multi?' pk':''}" data-a="btCell" data-x="${x}" data-y="${y}"${zmap[wkey(x,y)]?` style="--zc:${sinColor(zmap[wkey(x,y)][0].sin)||'#e0602a'}" title="${esc(zmap[wkey(x,y)].map(z=>z.name+' — '+zoneText(z)).join(' / '))}"`:''}></div>`}
  const pct=(v,n)=>v/n*100;
  el.innerHTML=`<div class="bt-grid">${cells}</div>${atk&&unitRaw(atk.by)&&atk.to&&unitRaw(atk.to)?(()=>{const a=unitRaw(atk.by),b=unitRaw(atk.to),x1=+a.x+.5,y1=+a.y+.5,x2=+b.x+.5,y2=+b.y+.5,d=Math.hypot(x2-x1,y2-y1),cx=(x1+x2)/2,cy=Math.min(y1,y2)-.35-d*.35,col=atk.phase==='declare'||atk.phase==='opp'?'#efe4cc':atk.r?.mode==='none'?'#4fc3ff':atk.r?.mode?'#ffc23b':'#efe4cc';
  return`<svg class="bt-path bt-arc" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width=".16"/><path d="M${x1} ${y1-.25}Q${cx} ${cy} ${x2} ${y2-.3}" fill="none" stroke="${col}" stroke-width=".08" class="bt-atkline"/><circle cx="${x2}" cy="${y2-.3}" r=".13" fill="${col}"/></svg>`})():''}${atkLines(atk,w,h)}<svg class="bt-path" id="btPath" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"></svg>
- ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}${u.form?` formed f-${u.form}`:''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%${u.form?`;--fc:${formColor(u)}`:''}" aria-label="${esc(nm)}">${u.form?'<i class="bt-aura"></i>':''}${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')${fpBgU(u,im)}"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
+ ${vals(B.units).map(u=>{const c=hpCalc(hpOf(u)),im=uImg(u),nm=uName(u);return`<button class="bt-unit s-${u.side==='foe'?'foe':'pc'}${cur?.k===u.k?' bt-turn':''}${UI.bt.sel===u.k?' bt-sel':''}${isDown(u)?' bt-down':''}${tg?.has(u.k)?' bt-tgt':''}${atk&&(atk.by===u.k||atk.to===u.k||atk.T?.some(e=>e.k===u.k)||(atk.phase==='opp'&&atk.oppQ?.[0]===u.k))?' bt-inatk':''}${atk?.prot?.k===u.k||atk?.prots?.some(q=>q.k===u.k)?' bt-prot':''}${u.form?` formed f-${u.form}`:''}${atk?.pre&&atk.by===u.k?' bt-pre':''}" data-a="btUnit" data-v="${esc(u.k)}" style="left:${pct(+u.x,w)}%;top:${pct(+u.y,h)}%;width:${100/w}%;height:${100/h}%${u.form?`;--fc:${formColor(u)}`:''}" aria-label="${esc(nm)}">${u.form?'<i class="bt-aura"></i>':''}${u.init&&(B.order||[]).includes(u.k)?`<b class="bt-die bt-sp${SPEED_RANK[u.init.speed]}">${u.init.final}</b>`:''}${u.st?.행동불능||u.st?.대응불능?`<i class="bt-stt">${u.st.행동불능?'행동 불능':'대응 불능'}</i>`:''}<span class="bt-shadow"></span><span class="bt-face" ${im?`style="background-image:url('${esc(im)}')${fpBgU(u,im)}"`:''}>${im?'':esc([...nm][0]||'?')}</span>${c.pct==null?'':`<i class="bt-hp"><b style="width:${c.pct}%"></b></i>`}<em>${esc(nm)}</em></button>`}).join('')}
  <div class="bt-tip" id="btTip"></div>`;
  paintPreview()}
 function paintPreview(){const svg=$('#btPath'),tip=$('#btTip');if(!svg)return;svg.innerHTML='';tip.className='bt-tip';hvClear();const v=UI.bt.hov,t=ATK();
@@ -3457,10 +3457,10 @@ function paintDock(){const el=$('#dock');if(!el)return;if(!dockLogged()){el.clas
  const sig=[DOCK.open,DOCK.tab,DOCK.pop,UI.tab,C.length,C.at(-1)?.k,D.length,D.at(-1)?.k,NET.gm,UI.master].join('|');if(sig===DOCK.sig)return;DOCK.sig=sig;
  el.className=(DOCK.open&&show?'on ':'')+'t-'+UI.tab;if(!DOCK.open||!show)return;
  const dN=D.filter(e=>(e.t||0)>Math.max(DOCK.seenD,DOCK.t0)).length;
- const body=DOCK.tab==='chat'?(C.length?C.map(m=>`<div class="cm ${m.uid===ME?'me':''} ${m.sys?'sys':''}"><b class="${isGmId(m.uid)?'gm':''}">${esc(m.uid||'?')}${isGmId(m.uid)?' (GM)':''}</b>${esc(m.txt||'')}<time>${hhmm(m.t)}</time></div>`).join(''):'<p class="dk-empty">아직 채팅이 없어요. 캐릭터 대사가 아닌 플레이어끼리의 대화를 나눠요.</p>')
-  :(D.length?D.map(diceCard).join(''):'<p class="dk-empty">아직 굴린 주사위가 없어요. 판정·공격·대응·이니셔티브 결과가 여기에 모여요.</p>');
+ const body=DOCK.tab==='chat'?(C.length?C.map(m=>`<div class="cm ${m.uid===ME?'me':''} ${m.sys?'sys':''}"><b class="${isGmId(m.uid)?'gm':''}">${esc(m.uid||'?')}${isGmId(m.uid)?' (GM)':''}</b>${esc(m.txt||'')}<time>${hhmm(m.t)}</time>${m.uid===ME&&!m.sys?logDelB('play/chat',m.k):''}</div>`).join(''):'<p class="dk-empty">아직 채팅이 없어요. 캐릭터 대사가 아닌 플레이어끼리의 대화를 나눠요.</p>')
+  :(D.length?D.map(e=>e.uid===ME?diceCard(e).replace(/^(<div[^>]*>)/,'$1'+logDelB('play/dice',e.k)):diceCard(e)).join(''):'<p class="dk-empty">아직 굴린 주사위가 없어요. 판정·공격·대응·이니셔티브 결과가 여기에 모여요.</p>');
  const prev=$('#dkTxt')?.value||'',focus=document.activeElement?.id==='dkTxt';
- el.innerHTML=`<div class="dk-hd"><button class="${DOCK.tab==='chat'?'on':''}" data-a="dockTab" data-v="chat">채팅</button><button class="${DOCK.tab==='dice'?'on':''}" data-a="dockTab" data-v="dice">주사위${dN&&DOCK.tab!=='dice'?`<small>+${dN}</small>`:''}</button><span class="sp"></span>${DOCK.tab==='dice'?`<button class="pp ${DOCK.pop?'on':''}" data-a="dockPop" title="새 주사위 결과를 화면 위쪽에 크게 띄우기">팝업 ${DOCK.pop?'켬':'끔'}</button>${!NET.on||NET.gm?'<button class="pp" data-a="dockClear" title="주사위 기록 비우기 (마스터)">비우기</button>':''}`:''}<button class="x" data-a="dockToggle" aria-label="닫기">×</button></div>
+ el.innerHTML=`<div class="dk-hd"><button class="${DOCK.tab==='chat'?'on':''}" data-a="dockTab" data-v="chat">채팅</button><button class="${DOCK.tab==='dice'?'on':''}" data-a="dockTab" data-v="dice">주사위${dN&&DOCK.tab!=='dice'?`<small>+${dN}</small>`:''}</button><span class="sp"></span>${DOCK.tab==='dice'?`<button class="pp ${DOCK.pop?'on':''}" data-a="dockPop" title="새 주사위 결과를 화면 위쪽에 크게 띄우기">팝업 ${DOCK.pop?'켬':'끔'}</button>`:''}<button class="pp" data-a="logMine" data-p="${DOCK.tab==='chat'?'play/chat':'play/dice'}" title="내가 쓴·굴린 기록만 모두 지워요">내 기록 지우기</button><button class="x" data-a="dockToggle" aria-label="닫기">×</button></div>
   <div class="dk-body" id="dkBody">${body}</div>${DOCK.tab==='chat'?`<div class="dk-ft"><input id="dkTxt" maxlength="300" placeholder="채팅 · Enter 전송 · /r 2d6 굴림" autocomplete="off"><button class="btn pri" data-a="dockSend">전송</button></div>`:'<div class="dk-tip">공격·대응 결과는 대응이 확정되어 공개된 뒤에 올라와요.</div>'}`;
  const b=$('#dkBody');b.scrollTop=b.scrollHeight;const i=$('#dkTxt');if(i){i.value=prev;if(focus)i.focus()}}
 function dicePopPump(){const box=$('#dicePop');if(!box||!DOCK.popQ.length)return;if(CS.busy||CS.q.length){clearTimeout(DOCK.popT);DOCK.popT=setTimeout(dicePopPump,400);return}
@@ -5431,6 +5431,16 @@ body:has(#main .bt) #dicePop .dl{max-width:min(460px,40vw)}
 .fp-pv{position:relative;overflow:hidden;background:#0c0806;border:1px solid #8f7a3a}
 .fp-pv img{position:absolute;inset:0;width:100%;height:100%}
 .fp-m{width:150px;height:170px}.fp-q{width:260px;height:96px}.fp-c{width:82px;height:94px;clip-path:polygon(10% 0,100% 0,100% 90%,90% 100%,0 100%,0 10%)}
+/* §110 기록 지우기 · 채팅창 이동 */
+.lg-del{margin-left:6px;padding:0 5px;border:0;background:none;color:#8f7a5a;font-size:14px;line-height:1;cursor:pointer;opacity:0;transition:opacity .15s;vertical-align:middle}
+.cm:hover .lg-del,.dl:hover .lg-del,.log-row:hover .lg-del,.lg-own:hover .lg-del,.lg-del:focus{opacity:1}.lg-del:hover{color:#ff6a50}
+.dl>.lg-del{float:right}.log-row{position:relative}.log-row>.lg-del{position:absolute;right:4px;top:4px}
+#dock .dk-hd{cursor:move;user-select:none}#dock .dk-hd button{cursor:pointer}
+#dock.moved{bottom:auto}#dock.dragging{opacity:.92;transition:none}
+#dock .dk-rz{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;background:linear-gradient(135deg,transparent 50%,#8a6a48 50% 60%,transparent 60% 70%,#8a6a48 70% 80%,transparent 80%);z-index:2;touch-action:none}
+.bt-drawer .dr-h{display:flex;align-items:center;gap:6px}
+/* §111 돌진 예정 */
+.bt-unit.bt-pre{opacity:.72;outline:2px dashed #4fc3ff;outline-offset:2px}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -5931,7 +5941,7 @@ function tourShow(i,dir=1){const L=TOUR.list;
  o.innerHTML=`<div class="tr-hole"></div><div class="tr-card" role="dialog" aria-label="안내"><div class="tr-h"><b>${esc(st.t)}</b><small>${k} / ${n}</small></div><p>${esc(st.d).replace(/\n/g,'<br>')}</p><div class="tr-f"><button class="btn sm" data-tour="end">건너뛰기</button><span style="flex:1"></span>${k>1?'<button class="btn sm" data-tour="prev">이전</button>':''}<button class="btn sm pri" data-tour="next">${k>=n?'다 봤어요':'다음'}</button></div></div>`;
  tourPlace()}
 function tourPlace(){const o=$('#tour');if(!o||!TOUR.on)return;const el=$(TOUR.list[TOUR.i].s);if(!el)return tourShow(TOUR.i+1);
- const r=el.getBoundingClientRect(),h=o.querySelector('.tr-hole'),c=o.querySelector('.tr-card'),pad=8,W=innerWidth,H=innerHeight;
+ const r=el.getBoundingClientRect(),h=o.querySelector('.tr-hole'),c=o.querySelector('.tr-card'),pad=8,Z=UIZ.z||1,W=innerWidth/Z,H=innerHeight/Z;
  Object.assign(h.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
  const cw=c.offsetWidth,ch=c.offsetHeight;let x=r.left+r.width/2-cw/2,y=r.bottom+pad+14;
  if(y+ch>H-10)y=r.top-pad-14-ch;if(y<10){y=clamp(r.top,10,H-ch-10);x=r.right+pad+14;if(x+cw>W-10)x=r.left-pad-14-cw}
@@ -6292,6 +6302,91 @@ Object.assign(A,{
  fpOpen(e){const c=CH(UI.charId);if(!c)return;UI.fp={id:c.id,k:e.dataset.v,ref:''};M.wide=true;openModal('그림 초점 맞추기',fpModal)},
  fpRef(e){UI.fp.ref=e.dataset.v;drawModal()},
  fpReset(){fpSet({...FP0})}});
+</script>
+<script id="log-del">
+/* §110 기록 지우기 — 채팅·주사위·대사 기록·전투 기록. 마스터·플레이어 모두 자기 것만(한 줄 / 내 것 전부) */
+const logDelB=(p,k)=>k?`<button class="lg-del" data-a="logDel" data-p="${esc(p)}" data-v="${esc(k)}" title="이 줄 지우기" aria-label="지우기">×</button>`:'';
+function logFix(p){if(p==='play/talk'){const L=talkList();if(DLG.cur&&!Store.get('play/talk/'+DLG.cur.k)){DLG.cur=L.filter(m=>m.kind!=='fx').at(-1)||null;dlgType.show?.(DLG.cur?.txt||'');dlgType.done=true}DLG.shown=DLG.shown.filter(m=>Store.get('play/talk/'+m.k));paintTalkStage()}DOCK.sig='';paintDock()}
+Object.assign(A,{
+ logDel(e){const p=e.dataset.p,k=e.dataset.v,x=Store.get(p+'/'+k);if(!x)return;if(x.uid!==ME)return toast('자기 기록만 지울 수 있어요',1);Store.set(p+'/'+k,null);logFix(p)},
+ logMine(e){const p=e.dataset.p,L=vals(Store.get(p)).filter(x=>x.uid===ME);if(!L.length)return toast('지울 내 기록이 없어요');
+  const nm={'play/chat':'채팅','play/dice':'주사위 기록','play/talk':'대사 기록'}[p]||'전투 기록';if(!confirm(`내 ${nm} ${L.length}줄을 모두 지울까요? 되돌릴 수 없어요.`))return;
+  L.forEach((x,i)=>Store.set(p+'/'+x.k,null,i<L.length-1));logFix(p);toast(`내 ${nm} ${L.length}줄을 지웠어요`)}});
+/* 화면을 옮기면 떠 있는 창을 닫는다 (채팅창은 그대로) */
+function closeFloats(){let ch=false;const z=(o,k,v)=>{if(o[k]&&o[k]!==v){o[k]=v;ch=true}};z(UI,'dir',false);z(UI,'log',false);z(UI,'talkMenu',false);if(UI.bt&&UI.bt.drawer){UI.bt.drawer=null;ch=true}return ch}
+{const t0=A.tab;A.tab=function(e){if(e?.dataset?.v!==UI.tab)closeFloats();return t0.apply(this,arguments)}}
+{let was=false;const r0=renderSheet;renderSheet=function(){if(UI.sheet&&!was&&closeFloats()){try{paintGmc()}catch{}}was=!!UI.sheet;return r0.apply(this,arguments)}}
+/* 채팅창 옮기기·크기 조절 (브라우저마다 기억) */
+const DKP=(()=>{try{return JSON.parse(localStorage.getItem('limbus-dock-pos'))||null}catch{return null}})();const DK={p:DKP};
+function dockGeo(){const el=$('#dock');if(!el)return;const p=DK.p;if(!p){el.style.left=el.style.top=el.style.width=el.style.height=el.style.bottom='';el.classList.remove('moved');return}
+ const Z=UIZ.z||1,W=innerWidth/Z,H=innerHeight/Z,w=clamp(p.w||380,260,W-16),h=clamp(p.h||480,200,H-16);
+ Object.assign(el.style,{width:w+'px',height:h+'px',left:clamp(p.x,8,W-w-8)+'px',top:clamp(p.y,8,H-h-8)+'px',bottom:'auto'});el.classList.add('moved')}
+const dockPosSave=()=>{try{DK.p?localStorage.setItem('limbus-dock-pos',JSON.stringify(DK.p)):localStorage.removeItem('limbus-dock-pos')}catch{}};
+document.addEventListener('pointerdown',e=>{const el=$('#dock');if(!el||!el.classList.contains('on'))return;const Z=UIZ.z||1;
+ const hd=e.target.closest?.('#dock .dk-hd'),rz=e.target.closest?.('#dock .dk-rz');if(!(hd&&!e.target.closest('button'))&&!rz)return;
+ e.preventDefault();const r=el.getBoundingClientRect(),sx=e.clientX/Z,sy=e.clientY/Z,b={x:r.left,y:r.top,w:r.width,h:r.height};el.classList.add('dragging');
+ const mv=ev=>{const dx=ev.clientX/Z-sx,dy=ev.clientY/Z-sy;DK.p=rz?{...b,w:b.w+dx,h:b.h+dy}:{...b,x:b.x+dx,y:b.y+dy};dockGeo()};
+ const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);el.classList.remove('dragging');dockGeo();const R=el.getBoundingClientRect();DK.p={x:R.left,y:R.top,w:R.width,h:R.height};dockPosSave()};
+ addEventListener('pointermove',mv);addEventListener('pointerup',up)},true);
+document.addEventListener('dblclick',e=>{if(e.target.closest?.('#dock .dk-hd')&&!e.target.closest('button')){DK.p=null;dockPosSave();dockGeo();toast('채팅창 위치를 처음대로 돌렸어요')}});
+{const pd=paintDock;paintDock=function(){const r=pd.apply(this,arguments);const el=$('#dock');if(el&&el.classList.contains('on')){if(!el.querySelector('.dk-rz'))el.insertAdjacentHTML('beforeend','<i class="dk-rz" title="끌어서 크기 조절"></i>');const hd=el.querySelector('.dk-hd');if(hd&&!hd.title)hd.title='끌어서 옮기기 · 두 번 눌러 처음 위치로';dockGeo()}return r}}
+addEventListener('resize',()=>dockGeo());
+</script>
+<script id="dash-pre">
+/* §111 돌진 후 공격(착지 칸 선택): 착지 칸은 '예정'으로만 정하고, ATTACK을 누를 때 돌진과 공격을 한 번에.
+   예정 동안: 말은 착지 칸으로 옮겨 두되(사거리 계산용) 주요 행동·기록·바닥 효과는 아직. 취소하면 원래 칸으로.
+   적을 먼저 누르면 그 적에게 닿는 가장 가까운 착지 칸을 자동으로 고른다 */
+const PRE={id:null,k:null,fx:0,fy:0,x:0,y:0};
+function dashCellsFrom(k,n,fx,fy){const ctx=btCtx(),out=[],occ=(x,y)=>units().some(u=>u.k!==k&&!isDown(u)&&+u.x===x&&+u.y===y);
+ for(const[dx,dy]of DIR8){let x=fx,y=fy;for(let i=1;i<=n;i++){if(!dashStepOk(ctx,x,y,dx,dy))break;x+=dx;y+=dy;if(occ(x,y))break;out.push({x,y,d:i})}}return out}
+const preOrigin=t=>t.pre?{x:t.pre.fx,y:t.pre.fy}:{x:+unitRaw(t.by).x,y:+unitRaw(t.by).y};
+function preDash(x,y,d,extra={}){const t=ATK();if(!t)return;const k=t.by,u=unitRaw(k);if(!u)return;const o=preOrigin(t);
+ Store.set(`${BTP}/units/${k}`,{...u,x,y},true);Object.assign(PRE,{id:t.id,k,fx:o.x,fy:o.y,x,y});
+ const nt={...t,dashed:true,dashD:d,dashFrom:{x:o.x,y:o.y},pre:{fx:o.x,fy:o.y,x,y,d},to:'',aim:null,...extra};
+ if(nt.multi&&!extra.aim&&((!isOrigin(nt.area)&&!nt.range)||(nt.area.shape==='custom'&&nt.area.anchor!=='point'&&nt.area.rot==='none')))nt.aim={x,y};
+ Store.set(`${BTP}/atk`,nt)}
+function preReset(){const t=ATK();if(!t?.pre)return;const u=unitRaw(t.by);if(u)Store.set(`${BTP}/units/${t.by}`,{...u,x:t.pre.fx,y:t.pre.fy},true);PRE.id=null;
+ const{pre,dashFrom,dashD,...rest}=t;Store.set(`${BTP}/atk`,{...rest,dashed:false,to:'',aim:null})}
+// 취소·강제 종료 등으로 공격이 사라지면 예정 이동을 되돌린다 (예정을 만든 화면만)
+function preGuard(){if(!PRE.id)return;const t=ATK();if(t&&t.id===PRE.id&&t.pre)return;if(t&&t.id===PRE.id&&!t.pre){PRE.id=null;return}
+ const u=unitRaw(PRE.k);if(u&&+u.x===PRE.x&&+u.y===PRE.y)Store.set(`${BTP}/units/${PRE.k}`,{...u,x:PRE.fx,y:PRE.fy},true);PRE.id=null}
+setInterval(preGuard,400);
+{const c0=A.atkCancel;A.atkCancel=function(){const t=ATK();if(t?.pre)preReset();return c0.apply(this,arguments)}}
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&ATK()?.pre&&ATK().phase==='declare'&&!M.fn){ev.stopImmediatePropagation();preReset()}},true);
+// 적을 눌렀을 때 닿는 착지 칸 고르기
+function preAuto(t,v){const o={x:+unitRaw(t.by).x,y:+unitRaw(t.by).y},C=[{...o,d:0},...dashCellsFrom(t.by,t.move.n,o.x,o.y)];
+ const self=t.multi&&((!isOrigin(t.area)&&!t.range)||(t.area.shape==='custom'&&t.area.anchor!=='point'&&t.area.rot==='none')),V={x:+v.x,y:+v.y};
+ const ok=c=>{if(!t.multi)return cheb(c,v)<=t.range;const aim=self?{x:c.x,y:c.y}:V;if(!aimOk(t.area,c,aim,t.range))return false;const P=areaPlan(t.area,c,aim,t.range,btCtx(),()=>false);c.aim=self?null:aim;return[...P.c1,...P.c2].some(q=>q.x===V.x&&q.y===V.y)};
+ const L=C.filter(ok).sort((a,b)=>a.d-b.d||cheb(a,v)-cheb(b,v));return L[0]||null}
+{const b0=A.btCell;A.btCell=function(e){const t=ATK();if(t?.phase==='declare'&&t.move?.type==='cell'&&!UI.bt.mode){const x=+e.dataset.x,y=+e.dataset.y;
+  if(!t.dashed){const c=dashCellsFrom(t.by,t.move.n,+unitRaw(t.by).x,+unitRaw(t.by).y).find(c=>c.x===x&&c.y===y);return c?preDash(x,y,c.d):toast('파란 칸 중에서 고르세요 (직선, 사이가 비어 있어야 해요)',1)}
+  if(t.pre&&!t.multi){if(x===t.pre.fx&&y===t.pre.fy)return preDash(x,y,0);const c=dashCellsFrom(t.by,t.move.n,t.pre.fx,t.pre.fy).find(c=>c.x===x&&c.y===y);if(c)return preDash(x,y,c.d)}}
+ return b0.apply(this,arguments)}}
+{const u0=A.btUnit;A.btUnit=function(e){const t=ATK();if(t?.phase==='declare'&&t.move?.type==='cell'){const k=e.dataset.v;
+  if(!t.dashed){if(k===t.by)return preDash(+unitRaw(k).x,+unitRaw(k).y,0);const v=unitRaw(k);if(!v||isDown({...v,k}))return;const c=preAuto(t,v);
+   if(!c)return toast('돌진해도 닿지 않는 대상이에요',1);if(t.multi){preDash(c.x,c.y,c.d,c.aim?{aim:c.aim}:{});return}preDash(c.x,c.y,c.d,{to:k});return}
+  if(t.pre&&k===t.by)return preReset()}
+ return u0.apply(this,arguments)}}
+A.atkNoDash=function(){const t=ATK();if(!t||t.phase!=='declare'||t.move?.type!=='cell')return;const u=unitRaw(t.by);preDash(+u.x,+u.y,0)};
+// ATTACK: 조건이 맞으면 돌진을 확정(기록·바닥 효과)하고 공격 선언. 선언이 막히면 돌진 기록을 지우고 예정 상태로 둔다
+function preReady(t){const by=uOf(t.by);if(t.kind==='미지정')return false;if(t.multi)return!!t.aim&&aimOk(t.area,by,t.aim,t.range);const to=uOf(t.to);return!!to&&!isDown(to)&&cheb(by,to)<=t.range}
+{const ad=atkDeclare;atkDeclare=function(){const t=ATK();if(!(t?.phase==='declare'&&t.pre)||!preReady(t))return ad.apply(this,arguments);
+ const P=t.pre,k=t.by;let lk=null;
+ if(P.d){const sx=Math.sign(P.x-P.fx),sy=Math.sign(P.y-P.fy);lk=btLog(`${atkName(k)} ${t.label} 돌진 ${P.d}칸 → (${P.x},${P.y}) — 스킬 이동, 이탈 피해 없음`,{type:'move',k,to:{x:P.x,y:P.y},steps:P.d,dash:true})}
+ else lk=btLog(`${atkName(k)} ${t.label} — 돌진하지 않고 제자리에서`);
+ Store.set(`${BTP}/atk/pre`,null,true);PRE.id=null;
+ const r=ad.apply(this,arguments),t2=ATK();
+ if(t2&&t2.id===t.id&&t2.phase==='declare'){if(lk)Store.set(`${BTP}/log/${lk}`,null,true);Store.set(`${BTP}/atk/pre`,P);Object.assign(PRE,{id:t.id,k,fx:P.fx,fy:P.fy,x:P.x,y:P.y});return r}
+ if(P.d){const sx=Math.sign(P.x-P.fx),sy=Math.sign(P.y-P.fy);zonePath(k,Array.from({length:P.d},(_,i)=>({x:P.fx+sx*(i+1),y:P.fy+sy*(i+1)})))}
+ return r}}
+A.atkDeclare=function(){return atkDeclare.apply(this,arguments)};
+// 예정 중에는 다른 공격으로 바꿀 수 있다 (예정 이동을 되돌린 뒤)
+{const so=atkSetOpt;atkSetOpt=function(v){const t=ATK();if(t?.pre&&t.phase==='declare'){const u=unitRaw(t.by);if(u)Store.set(`${BTP}/units/${t.by}`,{...u,x:t.pre.fx,y:t.pre.fy},true);PRE.id=null;const{pre,dashFrom,dashD,...rest}=t;Store.set(`${BTP}/atk`,{...rest,dashed:false},true)}return so.apply(this,arguments)}}
+// 안내 문구
+dashInfo=function(t){if(!t.move)return'';const n=t.move.n;
+ if(t.move.type==='target')return`<p class="small dash-i">돌진: 같은 직선 위 대상에게 최대 ${n}칸 달려가 바로 앞 칸에서 공격해요. 사이 칸이 비어 있어야 해요.</p>`;
+ if(t.pre)return`<div class="bt-step">돌진 예정: ${t.pre.d?t.pre.d+'칸':'제자리'}</div><p class="small dash-i">아직 움직이지 않았어요. ${t.multi?'범위를 정하고':'대상을 고르고'} ATTACK을 누르면 돌진과 공격이 한 번에 실행돼요.${t.multi?'':' 다른 파란 칸을 누르면 착지 칸이 바뀌어요.'} 자기 말을 누르거나 Esc로 착지 칸을 다시 골라요.</p>`;
+ return`<div class="bt-step">돌진: 직선 최대 ${n}칸</div><p class="small dash-i">파란 칸에 마우스를 올리면 그 칸에 착지했을 때 닿는 범위가 보여요. 착지할 칸을 누르거나, 공격할 적을 바로 누르면 닿는 칸을 골라 줘요. 아직 행동은 쓰지 않아요.</p><div class="row"><button class="btn sm" data-a="atkNoDash">제자리에서 공격</button></div>`};
 </script>
 <script id="fx-catchup">
 /* §86 뒷북 방지
