@@ -2341,7 +2341,7 @@ function passiveTest(eq){
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
 const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,cam:o.cam??1,uiz:o.uiz??1,v112:o.v112}})();
 if(!FXSET.v112){if(+FXSET.fl===2)FXSET.fl=1;FXSET.v112=1;try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}}
-const CSK=()=>[1.35,1.15,.55][clamp(+FXSET.csp,0,2)]??1.15;
+const CSK=()=>[1,.58,.45][clamp(+FXSET.csp,0,2)]??.58;   // 느리게 = 예전 보통, 보통 = 예전 빠르게보다 5% 느리게, 빠르게 = 그보다 더
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2551,7 +2551,7 @@ function fxSetPanel(){return`<div class="bt-h">소리·연출</div><div class="p
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="snd" ${FXSET.snd?'checked':''}> 효과음 켜기 (합성음, 파일 없음)</label>
  ${mixHTML()}
  <label class="row small"><input type="checkbox" data-c="fxSet" data-k="cs" ${FXSET.cs?'checked':''}> 합 연출 화면 보기</label>
- <label class="f">합 연출 속도<select data-c="fxSet" data-k="csp">${[[0,'느리게'],[1,'보통'],[2,'빠르게']].map(([v,n])=>`<option value="${v}" ${+FXSET.csp===v?'selected':''}>${n}</option>`).join('')}</select></label>
+ <label class="f" title="느리게 = 예전 기본 속도">합 연출 속도<select data-c="fxSet" data-k="csp">${[[0,'느리게'],[1,'보통'],[2,'빠르게']].map(([v,n])=>`<option value="${v}" ${+FXSET.csp===v?'selected':''}>${n}</option>`).join('')}</select></label>
  ${fxPrefsHTML()}
  <div class="row"><button class="btn sm" data-a="fxTest" data-v="clang">칭 소리 듣기</button><button class="btn sm" data-a="fxTest" data-v="hit">타격</button></div><div class="row"><span class="small muted">미리보기</span><button class="btn sm" data-a="fxDemo" data-v="hit">합→적중</button><button class="btn sm" data-a="fxDemo" data-v="evade">회피</button><button class="btn sm" data-a="fxDemo" data-v="none">치명타</button></div>
  <div class="bt-h" style="margin-top:10px">효과음 바꾸기</div>${sfxListHTML()}
