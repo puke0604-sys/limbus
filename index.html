@@ -5761,6 +5761,52 @@ body.amb-cold #tkBg,body.amb-cold #btBoard,body.amb-cold .mc-img{filter:grayscal
 @keyframes f5Ch{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 @keyframes f5Tx{from{transform:translateX(0)}to{transform:translateX(6px)}}
 @keyframes f5Fl{0%{opacity:.9}100%{opacity:0}}
+
+/* §135 공명 꾸미기 */
+.rs-dial.cust{border:0!important;box-shadow:none!important}.rs-dial.cust::before{display:none}
+@keyframes rsSpin{to{transform:rotate(360deg)}}
+.rs-dial>i{display:none}
+.rs-hw{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--r0))}
+.rs-hw b{position:absolute;bottom:0;left:0;border-radius:2px;box-shadow:0 0 8px #ffcf6a}
+.rs-hw img{position:absolute;left:0;top:0;width:auto;max-width:none;filter:drop-shadow(0 0 6px rgba(255,200,90,.7))}
+#resoFx.p3 .rs-hw{animation:rsHW 2.25s cubic-bezier(.35,0,.25,1) forwards}
+@keyframes rsHW{from{transform:rotate(var(--r0))}to{transform:rotate(var(--r1))}}
+#resoFx.stop .rs-hw{opacity:.35;transition:opacity .4s}
+.rs-brc{position:absolute;left:50%;top:46%;width:0;height:0}
+.rs-bw{position:absolute;left:0;top:0;width:0;height:0}
+.rs-bw img{position:absolute;width:auto;max-width:none;left:0;transform:translateX(-50%) scaleX(var(--fx,1));filter:drop-shadow(0 0 4px #ffb93a)}
+.rs-bw img.gr{clip-path:inset(100% 0 0 0)}
+#resoFx.p3 .rs-bw img.gr{animation:rsGrow 1.4s ease-out calc(.2s + var(--i)*.12s) forwards}
+@keyframes rsGrow{to{clip-path:inset(0 0 0 0)}}
+.f5-bg{inset:-4%;background-size:cover;background-position:center}
+.f5-tint{inset:0;background:var(--c);mix-blend-mode:multiply;opacity:.85}
+#resoFx.p5 .f5-bg.bm-zoom{animation:f5Bz 8s ease-out forwards}#resoFx.p5 .f5-bg.bm-drift{animation:f5Bd 7s ease-in-out infinite alternate}
+@keyframes f5Bz{from{transform:scale(1)}to{transform:scale(1.08)}}@keyframes f5Bd{from{transform:translateX(-1.5%)}to{transform:translateX(1.5%)}}
+.f5.noband .f5-band{display:none}
+#resoFx .f5 .f5-band{transform:skewY(var(--bA,-9deg)) scaleX(0);height:var(--bW,46%);top:calc(51% - var(--bW,46%) / 2)}
+@keyframes f5B{to{transform:skewY(var(--bA,-9deg)) scaleX(1)}}
+#resoFx.p5 .f5-band{animation:f5B2 calc(.22s * var(--sp,1)) cubic-bezier(.2,1.3,.4,1) .05s forwards!important}
+@keyframes f5B2{from{transform:skewY(var(--bA,-9deg)) scaleX(0)}to{transform:skewY(var(--bA,-9deg)) scaleX(1)}}
+#resoFx.p5 .f5 .f5-fig{animation:var(--en,f5Hit) calc(.34s * var(--sp,1)) cubic-bezier(.2,1.5,.4,1) .1s both}
+.f5.e-left{--en:f5HitL}.f5.e-up{--en:f5HitU}.f5.e-zoom{--en:f5HitZ}.f5.e-none{--en:f5HitN}
+@keyframes f5HitL{0%{transform:translateX(-60%) scale(1.25) rotate(3deg);opacity:0}55%{transform:translateX(2%) scale(.97);opacity:1}100%{transform:none;opacity:1}}
+@keyframes f5HitU{0%{transform:translateY(40%) scale(1.1);opacity:0}55%{transform:translateY(-2%);opacity:1}100%{transform:none;opacity:1}}
+@keyframes f5HitZ{0%{transform:scale(1.8);opacity:0}55%{transform:scale(.96);opacity:1}100%{transform:none;opacity:1}}
+@keyframes f5HitN{0%{opacity:0}100%{opacity:1}}
+#resoFx.p5 .f5 .f5-ch{animation:var(--id,f5Br2) calc(3.2s * var(--sp,1)) ease-in-out .5s infinite}
+#resoFx.p5 .f5 .f5-echo{animation:f5Ec2 calc(2.6s * var(--sp,1)) ease-in-out .45s infinite}
+.f5.i-zoom{--id:f5Iz}.f5.i-drift{--id:f5Id}.f5.i-none{--id:none}
+@keyframes f5Br2{0%,100%{transform:none}50%{transform:translate(calc(var(--amp,1) * -4px),calc(var(--amp,1) * -5px)) scale(calc(1 + var(--amp,1) * .012))}}
+@keyframes f5Iz{0%,100%{transform:none}50%{transform:scale(calc(1 + var(--amp,1) * .03))}}
+@keyframes f5Id{0%,100%{transform:translateX(calc(var(--amp,1) * -6px))}50%{transform:translateX(calc(var(--amp,1) * 6px))}}
+@keyframes f5Ec2{0%,100%{transform:none}33%{transform:translate(calc(var(--amp,1) * -12px),calc(var(--amp,1) * 4px))}66%{transform:translate(calc(var(--amp,1) * -6px),calc(var(--amp,1) * -5px))}}
+.f5.i-none .f5-echo{animation:none!important}
+#resoFx.p5 .f5 .f5-ln span{animation:f5Ch calc(.18s * var(--sp,1)) ease-out calc(.5s * var(--sp,1) + var(--i) * .06s * var(--sp,1)) forwards}
+#resoFx.p5 .f5 .f5-nm{animation:f5Ch .25s ease-out calc(1s * var(--sp,1)) forwards}
+.rd{border:1px solid var(--line,#3a2a20);border-radius:6px;padding:6px 10px;margin:6px 0}.rd summary{cursor:pointer;font-weight:700}
+.rd-r{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}.rd-th{width:54px;height:54px;object-fit:contain;background:#111;border:1px solid #444;border-radius:4px}.rd-th.none{display:grid;place-items:center;font-size:11px;color:#888}
+.rd-l{display:flex;gap:8px;align-items:center;margin:4px 0;font-size:13px}.rd-l input[type=range]{flex:1}.rd-v{min-width:44px;text-align:right;font-size:12px}
+.rd-ax{position:relative;display:inline-block;max-width:160px;background:#111;cursor:crosshair}.rd-ax img{display:block;max-width:160px;max-height:200px}.rd-ax i{position:absolute;width:12px;height:12px;margin:-6px;border:2px solid #fff;border-radius:50%;background:#e33;box-shadow:0 0 0 1px #000;pointer-events:none}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -7170,7 +7216,7 @@ const resoAuto=()=>Store.get('play/reso/auto')!==false;
 const resoCol=c=>sinColor((c?.skills||[]).find(x=>x?.sin)?.sin)||'#e0a530';
 function resoBuild(finK,foeK){const U=units(),A_=U.filter(u=>u.side!=='foe'&&!isDown(u)).slice(0,8),al=A_.map(u=>{const c=CH(srcOf(u));return{n:uName(u),img:c?.portrait||artOf(c)||u.img||'',col:resoCol(c),eye:c?.fin?.eye||null}});
  const fu=(finK&&uOf(finK)&&uOf(finK).side!=='foe'?uOf(finK):null)||A_[0],fc=fu&&CH(srcOf(fu)),eu=foeK&&uOf(foeK),ec=eu&&CH(srcOf(eu)),S=Store.get('play/reso')||{};
- return{fx:'reso',uk:foeK||'',al,foe:{n:eu?uName(eu):'',img:artOf(ec)||ec?.portrait||eu?.img||''},fin:{n:fu?uName(fu):'',img:fc?.fin?.img||artOf(fc)||fc?.portrait||'',line:fc?.fin?.line||'',col:resoCol(fc)},em:S.img||'',title:S.name||''}}
+ return{fx:'reso',uk:foeK||'',al,foe:{n:eu?uName(eu):'',img:artOf(ec)||ec?.portrait||eu?.img||''},fin:{n:fu?uName(fu):'',img:fc?.fin?.img||artOf(fc)||fc?.portrait||'',line:fc?.fin?.line||'',col:resoCol(fc)},em:S.img||'',title:S.name||'',cfg:{face:S.face||null,hands:S.hands||null,br:S.br||null,emSz:S.emSz||100,f5:S.f5||null}}}
 const RS_CHAIN="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='14'%3E%3Cellipse cx='10' cy='7' rx='8.5' ry='5' fill='none' stroke='%23c4c4c4' stroke-width='3'/%3E%3Cellipse cx='10' cy='7' rx='8.5' ry='5' fill='none' stroke='%23555' stroke-width='1' transform='translate(0 1.4)'/%3E%3Crect x='15.5' y='4.6' width='15' height='4.8' rx='2.4' fill='%23888' stroke='%23444' stroke-width='.8'/%3E%3C/svg%3E\")";
 const rsSnd=k=>{try{(['boom','slash','glass','whoosh','knock','door','step','heart','static'].includes(k)?STORY:SFX).play(k)}catch{}};
 function rsEmblem(){const C=SINS.map(([n])=>sinColor(n));return`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#f3d27a" stroke-width="1.6"/><polygon points="50,14 81,32 81,68 50,86 19,68 19,32" fill="none" stroke="#f3d27a" stroke-width="1.2"/><path d="M50 82V22M50 44l-13-12M50 44l13-12M50 60l-17-13M50 60l17-13" fill="none" stroke="#ffe9a8" stroke-width="2.4" stroke-linecap="round"/>${C.map((c,i)=>{const a=i/C.length*Math.PI*2-Math.PI/2;return`<circle cx="${(50+Math.cos(a)*44).toFixed(1)}" cy="${(50+Math.sin(a)*44).toFixed(1)}" r="3.4" fill="${c}"/>`}).join('')}</svg>`}
@@ -7181,16 +7227,18 @@ function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#r
  const TT=[],T=(ms,f)=>TT.push(setTimeout(()=>{try{f()}catch(e){console.error(e)}},ms)),end=()=>{TT.forEach(clearTimeout);el.classList.add('out');setTimeout(()=>{VFX.clear();VFX.mount(document.body);el.remove()},450)};
  const BANDS=[[-38,22],[31,40],[-9,55],[52,68],[6,84],[-58,50]];
  el.innerHTML=`<div class="rs-s1"><div class="rs-row" style="--n:${N}">${al.map((a,i)=>`<div class="rs-st" style="--c:${a.col};--i:${i}"><div class="rs-in">${pImg(a.img)?`<img src="${esc(pImg(a.img))}" alt="" style="object-position:${a.eye?a.eye.x:50}% ${a.eye?Math.max(0,a.eye.y-4):14}%">`:`<em>${esc((a.n||'?')[0])}</em>`}</div><i class="rs-frm"></i><span class="rs-no">${String(i+1).padStart(2,'0')}</span><div class="rs-bd">${BANDS.map(([r,y],j)=>`<i style="--r:${r}deg;--y:${y}%;--j:${j}"></i>`).join('')}</div><b>${esc(a.n||'')}</b></div>`).join('')}</div><i class="rs-chain"></i></div>
- <div class="rs-s3">${rsBranches()}<div class="rs-dial"><i class="h1"></i><i class="h2"></i><div class="rs-em">${pImg(m.em)?`<img src="${esc(pImg(m.em))}" alt="">`:rsEmblem()}</div></div><div class="rs-nm"><small>RESONANCE</small><b>${[...(m.title||'공 명')].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}</b></div></div>
+ <div class="rs-s3">${rsS3Parts(m.cfg||{}).br}<div class="rs-dial${m.cfg?.face?.img?' cust':''}" style="${rsS3Parts(m.cfg||{}).dial}">${rsS3Parts(m.cfg||{}).hands}<div class="rs-em" style="${rsS3Parts(m.cfg||{}).em}">${pImg(m.em)?`<img src="${esc(pImg(m.em))}" alt="">`:rsEmblem()}</div></div><div class="rs-nm"><small>RESONANCE</small><b>${[...(m.title||'공 명')].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}</b></div></div>
  <div class="rs-s4"><div class="rs-mir"><div class="rs-base">${im(m.foe?.img)||'<em>?</em>'}<i class="rs-sheen"></i></div>
   ${MIRROR.sh.map((s,i)=>{const a=al[i%N]||{};return`<div class="rs-sh" style="clip-path:polygon(${s.poly});--dx:${s.dx}px;--dy:${s.dy}px;--r:${s.r}deg;--dl:${s.dl}s;--c:${a.col||'#fff'}">${im(a.img)}</div>`}).join('')}
   <svg class="rs-crk" viewBox="0 0 100 100" preserveAspectRatio="none">${MIRROR.lines.map((l,i)=>`<polyline points="${l}" pathLength="100" stroke="${(al[i%N]||{}).col||'#fff'}" style="--i:${i}"/>`).join('')}</svg>
   ${Array.from({length:Math.max(4,N)},(_,i)=>`<i class="rs-sl" style="--c:${(al[i%N]||{}).col||'#fff'};--r:${[-24,38,-62,12,71,-8,49,-40][i%8]}deg;--i:${i}"></i>`).join('')}</div><b class="rs-fn">${esc(m.foe?.n||'')}</b></div>
- <div class="rs-s5 f5" style="--c:${F.col||'#e0a530'}"><i class="f5-band"></i>${pImg(F.img)?`<div class="f5-fig"><i class="f5-echo" style="-webkit-mask-image:url('${esc(pImg(F.img))}');mask-image:url('${esc(pImg(F.img))}')"></i><img class="f5-ch" src="${esc(pImg(F.img))}" alt=""></div>`:''}<div class="f5-ln">${F.line?[...('“'+F.line+'”')].map((ch,i)=>`<span style="--i:${i}">${ch===' '?'&nbsp;':esc(ch)}</span>`).join(''):''}</div><div class="f5-nm"><i></i><b>${esc([...(F.n||'')].join(' '))}</b></div><i class="f5-fl"></i></div>
+ <div class="rs-s5 f5 ${rsF5(m.cfg||{}).cls}" style="--c:${F.col||'#e0a530'};${rsF5(m.cfg||{}).sty}">${rsF5(m.cfg||{}).bg}<i class="f5-band"></i>${pImg(F.img)?`<div class="f5-fig"><i class="f5-echo" style="-webkit-mask-image:url('${esc(pImg(F.img))}');mask-image:url('${esc(pImg(F.img))}')"></i><img class="f5-ch" src="${esc(pImg(F.img))}" alt=""></div>`:''}<div class="f5-ln">${F.line?[...('“'+F.line+'”')].map((ch,i)=>`<span style="--i:${i}">${ch===' '?'&nbsp;':esc(ch)}</span>`).join(''):''}</div><div class="f5-nm"><i></i><b>${esc([...(F.n||'')].join(' '))}</b></div><i class="f5-fl"></i></div>
  <div class="rs-fsw">${al.slice(0,6).map((a,i)=>{const P=[[27,34,-14],[71,30,11],[44,70,7],[80,70,-9],[14,72,13],[56,20,-6]][i],vx=(P[0]-50)*.9,vy=(P[1]-48)*.9,pts=shPoly(a.n||i);
   return`<div class="rs-fs" style="left:${P[0]}%;top:${P[1]}%;--r:${P[2]}deg;--vx:${vx}vw;--vy:${vy}vh;--c:${a.col};--i:${i}"><div class="rs-fsi" style="clip-path:polygon(${pts})">${pImg(a.img)?rsEyeImg(a.img,a.eye,i):''}</div></div>`}).join('')}</div>
  <div class="rs-fl"></div><div class="rs-skip">클릭하면 건너뛰기</div>`;
  el.addEventListener('click',end);document.body.appendChild(el);VFX.clear();VFX.mount(el);rsSnd('whoosh');
+ if(m.only==='s3'){el.querySelector('.rs-s1').style.display='none';el.classList.add('gold','p3');[0,1,2,3,4,5,6,7,8,9].forEach(i=>T(100+i*190,()=>rsSnd('tick')));T(2250,()=>{el.classList.add('stop');rsSnd('boom')});T(4600,end);return}
+ if(m.only==='s5'){el.querySelector('.rs-s1').style.display='none';el.querySelector('.rs-s3').style.display='none';T(60,()=>{el.classList.add('p5');rsFinish(el,F);rsSnd('heavy')});T(5600,end);return}
  const row=el.querySelector('.rs-row'),sts=[...el.querySelectorAll('.rs-st')],t1=600+N*140,dur=Math.max(1300,N*330);
  sts.forEach((s,i)=>T(120+i*140,()=>rsSnd('block')));
  T(t1,()=>{el.classList.add('p2');el.querySelector('.rs-chain').style.transitionDuration=dur+'ms';rsSnd('static')});
@@ -7223,7 +7271,7 @@ function rsBreak(el,al){const{W,H}=VFX.size(),cols=(al||[]).map(a=>a.col).filter
  VFX.rays({x:cx,y:cy,n:20,len:Math.hypot(W,H)*.9,col:'#ffe6a8',col2:'#ffb040',a:.9,life:1.1});VFX.grade({mode:'overlay',col:'#ffc860',a:.45,life:.8,fout:.7});
  VFX.embers({x:cx,y:cy,jx:W*.35,jy:H*.35,n:70,s0:200,s1:1000,l0:.6,l1:1.5,r0:1.5,r1:3.5,g:700,drag:1.2,tail:.03,cols:['#ffffff','#dfe8ff',...cols.slice(0,4)]});
  rsShake(el,2)}
-function rsFinish(el,F){VFX.killCracks();setTimeout(()=>rsShake(el,2),120)}
+function rsFinish(el,F){VFX.killCracks();const k=+((Store.get('play/reso/f5')||{}).shk??2);if(k)setTimeout(()=>rsShake(el,k),120)}
 
 // §132 얼굴 위치 (공명 유리 조각·첫 장면 카드) chars/<id>/fin/eye {x,y,z}
 const EYE0=i=>({x:i%2?42:58,y:16,z:3.2});
@@ -7249,11 +7297,66 @@ function finEyeZoom(v){const c=CH(UI.charId);if(!c)return;finEyeSet({...EYE0(0),
 Object.assign(A,{finEyeOpen(){const c=CH(UI.charId);if(!c)return;M.wide=true;openModal(`공명 얼굴 위치 — ${c.info?.name||''}`,finEyeModal)},finEyeReset(){finEyeSet(null)},
  finEyeTest(){const c=CH(UI.charId);if(!c)return;const m=resoNow(),me={n:c.info?.name||'',img:c.portrait||artOf(c)||'',col:resoCol(c),eye:c.fin?.eye||null};
   m.al=[me,...(m.al||[]).filter(a=>a.n!==me.n)].slice(0,8);m.fin={n:me.n,img:c.fin?.img||artOf(c)||c.portrait||'',line:c.fin?.line||'',col:me.col};closeModal();resoPlay({...m,any:1})}});
+
+// §135 공명 꾸미기: 시계판·바늘 3개·가지·문양 크기 · 마무리 화면 배경/움직임 (play/reso/…)
+const RS_HAND0={h1:{len:27,w:6,r0:-112,turn:1,end:0,col:'#e8b84a'},h2:{len:40,w:4,r0:47,turn:6,end:0,col:'#ffe9a8'},h3:{len:44,w:2,r0:0,turn:12,end:0,col:'#ff6a4a',off:1}};
+const RS_HN={h1:'시침',h2:'분침',h3:'초침'};
+function rsS3Parts(cfg){const F=cfg.face||{},D=`calc(44vmin * ${(F.sz||100)/100})`,H=cfg.hands||{};
+ const dial=`--D:${D};width:${D};height:${D};margin:calc(${D} / -2);${F.img&&pImg(F.img)?`background:url('${esc(pImg(F.img))}') center/contain no-repeat;`:''}${F.spin?'animation:rsSpin 9s linear infinite;':''}`;
+ const hands=['h1','h2','h3'].map(k=>{const d={...RS_HAND0[k],...(H[k]||{})};if(d.off&&!d.img)return'';const r1=(+d.turn||0)*360+(+d.end||0);
+  return`<div class="rs-hw" style="--r0:${d.r0}deg;--r1:${r1}deg">${d.img&&pImg(d.img)?`<img src="${esc(pImg(d.img))}" alt="" style="height:calc(var(--D) * ${d.len/100});transform:translate(-${d.ax?.x??50}%,-${d.ax?.y??100}%);transform-origin:${d.ax?.x??50}% ${d.ax?.y??100}%">`:`<b style="height:calc(var(--D) * ${d.len/100});width:${d.w}px;margin-left:${-d.w/2}px;background:linear-gradient(${d.col},#8a5a1a)"></b>`}</div>`}).join('');
+ const es=(cfg.emSz||100)/100,ins=(100-66*es)/2;
+ const B=cfg.br||{};let br;
+ if(B.img&&pImg(B.img)){const n=Math.max(1,Math.min(16,+B.n||6)),sz=B.sz||40;br=`<div class="rs-brc">${Array.from({length:n},(_,i)=>`<div class="rs-bw" style="transform:rotate(${(B.rot||0)+i/n*360}deg)"><img src="${esc(pImg(B.img))}" alt="" style="height:${sz}vmin;bottom:calc(44vmin * ${(F.sz||100)/100} * .42);${i%2&&B.flip!==false?'--fx:-1;':''}--i:${i}" class="${B.grow===false?'':'gr'}"></div>`).join('')}</div>`}
+ else br=`<div style="position:absolute;inset:0;transform:scale(${(B.sz||100)/100})">${rsBranches()}</div>`;
+ return{dial,hands,em:`inset:${ins}%`,br}}
+const F5D={mode:'tint',dim:55,blur:2,move:'zoom',band:1,bandA:-9,bandW:46,enter:'right',idle:'breath',amp:1,shk:2,spd:'mid'};
+function rsF5(cfg){const o={...F5D,...(cfg.f5||{})},sp={fast:.7,mid:1,slow:1.5}[o.spd]||1;
+ const bg=o.img&&pImg(o.img)?`<i class="f5-bg m-${o.mode} bm-${o.move}" style="background-image:url('${esc(pImg(o.img))}');filter:${o.mode==='orig'?'':'grayscale(1) contrast(1.15) '}brightness(${(100-o.dim)/100}) blur(${o.blur}px)"></i>${o.mode==='tint'?'<i class="f5-tint"></i>':''}`:'';
+ return{cls:`e-${o.enter} i-${o.idle}${o.band?'':' noband'}`,sty:`--sp:${sp};--amp:${o.amp};--bA:${o.bandA}deg;--bW:${o.bandW}%`,bg}}
+function resoDecoModal(){const S=Store.get('play/reso')||{},F=S.face||{},H=S.hands||{},B=S.br||{},O={...F5D,...(S.f5||{})};
+ const pv=r=>pImg(r)?`<img class="rd-th" src="${esc(pImg(r))}" alt="">`:'<span class="rd-th none">기본</span>';
+ const img=(path,r)=>`${pv(r)}<button class="btn sm" data-a="rdImg" data-k="${path}">${pImg(r)?'바꾸기':'그림 넣기'}</button>${pImg(r)?`<button class="btn sm" data-a="rdOff" data-k="${path}">기본으로</button>`:''}`;
+ const rng=(path,v,min,max,step,unit='')=>`<input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-c="rdNum" data-k="${path}"><b class="rd-v">${v}${unit}</b>`;
+ const sel=(path,v,opts)=>`<select data-c="rdSel" data-k="${path}">${opts.map(([k,l])=>`<option value="${k}" ${String(v)===String(k)?'selected':''}>${l}</option>`).join('')}</select>`;
+ const chk=(path,v,l)=>`<label class="row small"><input type="checkbox" data-c="rdChk" data-k="${path}" ${v?'checked':''}> ${l}</label>`;
+ return`<p class="small muted">그림은 배경이 투명한 PNG가 좋아요. 안 넣은 부분은 기본 모양이 나와요. 방 전체에 적용돼요.</p>
+ <div class="row"><button class="btn" data-a="rdTest" data-k="s3">▶ 시계 장면만</button><button class="btn" data-a="rdTest" data-k="s5">▶ 마무리 화면만</button></div>
+ <details open class="rd"><summary>시계판</summary><div class="rd-r">${img('face/img',F.img)}</div><label class="rd-l">크기 ${rng('face/sz',F.sz||100,40,200,5,'%')}</label>${chk('face/spin',F.spin,'시계판이 천천히 돎')}</details>
+ ${['h1','h2','h3'].map(k=>{const d={...RS_HAND0[k],...(H[k]||{})};return`<details class="rd"><summary>${RS_HN[k]}${d.img?' · 그림':''}</summary><div class="rd-r">${img(`hands/${k}/img`,d.img)}</div>
+  ${k==='h3'?chk(`hands/${k}/off`,d.off,'초침 숨기기 (그림을 넣으면 나와요)'):''}
+  <label class="rd-l">길이 ${rng(`hands/${k}/len`,d.len,10,90,1,'%')}</label>${d.img?'':`<label class="rd-l">굵기 ${rng(`hands/${k}/w`,d.w,1,14,1,'px')}</label>`}
+  <label class="rd-l">돌 바퀴 ${rng(`hands/${k}/turn`,d.turn,0,20,1,'바퀴')}</label><label class="rd-l">멈출 각도 ${rng(`hands/${k}/end`,d.end,0,355,5,'°')}</label>
+  ${d.img?`<div class="rd-l">축 위치 <span class="small muted">그림에서 바늘이 도는 점을 누르세요</span></div><div class="rd-ax" onpointerdown="rdAx(event,'${k}')"><img src="${esc(pImg(d.img))}" alt="" draggable="false"><i style="left:${d.ax?.x??50}%;top:${d.ax?.y??100}%"></i></div>`:''}</details>`}).join('')}
+ <details class="rd"><summary>금빛 가지</summary><div class="rd-r">${img('br/img',B.img)}</div>
+  <label class="rd-l">크기 ${rng('br/sz',B.sz||(B.img?40:100),B.img?10:50,B.img?90:200,B.img?1:5,B.img?'':'%')}</label>
+  ${B.img?`<label class="rd-l">개수 ${rng('br/n',B.n||6,1,16,1,'개')}</label><label class="rd-l">돌림 ${rng('br/rot',B.rot||0,0,355,5,'°')}</label>${chk('br/flipOff',B.flip===false,'하나씩 좌우 뒤집기 끄기')}${chk('br/growOff',B.grow===false,'자라나는 움직임 끄기')}`:'<p class="small muted">그림을 넣으면 시계 둘레로 여러 개를 돌려 놓고, 개수·돌림·뒤집기를 정할 수 있어요.</p>'}</details>
+ <details class="rd"><summary>가운데 문양</summary><div class="rd-r">${img('img',S.img)}</div><label class="rd-l">크기 ${rng('emSz',S.emSz||100,40,150,5,'%')}</label></details>
+ <details class="rd" open><summary>마무리 화면</summary>
+  <div class="rd-r">${img('f5/img',O.img)}<span class="small muted">배경 그림</span></div>
+  <label class="rd-l">배경 색 ${sel('f5/mode',O.mode,[['tint','흑백 + 죄악 색'],['mono','흑백'],['orig','원본 그대로']])}</label>
+  <label class="rd-l">어둡게 ${rng('f5/dim',O.dim,0,90,5,'%')}</label><label class="rd-l">흐리게 ${rng('f5/blur',O.blur,0,12,1,'px')}</label>
+  <label class="rd-l">배경 움직임 ${sel('f5/move',O.move,[['zoom','천천히 확대'],['drift','천천히 흐름'],['none','없음']])}</label>
+  ${chk('f5/band',O.band,'죄악 색 사선 띠')}<label class="rd-l">띠 기울기 ${rng('f5/bandA',O.bandA,-25,25,1,'°')}</label><label class="rd-l">띠 굵기 ${rng('f5/bandW',O.bandW,10,80,2,'%')}</label>
+  <label class="rd-l">캐릭터 등장 ${sel('f5/enter',O.enter,[['right','오른쪽에서 날아옴'],['left','왼쪽에서'],['up','아래에서 솟음'],['zoom','크게 → 제자리'],['none','그냥 나타남']])}</label>
+  <label class="rd-l">박힌 뒤 ${sel('f5/idle',O.idle,[['breath','숨쉬기'],['zoom','천천히 확대'],['drift','좌우로 흐름'],['none','멈춤']])}</label>
+  <label class="rd-l">움직임 세기 ${rng('f5/amp',O.amp,0,3,1,'')}</label><label class="rd-l">박힐 때 흔들림 ${rng('f5/shk',O.shk,0,2,1,'')}</label>
+  <label class="rd-l">속도 ${sel('f5/spd',O.spd,[['fast','빠르게'],['mid','보통'],['slow','느리게']])}</label></details>
+ <div class="mfoot"><button class="btn" data-a="rdReset">전부 기본으로</button><button class="btn" data-a="resoOpen">← 공명 연출</button><button class="btn pri" data-a="closeModal">닫기</button></div>`}
+function rdSet(k,v){if(!isGmLike())return;Store.set('play/reso/'+k,v);drawModal()}
+function rdAx(ev,k){const r=ev.currentTarget.getBoundingClientRect();ev.preventDefault();rdSet(`hands/${k}/ax`,{x:Math.round(clamp((ev.clientX-r.left)/r.width*100,0,100)),y:Math.round(clamp((ev.clientY-r.top)/r.height*100,0,100))})}
+Object.assign(A,{resoDeco(){if(!isGmLike())return;M.wide=true;openModal('공명 연출 꾸미기',resoDecoModal)},
+ rdImg(el){const k=el.dataset.k;pickImg(k==='f5/img'?1600:900,img=>rdSet(k,img))},rdOff(el){rdSet(el.dataset.k,null)},
+ rdTest(el){const m=resoNow();resoPlay({...m,any:1,only:el.dataset.k})},
+ rdReset(){if(!confirm('공명 연출 꾸미기를 전부 기본으로 돌릴까요? (문양 이름·자동 재생은 그대로)'))return;['face','hands','br','emSz','f5','img'].forEach(k=>Store.set('play/reso/'+k,null));drawModal()}});
+Object.assign(CHANGE,{rdNum(el){rdSet(el.dataset.k,+el.value)},rdSel(el){rdSet(el.dataset.k,el.value)},
+ rdChk(el){const k=el.dataset.k;if(k==='br/flipOff')return rdSet('br/flip',el.checked?false:null);if(k==='br/growOff')return rdSet('br/grow',el.checked?false:null);if(k==='f5/band')return rdSet(k,el.checked?1:0);if(k==='hands/h3/off')return rdSet(k,el.checked?1:0);rdSet(k,el.checked?1:null)}});
 // GM: 설정·수동 재생
 A.resoOpen=function(){if(!isGmLike())return;openModal('공명 연출',()=>{const S=Store.get('play/reso')||{};return`<p class="small muted">아군 초상이 쇠사슬로 묶여 이어지고 → 시계와 금빛 가지, 문양·이름 → 거울에 비친 적이 깨지고 → 마무리한 캐릭터의 피니시 화면. 약 12초, 각자 클릭으로 건너뛸 수 있어요.</p>
  <label class="row small"><input type="checkbox" data-c="resoAutoSet" ${resoAuto()?'checked':''}> 보스(보스 설정을 켠 적)가 쓰러지면 자동으로 재생</label>
  <label class="f">문양 아래 이름<input data-c="resoName" value="${esc(S.name||'')}" placeholder="비우면 “공 명”"></label>
  <div class="row"><div class="rs-pv">${pImg(S.img)?`<img src="${esc(pImg(S.img))}" alt="">`:rsEmblem()}</div><button class="btn sm" data-a="resoImg">문양 그림 ${pImg(S.img)?'바꾸기':'올리기'}</button>${pImg(S.img)?'<button class="btn sm" data-a="resoImgOff">기본 문양으로</button>':''}</div>
+ <div class="row"><button class="btn" data-a="resoDeco">🎨 꾸미기 — 시계판·바늘·가지·문양 크기·마무리 화면 배경/움직임</button></div>
  <p class="small muted">지금 재생: 마무리 = 지도에서 고른 아군(없으면 첫 아군), 적 = 고른 적(없으면 첫 적). 피니시 그림·대사는 각 시트의 💬 전투 대사에서 넣어요.</p>
  <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button><button class="btn" data-a="resoTest">나만 미리보기</button><button class="btn pri" data-a="resoSend">▶ 모두에게 재생</button></div>`})};
 const resoNow=()=>{const su=UI.bt.sel&&uOf(UI.bt.sel),U=units(),fin=su&&su.side!=='foe'?su.k:null,foe=(su&&su.side==='foe'?su:U.find(u=>u.side==='foe'))?.k||'';return resoBuild(fin,foe)};
