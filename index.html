@@ -2462,7 +2462,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv)}
  const wa=d.wa||'S',wb=d.wb||'S',cB=(()=>{try{return resoCol(CH(srcOf(uOf(d.to))))}catch{return'#8aa0b8'}})();
  const vxP=()=>{const R=VFX.rect(el),ba=$('.cs-body',fl),bb=$('.cs-body',fr),ra=ba?VFX.rect(ba):{cx:R.w*.3,y:R.h*.3,h:R.h*.5},rb=bb?VFX.rect(bb):{cx:R.w*.7,y:R.h*.3,h:R.h*.5};
-  return{a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:R.h*.85,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
+  return{a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
