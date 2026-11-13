@@ -5904,7 +5904,9 @@ body.amb-cold #tkBg,body.amb-cold #btBoard,body.amb-cold .mc-img{filter:grayscal
 /* §150~151 전투 맵 2.5D: 기울인 판 · 등신대 간판 · 솟은 벽 · 공중 포물선 · 카메라 */
 .w3,.bt-fs,.b25-arcs,.sd{display:none}
 body.b25 .bt-wrap{perspective:1700px;perspective-origin:50% 30%}
-body.b25 .bt-board{transform-style:preserve-3d;transform-origin:50% 50%;background:linear-gradient(rgba(16,10,6,.82),rgba(10,6,3,.9));box-shadow:0 0 0 1px rgba(255,200,130,.3),0 0 0 4px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.7);will-change:transform}
+body.b25 .bt-board{transform-style:preserve-3d;transform-origin:50% 50%;background:linear-gradient(rgba(16,10,6,.82),rgba(10,6,3,.9));box-shadow:0 0 0 2px rgba(255,200,130,.3),0 0 0 8px rgba(0,0,0,.5),0 80px 160px rgba(0,0,0,.7)}
+body.b25 .bt-wrap .bt-board{width:calc(2*min(100cqw,100cqh*var(--w)/var(--h)));max-width:none;flex:none}
+body.b25 .bt-wrap{justify-content:center;align-content:center}
 body.b25 .bt-grid,body.b25 .bt-cell{transform-style:preserve-3d}
 body.b25 .bt-cell.wall{background:rgba(0,0,0,.45);box-shadow:none}
 body.b25 .w3{display:block;position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
@@ -5961,11 +5963,11 @@ body.b25 .b25-arcs{display:block;position:absolute;inset:0;width:100%;height:100
 .bt-unit.b25-hit .bt-face{animation-name:b25hitf}@keyframes b25hitf{10%{transform:translateX(-14%) rotate(-14deg);filter:brightness(2) saturate(.3)}30%{transform:translateX(9%) rotate(9deg)}55%{transform:translateX(-5%) rotate(-5deg)}}
 /* 연출 중: 위아래 검은 띠 · 이름 · 조작 막기(누르면 건너뛰기) */
 #cineBlk{position:fixed;inset:0;z-index:95;display:none;cursor:pointer}
-#cineBlk.on{display:block}
+#cineBlk.cb-on{display:block}
 #cineBlk .cb-t,#cineBlk .cb-b{position:absolute;left:0;right:0;height:9vh;background:#000;animation:cbIn .35s cubic-bezier(.2,.8,.2,1) both}
 #cineBlk .cb-t{top:0}#cineBlk .cb-b{bottom:0}@keyframes cbIn{from{height:0}}
 #cineBlk .cb-nm{position:absolute;left:6vw;bottom:13vh;display:none;font:400 clamp(28px,4.4vw,64px) var(--fk);color:#fff3df;text-shadow:0 0 18px rgba(0,0,0,.9),0 2px 0 #000;letter-spacing:.02em;animation:cbNm .5s cubic-bezier(.2,.8,.2,1) both}
-#cineBlk.nm .cb-nm{display:block}
+#cineBlk.cb-nmon .cb-nm{display:block}
 #cineBlk .cb-nm em{display:block;font:700 clamp(11px,1.1vw,16px) var(--fb);font-style:normal;letter-spacing:.4em;color:var(--c,#e0a530);margin-bottom:4px}
 @keyframes cbNm{from{opacity:0;transform:translateX(-40px)}}
 #cineBlk small{position:absolute;right:2vw;bottom:2.4vh;font:700 12px var(--fb);color:#a8927a;z-index:1}
@@ -6004,6 +6006,72 @@ body.b25.b25-nobg .bt-wrap::before{content:"";position:absolute;inset:-30% -10% 
 body.b25 .b25-fog{display:block;position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(calc(180deg - var(--rot,0deg)),rgba(12,8,5,.96) 0%,rgba(12,8,5,.55) 12%,transparent 30%)}
 .b25-fog{display:none}
 #b25ctl{left:96px;top:64px;right:auto;bottom:auto}
+/* §153 조명 · 팀 색 테두리 · 초점 · 이름판 · 차례/쓰러짐 연출 (판은 2배로 그려 줄여 보이므로 px 값은 2배) */
+body.b25 .bt-board{background:radial-gradient(ellipse at 50% 55%,rgba(30,20,12,.94),rgba(10,7,4,.97) 75%)}
+body.b25.b25-nobg .bt-wrap::before{background:radial-gradient(ellipse 70% 40% at 50% 46%,rgba(90,58,30,.18),transparent 70%),linear-gradient(#030202 0%,#0b0705 40%,#160e08 52%,#080504 72%,#030202 100%)}
+body.b25 .bt-cell{border-color:rgba(255,205,140,.035);border-width:0 2px 2px 0}
+/* 발밑: 따뜻한 빛 웅덩이 + 진하고 짧은 접지 그림자 */
+body.b25 .bt-fs::before{display:none}
+body.b25 .fs-lt{position:absolute;inset:-45% -40%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,196,120,.34),rgba(255,170,90,.12) 55%,transparent);pointer-events:none}
+body.b25 .bt-fs.t .fs-lt{inset:-85% -70%;background:radial-gradient(closest-side,rgba(255,214,150,.62),rgba(255,180,100,.22) 50%,transparent)}
+body.b25 .fs-sh{position:absolute;inset:34% 22%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.85),rgba(0,0,0,.5) 55%,transparent);pointer-events:none}
+body.b25 .bt-fs.t::after,body.b25 .bt-fs.s::after{border-width:3px;inset:10%;box-shadow:0 0 16px var(--amber)}
+body.b25 .bt-fs.s::after{box-shadow:0 0 12px #fff3df}body.b25 .bt-fs.foe::after{box-shadow:0 0 18px #e23a2e}
+body.b25 .bt-fs.tg::after{border-width:3px;box-shadow:0 0 18px #e23a2e}
+/* 작은 체력 막대(항상) + 이름(차례·선택·대상·마우스 올림일 때만) */
+body.b25 .fs-hp{position:absolute;left:28%;right:28%;top:66%;height:6px;background:#000;box-shadow:0 0 0 2px rgba(0,0,0,.7);pointer-events:none}
+body.b25 .fs-hp b{display:block;height:100%;background:linear-gradient(#9cf06a,#2f8f3a)}body.b25 .bt-fs.foe .fs-hp b{background:linear-gradient(#ff8a6e,#b0201c)}
+body.b25 .fs-nm{top:78%;font:700 22px var(--fb);line-height:30px;padding:0 10px;border-bottom-width:4px;opacity:0;transition:opacity .15s;background:rgba(6,4,2,.82)}
+body.b25 .bt-fs.t .fs-nm,body.b25 .bt-fs.s .fs-nm,body.b25 .bt-fs.tg .fs-nm,body.b25 .bt-fs.hov .fs-nm{opacity:1}
+body.b25 .bt-fs.dn .fs-hp{display:none}
+/* 캐릭터만 밝게 + 팀 색 테두리 빛 */
+body.b25 .sd-i{filter:brightness(1.12) contrast(1.08) saturate(1.12) drop-shadow(0 0 2px rgba(255,205,110,.95)) drop-shadow(0 0 10px rgba(255,180,80,.5)) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+body.b25 .s-foe .sd-i{filter:brightness(1.12) contrast(1.08) saturate(1.12) drop-shadow(0 0 2px rgba(255,80,60,.95)) drop-shadow(0 0 10px rgba(255,60,40,.5)) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+/* 초점 하나: 차례인 캐릭터는 더 밝고 빛이 큼, 나머지는 살짝 어둡게 */
+body.b25 .has-turn .bt-unit.has-sd:not(.bt-turn):not(.bt-sel):not(.bt-tgt):not(.bt-inatk) .sd{filter:brightness(.72) saturate(.85)}
+body.b25 .bt-turn .sd-i{filter:brightness(1.22) contrast(1.1) saturate(1.18) drop-shadow(0 0 3px #ffe2a0) drop-shadow(0 0 20px rgba(255,190,90,.8)) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+body.b25 .s-foe.bt-turn .sd-i{filter:brightness(1.22) contrast(1.1) saturate(1.18) drop-shadow(0 0 3px #ffb0a0) drop-shadow(0 0 20px rgba(255,70,50,.8)) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+body.b25 .bt-turn .sd::before{content:"";position:absolute;left:50%;bottom:-4%;width:150%;height:140%;transform:translateX(-50%);background:linear-gradient(to top,rgba(255,215,150,.32),rgba(255,215,150,.1) 60%,transparent);clip-path:polygon(22% 100%,78% 100%,100% 0,0 0);pointer-events:none;z-index:0;mix-blend-mode:screen}
+body.b25 .bt-sel .sd-i{filter:brightness(1.18) contrast(1.08) drop-shadow(0 0 3px #fff3df) drop-shadow(0 0 16px #fff3df) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+body.b25 .bt-tgt .sd-i{filter:brightness(1.15) drop-shadow(0 0 3px #ff6a50) drop-shadow(0 0 20px #e23a2e) drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+body.b25 .sd-base{box-shadow:0 0 0 4px rgba(224,165,48,.65),0 0 20px rgba(224,165,48,.4)}
+body.b25 .s-foe .sd-base{box-shadow:0 0 0 4px rgba(226,58,46,.75),0 0 24px rgba(226,58,46,.5)}
+body.b25 .has-sd .bt-die{transform:scale(1.24)}
+body.b25 .bt-tip{font-size:24px;padding:8px 18px;border-width:2px}
+body.b25 .has-sd .bt-stt{font-size:20px;padding:0 10px}
+/* 쓰러짐: 대기(서 있음) → 번쩍 → 뒤로 튕기듯 넘어지며 한 번 튐 → 먼지·파편 */
+body.b25 .bt-board .bt-unit.bt-down.bt-wait{transform:rotateZ(calc(-1*var(--rot,0deg))) rotateX(calc(-1*var(--tilt,52deg)))!important}
+body.b25 .bt-unit.bt-down.bt-wait .sd{opacity:1}
+body.b25 .bt-unit.bt-fall{animation:b25fall2 calc(.9s*var(--cl,1)) cubic-bezier(.45,0,.6,1) both}
+@keyframes b25fall2{0%{transform:rotateZ(calc(-1*var(--rot,0deg))) rotateX(calc(-1*var(--tilt,52deg)))}
+ 12%{transform:rotateZ(calc(-1*var(--rot,0deg))) rotateX(calc(-1*var(--tilt,52deg) + 8deg)) translateY(-4%)}
+ 62%{transform:rotateZ(calc(-1*var(--rot,0deg))) rotateX(0deg) translateZ(1px)}
+ 76%{transform:rotateZ(calc(-1*var(--rot,0deg))) rotateX(-14deg) translateZ(1px)}
+ 100%{transform:rotateZ(calc(-1*var(--rot,0deg))) translateZ(1px)}}
+.bt-wrap.b25-flash::after{content:"";position:absolute;inset:-20%;background:#fff;mix-blend-mode:screen;pointer-events:none;z-index:9;animation:b25flash .45s ease-out both}@keyframes b25flash{from{opacity:.7}to{opacity:0}}
+body.b25 .sd-dust.big{animation:sdDust2 1.1s ease-out both}@keyframes sdDust2{from{transform:scale(.5);opacity:.95}to{transform:scale(3);opacity:0}}
+.sd-chip{display:none}body.b25 .sd-chip{display:block;position:absolute;z-index:3;width:10px;height:10px;margin:-5px;background:#8a7058;pointer-events:none;animation:sdChip .9s cubic-bezier(.2,.7,.4,1) both}
+@keyframes sdChip{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rz));opacity:0}}
+.cine-gray .bt-board{filter:grayscale(.9) brightness(.85)}
+/* 연출 화면: 차례(초상이 미끄러져 들어오고 이름이 박힘) · 큰 글자(전투 불능) */
+#cineBlk .cb-por{position:absolute;bottom:9vh;height:78vh;display:none;pointer-events:none;filter:drop-shadow(0 0 3px var(--tc)) drop-shadow(0 0 24px color-mix(in srgb,var(--tc) 55%,transparent))}
+#cineBlk .cb-por img{height:100%;width:auto;display:block}
+#cineBlk.cb-poron .cb-por{display:block}#cineBlk.cb-poron.cb-pc .cb-por{left:2vw}#cineBlk.cb-poron.cb-foe .cb-por{right:2vw}
+#cineBlk.cb-poron.cb-go .cb-por{animation:cbPor var(--cd,1.6s) cubic-bezier(.15,.85,.25,1) both}#cineBlk.cb-poron.cb-foe.cb-go .cb-por{animation-name:cbPorR}
+@keyframes cbPor{0%{transform:translateX(-60%);opacity:0}18%{transform:translateX(0);opacity:1}82%{transform:translateX(3%);opacity:1}100%{transform:translateX(8%);opacity:0}}
+@keyframes cbPorR{0%{transform:translateX(60%);opacity:0}18%{transform:translateX(0);opacity:1}82%{transform:translateX(-3%);opacity:1}100%{transform:translateX(-8%);opacity:0}}
+#cineBlk.cb-poron::before{content:"";position:absolute;left:0;right:0;top:34vh;height:26vh;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tc) 35%,#000) 30%,color-mix(in srgb,var(--tc) 35%,#000) 70%,transparent);opacity:.75;animation:cbBand var(--cd,1.6s) ease both}
+@keyframes cbBand{0%{transform:scaleY(0)}14%{transform:scaleY(1)}86%{transform:scaleY(1);opacity:.75}100%{transform:scaleY(.2);opacity:0}}
+#cineBlk.cb-poron .cb-nm{left:auto;right:auto;bottom:auto;top:38vh;font-size:clamp(40px,6.5vw,104px);text-shadow:0 0 30px rgba(0,0,0,.95),0 4px 0 #000}
+#cineBlk.cb-poron.cb-pc .cb-nm{left:42vw}#cineBlk.cb-poron.cb-foe .cb-nm{right:42vw;text-align:right}
+#cineBlk.cb-poron .cb-nm em{font-size:clamp(14px,1.6vw,24px);color:var(--tc)}
+#cineBlk.cb-poron.cb-go .cb-nm{animation:cbNm2 var(--cd,1.6s) cubic-bezier(.15,.85,.25,1) both}
+@keyframes cbNm2{0%{opacity:0;transform:scale(1.6);filter:blur(6px)}16%{opacity:1;transform:scale(1);filter:none}84%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+#cineBlk .cb-big{position:absolute;left:0;right:0;top:36vh;display:none;text-align:center;font:400 clamp(56px,9vw,150px) var(--fk);color:#ff4a3a;letter-spacing:.06em;text-shadow:0 0 40px rgba(226,58,46,.8),0 6px 0 #000;pointer-events:none}
+#cineBlk .cb-big em{display:block;font:700 clamp(14px,1.6vw,24px) var(--fb);font-style:normal;letter-spacing:.6em;color:#d8c8b8}
+#cineBlk .cb-big small{display:block;font:700 clamp(16px,1.8vw,28px) var(--fb);color:#f3e7cf;letter-spacing:.1em;margin-top:6px}
+#cineBlk.cb-bigon .cb-big{display:block;animation:cbBig 1.9s cubic-bezier(.2,.9,.3,1) .45s both}
+@keyframes cbBig{0%{opacity:0;transform:scale(2.2)}10%{opacity:1;transform:scale(.96)}16%{transform:scale(1)}85%{opacity:1}100%{opacity:0}}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -8642,21 +8710,30 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
  const L=ms=>ms*(+S.clen||1);
  // ---------- 연출 대기열: 연출이 도는 동안 조작 막기(누르면 건너뛰기), 위아래 검은 띠
  const Q=[];let qOn=false,skipF=false;
- function block(on,title){let b=$('#cineBlk');if(!b){b=document.createElement('div');b.id='cineBlk';b.innerHTML='<i class="cb-t"></i><i class="cb-b"></i><b class="cb-nm"></b><small>누르면 건너뛰기</small>';document.body.append(b);
+ function block(on,title,por){let b=$('#cineBlk');if(!b){b=document.createElement('div');b.id='cineBlk';b.innerHTML='<i class="cb-t"></i><i class="cb-b"></i><span class="cb-por"><img alt=""></span><b class="cb-nm"></b><b class="cb-big"></b><small>누르면 건너뛰기</small>';document.body.append(b);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();skipF=true;if(tw)tw.done(true)},true)}
-  b.classList.toggle('on',!!on);b.querySelector('.cb-nm').innerHTML=title||'';b.classList.toggle('nm',!!title)}
+  b.className=on?'cb-on':'';if(!on)return;const t=title||{};b.querySelector('.cb-nm').innerHTML=t.nm||'';b.querySelector('.cb-big').innerHTML=t.big||'';b.classList.toggle('cb-nmon',!!t.nm);b.classList.toggle('cb-bigon',!!t.big);
+  const im=b.querySelector('.cb-por img');if(t.por){im.src=t.por;b.classList.add('cb-poron',t.foe?'cb-foe':'cb-pc')}else im.removeAttribute('src');b.style.setProperty('--tc',t.foe?'#e23a2e':'#e0a530');b.style.setProperty('--cd',(L(1600)/1000)+'s');void b.offsetWidth;b.classList.add('cb-go')}
  function shot(fn,title,rich=true){if(!S.on||S.cine==='off'||(rich&&S.cine!=='rich'))return;Q.push({fn,title});pump()}
- async function pump(){if(qOn)return;qOn=true;while(Q.length){if(CS.cur||CS.q?.length||$('#cutin')){await new Promise(r=>setTimeout(r,300));continue}const s=Q.shift();skipF=false;block(true,s.title);try{await s.fn()}catch(e){console.warn(e)}}block(false);qOn=false;home()}
+ async function pump(){if(qOn)return;qOn=true;while(Q.length){if(CS.cur||CS.q?.length||$('#cutin')){await new Promise(r=>setTimeout(r,300));continue}const s=Q.shift();skipF=false;block(true,typeof s.title==='string'?{nm:s.title}:s.title);try{await s.fn()}catch(e){console.warn(e)}}block(false);qOn=false;home()}
  const wait=ms=>new Promise(r=>{const t0=performance.now(),f=()=>{if(skipF||performance.now()-t0>=ms)r();else requestAnimationFrame(f)};f()});
  const run=async(to,ms,o)=>{if(skipF){Object.assign(C,o?.path?o.path(1,{...C}):to);put();return}await go(to,ms,o)};
  // 기본 시점으로 돌아가기: 지금 차례 캐릭터 가까이(또는 뒤로 당긴 전체 보기)
  function home(ms=600){if(!S.on||qOn||performance.now()<manualUntil)return;const cur=BT()?.cur?.k;if(!cur&&!over&&S.auto)return;go(over||!S.auto?{cx:W()/2,cy:H()/2,zoom:S.zoom,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0}:play(cur),ms)}
  // ---------- 상황별 구도
- const nm=k=>{const u=uOf(k);return u?`<em style="--c:${u.side==='foe'?'#e23a2e':'#e0a530'}">${u.side==='foe'?'ENEMY':'TURN'}</em>${esc(uName(u))}`:''};
- function sTurn(k){if(!S.on)return;if(performance.now()>=manualUntil)go(play(k),600);if(S.cine==='off')return;Q.push({fn:()=>wait(L(800)),title:nm(k)});pump()}
+ const nm=k=>{const u=uOf(k);return u?`<em style="--c:${u.side==='foe'?'#e23a2e':'#e0a530'}">${u.side==='foe'?'ENEMY TURN':'TURN'}</em>${esc(uName(u))}`:''};
+ const porOf=k=>{const u=uOf(k);return u?(poseSrc(u,'idle')||poseSrc(u,'atk')||uImg(u)):''};
+ function sTurn(k){if(!S.on)return;if(performance.now()>=manualUntil)go(play(k),700);if(S.cine==='off')return;const u=uOf(k);Q.push({fn:()=>wait(L(1600)),title:{nm:nm(k),por:porOf(k),foe:u?.side==='foe'}});pump()}
  function sRound(){shot(async()=>{const w=W(),h=H();Object.assign(C,{cx:w*.32,cy:h*.5,zoom:S.zoom,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0});put();await run({cx:w*.68},L(1200),{ease:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2})},`<em style="--c:#e0a530">ROUND</em>${BT().round||''}`)}
  function sBoss(k){shot(async()=>{const p=uc(k);if(!p)return;await run({cx:p.x,cy:p.y+.3,zoom:S.zoom*NZ()*1.5,pitch:Math.max(24,S.tilt-24),yaw:S.rot,fov:1100},L(900));await run({cy:p.y,zoom:S.zoom*NZ()*1.7},L(600))},nm(k).replace('ENEMY','BOSS'))}
- function sDown(k){const u=uOf(k);shot(async()=>{const p=uc(k);if(!p)return;const w=wr();w?.classList.add('cine-gray');await run({cx:p.x,cy:p.y,zoom:S.zoom*NZ()*1.25,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0},L(1000));w?.classList.remove('cine-gray')},`<em style="--c:#8a8a8a">DOWN</em>${esc(uName(u||{}))}`)}
+ const PEND=new Set;
+ function fallNow(k){PEND.delete(k);const t=$(`#btBoard .bt-unit[data-v="${CSS.escape(k)}"]`),b=bd();if(!t||!b)return;t.classList.remove('bt-wait');t.style.setProperty('--cl',+S.clen||1);t.classList.add('bt-fall');
+  const w=wr();w?.classList.remove('b25-flash');void w?.offsetWidth;w?.classList.add('b25-flash');setTimeout(()=>w?.classList.remove('b25-flash'),500);
+  setTimeout(()=>{if(!t.isConnected)return;const cs=getComputedStyle(t);for(let i=0;i<3;i++){const d=document.createElement('i');d.className='sd-dust big';d.style.cssText=`left:${cs.left};top:${cs.top};width:${t.style.width};height:${t.style.height};animation-delay:${i*90}ms`;b.append(d);setTimeout(()=>d.remove(),1200)}
+   for(let i=0;i<14;i++){const p=document.createElement('i');p.className='sd-chip';const a=Math.random()*Math.PI*2,r=40+Math.random()*90;p.style.cssText=`left:calc(${cs.left} + ${t.style.width} / 2);top:calc(${cs.top} + ${t.style.height} / 2);--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px;--rz:${Math.random()*720-360}deg`;b.append(p);setTimeout(()=>p.remove(),1000)}
+   if(typeof SFX!=='undefined')SFX.play('down')},Math.round(L(620)))}
+ function sDown(k){const u=uOf(k);if(!S.on||S.cine==='off'){fallNow(k);return}PEND.add(k);shot(async()=>{const p=uc(k);if(!p){fallNow(k);return}const w=wr();
+   await run({cx:p.x,cy:p.y,zoom:S.zoom*NZ()*1.35,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0},L(450));w?.classList.add('cine-gray');fallNow(k);await wait(L(1500));w?.classList.remove('cine-gray')},{big:`<em>DOWN</em>전투 불능<small>${esc(uName(u||{}))}</small>`,foe:u?.side==='foe'},false)}
  // 공격: 고르는 동안은 둘 다 들어오게(막지 않음), 선언되면 어깨 너머 구도(짧게)
  function frame2(a,b){const A=uc(a),B=uc(b);if(!A||!B||!S.on||performance.now()<manualUntil||qOn)return;const d=Math.max(Math.abs(B.x-A.x),Math.abs(B.y-A.y)),z=Math.max(S.zoom,Math.min(S.zoom*NZ(),S.zoom*W()/(d+6)));
   go({cx:(A.x+B.x)/2,cy:(A.y+B.y)/2,zoom:z,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0},600)}
@@ -8666,11 +8743,12 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
  function sPunch(k,big){if(!S.on||S.cine==='off'||!big)return;const p=uc(k);if(!p||tw)return;const z0=C.zoom;go({zoom:z0*1.12},110).then(()=>go({zoom:z0},220))}
  // ---------- 바닥 그림자·고리, 등신대 간판
  const poseSrc=(u,p)=>{const P=CH(srcOf(u))?.poses||{};return pImg(P[p])||(p==='move'?pImg(P.dash):'')||''};
- function standees(){const b=bd();if(!b)return;b.querySelectorAll('.bt-fs').forEach(e=>e.remove());document.body.classList.toggle('b25-nobg',!pImg(BT().bg));if(!b.querySelector('.b25-fog')){const g=b.querySelector('.bt-grid'),fg=document.createElement('i');fg.className='b25-fog';g?g.after(fg):b.prepend(fg)}const w=W(),h=H(),frag=document.createDocumentFragment();
+ function standees(){const b=bd();if(!b)return;b.classList.toggle('has-turn',!!BT().cur?.k);b.querySelectorAll('.bt-fs').forEach(e=>e.remove());document.body.classList.toggle('b25-nobg',!pImg(BT().bg));if(!b.querySelector('.b25-fog')){const g=b.querySelector('.bt-grid'),fg=document.createElement('i');fg.className='b25-fog';g?g.after(fg):b.prepend(fg)}const w=W(),h=H(),frag=document.createDocumentFragment();
   for(const tok of b.querySelectorAll('.bt-unit')){const k=tok.dataset.v,u=uOf(k);if(!u)continue;
    const f=document.createElement('i');f.dataset.a='btUnit';f.className='bt-fs'+(tok.classList.contains('bt-turn')?' t':'')+(tok.classList.contains('bt-sel')?' s':'')+(tok.classList.contains('bt-tgt')?' tg':'')+(u.side==='foe'?' foe':'');
    f.dataset.v=k;f.style.cssText=`left:${tok.style.left};top:${tok.style.top};width:${100/w}%;height:${100/h}%`;if(tok.classList.contains('bt-down'))f.classList.add('dn');
-   {const hp=tok.querySelector('.bt-hp b');f.innerHTML=`<span class="fs-nm">${esc(uName(u))}${hp?`<i><b style="width:${hp.style.width}"></b></i>`:''}</span>`}frag.append(f);
+   {const hp=tok.querySelector('.bt-hp b');f.innerHTML=`<i class="fs-lt"></i><i class="fs-sh"></i>${hp?`<i class="fs-hp"><b style="width:${hp.style.width}"></b></i>`:''}<span class="fs-nm">${esc(uName(u))}</span>`}
+   if(PEND.has(k))tok.classList.add('bt-wait');frag.append(f);
    if(!S.on)continue;const idle=poseSrc(u,'idle')||uImg(u);if(!idle||tok.querySelector('.sd'))continue;const sd=document.createElement('span');sd.className='sd';
    sd.innerHTML=`<img class="sd-i" src="${esc(idle)}" alt="" draggable="false"><i class="sd-base"></i>`;sd.dataset.idle=idle;tok.classList.add('has-sd');tok.prepend(sd)}b.append(frag)}
  const setPoseImg=(tok,src,ms)=>{const im=tok?.querySelector('.sd-i');if(!im||!src)return;im.src=src;clearTimeout(im._t);if(ms)im._t=setTimeout(()=>{const s=tok.querySelector('.sd');if(s)im.src=s.dataset.idle},ms)};
@@ -8694,7 +8772,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
   if(cx<.2||cx>.8||cy<.22||cy>.82)go(play(k),600)},a.d+30)}
  // ---------- 쓰러짐·보스 페이즈·차례·라운드 감지
  function watch(){const b=bd();if(!b)return;const B=BT(),cur=B.cur?.k||null,round=B.round||0;
-  for(const tok of b.querySelectorAll('.bt-unit')){const k=tok.dataset.v,d=tok.classList.contains('bt-down');if(d&&!DOWN.has(k)){DOWN.add(k);if(!first){tok.classList.add('bt-fall');sDown(k)}}else if(!d)DOWN.delete(k);
+  for(const tok of b.querySelectorAll('.bt-unit')){const k=tok.dataset.v,d=tok.classList.contains('bt-down');if(d&&!DOWN.has(k)){DOWN.add(k);if(!first)sDown(k)}else if(!d)DOWN.delete(k);
    const u=unitRaw(k),ph=u?.ph??-1;if(PH[k]!=null&&ph>PH[k]&&!first)sBoss(k);PH[k]=ph}
   if(lastRound!==null&&round!==lastRound&&round>0){sRound();if(round===1)units().filter(u=>u.side==='foe'&&CH(srcOf(u))?.boss?.on).forEach(u=>sBoss(u.k))}
   if(cur){if(lastCur&&cur!==lastCur){manualUntil=0;sTurn(cur)}else if(!lastCur&&!qOn){Object.assign(C,play(cur));put()}}
@@ -8708,6 +8786,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
   let out='';for(const t of tg){const bb=head(t);if(!bb)continue;const d=Math.hypot(bb.x-a.x,bb.y-a.y),mx=(a.x+bb.x)/2,my=Math.min(a.y,bb.y)-40-d*.32,P=`M${a.x} ${a.y}Q${mx} ${my} ${bb.x} ${bb.y}`;
    out+=`<path d="${P}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="7" stroke-linecap="round"/><path class="fl" d="${P}" fill="none" stroke="${col}" stroke-width="3.2" stroke-linecap="round" style="filter:drop-shadow(0 0 6px ${col})"/><circle cx="${bb.x}" cy="${bb.y}" r="6" fill="${col}" style="filter:drop-shadow(0 0 6px ${col})"/>`}
   sv.innerHTML=out}
+ document.addEventListener('pointerover',e=>{const t=e.target.closest?.('#btBoard .bt-unit.has-sd,#btBoard .bt-fs');const k=t?.dataset.v;document.querySelectorAll('#btBoard .bt-fs.hov').forEach(f=>{if(f.dataset.v!==k)f.classList.remove('hov')});if(k)$(`#btBoard .bt-fs[data-v="${CSS.escape(k)}"]`)?.classList.add('hov')});
  // ---------- 가린 간판 반투명 (가리킨 칸 앞을 가로막는 간판)
  // 가린 간판 반투명: 뒤 캐릭터가 서 있는 칸 위에 0.5초 머물면, 그 칸을 가리는 앞 간판들이 반투명해지고 클릭이 뒤로 통과
  let fadeT=0,hovC='',hovT=0,fadeTm=0;const unfade=()=>bd()?.querySelectorAll('.bt-unit.sd-fade').forEach(t=>t.classList.remove('sd-fade'));
@@ -8716,12 +8795,18 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
    fadeTm=setTimeout(()=>{const cx=+cell.dataset.x,cy=+cell.dataset.y,own=units().find(u=>+u.x===cx&&+u.y===cy);if(!own)return;const hit=new Set(document.elementsFromPoint(e.clientX,e.clientY).map(x=>x.closest?.('.bt-unit.has-sd')).filter(Boolean));
     for(const t of hit)if(t.dataset.v!==own.k)t.classList.add('sd-fade')},500)}},{passive:true});
  // ---------- 직접 조작: 빈 곳 끌기(이동), 오른쪽 끌기, 휠(확대) → 자동 카메라는 다음 차례까지 쉼
- let pan=null,eat=false;
- document.addEventListener('pointerdown',e=>{const b=bd();if(!S.on||!b||!e.target.closest?.('#btBoard')||UI.bt.mode==='wall'||(e.button!==0&&e.button!==2)||qOn)return;if(e.button===0&&e.target.closest('.bt-unit,.bt-fs'))return;pan={x:e.clientX,y:e.clientY,cx:C.cx,cy:C.cy,b:e.button,on:e.button===2}},true);
- document.addEventListener('pointermove',e=>{if(!pan)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(!pan.on&&Math.hypot(dx,dy)>9)pan.on=true;if(!pan.on)return;if(tw)tw.done(false);
-  const b=bd(),cs=b.offsetWidth/W(),sc=fitSc()*C.zoom*(b.getBoundingClientRect().width>0?1:1),r=-C.yaw*Math.PI/180,ct=Math.cos(C.pitch*Math.PI/180)||.5,ux=dx/(cs*sc),uy=dy/(cs*sc*ct);
-  C.cx=Math.max(0,Math.min(W(),pan.cx-(ux*Math.cos(r)-uy*Math.sin(r))));C.cy=Math.max(0,Math.min(H(),pan.cy-(ux*Math.sin(r)+uy*Math.cos(r))));manualUntil=Infinity;over=false;put();arcs();camSend()},true);
- document.addEventListener('pointerup',e=>{if(pan?.on)eat=true;pan=null},true);
+ let pan=null,eat=false,midT=0;
+ document.addEventListener('mousedown',e=>{if(e.button===1&&S.on&&e.target.closest?.('.bt-wrap'))e.preventDefault()},true);
+ document.addEventListener('pointerdown',e=>{const b=bd();if(!S.on||!b||!e.target.closest?.('.bt-wrap')||qOn)return;if(e.button!==1&&e.button!==2)return;e.preventDefault();
+  if(e.button===1){const now=performance.now();if(now-midT<350){midT=0;S.tilt=52;S.rot=Math.round(S.rot/360)*360;S.zoom=1;over=false;manualUntil=0;save();home(450);return}midT=now}
+  pan={x:e.clientX,y:e.clientY,cx:C.cx,cy:C.cy,yaw:C.yaw,pitch:C.pitch,rot:e.button===1&&e.shiftKey,on:false}},true);
+ document.addEventListener('pointermove',e=>{if(!pan)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(!pan.on&&Math.hypot(dx,dy)>4)pan.on=true;if(!pan.on)return;if(tw)tw.done(false);midT=0;
+  if(pan.rot){C.yaw=pan.yaw+dx*.35;C.pitch=Math.max(22,Math.min(70,pan.pitch+dy*.25));S.rot=C.yaw;S.tilt=Math.round(C.pitch)}
+  else{const b=bd(),cs=b.offsetWidth/W(),sc=fitSc()*C.zoom,r=-C.yaw*Math.PI/180,ct=Math.cos(C.pitch*Math.PI/180)||.5,ux=dx/(cs*sc),uy=dy/(cs*sc*ct);
+   C.cx=Math.max(0,Math.min(W(),pan.cx-(ux*Math.cos(r)-uy*Math.sin(r))));C.cy=Math.max(0,Math.min(H(),pan.cy-(ux*Math.sin(r)+uy*Math.cos(r))));over=false}
+  manualUntil=Infinity;put();arcs();camSend()},true);
+ document.addEventListener('pointerup',e=>{if(pan){if(pan.on){eat=true;if(pan.rot)save()}pan=null}},true);
+ document.addEventListener('auxclick',e=>{if(e.button===1&&S.on&&e.target.closest?.('.bt-wrap'))e.preventDefault()},true);
  document.addEventListener('click',e=>{if(eat){eat=false;e.stopPropagation();e.preventDefault()}},true);
  document.addEventListener('contextmenu',e=>{if(S.on&&e.target.closest?.('#btBoard'))e.preventDefault()});
  document.addEventListener('wheel',e=>{if(!S.on||!e.target.closest?.('.bt-wrap')||qOn)return;e.preventDefault();if(tw)tw.done(false);const z=Math.max(S.zoom*.6,Math.min(S.zoom*3.2,C.zoom*(e.deltaY<0?1.12:1/1.12)));C.zoom=z;manualUntil=Infinity;over=z<=S.zoom*1.02;put();arcs();camSend()},{passive:false});
@@ -8736,8 +8821,8 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
    else if(a.startsWith('cine:'))S.cine=a.slice(5);
    save();manualUntil=0;paint();if(!S.on)return;C.yaw=C.yaw;home(450)});c.addEventListener('input',e=>{const t=e.target;if(t.dataset.k){S[t.dataset.k]=+t.value;save();const v=t.parentNode.querySelector('small:last-child');if(v)v.textContent=t.dataset.k==='vc'?t.value+'칸':(+t.value).toFixed(1)+'배';if(t.dataset.k==='vc'){manualUntil=0;home(300)}}})}
   const cn={off:'끔',lite:'가볍게',rich:'풍부하게'},gm=NET.on&&isGmLike(),sy=!!Store.get('play/camSync');
-  c.innerHTML=`<div class="cc-row"><button data-b="mode" class="${S.on?'on':''}" title="평면 ↔ 2.5D">${S.on?'2.5D':'평면'}</button><span class="sep d3"></span><button class="d3" data-b="l" title="왼쪽으로 90° 돌리기">⟲</button><button class="d3" data-b="r" title="오른쪽으로 90° 돌리기">⟳</button><span class="sep d3"></span><button class="d3" data-b="t-" title="더 세워서 보기">▲</button><button class="d3" data-b="t+" title="더 눕혀서 보기">▼</button><span class="sep d3"></span><button class="d3" data-b="z-" title="작게">−</button><button class="d3" data-b="z+" title="크게">＋</button><button class="d3 ${over?'on':''}" data-b="over" title="뒤로 당겨 전체 보기 ↔ 가까이">⤢</button><button class="d3" data-b="0" title="처음 시점">⌂</button><button data-b="set" title="연출·카메라 설정">⚙</button></div>
-   <div class="cc-set"><div class="cc-row"><small>연출</small>${Object.entries(cn).map(([k,v])=>`<button data-b="cine:${k}" class="${S.cine===k?'on':''}">${v}</button>`).join('')}</div>
+  c.innerHTML=`<div class="cc-row"><button data-b="set" title="카메라·연출 설정">⚙ 카메라</button><small class="muted">휠: 확대 · 휠 누르고 끌기: 이동 · Shift+휠 끌기: 회전 · 휠 두 번: 처음</small></div>
+   <div class="cc-set"><div class="cc-row"><button data-b="mode" class="${S.on?'on':''}">${S.on?'2.5D':'평면'}</button><button data-b="over" class="${over?'on':''}">⤢ 전체 보기</button><button data-b="0">⌂ 처음 시점</button></div><div class="cc-row"><small>연출</small>${Object.entries(cn).map(([k,v])=>`<button data-b="cine:${k}" class="${S.cine===k?'on':''}">${v}</button>`).join('')}</div>
    <label class="cc-row"><small>연출 길이</small><input type="range" min=".5" max="2" step=".1" value="${S.clen}" data-k="clen"><small>${(+S.clen).toFixed(1)}배</small></label>
    <label class="cc-row"><small>가까이 볼 칸 수</small><input type="range" min="7" max="16" step="1" value="${S.vc}" data-k="vc"><small>${S.vc}칸</small></label>
    <div class="cc-row"><button data-b="auto" class="${S.auto?'on':''}">자동 카메라 ${S.auto?'켬':'끔'}</button>${gm?`<button data-b="sync" class="${sy?'on':''}" title="모두의 카메라를 내 화면에 맞춤">모두 내 카메라로 ${sy?'켬':'끔'}</button>`:sy?'<small>GM 카메라를 따라가는 중</small>':''}</div>
