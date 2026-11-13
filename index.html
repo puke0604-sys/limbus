@@ -5703,6 +5703,22 @@ body.amb-cold #tkBg,body.amb-cold #btBoard,body.amb-cold .mc-img{filter:grayscal
 #resoFx.slow:not(.whip) .rs-s4{filter:brightness(.45) blur(2px);transition:filter .4s}
 #resoFx.p5 .rs-fsw{display:none}
 #resoFx.slow .rs-fsw{background:radial-gradient(ellipse at 50% 50%,rgba(6,6,12,.35),rgba(4,4,8,.72));transition:background .35s}#resoFx.whip .rs-fsw{background:transparent;transition:background .2s}
+
+/* §132 공명 첫 장면 초상 테두리(직접 그린 금속 틀) · 얼굴 위치 */
+.rs-st{border:0!important;box-shadow:0 0 18px color-mix(in srgb,var(--c) 40%,transparent),0 10px 30px rgba(0,0,0,.7)}
+.rs-st::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 0 0 0 22px rgba(0,0,0,0),inset 0 0 0 24px var(--c),inset 0 0 34px color-mix(in srgb,var(--c) 50%,transparent)}
+.rs-frm{position:absolute;inset:0;z-index:3;pointer-events:none;border:24px solid transparent;border-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E %3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0" stop-color="%23f7e2a0"/%3E%3Cstop offset=".45" stop-color="%23b98a3a"/%3E%3Cstop offset="1" stop-color="%236d4a1c"/%3E%3C/linearGradient%3E%3C/defs%3E %3Crect x="1" y="1" width="118" height="118" fill="none" stroke="url%28%23g%29" stroke-width="2"/%3E %3Crect x="4.5" y="4.5" width="111" height="111" fill="none" stroke="%233a2a14" stroke-width="5"/%3E %3Crect x="7.5" y="7.5" width="105" height="105" fill="none" stroke="url%28%23g%29" stroke-width=".9"/%3E %3Crect x="11" y="11" width="98" height="98" fill="none" stroke="%23000" stroke-opacity=".7" stroke-width="2"/%3E %3Cg fill="url%28%23g%29"%3E %3Cpath d="M0 0h34v4H8l-4 4v26H0z"/%3E%3Cpath d="M120 0H86v4h26l4 4v26h4z"/%3E%3Cpath d="M0 120h34v-4H8l-4-4V86H0z"/%3E%3Cpath d="M120 120H86v-4h26l4-4V86h4z"/%3E %3Cpath d="M10 10h14l-2 3h-9v9l-3 2z"/%3E%3Cpath d="M110 10H96l2 3h9v9l3 2z"/%3E%3Cpath d="M10 110h14l-2-3h-9v-9l-3-2z"/%3E%3Cpath d="M110 110H96l2-3h9v-9l3-2z"/%3E %3Cpath d="M60 0l6 6-6 6-6-6z"/%3E%3Cpath d="M60 120l6-6-6-6-6 6z"/%3E%3Cpath d="M0 60l6-6 6 6-6 6z"/%3E%3Cpath d="M120 60l-6-6-6 6 6 6z"/%3E %3C/g%3E %3Cg fill="%232a1c0c" stroke="url%28%23g%29" stroke-width=".8"%3E%3Ccircle cx="17" cy="17" r="2.4"/%3E%3Ccircle cx="103" cy="17" r="2.4"/%3E%3Ccircle cx="17" cy="103" r="2.4"/%3E%3Ccircle cx="103" cy="103" r="2.4"/%3E%3C/g%3E %3Cg stroke="%23d9b56a" stroke-width="1" stroke-opacity=".8"%3E%3Cpath d="M40 4.5h6M50 4.5h2M68 4.5h2M74 4.5h6M40 115.5h6M50 115.5h2M68 115.5h2M74 115.5h6M4.5 40v6M4.5 50v2M4.5 68v2M4.5 74v6M115.5 40v6M115.5 50v2M115.5 68v2M115.5 74v6"/%3E%3C/g%3E %3C/svg%3E') 30 / 24px round;filter:drop-shadow(0 0 3px rgba(0,0,0,.8))}
+.rs-frm::before{content:"";position:absolute;left:50%;top:-24px;width:min(78%,150px);height:32px;transform:translateX(-50%);background:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="28" viewBox="0 0 120 28"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="0" y2="1"%3E%3Cstop offset="0" stop-color="%23f7e2a0"/%3E%3Cstop offset=".5" stop-color="%23b98a3a"/%3E%3Cstop offset="1" stop-color="%236d4a1c"/%3E%3C/linearGradient%3E%3C/defs%3E %3Cpath d="M0 6h38l8-6h28l8 6h38v6H84l-8 8H44l-8-8H0z" fill="%231a1209" stroke="url%28%23g%29" stroke-width="1.4"/%3E %3Cpath d="M60 3l9 9-9 9-9-9z" fill="url%28%23g%29"/%3E%3Cpath d="M60 7l5 5-5 5-5-5z" fill="%231a1209"/%3E %3Cpath d="M30 9h12M78 9h12" stroke="url%28%23g%29" stroke-width="1.6"/%3E%3Ccircle cx="24" cy="9" r="1.6" fill="url%28%23g%29"/%3E%3Ccircle cx="96" cy="9" r="1.6" fill="url%28%23g%29"/%3E %3C/svg%3E') center/100% 100% no-repeat}
+.rs-frm::after{content:"";position:absolute;left:50%;bottom:-24px;width:min(78%,150px);height:32px;transform:translateX(-50%) scaleY(-1);background:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="28" viewBox="0 0 120 28"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="0" y2="1"%3E%3Cstop offset="0" stop-color="%23f7e2a0"/%3E%3Cstop offset=".5" stop-color="%23b98a3a"/%3E%3Cstop offset="1" stop-color="%236d4a1c"/%3E%3C/linearGradient%3E%3C/defs%3E %3Cpath d="M0 6h38l8-6h28l8 6h38v6H84l-8 8H44l-8-8H0z" fill="%231a1209" stroke="url%28%23g%29" stroke-width="1.4"/%3E %3Cpath d="M60 3l9 9-9 9-9-9z" fill="url%28%23g%29"/%3E%3Cpath d="M60 7l5 5-5 5-5-5z" fill="%231a1209"/%3E %3Cpath d="M30 9h12M78 9h12" stroke="url%28%23g%29" stroke-width="1.6"/%3E%3Ccircle cx="24" cy="9" r="1.6" fill="url%28%23g%29"/%3E%3Ccircle cx="96" cy="9" r="1.6" fill="url%28%23g%29"/%3E %3C/svg%3E') center/100% 100% no-repeat}
+#resoFx.gold .rs-frm{filter:drop-shadow(0 0 6px #ffcf6a) brightness(1.25)}
+.rs-st>b{z-index:4;bottom:30px;left:24px;right:24px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.85) 20%,rgba(0,0,0,.85) 80%,transparent);border-top:1px solid #c9a35a;letter-spacing:.15em}
+.rs-no{position:absolute;z-index:4;top:30px;left:28px;transform:skewX(10deg);font:700 11px var(--fk);color:#e9cf8f;letter-spacing:.1em;text-shadow:0 1px 2px #000;background:rgba(0,0,0,.6);padding:1px 5px;border-left:2px solid var(--c)}
+.rs-bd{z-index:5}
+.rs-fsi .rs-eimg{position:absolute;left:50%;top:50%;height:auto;max-width:none;transform-origin:0 0}
+.fe-sh{position:relative;width:240px;height:220px;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 12px color-mix(in srgb,var(--c) 70%,#fff));margin-bottom:8px}
+.fe-sh .rs-fsi{position:absolute;inset:0}
+.fe-card{position:relative;width:130px;height:200px;overflow:hidden;transform:skewX(-10deg);margin-left:14px;background:#0a0605}
+.fe-card .rs-in img{width:100%;height:100%;object-fit:cover}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -7076,6 +7092,7 @@ A.barkOpen=function(){const c=CH(UI.charId);if(!c)return;if(c._pub)return toast(
  <div class="bk-grid">${BARK_EV.map(([k,n])=>`<label class="f">${n}<textarea class="ta" rows="2" data-c="barkTxt" data-k="${k}" ${can?'':'disabled'} placeholder="대사">${esc(c.barks?.[k]||'')}</textarea></label>`).join('')}</div>
  <h4 class="sh-h">피니시 <small>보스를 쓰러뜨릴 때 나오는 공명 연출의 마지막 화면 (마무리한 캐릭터)</small></h4>
  <div class="row"><label class="f" style="flex:1">피니시 대사<input data-c="finLine" value="${esc(c.fin?.line||'')}" ${can?'':'disabled'} placeholder="예: 막은 내렸다."></label>${can?`<button class="btn sm" data-a="finImg">피니시 그림 ${pImg(c.fin?.img)?'바꾸기':'올리기'}</button>${pImg(c.fin?.img)?'<button class="btn sm" data-a="finImgOff">그림 빼기</button>':''}`:''}</div><p class="small muted">그림이 없으면 스탠딩을 써요.</p>
+ <div class="row"><button class="btn sm" data-a="finEyeOpen">◎ 공명 얼굴 위치 맞추기 ${c.fin?.eye?'(설정됨)':''}</button><span class="small muted">깨진 거울 조각에 비칠 눈 위치 · 첫 장면 카드</span></div>
  <div class="mfoot"><button class="btn pri" data-a="closeModal">닫기</button></div>`})};
 CHANGE.barkTxt=el=>{const c=CH(UI.charId);if(c&&(isGmLike()||c.owner===ME))Store.set(`chars/${c.id}/barks/${el.dataset.k}`,el.value)};
 /* 화면 분위기: play/amb {fx,tone} */
@@ -7108,7 +7125,7 @@ function credPaint(){const c=Store.get('play/credits');let el=$('#credV');if(!c|
    자동: 보스(보스 설정 켠 적)가 쓰러질 때. 수동: GM 콘솔 › 전투 › ⛓ 공명 연출. 설정 play/reso {img,name,auto} · 시트 c.fin {img,line} */
 const resoAuto=()=>Store.get('play/reso/auto')!==false;
 const resoCol=c=>sinColor((c?.skills||[]).find(x=>x?.sin)?.sin)||'#e0a530';
-function resoBuild(finK,foeK){const U=units(),A_=U.filter(u=>u.side!=='foe'&&!isDown(u)).slice(0,8),al=A_.map(u=>{const c=CH(srcOf(u));return{n:uName(u),img:c?.portrait||artOf(c)||u.img||'',col:resoCol(c)}});
+function resoBuild(finK,foeK){const U=units(),A_=U.filter(u=>u.side!=='foe'&&!isDown(u)).slice(0,8),al=A_.map(u=>{const c=CH(srcOf(u));return{n:uName(u),img:c?.portrait||artOf(c)||u.img||'',col:resoCol(c),eye:c?.fin?.eye||null}});
  const fu=(finK&&uOf(finK)&&uOf(finK).side!=='foe'?uOf(finK):null)||A_[0],fc=fu&&CH(srcOf(fu)),eu=foeK&&uOf(foeK),ec=eu&&CH(srcOf(eu)),S=Store.get('play/reso')||{};
  return{fx:'reso',uk:foeK||'',al,foe:{n:eu?uName(eu):'',img:artOf(ec)||ec?.portrait||eu?.img||''},fin:{n:fu?uName(fu):'',img:fc?.fin?.img||artOf(fc)||fc?.portrait||'',line:fc?.fin?.line||'',col:resoCol(fc)},em:S.img||'',title:S.name||''}}
 const RS_CHAIN="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='14'%3E%3Cellipse cx='10' cy='7' rx='8.5' ry='5' fill='none' stroke='%23c4c4c4' stroke-width='3'/%3E%3Cellipse cx='10' cy='7' rx='8.5' ry='5' fill='none' stroke='%23555' stroke-width='1' transform='translate(0 1.4)'/%3E%3Crect x='15.5' y='4.6' width='15' height='4.8' rx='2.4' fill='%23888' stroke='%23444' stroke-width='.8'/%3E%3C/svg%3E\")";
@@ -7120,7 +7137,7 @@ function rsBranches(){const P=[];for(let i=0;i<8;i++){const a=i/8*Math.PI*2+.2,p
 function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#resoFx')?.remove();const el=document.createElement('div');el.id='resoFx';const al=(m.al||[]).slice(0,8),N=Math.max(1,al.length),F=m.fin||{},im=r=>pImg(r)?`<img src="${esc(pImg(r))}" alt="">`:'';
  const TT=[],T=(ms,f)=>TT.push(setTimeout(()=>{try{f()}catch(e){console.error(e)}},ms)),end=()=>{TT.forEach(clearTimeout);el.classList.add('out');setTimeout(()=>{VFX.clear();VFX.mount(document.body);el.remove()},450)};
  const BANDS=[[-38,22],[31,40],[-9,55],[52,68],[6,84],[-58,50]];
- el.innerHTML=`<div class="rs-s1"><div class="rs-row" style="--n:${N}">${al.map((a,i)=>`<div class="rs-st" style="--c:${a.col};--i:${i}"><div class="rs-in">${im(a.img)||`<em>${esc((a.n||'?')[0])}</em>`}</div><div class="rs-bd">${BANDS.map(([r,y],j)=>`<i style="--r:${r}deg;--y:${y}%;--j:${j}"></i>`).join('')}</div><b>${esc(a.n||'')}</b></div>`).join('')}</div><i class="rs-chain"></i></div>
+ el.innerHTML=`<div class="rs-s1"><div class="rs-row" style="--n:${N}">${al.map((a,i)=>`<div class="rs-st" style="--c:${a.col};--i:${i}"><div class="rs-in">${pImg(a.img)?`<img src="${esc(pImg(a.img))}" alt="" style="object-position:${a.eye?a.eye.x:50}% ${a.eye?Math.max(0,a.eye.y-4):14}%">`:`<em>${esc((a.n||'?')[0])}</em>`}</div><i class="rs-frm"></i><span class="rs-no">${String(i+1).padStart(2,'0')}</span><div class="rs-bd">${BANDS.map(([r,y],j)=>`<i style="--r:${r}deg;--y:${y}%;--j:${j}"></i>`).join('')}</div><b>${esc(a.n||'')}</b></div>`).join('')}</div><i class="rs-chain"></i></div>
  <div class="rs-s3">${rsBranches()}<div class="rs-dial"><i class="h1"></i><i class="h2"></i><div class="rs-em">${pImg(m.em)?`<img src="${esc(pImg(m.em))}" alt="">`:rsEmblem()}</div></div><div class="rs-nm"><small>RESONANCE</small><b>${[...(m.title||'공 명')].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}</b></div></div>
  <div class="rs-s4"><div class="rs-mir"><div class="rs-base">${im(m.foe?.img)||'<em>?</em>'}<i class="rs-sheen"></i></div>
   ${MIRROR.sh.map((s,i)=>{const a=al[i%N]||{};return`<div class="rs-sh" style="clip-path:polygon(${s.poly});--dx:${s.dx}px;--dy:${s.dy}px;--r:${s.r}deg;--dl:${s.dl}s;--c:${a.col||'#fff'}">${im(a.img)}</div>`}).join('')}
@@ -7128,8 +7145,7 @@ function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#r
   ${Array.from({length:Math.max(4,N)},(_,i)=>`<i class="rs-sl" style="--c:${(al[i%N]||{}).col||'#fff'};--r:${[-24,38,-62,12,71,-8,49,-40][i%8]}deg;--i:${i}"></i>`).join('')}</div><b class="rs-fn">${esc(m.foe?.n||'')}</b></div>
  <div class="rs-s5" style="--c:${F.col||'#e0a530'}"><svg class="rs-fcrk" viewBox="0 0 100 100" preserveAspectRatio="none">${MIRROR.lines.map((l,i)=>`<polyline points="${l}" pathLength="100" style="--i:${i}"/>`).join('')}</svg><div class="rs-fimg">${im(F.img)}</div><div class="rs-ft">${F.line?`<p>“${esc(F.line)}”</p>`:''}<b>${esc(F.n||'')}</b><small>FINISH</small></div></div>
  <div class="rs-fsw">${al.slice(0,6).map((a,i)=>{const P=[[27,34,-14],[71,30,11],[44,70,7],[80,70,-9],[14,72,13],[56,20,-6]][i],vx=(P[0]-50)*.9,vy=(P[1]-48)*.9,pts=Array.from({length:5},(_,k)=>{const an=k/5*Math.PI*2+Math.sin(i*7+k*3)*.45,r=50-Math.abs(Math.sin(i*3+k*5))*14;return`${(50+Math.cos(an)*r).toFixed(1)}% ${(50+Math.sin(an)*r).toFixed(1)}%`}).join(',');
-  return`<div class="rs-fs" style="left:${P[0]}%;top:${P[1]}%;--r:${P[2]}deg;--vx:${vx}vw;--vy:${vy}vh;--c:${a.col};--i:${i}"><div class="rs-fsi" style="clip-path:polygon(${pts})">${pImg(a.img)?`<i style="background-image:url('${esc(pImg(a.img))}');background-position:${i%2?36:64}% 15%"></i>`:''}</div></div>`}).join('')}</div>
- <div class="rs-eye" style="--c:${F.col||'#e0a530'}"><div class="rs-ey">${im(F.img)}</div><b>${esc(F.n||'')}</b></div>
+  return`<div class="rs-fs" style="left:${P[0]}%;top:${P[1]}%;--r:${P[2]}deg;--vx:${vx}vw;--vy:${vy}vh;--c:${a.col};--i:${i}"><div class="rs-fsi" style="clip-path:polygon(${pts})">${pImg(a.img)?rsEyeImg(a.img,a.eye,i):''}</div></div>`}).join('')}</div>
  <div class="rs-fl"></div><div class="rs-skip">클릭하면 건너뛰기</div>`;
  el.addEventListener('click',end);document.body.appendChild(el);VFX.clear();VFX.mount(el);rsSnd('whoosh');
  const row=el.querySelector('.rs-row'),sts=[...el.querySelectorAll('.rs-st')],t1=600+N*140,dur=Math.max(1300,N*330);
@@ -7139,8 +7155,8 @@ function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#r
  const t3=t1+dur+350;T(t3,()=>{el.classList.add('gold');rsSnd('bell')});T(t3+250,()=>el.classList.add('p3'));for(let i=0;i<11;i++)T(t3+350+i*190,()=>rsSnd('tick'));
  T(t3+2500,()=>{el.classList.add('stop');rsSnd('heavy');rsSnd('bell')});
  const t4=t3+4100;T(t4,()=>{el.classList.add('p4');rsSnd('whoosh')});const nS=Math.max(10,N*2+2);for(let i=0;i<nS;i++)T(t4+600+i*115,()=>{rsSlash(el,(al[i%N]||{}).col||'#ffffff',i,false,i%2===0||i>=nS-3);rsSnd(i%3?'slash':'hit')});
- const tE=t4+600+nS*115+200;T(tE,()=>{el.classList.add('eye');rsSnd('whoosh')});T(tE+780,()=>{el.classList.remove('eye');rsSlash(el,F.col||'#e0a530',nS,true,true);rsSnd('slash');rsSnd('heavy')});
- const t5=tE+780+380;T(t5,()=>{el.classList.add('brk');rsBreak(el,al);rsSnd('glass');rsSnd('boom')});
+ const tE=t4+600+nS*115+200;T(tE,()=>{rsSlash(el,F.col||'#e0a530',nS,true,true);rsSnd('slash');rsSnd('heavy')});
+ const t5=tE+380;T(t5,()=>{el.classList.add('brk');rsBreak(el,al);rsSnd('glass');rsSnd('boom')});
  T(t5+330,()=>{VFX.slow(.09);el.classList.add('slow');rsSnd('static')});
  T(t5+2300,()=>{VFX.slow(1);el.classList.add('whip');rsSnd('whoosh');const{W,H}=VFX.size();VFX.stroke({style:'A',x0:-W*.1,y0:H*.62,x1:W*1.1,y1:H*.38,bend:.05,w:H*.22,col:F.col||'#e0a530',hi:'#ffffff',dark:VFX.mix(F.col||'#e0a530','#000000',.5),dur:.14,life:.45,glow:1})});
  T(t5+2560,()=>{el.classList.add('p5');rsFinish(el,F)});T(t5+2560+3600,end)}
@@ -7171,6 +7187,28 @@ function rsFinish(el,F){const{W,H}=VFX.size(),col=F.col||'#e0a530',gold='#f3c860
  VFX.rays({x:W*.68,y:H*.45,n:12,len:Math.max(W,H)*.9,col:gold,col2:col,a:.55,life:3});
  VFX.embers({x:W*.6,y:-20,jx:W*.45,n:46,ang:Math.PI/2,spread:.35,s0:40,s1:160,l0:1.6,l1:3.2,r0:1.2,r1:2.6,g:90,drag:.4,wig:120,tail:.04,cols:['#ffffff','#e8eeff',gold]});
  setTimeout(()=>VFX.stroke({style:'A',x0:W*.04,y0:H*.83,x1:W*.5,y1:H*.73,bend:.04,w:H*.018,col:'#ffffff',hi:'#ffffff',dark:VFX.mix(col,'#000000',.3),dur:.14,life:.6,glow:1}),380)}
+
+// §132 얼굴 위치 (공명 유리 조각·첫 장면 카드) chars/<id>/fin/eye {x,y,z}
+const EYE0=i=>({x:i%2?42:58,y:16,z:3.2});
+function rsEyeImg(ref,e,i=0){e=e||EYE0(i);return`<img class="rs-eimg" src="${esc(pImg(ref))}" alt="" style="width:${e.z*100}%;transform:translate(-${e.x}%,-${e.y}%)">`}
+const FSH='polygon(50% 0%,94% 22%,88% 84%,30% 100%,4% 40%)';
+function finEyeModal(){const c=CH(UI.charId);if(!c)return'<p>캐릭터가 없어요</p>';const ref=c.portrait||artOf(c);if(!pImg(ref))return`<p>스탠딩(초상) 그림이 없어요. 시트에서 그림을 먼저 넣어 주세요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`;
+ const u=pImg(ref),e={...EYE0(0),...(c.fin?.eye||{})},col=resoCol(c);
+ return`<div class="fp">
+ <div class="fp-l"><p class="small muted">공명 연출에서 유리 조각에 비칠 곳(보통 한쪽 눈)을 누르거나 끌어요. 첫 장면 초상 카드도 이 위치를 따라가요.</p>
+  <div class="fp-src" onpointerdown="finEyePick(event)" onpointermove="event.buttons&&finEyePick(event)"><img src="${esc(u)}" alt="" draggable="false"><i class="fp-dot" style="left:${e.x}%;top:${e.y}%"></i></div>
+  <label class="f"><span>확대 ${(+e.z).toFixed(1)}배</span><input type="range" min="1.2" max="7" step=".1" value="${e.z}" oninput="finEyeZoom(this.value)"></label>
+  <div class="row"><button class="btn sm" data-a="finEyeReset">기본값</button></div></div>
+ <div class="fp-r"><small>유리 조각 (깨진 뒤 슬로모션)</small><div class="fe-sh" style="--c:${col}"><div class="rs-fsi" style="clip-path:${FSH}">${rsEyeImg(ref,e)}</div></div>
+  <small>첫 장면 초상 카드</small><div class="fe-card" style="--c:${col}"><div class="rs-in"><img src="${esc(u)}" alt="" style="object-position:${e.x}% ${Math.max(0,e.y-4)}%"></div><i class="rs-frm"></i></div></div></div>
+ <div class="mfoot"><button class="btn" data-a="finEyeTest">▶ 공명 연출 미리보기 (나만)</button><button class="btn pri" data-a="closeModal">닫기</button></div>`}
+function finEyeSet(e){const c=CH(UI.charId);if(!c||!(isGmLike()||c.owner===ME))return;Store.set(`chars/${c.id}/fin/eye`,e?{x:Math.round(e.x),y:Math.round(e.y),z:+(+e.z).toFixed(1)}:null);drawModal()}
+function finEyePick(ev){const r=ev.currentTarget.getBoundingClientRect(),c=CH(UI.charId);if(!c)return;ev.preventDefault();const z=UIZ?.z||1,e={...EYE0(0),...(c.fin?.eye||{})};
+ finEyeSet({...e,x:clamp((ev.clientX/z-r.left/z)/(r.width/z)*100,0,100),y:clamp((ev.clientY/z-r.top/z)/(r.height/z)*100,0,100)})}
+function finEyeZoom(v){const c=CH(UI.charId);if(!c)return;finEyeSet({...EYE0(0),...(c.fin?.eye||{}),z:+v})}
+Object.assign(A,{finEyeOpen(){const c=CH(UI.charId);if(!c)return;M.wide=true;openModal(`공명 얼굴 위치 — ${c.info?.name||''}`,finEyeModal)},finEyeReset(){finEyeSet(null)},
+ finEyeTest(){const c=CH(UI.charId);if(!c)return;const m=resoNow(),me={n:c.info?.name||'',img:c.portrait||artOf(c)||'',col:resoCol(c),eye:c.fin?.eye||null};
+  m.al=[me,...(m.al||[]).filter(a=>a.n!==me.n)].slice(0,8);m.fin={n:me.n,img:c.fin?.img||artOf(c)||c.portrait||'',line:c.fin?.line||'',col:me.col};closeModal();resoPlay({...m,any:1})}});
 // GM: 설정·수동 재생
 A.resoOpen=function(){if(!isGmLike())return;openModal('공명 연출',()=>{const S=Store.get('play/reso')||{};return`<p class="small muted">아군 초상이 쇠사슬로 묶여 이어지고 → 시계와 금빛 가지, 문양·이름 → 거울에 비친 적이 깨지고 → 마무리한 캐릭터의 피니시 화면. 약 12초, 각자 클릭으로 건너뛸 수 있어요.</p>
  <label class="row small"><input type="checkbox" data-c="resoAutoSet" ${resoAuto()?'checked':''}> 보스(보스 설정을 켠 적)가 쓰러지면 자동으로 재생</label>
