@@ -5674,6 +5674,18 @@ body.amb-cold #tkBg,body.amb-cold #btBoard,body.amb-cold .mc-img{filter:grayscal
 #resoFx.p5 .rs-fcrk polyline{animation:rsCrk .35s ease-out calc(.15s + var(--i)*.03s) forwards}
 @keyframes rsCrk{0%{opacity:0}40%{opacity:1;stroke-width:3px}100%{opacity:.75}}
 .rs-fimg{z-index:2}.rs-ft{z-index:3}
+
+/* §130 공명 거울: 액자 없이 화면 가득, 금·파편·흔들림 */
+#resoFx .rs-mir{width:100vw;height:100vh;top:50%}
+#resoFx .rs-base{border:0;box-shadow:none;background:transparent;-webkit-mask-image:radial-gradient(ellipse 64% 72% at 50% 46%,#000 40%,transparent 100%);mask-image:radial-gradient(ellipse 64% 72% at 50% 46%,#000 40%,transparent 100%)}
+#resoFx .rs-base img{filter:grayscale(.7) contrast(1.15) brightness(.85) sepia(.15) hue-rotate(180deg)}
+#resoFx .rs-sheen{width:18%;background:linear-gradient(100deg,transparent,rgba(220,235,255,.28),transparent)}
+#resoFx .rs-crk{display:none}
+#resoFx.brk .rs-sh{animation:rsShard 1.5s cubic-bezier(.12,.7,.3,1) var(--dl) forwards}
+@keyframes rsShard{0%{opacity:1;transform:none;filter:none}8%{opacity:1;transform:translate(calc(var(--dx)*.06),calc(var(--dy)*.06)) rotate(calc(var(--r)*.1)) scale(1.03);filter:brightness(1.6)}100%{opacity:0;transform:translate(calc(var(--dx)*2.8),calc(var(--dy)*2.8)) rotate(calc(var(--r)*2.4)) scale(1.7);filter:blur(5px) brightness(1.3)}}
+#resoFx.shk{animation:rsShk .32s linear}#resoFx.shk2{animation:rsShk2 .55s linear}
+@keyframes rsShk{0%,100%{transform:none}20%{transform:translate(-7px,4px)}40%{transform:translate(6px,-5px)}60%{transform:translate(-4px,3px)}80%{transform:translate(3px,-2px)}}
+@keyframes rsShk2{0%,100%{transform:none}10%{transform:translate(-16px,9px) rotate(-.4deg)}25%{transform:translate(14px,-11px) rotate(.3deg)}40%{transform:translate(-10px,7px)}60%{transform:translate(7px,-5px)}80%{transform:translate(-3px,2px)}}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -7112,16 +7124,24 @@ function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#r
  const t5=tE+780+380;T(t5,()=>{el.classList.add('brk');rsBreak(el,al);rsSnd('glass');rsSnd('boom')});T(t5+420,()=>{el.classList.add('p5');rsFinish(el,F)});T(t5+3600,end)}
 
 // §129 공명 베기·깨짐·마무리 — 공용 이펙트 엔진(VFX)으로 그린다
-function rsSlash(el,col,i,big){const mir=el.querySelector('.rs-mir');if(!mir)return;const r=VFX.rect(mir),R_=VFX.rnd,
-  ang=[-24,38,-62,12,71,-8,49,-40][i%8]*Math.PI/180+(big?0:R_(-.15,.15)),L=Math.hypot(r.w,r.h)*(big?1:.72),cx=r.cx+(big?0:R_(-r.w*.12,r.w*.12)),cy=r.cy+(big?0:R_(-r.h*.12,r.h*.12)),dx=Math.cos(ang)*L/2,dy=Math.sin(ang)*L/2,m=Math.min(r.w,r.h);
- VFX.stroke({style:'A',x0:cx-dx,y0:cy-dy,x1:cx+dx,y1:cy+dy,bend:big?.1:(i%2?.2:-.2),w:m*(big?.17:.075),col,hi:VFX.mix(col,'#ffffff',.6),dark:VFX.mix(col,'#000000',.5),dur:big?.16:.11,life:big?.85:.5,glow:1});
- VFX.spark({x:cx,y:cy,n:big?18:8,r:big?300:150,col:'#ffffff',col2:col,ang,spread:1.25});
- VFX.embers({x:cx,y:cy,n:big?40:14,s0:300,s1:big?1300:800,ang,spread:.9,l0:.2,l1:.6,r0:1.2,r1:3,g:300,drag:3,tail:.05,cols:['#ffffff',VFX.mix(col,'#ffffff',.5)]});
- VFX.grade({mode:'color-dodge',col,a:big?.28:.12,life:big?.4:.2,fout:.8});
- if(big){VFX.rays({x:cx,y:cy,n:14,len:Math.max(r.w,r.h)*1.5,col:'#ffffff',col2:col,a:.85,life:.75});VFX.grade({mode:'multiply',radial:1,col:'#000000',a:.7,life:.9})}}
-function rsBreak(el,al){const mir=el.querySelector('.rs-mir');if(!mir)return;const r=VFX.rect(mir),cols=(al||[]).map(a=>a.col).filter(Boolean);
- VFX.rays({x:r.cx,y:r.cy,n:18,len:Math.max(r.w,r.h)*1.8,col:'#ffe6a8',col2:'#ffb040',a:.9,life:1});VFX.grade({mode:'overlay',col:'#ffc860',a:.45,life:.7,fout:.7});
- VFX.embers({x:r.cx,y:r.cy,jx:r.w*.3,jy:r.h*.3,n:60,s0:200,s1:900,l0:.6,l1:1.4,r0:1.5,r1:3.5,g:700,drag:1.2,tail:.03,cols:['#ffffff','#dfe8ff',...cols.slice(0,4)]})}
+function rsSlash(el,col,i,big){const{W,H}=VFX.size(),R_=VFX.rnd,D=Math.hypot(W,H),
+  ang=[-24,38,-62,12,71,-8,49,-40][i%8]*Math.PI/180+(big?0:R_(-.12,.12)),cx=W/2+(big?0:R_(-W*.18,W*.18)),cy=H*.47+(big?0:R_(-H*.15,H*.15)),L=D*(big?1.15:.95),dx=Math.cos(ang)*L/2,dy=Math.sin(ang)*L/2;
+ VFX.stroke({style:'A',x0:cx-dx,y0:cy-dy,x1:cx+dx,y1:cy+dy,bend:big?.08:(i%2?.14:-.14),w:H*(big?.15:.06),col,hi:VFX.mix(col,'#ffffff',.6),dark:VFX.mix(col,'#000000',.5),dur:big?.16:.1,life:big?.8:.45,glow:1});
+ const u=big?.5:R_(.38,.62),ix=cx-dx+2*dx*u,iy=cy-dy+2*dy*u;
+ setTimeout(()=>VFX.crack({x:ix,y:iy,r:H*(big?.75:R_(.25,.42)),n:big?13:R_(6,9)|0,w:big?3.4:2.4,col,life:8}),big?60:40);
+ VFX.spark({x:ix,y:iy,n:big?22:10,r:H*(big?.5:.28),col:'#ffffff',col2:col,ang,spread:1.3});
+ VFX.embers({x:ix,y:iy,n:big?50:16,s0:400,s1:big?1600:1000,ang,spread:.9,l0:.2,l1:.6,r0:1.4,r1:3.4,g:300,drag:3,tail:.05,cols:['#ffffff',VFX.mix(col,'#ffffff',.5)]});
+ VFX.grade({mode:'color-dodge',col,a:big?.3:.14,life:big?.4:.2,fout:.8});
+ if(big){VFX.rays({x:ix,y:iy,n:16,len:D*.8,col:'#ffffff',col2:col,a:.85,life:.75});VFX.grade({mode:'multiply',radial:1,col:'#000000',a:.7,life:.9})}
+ rsShake(el,big?2:1)}
+function rsShake(el,k){if(!+FXSET.shk)return;el.classList.remove('shk','shk2');void el.offsetWidth;el.classList.add(k>1?'shk2':'shk')}
+function rsBreak(el,al){const{W,H}=VFX.size(),cols=(al||[]).map(a=>a.col).filter(Boolean),cx=W/2,cy=H*.47;VFX.killCracks();
+ const fl=[0,.3,.6][+FXSET.fl]??.6;if(fl)VFX.grade({mode:'screen',col:'#ffffff',a:fl,life:.28,fin:.01,fout:.95});
+ VFX.glass({x:cx,y:cy,jx:W*.42,jy:H*.42,n:110,s0:200,s1:1600,g:420,cols:['#cfe0ff','#ffffff',...cols.slice(0,4)]});
+ VFX.shock({x:cx,y:cy,r:Math.hypot(W,H)*.7,life:.55});setTimeout(()=>VFX.shock({x:cx,y:cy,r:Math.hypot(W,H)*.45,life:.45,col:'#ffe6a8'}),90);
+ VFX.rays({x:cx,y:cy,n:20,len:Math.hypot(W,H)*.9,col:'#ffe6a8',col2:'#ffb040',a:.9,life:1.1});VFX.grade({mode:'overlay',col:'#ffc860',a:.45,life:.8,fout:.7});
+ VFX.embers({x:cx,y:cy,jx:W*.35,jy:H*.35,n:70,s0:200,s1:1000,l0:.6,l1:1.5,r0:1.5,r1:3.5,g:700,drag:1.2,tail:.03,cols:['#ffffff','#dfe8ff',...cols.slice(0,4)]});
+ rsShake(el,2)}
 function rsFinish(el,F){const{W,H}=VFX.size(),col=F.col||'#e0a530',gold='#f3c860';
  VFX.grade({mode:'soft-light',col,a:.55,life:3.2,fin:.1,fout:.3});VFX.grade({mode:'multiply',radial:1,col:'#000000',a:.55,life:3.2,fin:.1,fout:.3});
  VFX.stroke({style:'B',x0:-W*.02,y0:H*.86,x1:W*1.04,y1:H*.28,bend:.1,w:H*.19,col,alt:gold,dur:.22,life:3.4});
@@ -7445,8 +7465,35 @@ function prays(o){const n=Math.round((o.n||12)*Math.sqrt(Q())),B=[],r={t:0,life:
    ctx.restore()}
   ctx.setTransform(sc,0,0,sc,0,0);for(const f of S.fx)if(f.top)f.draw();
   raf=requestAnimationFrame(frame)}
+ // 거울 금: 충격점에서 들쭉날쭉 갈라져 뻗고, 가지 치고, 거미줄 고리로 잇는다. 어두운 그림자 + 흰 결 + 반짝임
+ function pcrack(o){const segs=[],R=o.r||200,mains=[];
+  const branch=(x,y,ang,len,w,d,depth,keep)=>{const pts=[[x,y]];let cx=x,cy=y,a=ang;const st=Math.max(3,Math.round(len/48));for(let i=0;i<st;i++){a+=rnd(-.13,.13);const l=len/st*rnd(.7,1.3);cx+=Math.cos(a)*l;cy+=Math.sin(a)*l;pts.push([cx,cy]);
+    if(depth<1&&i>0&&Math.random()<.16)branch(cx,cy,a+rnd(.3,.7)*(Math.random()<.5?-1:1),len*rnd(.2,.4),w*.6,d+i/st*.12,depth+1)}segs.push({pts,w,d});if(keep)mains.push(pts)};
+  const n=o.n||9;for(let i=0;i<n;i++)branch(o.x,o.y,i/n*Math.PI*2+rnd(-.25,.25),R*rnd(.55,1.15),o.w||2.6,0,0,1);
+  for(const k of[.14,.3,.5,.72]){const ring=mains.map(P=>P[Math.min(P.length-1,Math.max(1,Math.round((P.length-1)*k)))]);for(let j=0;j<ring.length;j++){if(Math.random()>(k<.35?.9:.55))continue;const A_=ring[j],B_=ring[(j+1)%ring.length],m=[(A_[0]+B_[0])/2+rnd(-12,12),(A_[1]+B_[1])/2+rnd(-12,12)];segs.push({pts:[A_,m,B_],w:(o.w||2.6)*.5,d:.08+k*.15})}}
+  const glint=Array.from({length:Math.round(10*Q())},()=>{const P=mains[Math.floor(Math.random()*mains.length)],q=P[Math.floor(Math.random()*P.length)];return[q[0],q[1],rnd(3,9)]});
+  const c={t:0,crack:1,paint:1,update(dt){c.t+=dt;return!c.dead&&c.t<(o.life||6)},
+   path(g,sg,sh=0){const f=clamp((c.t-sg.d)/.16,0,1);if(f<=0)return false;const k=Math.max(1,Math.ceil(f*(sg.pts.length-1)));g.beginPath();for(let i=0;i<=k;i++){const[x,y]=sg.pts[i];i?g.lineTo(x+sh,y+sh):g.moveTo(x+sh,y+sh)}return true},
+   pdraw(g){g.lineJoin='miter';g.lineCap='butt';for(const sg of segs){if(c.path(g,sg,1.4)){g.strokeStyle='rgba(0,0,0,.65)';g.lineWidth=sg.w+1.6;g.stroke()}}
+    for(const sg of segs){if(c.path(g,sg)){g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=sg.w*.55;g.stroke();g.strokeStyle=hex(o.col||'#cfe0ff',.55);g.lineWidth=sg.w*1.3;g.globalCompositeOperation='screen';g.stroke();g.globalCompositeOperation='source-over'}}
+    const gk=clamp((c.t-.12)/.2,0,1);if(gk>0){g.fillStyle='rgba(255,255,255,.85)';for(const[x,y,r]of glint){const rr=r*gk*(.6+.4*Math.sin(c.t*9+x));g.beginPath();g.moveTo(x,y-rr);g.lineTo(x+rr*.28,y);g.lineTo(x,y+rr);g.lineTo(x-rr*.28,y);g.closePath();g.fill();g.beginPath();g.moveTo(x-rr,y);g.lineTo(x,y+rr*.28);g.lineTo(x+rr,y);g.lineTo(x,y-rr*.28);g.closePath();g.fill()}}},
+   gdraw(g){for(const sg of segs){if(c.path(g,sg)){g.strokeStyle='rgba(220,235,255,.45)';g.lineWidth=sg.w*2.2;g.stroke()}}},
+   sdraw(g){const G=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R*.35);G.addColorStop(0,'rgba(255,255,255,.5)');G.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=G;g.fillRect(o.x-R*.35,o.y-R*.35,R*.7,R*.7)}};return add(c)}
+ // 유리 파편 폭발: 빛 받는 면 + 흰 모서리, 화면 쪽으로 날아오며 커짐
+ function pglass(o){const n=Math.round((o.n||80)*Q()),P=[];for(let i=0;i<n;i++){const big=Math.random()<.12,sz=big?rnd(60,170):rnd(8,55),nv=3+Math.floor(Math.random()*3),V=[];
+   for(let k=0;k<nv;k++){const a=k/nv*Math.PI*2+rnd(-.4,.4),r=sz*rnd(.45,1);V.push([Math.cos(a)*r,Math.sin(a)*r])}
+   const x=o.x+rnd(-(o.jx||0),o.jx||0),y=o.y+rnd(-(o.jy||0),o.jy||0),a=Math.atan2(y-o.y,x-o.x)+rnd(-.5,.5),sp=rnd(o.s0||250,o.s1||1500)*(big?.6:1);
+   P.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-rnd(0,250),z:rnd(.3,2)*(big?1.5:1),r:rnd(0,6),vr:rnd(-7,7),V,t:0,life:rnd(.9,1.8),c:o.cols?o.cols[i%o.cols.length]:'#cfe0ff'})}
+  const sh=(g,p,fill)=>{const k=p.t/p.life,sc=1+p.z*p.t*1.6,al=1-k*k;g.save();g.translate(p.x,p.y);g.rotate(p.r);g.scale(sc,sc*(.55+.45*Math.abs(Math.cos(p.r*1.3))));g.beginPath();p.V.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();fill(al,g);g.restore()};
+  return add({paint:1,update(dt){let al=false;for(const p of P){if(p.t>=p.life)continue;p.t+=dt;p.vy+=(o.g??500)*dt;p.vx*=Math.exp(-.8*dt);p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=p.vr*dt;al=true}return al},
+   pdraw(g){for(const p of P)if(p.t<p.life)sh(g,p,(al,g)=>{const G=g.createLinearGradient(-30,-30,30,30);G.addColorStop(0,`rgba(255,255,255,${.55*al})`);G.addColorStop(.5,hex(p.c,.12*al));G.addColorStop(1,`rgba(255,255,255,${.25*al})`);g.fillStyle=G;g.fill();g.strokeStyle=`rgba(255,255,255,${.95*al})`;g.lineWidth=1.4/(1+p.z*p.t);g.stroke()})},
+   gdraw(g){for(const p of P)if(p.t<p.life&&p.t<.6)sh(g,p,(al,g)=>{g.strokeStyle=`rgba(230,240,255,${.6*al*(1-p.t/.6)})`;g.lineWidth=4;g.stroke()})}})}
+ // 충격파 고리
+ function pshock(o){const r={t:0,life:o.life||.5};const d=(g,w,a)=>{const k=r.t/r.life,R=(o.r||600)*ease(k);g.strokeStyle=hex(o.col||'#ffffff',a*(1-k));g.lineWidth=w*(1-k)+1;g.beginPath();g.ellipse(o.x,o.y,R,R*(o.flat||1),0,0,Math.PI*2);g.stroke()};
+  return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){d(g,6,.9)},sdraw(g){d(g,40,.8)}})}
+
  // 공개 API
- const api={add,stroke,fireline:pfireline,firering:pfirering,embers:pembersT,smoke:psmoke,sun:psunF,rays:prays,grade,blot:pblot,splash:ppaint,spark:pspark,mix,hex,rnd,
+ const api={add,stroke,fireline:pfireline,firering:pfirering,embers:pembersT,smoke:psmoke,sun:psunF,rays:prays,grade,blot:pblot,splash:ppaint,spark:pspark,crack:pcrack,glass:pglass,shock:pshock,killCracks(){S.fx.forEach(f=>{if(f.crack)f.dead=1})},mix,hex,rnd,
   mount(el){(el||document.body).appendChild(cv);fit()},clear(){S.fx=[];ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);cv.classList.remove('on')},
   size(){fit();return{W,H}},
   // 화면 요소 → 캔버스 좌표 (줌 보정)
