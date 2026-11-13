@@ -2449,6 +2449,16 @@ function dmgFx(el,f,dm){if(!dm?.length)return;const p=hitPoint(el,f);
 function guardFx(el,f){const st=$('.cs-stage',el),p=hitPoint(el,f);p.x-=$('.cs-body',f).offsetWidth*.18;
  fxEl(st,'cs-ring guard',`left:${p.x}px;top:${p.y}px`,'',700);burst(st,p,18,{dir:180,spread:50,r:170,cols:['#fff','#ffe08a','#9fd6ff']})}
 function afterImg(el,f){const st=$('.cs-stage',el);[0,70,140].forEach((ms,i)=>setTimeout(()=>{const c=f.cloneNode(true);c.querySelector('.cs-card')?.remove();c.classList.add('cs-after');c.style.setProperty('--o',.5-i*.14);c.style.transition='none';st.insertBefore(c,f);setTimeout(()=>c.remove(),520)},ms))}
+
+// §139 공간이 베인 느낌: 무대를 컷 선으로 둘로 나눠 서로 반대로 잠깐 어긋났다 붙인다 (0.22초)
+function airCut(el,c,ang,amp=12){const st=el&&el.querySelector('.cs-stage');if(!st||!c)return;const z=(typeof UIZ!=='undefined'&&UIZ.z)||1,R=el.getBoundingClientRect(),W_=R.width/z,H_=R.height/z;
+ const ca=Math.cos(ang),sa=Math.sin(ang),nx=-sa,ny=ca,L=(W_+H_)*2,p1=[c.x-ca*L,c.y-sa*L],p2=[c.x+ca*L,c.y+sa*L];
+ const side=k=>[p1,p2,[p2[0]+nx*L*k,p2[1]+ny*L*k],[p1[0]+nx*L*k,p1[1]+ny*L*k]].map(([x,y])=>`${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',');
+ st.querySelectorAll(':scope>.cs-cutc').forEach(e=>e.remove());const cl=st.cloneNode(true);cl.classList.add('cs-cutc');cl.removeAttribute('data-a');
+ cl.style.cssText+=`;position:absolute;inset:0;clip-path:polygon(${side(1)});pointer-events:none`;st.style.clipPath=`polygon(${side(-1)})`;st.after(cl);
+ const K=[{transform:'none'},{transform:`translate(${nx*amp}px,${ny*amp}px)`,offset:.3},{transform:'none'}];
+ cl.animate(K,{duration:220,easing:'cubic-bezier(.2,.8,.3,1)'});st.animate(K.map(f=>f.transform==='none'?f:{...f,transform:`translate(${-nx*amp*.7}px,${-ny*amp*.7}px)`}),{duration:220,easing:'cubic-bezier(.2,.8,.3,1)'});
+ setTimeout(()=>{cl.remove();st.style.clipPath=''},235)}
 async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  const A=csUnit(d.by),B=csUnit(d.to),none=!d.r,clash=d.clash||[],fast=!!d.multi,T=ms=>sleep(fast?ms*.65:ms);
  const sc=sinColor(d.sin)||'#c23b2a',mode=none?'대응 없음':RESP[d.mode]||'대응';
@@ -2482,7 +2492,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);await T(170);
   setPose(fl,A,'atk');
   if(ev){setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,-4,140);reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(70);coinHit(w);await T(150)}
-  else{setPose(fr,B,'guard');if(VX){const P=vxP(),n=w==='T'?3:2+(Math.random()<.45?1:0);for(let i=0;i<n;i++){VFX.beat({...P,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&i===n-1});await sleep(130);if(i<n-1){SFX.play('clang');reAnim($('.cs-stage',el),'punch');reAnim(el,'shake');await HS(70);await sleep(110)}}
+  else{setPose(fr,B,'guard');if(VX){const P=vxP(),n=w==='T'?3:2+(Math.random()<.45?1:0);for(let i=0;i<n;i++){const bt=VFX.beat({...P,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&i===n-1});await sleep(125);if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,crit&&i===n-1?18:12);await sleep(5);if(i<n-1){SFX.play('clang');reAnim($('.cs-stage',el),'punch');reAnim(el,'shake');await HS(70);await sleep(110)}}
    if(w==='T'){SFX.play('clang');const ms=VFX.lock({...P,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:560});await sleep(ms)}}await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}
   // 반동: 둘 다 대기 그림으로 튕겨 물러남
   setPose(fl,A,'idle');setPose(fr,B,'idle');fr.classList.remove('cs-dodge');slide(fl,-8,280);slide(fr,8,280);await T(300);slide(fl,0,160);slide(fr,0,160);await T(150)}
@@ -2506,7 +2516,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  else if(ev){slide(fl,72,200,EI);setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,46,260);fr.classList.add('cs-ghost');reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(60);await T(220);
   setPose(fl,A,'idle');slide(fl,62,260);
   res.innerHTML=`<b class="miss">회피!</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
- else{setPose(fr,B,'guard');if(VX){const P=vxP();VFX.beat({...P,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true})}await impact(el,'block',false);await hold(70);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-16,340);slide(fr,10,240);
+ else{setPose(fr,B,'guard');if(VX){const P=vxP(),bt=VFX.beat({...P,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true});setTimeout(()=>airCut(el,P.c,bt.ang,16),125)}await impact(el,'block',false);await hold(70);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-16,340);slide(fr,10,240);
   res.innerHTML=`<b class="miss">${d.mode==='guard'?'방어!':'막아냄'}</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  await T(win?1150:950);
  el.classList.add('out');camOut();await sleep(280);if(VX){VFX.clear();VFX.mount(document.body)}host.innerHTML='';CS.cur=null}
@@ -7861,15 +7871,18 @@ const CL_MS={cross:330,lock:720,parry:340,impact:380,flurry:470,graze:300,overhe
   return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},pdraw(g){d(g,o.w*1.6,mix(o.col,'#000000',.2),.55);d(g,o.w*.45,'#ffffff',.95)},gdraw(g){d(g,o.w*4,o.col,.5)}})}
  function pcore(o){const r={t:0,life:o.life||.32};return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){const k=r.t/r.life,R=o.r*(.6+k*.7),a=1-k;const G=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R);G.addColorStop(0,`rgba(255,255,255,${a})`);G.addColorStop(.3,hex(o.col,.8*a));G.addColorStop(1,hex(o.col,0));g.fillStyle=G;g.fillRect(o.x-R,o.y-R,R*2,R*2)},
   sdraw(g){const k=r.t/r.life,R=o.r*(1+k*.8);g.fillStyle=`rgba(255,240,210,${.22*(1-k)})`;g.beginPath();g.arc(o.x,o.y,R,0,Math.PI*2);g.fill()}})}
+ // 공간이 베인 이음매: 양끝이 바늘처럼 뾰족한 흰 선, 번쩍 후 0.18초 안에 사라짐
+ function pseam(o){const r={t:0,life:o.life||.2},ca=Math.cos(o.ang),sa=Math.sin(o.ang);const d=(g,wm,col,al)=>{const k=r.t/r.life,L=o.len*(.7+k*.3),w=o.w*wm*(1-k);if(w<=0)return;g.globalAlpha=al*(1-k);g.fillStyle=col;g.beginPath();g.moveTo(o.x-ca*L/2,o.y-sa*L/2);g.lineTo(o.x-sa*w,o.y+ca*w);g.lineTo(o.x+ca*L/2,o.y+sa*L/2);g.lineTo(o.x+sa*w,o.y-ca*w);g.closePath();g.fill();g.globalAlpha=1};
+  return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},pdraw(g){d(g,1,'#ffffff',1)},gdraw(g){d(g,3,'#dfe8ff',.6)}})}
  const BEAT_AN=[[-.6,.55],[.5,-.4],[-.2,.9],[.85,-.75],[-.95,.25],[.25,-.95]];
- function beat(o){HU=o.h;GY=o.gy;const c=o.c,D=o.d,i=o.i||0,AN=BEAT_AN[i%BEAT_AN.length],big=o.big?1.35:1;
+ function beat(o){HU=o.h;GY=o.gy;const c=o.c,D=o.d,i=o.i||0,AN=BEAT_AN[i%BEAT_AN.length],big=o.big?1.35:1;o.cutAng=(AN[0]-AN[1])/2+Math.PI/2+rnd(-.25,.25);
   const pa={x:c.x-Math.cos(AN[0])*D,y:c.y-Math.sin(AN[0])*D*.8},pb={x:c.x+Math.cos(AN[1])*D,y:c.y-Math.sin(AN[1])*D*.8};
   pstar({x:pa.x,y:pa.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});pstar({x:pb.x,y:pb.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});
   later(60,()=>{wswing(o.ka,o.cA,pa.x,pa.y,c.x,c.y,{bend:i%2?.22:-.22,dur:.07});wswing(o.kb,o.cB,pb.x,pb.y,c.x,c.y,{bend:i%2?-.22:.22,dur:.07})});
   later(125,()=>{pcore({x:c.x,y:c.y,r:HU*.085*big,col:'#ffd890',life:.24});contactFx(c.x,c.y,o.ka,o.kb,1.15*big);pshock({x:c.x,y:c.y,r:HU*.34*big,life:.3});
    pembersT({x:c.x,y:c.y,n:Math.round(26*big),s0:250,s1:900,ang:-Math.PI/2,spread:1.9,l0:.5,l1:1.2,r0:1.2,r1:3,g:900,drag:1.6,tail:.045,cols:['#ffffff','#ffe6a8','#ffb040',mix(o.cA,'#ffffff',.4),mix(o.cB,'#ffffff',.4)]});
-   psmoke({x:c.x,y:c.y,n:2});pscar({x:c.x+rnd(-8,8),y:c.y+rnd(-8,8),ang:(AN[0]-AN[1])/2+Math.PI/2+rnd(-.3,.3),len:HU*.3*big,w:HU*.012,col:o.cA})});
-  return 125}
+   psmoke({x:c.x,y:c.y,n:2});pseam({x:c.x,y:c.y,ang:o.cutAng,len:HU*1.6,w:HU*.006})});
+  return{ms:125,ang:o.cutAng}}
  function lockAt(o){HU=o.h;GY=o.gy;const c=o.c,ms=o.ms||520,aa=-.7+(o.ka==='P'?.45:0),ab=Math.PI+.7-(o.kb==='P'?.45:0);
   const mk=(k,ang,col)=>pblade({x0:c.x,y0:c.y,x1:c.x,y1:c.y,ang,len:HU*WB[k].len,w:HU*WB[k].w*1.6,col,dur:ms/1000,life:ms/1000+.12,jit:k==='B'?3:2});
   mk(o.ka,aa,o.cA);mk(o.kb,ab,o.cB);pcore({x:c.x,y:c.y,r:HU*.05,col:'#ffd890',life:ms/1000});
