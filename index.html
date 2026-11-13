@@ -2472,7 +2472,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv)}
  const wa=d.wa||'S',wb=d.wb||'S',cB=(()=>{try{return resoCol(CH(srcOf(uOf(d.to))))}catch{return'#8aa0b8'}})();
  const vxP=()=>{const R=VFX.rect(el),ba=$('.cs-body',fl),bb=$('.cs-body',fr),ra=ba?VFX.rect(ba):{cx:R.w*.3,y:R.h*.3,h:R.h*.5},rb=bb?VFX.rect(bb):{cx:R.w*.7,y:R.h*.3,h:R.h*.5};
-  return{c:{x:R.w*.5,y:R.h*.5},d:Math.min(R.w*.24,R.h*.42),hb:Math.max(R.h,R.w*.56)*1.5,a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
+  return{c:{x:R.w*.5,y:R.h*.5},d:Math.min(R.w*.32,R.h*.55),hb:Math.max(R.h,R.w*.56)*3,a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2.6,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
@@ -2489,11 +2489,23 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  setPose(fl,A,'idle');setPose(fr,B,'idle');
  await Promise.all([rollBadge(bdL,d.a,d.aMod,d.aCv,d.aCrit,fast),none?0:rollBadge(bdR,d.r,d.rMod,d.rCv,d.rCrit,fast)]);await T(240);
  async function exchange(w,crit){
-  setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);await T(170);
+  setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);
+  // 첫 타 이펙트는 달려드는 도중에 시작 → 닿는 순간(170ms)에 정확히 터지게
+  let pre=null,P0=null,n0=0;if(VX&&!ev){await T(45);P0=vxP();n0=w==='T'?2:2+(Math.random()<.45?1:0);pre=VFX.beat({...P0,h:P0.hb,i:ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&n0===1&&w!=='T',sp:(fast?.65:1)*CSK()});await T(125)}else await T(170);
   setPose(fl,A,'atk');
   if(ev){setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,-4,140);reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(70);coinHit(w);await T(150)}
-  else{setPose(fr,B,'guard');if(VX){const P=vxP(),n=w==='T'?3:2+(Math.random()<.45?1:0);for(let i=0;i<n;i++){const bt=VFX.beat({...P,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&i===n-1});await sleep(125);if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,crit&&i===n-1?18:12);await sleep(5);if(i<n-1){SFX.play('clang');reAnim($('.cs-stage',el),'punch');reAnim(el,'shake');await HS(70);await sleep(110)}}
-   if(w==='T'){SFX.play('clang');const ms=VFX.lock({...P,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:560});await sleep(ms)}}await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}
+  else{setPose(fr,B,'guard');
+   if(VX){const P=P0||vxP(),tie=w==='T',n=n0||2,sp=(fast?.65:1)*CSK();
+    for(let i=0;i<n;i++){const last=i===n-1&&!tie;
+     if(i>0){setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,22,100);slide(fr,-22,100);await T(100)}
+     const bt=i===0&&pre?pre:VFX.beat({...P,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&last,sp});
+     if(i>0){slide(fl,44,110,EI);slide(fr,-44,110,EI);await T(125)}setPose(fl,A,'atk');setPose(fr,B,'guard');
+     if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,last&&crit?18:12);
+     SFX.play(last&&crit?'crit':'clang');reAnim($('.cs-flash',el),last?'go2':'go');reAnim($('.cs-stage',el),'punch');reAnim(el,last?'shake2':'shake');
+     await hold(last?90:40);if(last)coinHit(w);await T(last?60:50)}
+    if(tie){setPose(fl,A,'atk');setPose(fr,B,'guard');SFX.play('clang');const ms=VFX.lock({...P,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:380,sp});await T(380);
+     SFX.play('clang');reAnim($('.cs-flash',el),'go2');reAnim(el,'shake2');await hold(80);coinHit(w);await T(60)}}
+   else{await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}}
   // 반동: 둘 다 대기 그림으로 튕겨 물러남
   setPose(fl,A,'idle');setPose(fr,B,'idle');fr.classList.remove('cs-dodge');slide(fl,-8,280);slide(fr,8,280);await T(300);slide(fl,0,160);slide(fr,0,160);await T(150)}
  if(!none)await exchange(clash.length?'T':(d.hit?'A':'B'),d.aCrit||d.rCrit);
@@ -7590,7 +7602,7 @@ const DRAW={
 // 날카로운 불티선(충격 방사)
 function pspark(o){const n=Math.round((o.n||12)*Q()),L=[];for(let i=0;i<n;i++)L.push({a:(o.ang??0)+rnd(-(o.spread??Math.PI),o.spread??Math.PI),l:rnd(.5,1.1),w:rnd(3,8),c:i%3?o.col:(o.col2||o.col)});const s={t:0,life:o.life||.32};
  return add({paint:1,update(dt){s.t+=dt;return s.t<s.life},pdraw(g){const k=s.t/s.life;for(const q of L){const d0=o.r*q.l*ease(k)*.55,d1=o.r*q.l*(.25+ease(k)),bw=q.w*(1-k),ca=Math.cos(q.a),sa=Math.sin(q.a);g.fillStyle=q.c;g.beginPath();g.moveTo(o.x+ca*d0-sa*bw,o.y+sa*d0+ca*bw);g.lineTo(o.x+ca*d1,o.y+sa*d1);g.lineTo(o.x+ca*d0+sa*bw,o.y+sa*d0-ca*bw);g.closePath();g.fill()}},
-  gdraw(g){const k=s.t/s.life,c=o.col2||o.col,gr=g.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*.8);gr.addColorStop(0,hex(c,.55*(1-k)));gr.addColorStop(1,hex(c,0));g.fillStyle=gr;g.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2)}})}
+  gdraw(g){const k=s.t/s.life,c=o.col2||o.col,R=o.r*.45,gr=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R);gr.addColorStop(0,hex(c,.32*(1-k)));gr.addColorStop(1,hex(c,0));g.fillStyle=gr;g.fillRect(o.x-R,o.y-R,R*2,R*2)}})}
 // 수채 번짐 덩어리
 function wpath(g,x,y,r,sd){g.beginPath();for(let i=0;i<=48;i++){const a=i/48*Math.PI*2,k=1+(fbm(Math.cos(a)*1.3+sd,Math.sin(a)*1.3+sd*.7)-.5)*.7,xx=x+Math.cos(a)*r*k,yy=y+Math.sin(a)*r*k;i?g.lineTo(xx,yy):g.moveTo(xx,yy)}g.closePath()}
 function pblot(o){const b={t:0,life:o.life||2.6,seed:Math.random()*99},cols=o.cols||[o.col],sats=[];for(let i=0;i<(o.sat??5);i++){const an=rnd(0,7),d=rnd(1.1,2);sats.push([Math.cos(an)*d,Math.sin(an)*d*.8,rnd(.14,.34),rnd(0,99),cols[(i+1)%cols.length]])}
@@ -7716,7 +7728,7 @@ function prays(o){const n=Math.round((o.n||12)*Math.sqrt(Q())),B=[],r={t:0,life:
    gdraw(g){for(const p of P)if(p.t<p.life&&p.t<.6)sh(g,p,(al,g)=>{g.strokeStyle=`rgba(230,240,255,${.6*al*(1-p.t/.6)})`;g.lineWidth=4;g.stroke()})}})}
  // 충격파 고리
  function pshock(o){const r={t:0,life:o.life||.5};const d=(g,w,a)=>{const k=r.t/r.life,R=(o.r||600)*ease(k);g.strokeStyle=hex(o.col||'#ffffff',a*(1-k));g.lineWidth=w*(1-k)+1;g.beginPath();g.ellipse(o.x,o.y,R,R*(o.flat||1),0,0,Math.PI*2);g.stroke()};
-  return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){d(g,6,.9)},sdraw(g){d(g,40,.8)}})}
+  return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){d(g,5,.7)},sdraw(g){d(g,26,.35)}})}
 
  // §136 합·적중 이펙트 (시험장 견본 이식): 공격 유형 S 참격 / P 관통 / B 타격, 상황별 합 패턴
  let HU=600,GY=600;const later=(ms,f)=>setTimeout(f,ms),hitstop=()=>{},shake=()=>{},hit=()=>{};
@@ -7869,21 +7881,21 @@ const CL_MS={cross:330,lock:720,parry:340,impact:380,flurry:470,graze:300,overhe
  function pscar(o){const r={t:0,life:o.life||2.6},ca=Math.cos(o.ang),sa=Math.sin(o.ang),L=o.len;
   const d=(g,w,col,al)=>{const k=r.t/r.life,f=k<.06?k/.06:1-Math.pow((k-.06)/.94,.6);if(f<=0)return;g.globalAlpha=al*f;g.strokeStyle=col;g.lineWidth=w;g.lineCap='round';g.beginPath();g.moveTo(o.x-ca*L/2,o.y-sa*L/2);g.quadraticCurveTo(o.x-sa*L*.08,o.y+ca*L*.08,o.x+ca*L/2,o.y+sa*L/2);g.stroke();g.globalAlpha=1};
   return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},pdraw(g){d(g,o.w*1.6,mix(o.col,'#000000',.2),.55);d(g,o.w*.45,'#ffffff',.95)},gdraw(g){d(g,o.w*4,o.col,.5)}})}
- function pcore(o){const r={t:0,life:o.life||.32};return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){const k=r.t/r.life,R=o.r*(.6+k*.7),a=1-k;const G=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R);G.addColorStop(0,`rgba(255,255,255,${a})`);G.addColorStop(.3,hex(o.col,.8*a));G.addColorStop(1,hex(o.col,0));g.fillStyle=G;g.fillRect(o.x-R,o.y-R,R*2,R*2)},
+ function pcore(o){const r={t:0,life:o.life||.32};return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){const k=r.t/r.life,R=o.r*(.6+k*.7),a=1-k;const G=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R);G.addColorStop(0,`rgba(255,255,255,${.8*a})`);G.addColorStop(.3,hex(o.col,.55*a));G.addColorStop(1,hex(o.col,0));g.fillStyle=G;g.fillRect(o.x-R,o.y-R,R*2,R*2)},
   sdraw(g){const k=r.t/r.life,R=o.r*(1+k*.8);g.fillStyle=`rgba(255,240,210,${.22*(1-k)})`;g.beginPath();g.arc(o.x,o.y,R,0,Math.PI*2);g.fill()}})}
  // 공간이 베인 이음매: 양끝이 바늘처럼 뾰족한 흰 선, 번쩍 후 0.18초 안에 사라짐
  function pseam(o){const r={t:0,life:o.life||.2},ca=Math.cos(o.ang),sa=Math.sin(o.ang);const d=(g,wm,col,al)=>{const k=r.t/r.life,L=o.len*(.7+k*.3),w=o.w*wm*(1-k);if(w<=0)return;g.globalAlpha=al*(1-k);g.fillStyle=col;g.beginPath();g.moveTo(o.x-ca*L/2,o.y-sa*L/2);g.lineTo(o.x-sa*w,o.y+ca*w);g.lineTo(o.x+ca*L/2,o.y+sa*L/2);g.lineTo(o.x+sa*w,o.y-ca*w);g.closePath();g.fill();g.globalAlpha=1};
   return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},pdraw(g){d(g,1,'#ffffff',1)},gdraw(g){d(g,3,'#dfe8ff',.6)}})}
  const BEAT_AN=[[-.6,.55],[.5,-.4],[-.2,.9],[.85,-.75],[-.95,.25],[.25,-.95]];
- function beat(o){HU=o.h;GY=o.gy;const c=o.c,D=o.d,i=o.i||0,AN=BEAT_AN[i%BEAT_AN.length],big=o.big?1.35:1;o.cutAng=(AN[0]-AN[1])/2+Math.PI/2+rnd(-.25,.25);
+ function beat(o){HU=o.h;GY=o.gy;const c=o.c,D=o.d,i=o.i||0,AN=BEAT_AN[i%BEAT_AN.length],big=o.big?1.35:1,sp=o.sp||1;o.cutAng=(AN[0]-AN[1])/2+Math.PI/2+rnd(-.25,.25);
   const pa={x:c.x-Math.cos(AN[0])*D,y:c.y-Math.sin(AN[0])*D*.8},pb={x:c.x+Math.cos(AN[1])*D,y:c.y-Math.sin(AN[1])*D*.8};
   pstar({x:pa.x,y:pa.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});pstar({x:pb.x,y:pb.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});
-  later(60,()=>{wswing(o.ka,o.cA,pa.x,pa.y,c.x,c.y,{bend:i%2?.22:-.22,dur:.07});wswing(o.kb,o.cB,pb.x,pb.y,c.x,c.y,{bend:i%2?-.22:.22,dur:.07})});
-  later(125,()=>{pcore({x:c.x,y:c.y,r:HU*.085*big,col:'#ffd890',life:.24});contactFx(c.x,c.y,o.ka,o.kb,1.15*big);pshock({x:c.x,y:c.y,r:HU*.34*big,life:.3});
+  later(60*sp,()=>{wswing(o.ka,o.cA,pa.x,pa.y,c.x,c.y,{bend:i%2?.22:-.22,dur:.065*sp});wswing(o.kb,o.cB,pb.x,pb.y,c.x,c.y,{bend:i%2?-.22:.22,dur:.065*sp})});
+  later(125*sp,()=>{pcore({x:c.x,y:c.y,r:HU*.045*big,col:'#ffd890',life:.22});contactFx(c.x,c.y,o.ka,o.kb,1.15*big);pshock({x:c.x,y:c.y,r:HU*.34*big,life:.3});
    pembersT({x:c.x,y:c.y,n:Math.round(26*big),s0:250,s1:900,ang:-Math.PI/2,spread:1.9,l0:.5,l1:1.2,r0:1.2,r1:3,g:900,drag:1.6,tail:.045,cols:['#ffffff','#ffe6a8','#ffb040',mix(o.cA,'#ffffff',.4),mix(o.cB,'#ffffff',.4)]});
    psmoke({x:c.x,y:c.y,n:2});pseam({x:c.x,y:c.y,ang:o.cutAng,len:HU*1.6,w:HU*.006})});
   return{ms:125,ang:o.cutAng}}
- function lockAt(o){HU=o.h;GY=o.gy;const c=o.c,ms=o.ms||520,aa=-.7+(o.ka==='P'?.45:0),ab=Math.PI+.7-(o.kb==='P'?.45:0);
+ function lockAt(o){HU=o.h;GY=o.gy;const c=o.c,ms=(o.ms||520)*(o.sp||1),aa=-.7+(o.ka==='P'?.45:0),ab=Math.PI+.7-(o.kb==='P'?.45:0);
   const mk=(k,ang,col)=>pblade({x0:c.x,y0:c.y,x1:c.x,y1:c.y,ang,len:HU*WB[k].len,w:HU*WB[k].w*1.6,col,dur:ms/1000,life:ms/1000+.12,jit:k==='B'?3:2});
   mk(o.ka,aa,o.cA);mk(o.kb,ab,o.cB);pcore({x:c.x,y:c.y,r:HU*.05,col:'#ffd890',life:ms/1000});
   if(o.ka==='B'||o.kb==='B'){const n=Math.round(ms/90);for(let i=0;i<n;i++)later(i*90,()=>pembersT({x:c.x+rnd(-HU*.04,HU*.04),y:c.y,n:3,ang:Math.PI/2,spread:.8,s0:80,s1:240,l0:.3,l1:.6,r0:2,r1:4,g:600,drag:1,tail:.01,cols:['#6a5a4a','#8a7a68']}))}
