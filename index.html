@@ -2462,12 +2462,12 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv)}
  const wa=d.wa||'S',wb=d.wb||'S',cB=(()=>{try{return resoCol(CH(srcOf(uOf(d.to))))}catch{return'#8aa0b8'}})();
  const vxP=()=>{const R=VFX.rect(el),ba=$('.cs-body',fl),bb=$('.cs-body',fr),ra=ba?VFX.rect(ba):{cx:R.w*.3,y:R.h*.3,h:R.h*.5},rb=bb?VFX.rect(bb):{cx:R.w*.7,y:R.h*.3,h:R.h*.5};
-  return{a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
+  return{c:{x:R.w*.5,y:R.h*.5},d:Math.min(R.w*.24,R.h*.42),hb:Math.max(R.h,R.w*.56)*1.5,a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
  const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK));
- const hold=async ms=>{if(!SK)return;el.classList.add('stop');await HS(ms);el.classList.remove('stop')};
+ const hold=async ms=>{if(!SK)return;el.classList.add('stop');if(typeof VFX!=='undefined')VFX.slow(.05);await HS(ms+40);if(typeof VFX!=='undefined')VFX.slow(1);el.classList.remove('stop')};
  // 코인: 부딪칠 때마다 하나씩. 진 쪽 코인이 깨지고, 동점이면 둘 다 튕긴다
  const nC=none?0:clash.length+1,coinRow=side=>{const h=q(`.cs-head.${side}`);if(!h||!nC)return null;const r=document.createElement('div');r.className='cs-coins';r.innerHTML='<i class="cs-coin"></i>'.repeat(nC);h.append(r);return r};
  const cL=coinRow('l'),cR=coinRow('r');let ci=0;
@@ -2482,7 +2482,8 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);await T(170);
   setPose(fl,A,'atk');
   if(ev){setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,-4,140);reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(70);coinHit(w);await T(150)}
-  else{setPose(fr,B,'guard');if(VX){const P=vxP(),r=VFX.clash({...P,ka:wa,kb:wb,cA:sc,cB,win:w==='A'?true:w==='B'?false:null,tie:w==='T',final:false});await sleep(60);if(r.ms>420)await T(r.ms-380)}await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}
+  else{setPose(fr,B,'guard');if(VX){const P=vxP(),n=w==='T'?3:2+(Math.random()<.45?1:0);for(let i=0;i<n;i++){VFX.beat({...P,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&i===n-1});await sleep(130);if(i<n-1){SFX.play('clang');reAnim($('.cs-stage',el),'punch');reAnim(el,'shake');await HS(70);await sleep(110)}}
+   if(w==='T'){SFX.play('clang');const ms=VFX.lock({...P,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:560});await sleep(ms)}}await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}
   // 반동: 둘 다 대기 그림으로 튕겨 물러남
   setPose(fl,A,'idle');setPose(fr,B,'idle');fr.classList.remove('cs-dodge');slide(fl,-8,280);slide(fr,8,280);await T(300);slide(fl,0,160);slide(fr,0,160);await T(150)}
  if(!none)await exchange(clash.length?'T':(d.hit?'A':'B'),d.aCrit||d.rCrit);
@@ -2505,7 +2506,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  else if(ev){slide(fl,72,200,EI);setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,46,260);fr.classList.add('cs-ghost');reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(60);await T(220);
   setPose(fl,A,'idle');slide(fl,62,260);
   res.innerHTML=`<b class="miss">회피!</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
- else{setPose(fr,B,'guard');if(VX){const P=vxP();VFX.clash({...P,kind:'parry',ka:wa,kb:wb,cA:sc,cB,win:false})}await impact(el,'block',false);await hold(70);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-16,340);slide(fr,10,240);
+ else{setPose(fr,B,'guard');if(VX){const P=vxP();VFX.beat({...P,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true})}await impact(el,'block',false);await hold(70);setPose(fl,A,'hurt');guardFx(el,fr);slide(fl,-16,340);slide(fr,10,240);
   res.innerHTML=`<b class="miss">${d.mode==='guard'?'방어!':'막아냄'}</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  await T(win?1150:950);
  el.classList.add('out');camOut();await sleep(280);if(VX){VFX.clear();VFX.mount(document.body)}host.innerHTML='';CS.cur=null}
@@ -7854,8 +7855,30 @@ const CL_MS={cross:330,lock:720,parry:340,impact:380,flurry:470,graze:300,overhe
  function clashPlay(o){HU=o.h;GY=o.gy;const k=o.kind||pickClash(o.ka,o.kb,o.tie,o.final);return{k,ms:CL_MS[k]||350,run:CL[k](o.a,o.t,o.cA,o.cB,o.win,o.ka,o.kb)}}
  function hitPlay(o){HU=o.h;GY=o.gy;if(o.k==='P')hitPierce(o.a,o.t,o.col,o.big);else if(o.k==='B')hitBlunt(o.t,o.col,o.big);else hitSlash(o.t,o.col,o.big)}
 
+ // §138 합 한 번 = 같은 접점에서 2~3번 챙챙챙 + 겹겹이(직전 반짝 → 궤적 모임 → 섬광·불꽃·고리 → 남는 불티·연기·베인 자국)
+ function pscar(o){const r={t:0,life:o.life||2.6},ca=Math.cos(o.ang),sa=Math.sin(o.ang),L=o.len;
+  const d=(g,w,col,al)=>{const k=r.t/r.life,f=k<.06?k/.06:1-Math.pow((k-.06)/.94,.6);if(f<=0)return;g.globalAlpha=al*f;g.strokeStyle=col;g.lineWidth=w;g.lineCap='round';g.beginPath();g.moveTo(o.x-ca*L/2,o.y-sa*L/2);g.quadraticCurveTo(o.x-sa*L*.08,o.y+ca*L*.08,o.x+ca*L/2,o.y+sa*L/2);g.stroke();g.globalAlpha=1};
+  return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},pdraw(g){d(g,o.w*1.6,mix(o.col,'#000000',.2),.55);d(g,o.w*.45,'#ffffff',.95)},gdraw(g){d(g,o.w*4,o.col,.5)}})}
+ function pcore(o){const r={t:0,life:o.life||.32};return add({paint:1,update(dt){r.t+=dt;return r.t<r.life},gdraw(g){const k=r.t/r.life,R=o.r*(.6+k*.7),a=1-k;const G=g.createRadialGradient(o.x,o.y,0,o.x,o.y,R);G.addColorStop(0,`rgba(255,255,255,${a})`);G.addColorStop(.3,hex(o.col,.8*a));G.addColorStop(1,hex(o.col,0));g.fillStyle=G;g.fillRect(o.x-R,o.y-R,R*2,R*2)},
+  sdraw(g){const k=r.t/r.life,R=o.r*(1+k*.8);g.fillStyle=`rgba(255,240,210,${.22*(1-k)})`;g.beginPath();g.arc(o.x,o.y,R,0,Math.PI*2);g.fill()}})}
+ const BEAT_AN=[[-.6,.55],[.5,-.4],[-.2,.9],[.85,-.75],[-.95,.25],[.25,-.95]];
+ function beat(o){HU=o.h;GY=o.gy;const c=o.c,D=o.d,i=o.i||0,AN=BEAT_AN[i%BEAT_AN.length],big=o.big?1.35:1;
+  const pa={x:c.x-Math.cos(AN[0])*D,y:c.y-Math.sin(AN[0])*D*.8},pb={x:c.x+Math.cos(AN[1])*D,y:c.y-Math.sin(AN[1])*D*.8};
+  pstar({x:pa.x,y:pa.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});pstar({x:pb.x,y:pb.y,r:HU*.07,w:HU*.006,col:'#ffffff',life:.16});
+  later(60,()=>{wswing(o.ka,o.cA,pa.x,pa.y,c.x,c.y,{bend:i%2?.22:-.22,dur:.07});wswing(o.kb,o.cB,pb.x,pb.y,c.x,c.y,{bend:i%2?-.22:.22,dur:.07})});
+  later(125,()=>{pcore({x:c.x,y:c.y,r:HU*.085*big,col:'#ffd890',life:.24});contactFx(c.x,c.y,o.ka,o.kb,1.15*big);pshock({x:c.x,y:c.y,r:HU*.34*big,life:.3});
+   pembersT({x:c.x,y:c.y,n:Math.round(26*big),s0:250,s1:900,ang:-Math.PI/2,spread:1.9,l0:.5,l1:1.2,r0:1.2,r1:3,g:900,drag:1.6,tail:.045,cols:['#ffffff','#ffe6a8','#ffb040',mix(o.cA,'#ffffff',.4),mix(o.cB,'#ffffff',.4)]});
+   psmoke({x:c.x,y:c.y,n:2});pscar({x:c.x+rnd(-8,8),y:c.y+rnd(-8,8),ang:(AN[0]-AN[1])/2+Math.PI/2+rnd(-.3,.3),len:HU*.3*big,w:HU*.012,col:o.cA})});
+  return 125}
+ function lockAt(o){HU=o.h;GY=o.gy;const c=o.c,ms=o.ms||520,aa=-.7+(o.ka==='P'?.45:0),ab=Math.PI+.7-(o.kb==='P'?.45:0);
+  const mk=(k,ang,col)=>pblade({x0:c.x,y0:c.y,x1:c.x,y1:c.y,ang,len:HU*WB[k].len,w:HU*WB[k].w*1.6,col,dur:ms/1000,life:ms/1000+.12,jit:k==='B'?3:2});
+  mk(o.ka,aa,o.cA);mk(o.kb,ab,o.cB);pcore({x:c.x,y:c.y,r:HU*.05,col:'#ffd890',life:ms/1000});
+  if(o.ka==='B'||o.kb==='B'){const n=Math.round(ms/90);for(let i=0;i<n;i++)later(i*90,()=>pembersT({x:c.x+rnd(-HU*.04,HU*.04),y:c.y,n:3,ang:Math.PI/2,spread:.8,s0:80,s1:240,l0:.3,l1:.6,r0:2,r1:4,g:600,drag:1,tail:.01,cols:['#6a5a4a','#8a7a68']}))}
+  else grindSparks(()=>({x:c.x+rnd(-3,3),y:c.y+rnd(-3,3)}),ms,Math.PI/2,o.cA);
+  later(ms,()=>{pcore({x:c.x,y:c.y,r:HU*.1,col:'#ffd890',life:.26});contactFx(c.x,c.y,o.ka,o.kb,1.4)});return ms}
+
  // 공개 API
- const api={add,stroke,fireline:pfireline,firering:pfirering,embers:pembersT,smoke:psmoke,sun:psunF,rays:prays,grade,blot:pblot,splash:ppaint,spark:pspark,clash:clashPlay,hitFx:hitPlay,clashName:k=>CL_NAME[k],crack:pcrack,glass:pglass,shock:pshock,killCracks(){S.fx.forEach(f=>{if(f.crack)f.dead=1})},slow(k){TST=k;if(k===1&&!S.fx.length)TS=1},mix,hex,rnd,
+ const api={add,stroke,fireline:pfireline,firering:pfirering,embers:pembersT,smoke:psmoke,sun:psunF,rays:prays,grade,blot:pblot,splash:ppaint,spark:pspark,clash:clashPlay,hitFx:hitPlay,beat,lock:lockAt,clashName:k=>CL_NAME[k],crack:pcrack,glass:pglass,shock:pshock,killCracks(){S.fx.forEach(f=>{if(f.crack)f.dead=1})},slow(k){TST=k;if(k===1&&!S.fx.length)TS=1},mix,hex,rnd,
   mount(el){(el||document.body).appendChild(cv);fit()},clear(){S.fx=[];TS=TST=1;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);cv.classList.remove('on')},
   size(){fit();return{W,H}},
   // 화면 요소 → 캔버스 좌표 (줌 보정)
