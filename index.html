@@ -8367,9 +8367,9 @@ const TJ=(()=>{
  function WD(s,B,n,K){const sc=V(s,'sc')||1,e=EW(s);if(e&&e.length===n)return e.map(v=>Math.hypot(v[0]*B.w,v[1]*B.h)*K*sc);return widths(s,n).map(w=>w*B.h*.024*K*sc)}
  function ribbon(g,P,Wd,k){if(P.length<2)return false;g.beginPath();const L=[],R=[],n=P.length;for(let i=0;i<n;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(n-1,i+1)];let nx=-(b[1]-a[1]),ny=b[0]-a[0];if(P[i].length>5&&(P[i][4]||P[i][5])){nx=P[i][4];ny=P[i][5]}const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l;const w=Wd[i]*P[i][2]*k;L.push([P[i][0]+nx*w,P[i][1]+ny*w]);R.push([P[i][0]-nx*w,P[i][1]-ny*w])}
   L.forEach((p,j)=>j?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));for(let j=R.length-1;j>=0;j--)g.lineTo(R[j][0],R[j][1]);g.closePath();return true}
- function cut(P,Wd,a,b){const n=P.length,at=x=>{const i=Math.min(n-2,Math.max(0,Math.floor(x))),f=x-i;return[P[i].map((v,d)=>v+(P[i+1][d]-v)*f),Wd[i]+(Wd[i+1]-Wd[i])*f]};
+ function cut(P,Wd,a,b,sq){const n=P.length,at=x=>{const i=Math.min(n-2,Math.max(0,Math.floor(x))),f=x-i;return[P[i].map((v,d)=>v+(P[i+1][d]-v)*f),Wd[i]+(Wd[i+1]-Wd[i])*f]};
   const Q=[],QW=[];const[pa,wa]=at(a);Q.push(pa);QW.push(wa);for(let i=Math.ceil(a+1e-6);i<b;i++){Q.push(P[i]);QW.push(Wd[i])}const[pb,wb]=at(b);Q.push(pb);QW.push(wb);
-  const m=QW.length;for(let i=0;i<m;i++){const e=Math.min(i,m-1-i);if(e<2)QW[i]*=.35+.325*e}return[Q,QW]}
+  if(!sq){const m=QW.length;for(let i=0;i<m;i++){const e=Math.min(i,m-1-i);if(e<2)QW[i]*=.35+.325*e}}return[Q,QW]}   // 끝을 살짝 좁힘 — 네모 끝·면(종이)은 그대로 직각
  // ---- §142 질감: 선마다 붓 고르기 (12종) + 흩날림 파티클
  const TXN={blade:'빛날 (기본)',ink:'먹',oil:'유화',fire:'불꽃',bolt:'번개',ice:'얼음 결정',blood:'피·물감',smoke:'연기·그림자',chalk:'분필·모래',neon:'네온',thorn:'가시',star:'별빛'};
  const HN=(i,k,sd)=>{const x=Math.sin(i*12.9898+k*78.233+sd*.1373)*43758.5453;return x-Math.floor(x)};
@@ -8501,20 +8501,20 @@ const TJ=(()=>{
  // 블레이드(기본) 질감
  // §163 빛날 질감: 윤곽선 진하기(ol) · 가장자리 번짐(sf). 번짐이 0이면 예전처럼 색 단계가 또렷, 클수록 심지에서 가장자리로 색·투명도가 단계 없이 이어짐
  TX.blade=(g,Q,QW,col,A,t,sd,o)=>{const gl=o.gl??1,ol=Math.max(0,Math.min(1,o.ol??1)),sf=Math.max(0,Math.min(1,o.sf??0)),zs=Q.map(p=>p[3]||0),zmin=Math.min(...zs),zmax=Math.max(...zs);
-  g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,.5*gl)*A;g.fillStyle=col;g.shadowColor=col;g.shadowBlur=22*gl;if(ribbon(g,Q,QW,1.5+.4*gl))g.fill();g.restore();
-  g.save();if(ol>0){g.globalAlpha=A*ol*(1-.5*sf);g.fillStyle=MIX(col,'#000000',.5);if(ribbon(g,Q,QW,1.1))g.fill()}
+  g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,.5*gl)*A;g.fillStyle=col;g.shadowColor=col;g.shadowBlur=(o.face?12:22)*gl;if(ribbon(g,Q,QW,o.face?1.04:1.5+.4*gl))g.fill();g.restore();
+  g.save();if(ol>0&&!o.face){g.globalAlpha=A*ol*(1-.5*sf);g.fillStyle=MIX(col,'#000000',.5);if(ribbon(g,Q,QW,1.1))g.fill()}
   const depth=()=>{if(zmax-zmin>1)for(let i=0;i<Q.length-1;i++){const zt=(zs[i]-zmin)/(zmax-zmin);if(zt>.55){g.globalAlpha=(zt-.55)*1.4*A*(1-.6*sf);g.fillStyle='#000000';if(ribbon(g,Q.slice(i,i+2),QW.slice(i,i+2),.95))g.fill()}}};
   if(sf<=.01){g.globalAlpha=A;g.fillStyle=col;if(ribbon(g,Q,QW,.9))g.fill();depth();g.globalAlpha=A;
    g.fillStyle=MIX(col,'#ffffff',.6);if(ribbon(g,Q,QW,.55))g.fill();g.fillStyle='#ffffff';if(ribbon(g,Q,QW,.24))g.fill()}
-  else{const N=9,k0=.9+.25*sf,k1=.24;for(let i=0;i<N;i++){const u=i/(N-1),k=k0+(k1-k0)*u,wm=Math.min(1,Math.max(0,(u-.25)/.75));
+  else{const N=9,k0=o.face?1:.9+.25*sf,k1=.24;for(let i=0;i<N;i++){const u=i/(N-1),k=k0+(k1-k0)*u,wm=Math.min(1,Math.max(0,(u-.25)/.75));
     g.globalAlpha=A*Math.min(1,(1-sf)+sf*(.16+.5*u*u*2.2));g.fillStyle=MIX(col,'#ffffff',Math.pow(wm,1.3));if(ribbon(g,Q,QW,k))g.fill();if(i===0)depth()}}
   g.restore()};
- function rib(g,s,Q,QW,col,A,t,sd,o){const tx=V(s,'tx'),gl=V(s,'gl');(TX[tx]||TX.blade)(g,Q,QW,col,A,t,sd,{...o,gl,ol:V(s,'ol'),sf:V(s,'sf')});
+ function rib(g,s,Q,QW,col,A,t,sd,o){const tx=V(s,'tx'),gl=V(s,'gl');(TX[tx]||TX.blade)(g,Q,QW,col,A,t,sd,{...o,gl,ol:V(s,'ol'),sf:V(s,'sf'),face:!!s.ew});
   if(tx!=='blade'&&gl>1.05){g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,(gl-1)*.35)*A;g.fillStyle=col;g.shadowColor=col;g.shadowBlur=22*gl;ribbon(g,Q,QW,1.4)&&g.fill();g.restore()}}
  function fullGeo(s,B,t){const P=geom(s,B,t||0),n=P.length,Wd=WD(s,B,n,1);return{Q:P,QW:Wd}}
  function drawSlash(g,s,B,head,tail,col,o={}){let A=Math.min(1,o.a??1),K=o.wk??1;const md=V(s,'mode');if(md==='cuts'||A<=.01||head-tail<.004||!s.pts||s.pts.length<2)return null;if(md==='both'){A*=.35;K*=.5}
   if(V(s,'rla'))s={...s,rl:V(s,'rl')+V(s,'rla')*Math.max(0,Math.min(1,head))};   // §164 휘두르는 동안 면이 돌아감
-  const P=geom(s,B,o.t||0),n=P.length,Wd=WD(s,B,n,K),[Q,QW]=cut(P,Wd,tail*(n-1),head*(n-1));
+  const P=geom(s,B,o.t||0),n=P.length,Wd=WD(s,B,n,K),[Q,QW]=cut(P,Wd,tail*(n-1),head*(n-1),!!EW(s)||V(s,'cap')==='sq');
   const shade=q=>{if(q[0].length<=6)return[col,A];const fz=q.reduce((a,p)=>a+(p[6]||0),0)/q.length,back=fz<0;return[MIX(col,'#000000',back?.5:(1-Math.min(1,Math.abs(fz)))*.32),back?A*.8:A]};   // 뒷면은 어둡게, 비스듬한 면은 조금 어둡게
   // §164 몸 감싸기: 캐릭터 면(z=0)보다 뒤쪽 조각은 캐릭터 뒤 캔버스에, 앞쪽 조각은 캐릭터 앞 캔버스에. 미리보기(pv)에서는 뒤쪽을 옅게
   const sp=o.split,pv=o.pv,eps=B.h*.012;if((sp||pv)&&Q.length>2){let lo=1e9,hi=-1e9;for(const q of Q){const z=q[3]||0;if(z<lo)lo=z;if(z>hi)hi=z}
@@ -8739,7 +8739,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   for(let k=0;k<N;k++){const s=T*k/(N-1);let i=L.findIndex(v=>v>=s);if(i<=0)i=1;const f=(s-L[i-1])/((L[i]-L[i-1])||1),a=dense[i-1],b=dense[i];out.push([+(a[0]+(b[0]-a[0])*f).toFixed(4),+(a[1]+(b[1]-a[1])*f).toFixed(4)])}return out}
  const toPx=(p,B)=>TJ.toPx(p,B);const colOf=s=>/^#[0-9a-f]{6}$/i.test(V(s,'col'))?V(s,'col'):COL();
  const hint=()=>{ov.querySelector('#tjHint').textContent=mode==='pt'?(pts?`점 ${pts.length}개 · 계속 찍거나 Enter·더블클릭으로 완성 · 오른쪽 클릭 = 마지막 점 빼기 · Esc 취소`:'그림 위를 눌러 점을 찍어요. 찍은 점들이 부드럽게 이어져요'):
-  `${tab==='clash'?'합: 무기가 "부딪히는 점"으로 들어가게 · 순서 번호 하나 = 챙! 한 번':tab==='lock'?'버팀(동점): "맞물리는 점"에서 칼을 맞대고 버티는 동안 나와요 · 처음부터 순서대로':'적중: 상대의 "맞는 자리"를 지나가게'} 그어요 · 고른 선: 동그란 점 = 모양, 하늘색 마름모 = 그 자리 폭, 몸통(또는 Shift+끌기) = 통째로 옮기기 · 면: 네모 = 가장자리 점(끌면 그쪽 폭·휨), 하늘색 동그라미 = 양쪽 함께 옮기기`;ov.querySelector('#tjDone').hidden=!(mode==='pt'&&pts)};
+  `${tab==='clash'?'합: 무기가 "부딪히는 점"으로 들어가게 · 순서 번호 하나 = 챙! 한 번':tab==='lock'?'버팀(동점): "맞물리는 점"에서 칼을 맞대고 버티는 동안 나와요 · 처음부터 순서대로':'적중: 상대의 "맞는 자리"를 지나가게'} 그어요 · 고른 선: 동그란 점 = 모양, 하늘색 마름모 = 그 자리 폭, 몸통(또는 Shift+끌기) = 통째로 옮기기 · 면: 그은 선이 가운데 줄(하늘색 점선) · 하늘색 동그라미 = 가운데 줄 고치기(폭 유지) · 네모 = 그쪽 가장자리만`;ov.querySelector('#tjDone').hidden=!(mode==='pt'&&pts)};
  let spin=null;
  function draw(now){if(!ov)return;let SP=0;if(spin){const a=(performance.now()-spin.t0)/3200;if(a>=1)spin=null;else SP=Math.max(1e-4,a)}const it=im(),B=box(),S=it?S_():[];g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,W,H);
   if(anim){now=now||performance.now();const dt=Math.min(50,now-anim.last);anim.last=now;PV.step(dt)}
@@ -8752,6 +8752,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    const p0=s.rev?s.pts[s.pts.length-1]:s.pts[0],Q0=SP?null:scrPts(s)[0],[x,y]=Q0?[Q0[0],Q0[1]]:toPx(p0,B);g.fillStyle='#000';g.fillRect(x-9,y-9,18,18);g.fillStyle='#fff';g.font='12px sans-serif';g.textAlign='center';g.fillText(V(s,'ord'),x,y+4);
    if(i===selS&&!SP&&!anim){g.strokeStyle='#000';g.lineWidth=2;
     if(faceOf(s)){const Hd=fHandles(s),G=sides(s);if(G){g.save();g.setLineDash([5,4]);g.strokeStyle='rgba(255,243,196,.55)';g.lineWidth=1.2;g.beginPath();G.T.forEach((q,j)=>j?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));for(let j=G.n-1;j>=0;j--)g.lineTo(G.B[j][0],G.B[j][1]);g.closePath();g.stroke();g.restore()}
+     if(G){g.save();g.setLineDash([3,5]);g.strokeStyle='rgba(127,214,255,.8)';g.lineWidth=1.5;g.beginPath();G.Q.forEach((q,j)=>j?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.stroke();g.restore()}
      if(Hd){g.strokeStyle='#000';g.lineWidth=2;Hd.M.forEach((q,k)=>{g.save();g.strokeStyle='rgba(127,214,255,.4)';g.lineWidth=1;g.beginPath();g.moveTo(Hd.T[k][0],Hd.T[k][1]);g.lineTo(Hd.B[k][0],Hd.B[k][1]);g.stroke();g.restore();g.fillStyle='#7fd6ff';g.beginPath();g.arc(q[0],q[1],6,0,7);g.fill();g.stroke()});
       [...Hd.T,...Hd.B].forEach(q=>{g.fillStyle='#e0a530';g.fillRect(q[0]-6,q[1]-6,12,12);g.strokeRect(q[0]-6,q[1]-6,12,12)})}}
     else{hPos(s).forEach(([px,py])=>{g.fillStyle=s.ctrl?'#e0a530':'#fff3c4';g.beginPath();g.arc(px,py,7,0,7);g.fill();g.stroke()});
@@ -8799,14 +8800,23 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   for(let k=0;k<m;k++){const i=Math.round(k*(n-1)/(m-1)),c=G.Q[i],w=hw(i)||1,want=Math.max(w,wmax*.3),f=want/w;T.push(un([c[0]+(G.T[i][0]-c[0])*f,c[1]+(G.T[i][1]-c[1])*f]));Bm.push(un([c[0]+(G.B[i][0]-c[0])*f,c[1]+(G.B[i][1]-c[1])*f]))}   // 끝이 뾰족해 두 점이 겹치지 않게, 끝 폭은 가장 넓은 곳의 30% 이상
   s.face={T,B:Bm};s.cap='sq';regenFace(s)};
  const toLine=s=>{delete s.face;delete s.quad;delete s.ew};
- const FACE={get on(){try{return localStorage.getItem('limbus-tj-face')!=='0'}catch{return true}},set on(v){try{localStorage.setItem('limbus-tj-face',v?'1':'0')}catch{}}};
+ // §169 그은 선 = 가운데 줄. 그 선을 따라 폭이 일정하고 양 끝이 직각으로 잘린 띠(휘어진 직사각형)를 만든다. 점 수는 굴곡에 맞춰 3~12쌍
+ const bandFromPath=(s,P)=>{const Bx=boxFor(s),px=P.map(q=>toPx(q,Bx)),n=px.length;if(n<2)return false;const un=q=>{let u=(q[0]-Bx.x)/Bx.w;if(Bx.flip)u=1-u;return[+u.toFixed(4),+((q[1]-Bx.y)/Bx.h).toFixed(4)]},hw=Math.max(3,FACE.w*Bx.h/2);
+  let turn=0;for(let i=1;i<n-1;i++){const a=Math.atan2(px[i][1]-px[i-1][1],px[i][0]-px[i-1][0]),b=Math.atan2(px[i+1][1]-px[i][1],px[i+1][0]-px[i][0]);let d=Math.abs(b-a);if(d>Math.PI)d=2*Math.PI-d;turn+=d}
+  const m=Math.max(3,Math.min(12,Math.round(turn/(Math.PI/7))+3)),L=[0];for(let i=1;i<n;i++)L.push(L[i-1]+Math.hypot(px[i][0]-px[i-1][0],px[i][1]-px[i-1][1]));const tot=L[n-1]||1,T=[],Bm=[];
+  for(let k=0;k<m;k++){const d=tot*k/(m-1);let i=L.findIndex(v=>v>=d);if(i<0)i=n-1;const j=Math.max(1,i),f=(d-L[j-1])/((L[j]-L[j-1])||1),c=[px[j-1][0]+(px[j][0]-px[j-1][0])*f,px[j-1][1]+(px[j][1]-px[j-1][1])*f],a=px[Math.max(0,j-2)],b=px[Math.min(n-1,j+1)];let nx=-(b[1]-a[1]),ny=b[0]-a[0];
+   if(k===0){nx=-(px[1][1]-px[0][1]);ny=px[1][0]-px[0][0]}else if(k===m-1){nx=-(px[n-1][1]-px[n-2][1]);ny=px[n-1][0]-px[n-2][0]}const l=Math.hypot(nx,ny)||1;T.push(un([c[0]+nx/l*hw,c[1]+ny/l*hw]));Bm.push(un([c[0]-nx/l*hw,c[1]-ny/l*hw]))}
+  s.face={T,B:Bm};s.cap='sq';regenFace(s);return true};
+ const faceW=s=>{const f=faceOf(s);if(!f)return 0;const Bx=boxFor(s);let a=0;f.T.forEach((t,k)=>{a+=Math.hypot((t[0]-f.B[k][0])*Bx.w,(t[1]-f.B[k][1])*Bx.h)});return a/f.T.length/Bx.h};   // 평균 폭(캐릭터 키 대비)
+ const faceScaleW=(s,to)=>{const f=faceOf(s),cur=faceW(s);if(!f||cur<=0)return;const k=to/cur;f.T.forEach((t,i)=>{const b=f.B[i],mx=(t[0]+b[0])/2,my=(t[1]+b[1])/2;f.T[i]=[+(mx+(t[0]-mx)*k).toFixed(4),+(my+(t[1]-my)*k).toFixed(4)];f.B[i]=[+(mx+(b[0]-mx)*k).toFixed(4),+(my+(b[1]-my)*k).toFixed(4)]});regenFace(s)};
+ const FACE={get on(){try{return localStorage.getItem('limbus-tj-face')!=='0'}catch{return true}},set on(v){try{localStorage.setItem('limbus-tj-face',v?'1':'0')}catch{}},get w(){try{const v=+localStorage.getItem('limbus-tj-facew');return v>=.03&&v<=.4?v:.12}catch{return .12}},set w(v){try{localStorage.setItem('limbus-tj-facew',String(v))}catch{}}};
  const wpInit=s=>{if(!s.ctrl)s.ctrl=autoCtrl(s);const n=s.pts.length,P=s.pts;s.wpu=s.ctrl.map(c=>{let bi=0,bd=1e9;P.forEach((q,i)=>{const d=(q[0]-c[0])**2+(q[1]-c[1])**2;if(d<bd){bd=d;bi=i}});return+(bi/(n-1)).toFixed(3)});if(!s.wp||s.wp.length!==s.ctrl.length)s.wp=s.ctrl.map(()=>1)};
  const grabAt=(e)=>{const s=S_()[selS];if(!s||!s.pts||s.pts.length<2)return null;const[mx,my,kk]=mxy(e),near=q=>q&&Math.hypot(q[0]-mx,q[1]-my)<13*kk;
   if(faceOf(s)){const H=fHandles(s);if(H){for(const side of['T','B','M']){const k=H[side].findIndex(near);if(k>=0)return{s,fs:side,fk:k}}}
    return e.shiftKey||(()=>{const G=sides(s);if(!G)return false;for(let i=0;i<G.n;i++){const a=G.T[i],b=G.B[i],dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((mx-a[0])*dx+(my-a[1])*dy)/l));if(Math.hypot(mx-a[0]-dx*t,my-a[1]-dy*t)<8*kk)return true}return false})()?{s,mv:1}:null}
   {const WH=wHandles(s),wk=WH.findIndex(h=>Math.hypot(h.p[0]-mx,h.p[1]-my)<10*kk);if(wk>=0)return{s,wk,c:WH[wk].c,d0:Math.max(3,Math.hypot(mx-WH[wk].c[0],my-WH[wk].c[1]))}}const k=hPos(s).findIndex(near);if(k>=0)return{s,k};
   const wpx=Math.max(14,TJ.V(s,'w')*boxFor(s).h*.024*1.2);return e.shiftKey||lineDist(s,mx,my)<wpx*kk?{s,mv:1}:null};
- function addStroke(P,sp,ctrl,extra={}){const S=S_(),st={pts:P,sp,ctrl,...DEF,...extra,ord:(S.length?Math.max(...S.map(s=>V(s,'ord')))+1:1)};S.push(st);selS=S.length-1;if(FACE.on){try{toFace(st,ctrl?Math.max(3,Math.min(7,ctrl.length)):5)}catch(e){console.error(e)}}save();ui()}
+ function addStroke(P,sp,ctrl,extra={}){const S=S_(),st={pts:P,sp,ctrl,...DEF,...extra,ord:(S.length?Math.max(...S.map(s=>V(s,'ord')))+1:1)};S.push(st);selS=S.length-1;if(FACE.on){try{bandFromPath(st,P)}catch(e){console.error(e)}}save();ui()}
  function finishPts(){if(!pts)return;if(pts.length>=2){const P=smooth(pts);addStroke(P,P.map(()=>1),pts.map(p=>p.slice()))}pts=null;hint();draw()}
  const rng=(s,f,lab,min,max,step,u='')=>`<label><span>${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" value="${V(s,f)}" data-tf="${f}"><small class="v" data-u="${u}">${V(s,f)}${u}</small></label>`;
  const sel=(s,f,lab,O)=>`<label><span>${lab}</span><select data-tf="${f}">${Object.entries(O).map(([k,v])=>`<option value="${k}" ${V(s,f)===k?'selected':''}>${v}</option>`).join('')}</select></label>`;
@@ -8826,8 +8836,8 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    <details open><summary>🌫 사라짐·꼬리</summary>
     ${rng(s,'fo','사라지는 시간',40,1500,10,'ms')}${sel(s,'fm','사라지는 방식',FMN)}${rng(s,'tl','꼬리 길이',.1,1,.05)}${rng(s,'ec','잔상 개수',0,5,1,'개')}${rng(s,'eg','잔상 간격',15,150,5,'ms')}
     <label><span>방향</span><input type="checkbox" data-tf="rev" ${V(s,'rev')?'checked':''}> 거꾸로 긋기</label></details>
-   <details><summary>✒ 모양·빛</summary><div class="row" style="gap:6px;margin:2px 0 6px">${faceOf(s)?`<button class="btn sm" data-toline>선 모드로 (가장자리 점 없애기)</button><button class="btn sm" data-fpt="-1" ${s.face.T.length<=3?'disabled':''}>점 줄이기</button><button class="btn sm" data-fpt="1" ${s.face.T.length>=7?'disabled':''}>점 늘리기</button>`:'<button class="btn sm" data-toface title="지금 선 모양 그대로, 양쪽 가장자리에 점이 생겨요">▭ 면 모드로 바꾸기</button>'}${!faceOf(s)&&s.wp?'<button class="btn sm" data-wpreset>자리별 폭 처음대로</button>':''}</div>
-   ${rng(s,'sc','전체 크기',.3,3,.05,'배')}${faceOf(s)?'':`${rng(s,'w','폭',.3,3,.1)}${rng(s,'w0','시작 폭',.2,2.5,.1,'배')}${rng(s,'w1','끝 폭',.2,2.5,.1,'배')}<label><span>끝 모양</span><select data-cap>${[['pt','뾰족하게'],['round','둥글게'],['sq','네모 (잘린 종이)']].map(([k,n])=>`<option value="${k}" ${V(s,'cap')===k?'selected':''}>${n}</option>`).join('')}</select></label>`}${rng(s,'wob','흔들림',0,4,.1)}${rng(s,'gl','빛 세기',0,2.5,.1)}${rng(s,'ol','윤곽선 진하기 (빛날 질감)',0,1,.05)}${rng(s,'sf','가장자리 번짐 (빛날 질감)',0,1,.05)}
+   <details><summary>✒ 모양·빛</summary><div class="row" style="gap:6px;margin:2px 0 6px">${faceOf(s)?`<button class="btn sm" data-toline>선 모드로 (가장자리 점 없애기)</button><button class="btn sm" data-fpt="-1" ${s.face.T.length<=3?'disabled':''}>점 줄이기</button><button class="btn sm" data-fpt="1" ${s.face.T.length>=12?'disabled':''}>점 늘리기</button>`:'<button class="btn sm" data-toface title="지금 선 모양 그대로, 양쪽 가장자리에 점이 생겨요">▭ 면 모드로 바꾸기</button>'}${!faceOf(s)&&s.wp?'<button class="btn sm" data-wpreset>자리별 폭 처음대로</button>':''}</div>
+   ${rng(s,'sc','전체 크기',.3,3,.05,'배')}${faceOf(s)?`<label><span>전체 폭 (가운데 줄 기준)</span><input type="range" min=".02" max=".6" step=".01" value="${faceW(s).toFixed(2)}" data-fw><small class="v">${Math.round(faceW(s)*100)}%</small></label>`:`${rng(s,'w','폭',.3,3,.1)}${rng(s,'w0','시작 폭',.2,2.5,.1,'배')}${rng(s,'w1','끝 폭',.2,2.5,.1,'배')}<label><span>끝 모양</span><select data-cap>${[['pt','뾰족하게'],['round','둥글게'],['sq','네모 (잘린 종이)']].map(([k,n])=>`<option value="${k}" ${V(s,'cap')===k?'selected':''}>${n}</option>`).join('')}</select></label>`}${rng(s,'wob','흔들림',0,4,.1)}${rng(s,'gl','빛 세기',0,2.5,.1)}${rng(s,'ol','윤곽선 진하기 (빛날 질감)',0,1,.05)}${rng(s,'sf','가장자리 번짐 (빛날 질감)',0,1,.05)}
     <label><span>색</span><input type="color" data-tf="col" value="${V(s,'col')||COL()}"><button class="btn sm" data-reset>죄악색 따름</button>${V(s,'col')?'':'<small class="muted">(따르는 중)</small>'}</label></details>
    <details><summary>💥 다 그었을 때</summary>${sel(s,'snd','끝 소리',SNDN)}${rng(s,'st','멈춤(히트스톱)',0,300,10,'ms')}${rng(s,'sk','화면 흔들림',0,30,1)}${rng(s,'fl','번쩍임',0,1,.05)}${rng(s,'spk','불꽃 튐',0,40,1,'개')}</details>
    <details><summary>🧊 입체(2.5D)</summary>${rng(s,'rx','눕히기',-80,80,1,'°')}${rng(s,'ry','기울이기',-80,80,1,'°')}${rng(s,'rz','비틀기',-90,90,1,'°')}${rng(s,'rl','면 돌리기 (0 = 정면 · 90 = 칼날처럼 얇게)',-90,90,1,'°')}${rng(s,'rla','휘두르며 면 돌기 (그어지는 동안 더 도는 각도)',-180,180,5,'°')}${rng(s,'dz','깊이 휨 (+ 가운데가 앞으로 · − 뒤로)',-1,1,.05)}<button class="btn sm" data-spin>↻ 돌려 보기</button><p class="small muted">선은 종이처럼 납작한 띠예요. 눕히거나 기울이면 그 각도만큼 얇아져요.</p></details>
@@ -8860,6 +8870,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    e.querySelector('[data-cap]')?.addEventListener('change',ev=>{s.cap=ev.target.value;save();draw()});
    e.querySelector('[data-toface]')?.addEventListener('click',()=>{toFace(s);save();ui()});
    e.querySelector('[data-toline]')?.addEventListener('click',()=>{toLine(s);save();ui()});
+   {const fw=e.querySelector('[data-fw]');if(fw)fw.oninput=()=>{faceScaleW(s,+fw.value);fw.nextElementSibling.textContent=Math.round(fw.value*100)+'%';save();draw()}}
    e.querySelectorAll('[data-fpt]').forEach(b=>b.onclick=()=>{const m=s.face.T.length+(+b.dataset.fpt),f=s.face,N=32,T=smooth(f.T,N),Bm=smooth(f.B,N),pick=L=>Array.from({length:m},(_,k)=>L[Math.round(k*(L.length-1)/(m-1))].map(v=>+(+v).toFixed(4)));s.face={T:pick(T),B:pick(Bm)};regenFace(s);save();ui()});
    e.querySelector('[data-wpreset]')?.addEventListener('click',()=>{delete s.wp;delete s.wpu;save();ui()});
    e.querySelector('[data-anc]').onchange=ev=>{const to=ev.target.value;if(V(s,'anc')===to)return;const A0=boxFor(s);s.anc=to;const B1=boxFor(s);
@@ -8892,7 +8903,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   <div class="tj-l"><b>그림 <small class="muted">합마다 무작위</small></b><div id="tjList"></div><button class="btn sm" data-add="atk">＋ 공격 <span class="tj-xd">그림</span></button><button class="btn sm" data-add="grd">＋ 방어 <span class="tj-xd">그림</span></button><button class="btn sm tj-od" id="tjDefName">이름 바꾸기</button><button class="btn sm danger tj-od" id="tjDefReset">기본 궤적 전부 처음대로</button><button class="btn sm tj-xd" id="tjFromDef" title="기본 궤적의 선을 지금 그림의 이 탭으로 복사해 와서 고쳐 쓰기">기본 궤적 가져오기</button>
    <p class="small muted">공격 그림은 내가 칠 때, 방어 그림은 막을 때 나와요. 같은 종류가 여러 장이면 합마다 무작위(바로 전 그림은 피함). 「쓸 스킬」로 그림을 스킬에 묶으면 그 스킬일 때 그 그림들만 나와요.</p></div>
   <div class="tj-c"><div class="tj-tabs"><button data-tab="clash" class="on" id="tjClashLbl">합 궤적</button><button data-tab="lock" id="tjLockLbl">버팀 궤적</button><button data-tab="hit" id="tjHitLbl">적중 궤적</button>
-    <span class="tj-mode"><button data-m="free" class="on">✎ 자유 그리기</button><button data-m="pt">• 점 찍어 잇기</button></span><label class="tj-facechk" title="켜면 긋는 선을 따라 종이(면)가 만들어지고, 양쪽 가장자리 점으로 머리·꼬리·중간 폭과 휨을 고칠 수 있어요"><input type="checkbox" id="tjPaper"> ▭ 그은 선대로 면 만들기</label></div>
+    <span class="tj-mode"><button data-m="free" class="on">✎ 자유 그리기</button><button data-m="pt">• 점 찍어 잇기</button></span><label class="tj-facechk" title="켜면 긋는 선을 따라 종이(면)가 만들어지고, 양쪽 가장자리 점으로 머리·꼬리·중간 폭과 휨을 고칠 수 있어요"><input type="checkbox" id="tjPaper"> ▭ 그은 선대로 면 만들기</label><label class="tj-facechk" title="새로 긋는 면의 폭 (캐릭터 키 대비)">폭 <input type="range" id="tjFaceW" min=".03" max=".4" step=".01" style="width:90px"><small id="tjFaceWv"></small></label></div>
    <div id="tjHint" class="small muted"></div><canvas id="tjCv" width="${W}" height="${H}"></canvas>
    <div class="row tj-row"><button class="btn sm pri" id="tjPlay">▶ 전체 미리보기</button><button class="btn sm" id="tjPlay1">▶ 고른 선만</button>
     <label>보기 속도 <select id="tjSlow"><option value="1">1배</option><option value=".5">0.5배</option><option value=".25">0.25배</option><option value=".1">0.1배</option></select></label><label><input type="checkbox" id="tjLoop"> 반복</label>
@@ -8938,6 +8949,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   tl.onclick=e=>{const r=tl.getBoundingClientRect(),y=(e.clientY-r.top)*tl.height/r.height-TLm.fy,i=Math.floor((y-4)/16);if(y<0)return;if(i>=0&&i<S_().length){selS=i;ui()}};
   ov.querySelectorAll('.tj-tabs [data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selS=-1;pts=null;anim=null;ui()});
   ov.querySelectorAll('.tj-mode [data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;pts=null;ui()});
+  {const r=ov.querySelector('#tjFaceW'),v=ov.querySelector('#tjFaceWv');r.value=FACE.w;v.textContent=Math.round(FACE.w*100)+'%';r.oninput=()=>{FACE.w=+r.value;v.textContent=Math.round(r.value*100)+'%'}}
   {const c=ov.querySelector('#tjPaper');c.checked=FACE.on;c.onchange=()=>{FACE.on=c.checked;toast(c.checked?'이제 긋는 선을 따라 면(종이)이 만들어져요':'이제 긋는 선은 선 모드로 만들어져요')}}
   ov.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{if(isDef()){const k=b.dataset.add,wk=im()?.wk||'S';D.push({kind:k,wk:k==='reso'?'':wk,name:'새 기본 궤적',def:1,strokes:{clash:[],hit:[],lock:[]}});cur=D.length-1;selS=-1;vf=null;anim=null;save();ui();return}const R=await TJF.load(12);if(!R)return;const it={img:R[0],kind:b.dataset.add,wk:'',strokes:{clash:[],hit:[]}};if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}D.push(it);cur=D.length-1;selS=-1;vf=null;anim=null;save();ui()});
   $o('#tjRe').onclick=async()=>{const it=im();if(!it)return;const R=await TJF.load(12);if(!R)return;if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}else{it.img=R[0];delete it.frames;delete it.hf}it.ft={};vf=null;save();ui()};
