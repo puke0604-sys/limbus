@@ -1885,7 +1885,7 @@ function btPlace(k,x,y){const B=BT(),ctx=btCtx(B),me=ctx.units.find(u=>u.k===k);
 const occupied=(x,y)=>units().some(u=>+u.x===x&&+u.y===y);
 function freeCell(side){const w=btW(),h=btH(),W=BT().walls||{},xs=[...Array(w).keys()];if(side==='foe')xs.reverse();
  for(const x of xs)for(let y=0;y<h;y++)if(!W[wkey(x,y)]&&!occupied(x,y))return{x,y};return null}
-function btAddUnit(u){const c=freeCell(u.side);if(!c)return toast('빈 칸이 없어요',1);const k=Store.push(`${BTP}/units`,{...u,...c,haste:0,bind:0});UI.bt.sel=k;
+function btAddUnit(u,cell){const c=cell&&!BT().walls?.[wkey(cell.x,cell.y)]&&!occupied(cell.x,cell.y)?{x:cell.x,y:cell.y}:freeCell(u.side);if(!c)return toast('빈 칸이 없어요',1);const k=Store.push(`${BTP}/units`,{...u,...c,haste:0,bind:0});UI.bt.sel=k;
  if(+BT().round&&+(BT().turn??-1)>=0)toast('진행 중인 라운드에는 다음 라운드부터 참가해요')}
 
 /* 화면 */
@@ -2053,7 +2053,10 @@ function unitPanel(u,M){const hp=hpOf(u),c=hpCalc(hp),own=!u.char,P=`${BTP}/unit
   <label class="f">충전 최대치 (0 = 제한 없음)<input type="number" min="0" max="99" data-c="btChMax" value="${+u.chargeMax||0}"></label>
   <div class="row"><button class="btn sm" data-a="btDmg">피해 적용</button><button class="btn sm" data-a="btHeal">회복 적용</button>${own?'<button class="btn sm" data-a="btImg">토큰 이미지</button>':''}${srcOf(u)?'<button class="btn sm" data-a="btSheet">시트 열기</button>':''}<button class="btn sm danger" data-a="btDel">맵에서 빼기</button></div>`:''}</div>`}
 function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boolean)),free=chars().filter(c=>!c.foe&&!placed.has(c.id)),foes=chars().filter(c=>c.foe),m=UI.bt.mode;
+ const nDown=units().filter(isDown).length,nFoe=units().filter(u=>u.side==='foe').length;
  return`<div class="bt-h">마스터 도구</div><div class="plate bt-gm">
+ <div class="bt-quick"><b>빠른 도구</b><div class="row"><button class="btn sm" data-a="qAllIn" ${free.filter(c=>kindOf(c)==='pc').length?'':'disabled'} title="아직 맵에 없는 플레이어 캐릭터를 모두 배치">아군 전원 배치</button><button class="btn sm" data-a="qHealAll" title="맵 위 모든 캐릭터의 체력을 가득 채우고 쓰러진 캐릭터를 일으킴">전원 회복·살리기${nDown?` (쓰러짐 ${nDown})`:''}</button><button class="btn sm" data-a="qSweep" ${units().some(u=>u.side==='foe'&&isDown(u))?'':'disabled'} title="쓰러진 적만 맵에서 뺌">쓰러진 적 치우기</button><button class="btn sm danger" data-a="qFoeOut" ${nFoe?'':'disabled'}>적 전부 빼기</button><button class="btn sm" data-a="qFresh" title="라운드·순서·키워드를 지우고 모두 회복 — 배치는 그대로">새 전투 준비</button></div>
+ <p class="small muted">판 위에서 <b>오른쪽 클릭</b>: 캐릭터 = 살리기·회복·빼기·복제·시트 / 빈 칸 = 그 자리에 배치</p></div>
  <div class="f2"><label class="f">가로 칸<input type="number" min="4" max="40" data-c="btSize" data-k="w" value="${btW()}"></label><label class="f">세로 칸<input type="number" min="4" max="30" data-c="btSize" data-k="h" value="${btH()}"></label></div>
  <div class="row"><button class="btn sm ${m==='wall'?'on':''}" data-a="btMode" data-v="wall" aria-pressed="${m==='wall'}">벽 칠하기</button><button class="btn sm ${m==='free'?'on':''}" data-a="btMode" data-v="free" aria-pressed="${m==='free'}">자유 배치</button>${m==='free'?`<label class="row small"><input type="checkbox" data-c="btGmDmg" ${UI.bt.gmDmg?'checked':''}> 이탈 피해 적용</label>`:''}</div>
  <p class="small muted bt-hint">${m==='wall'?'칸을 누르거나 끌어서 벽을 칠하고 지웁니다.':m==='free'?'토큰을 고른 뒤 빈 칸을 누르면 이동력 없이 옮깁니다 (GM 수동 이동).':'현재 턴 캐릭터를 고르면 갈 수 있는 칸이 표시됩니다.'}</p>
@@ -2063,7 +2066,39 @@ function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boole
  <div class="row"><button class="btn sm" data-a="btAdd" data-v="foe">이름만 있는 적</button><button class="btn sm" data-a="btAdd" data-v="pc">아군 NPC 추가</button></div>
  <div class="row"><button class="btn sm" data-a="battleBg">배경 이미지</button>${B.bg?'<button class="btn sm danger" data-a="battleBgDel">배경 지우기</button>':''}<button class="btn sm danger" data-a="btReset">전투 종료·초기화</button><button class="btn sm danger" data-a="btWallClear">벽 전부 지우기</button></div>${zones().length?`<div class="bt-h">바닥 효과</div>${zones().map(z=>`<div class="row small"><span style="flex:1">${esc(z.name)} · ${(z.cells||[]).length}칸 · ${esc(zoneText(z))}</span><button class="btn sm danger" data-a="zoneDel" data-v="${esc(z.id)}">지우기</button></div>`).join('')}`:''}</div>`}
 
+// §166 GM 편의: 판 위 오른쪽 클릭 메뉴 · 빠른 도구
+function unitRemove(k){const u=unitRaw(k);if(!u)return;const B=BT(),o=[...(B.order||[])],i=o.indexOf(k);
+ if(i>=0){o.splice(i,1);Store.set(`${BTP}/order`,o,true);if(i<=+(B.turn??-1))Store.set(`${BTP}/turn`,+B.turn-1,true)}
+ if(ATK()&&(ATK().by===k||ATK().to===k))Store.set(`${BTP}/atk`,null,true);Store.set(`${BTP}/units/${k}`,null);if(UI.bt.sel===k)UI.bt.sel='';if(B.cur?.k===k){Store.set(`${BTP}/cur`,null,true);btNextTurn()}}
+function unitRevive(k){const u=unitRaw(k);if(!u)return;let h=healHp(hpOf({...u,k}));if(hpCalc(h).left<=0)h=healHp(h,true);Store.set(hpPathOf(k),h);document.querySelectorAll(`#btBoard .bt-unit[data-v="${CSS.escape(k)}"]`).forEach(t=>t.classList.remove('bt-fall','bt-wait','bt-down'))}
+function unitClone(k){const u=unitRaw(k);if(!u||u.char)return;const{x,y,...rest}=u,base=String(u.name||'적').replace(/\s*\d+$/,''),n=units().filter(z=>String(z.name||'').startsWith(base)).length+1;
+ let cell=null;for(const[dx,dy]of[[1,0],[0,1],[-1,0],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const cx=+x+dx,cy=+y+dy;if(cx>=0&&cy>=0&&cx<btW()&&cy<btH()&&!BT().walls?.[wkey(cx,cy)]&&!occupied(cx,cy)){cell={x:cx,y:cy};break}}
+ btAddUnit({...rest,name:`${base} ${n}`,hp:healHp(hpOf({...u,k})),kw:null,kwBy:null,st:null},cell)}
+const CTX={el:null,close(){this.el?.remove();this.el=null},
+ open(x,y,items){this.close();if(!items.length)return;const m=document.createElement('div');m.className='ctx-menu';m.innerHTML=items.map((it,i)=>it==='-'?'<hr>':it.h?`<div class="ctx-h">${esc(it.h)}</div>`:`<button data-i="${i}" class="${it.danger?'danger':''}">${esc(it.t)}</button>`).join('');
+  m.onclick=e=>{const b=e.target.closest('button');if(!b)return;const it=items[+b.dataset.i];this.close();try{it.f()}catch(err){console.error(err)}};document.body.append(m);const r=m.getBoundingClientRect();m.style.left=Math.max(4,Math.min(x,innerWidth-r.width-6))+'px';m.style.top=Math.max(4,Math.min(y,innerHeight-r.height-6))+'px';this.el=m}};
+(()=>{let dn=null;
+ document.addEventListener('pointerdown',e=>{if(CTX.el&&!e.target.closest?.('.ctx-menu'))CTX.close();dn=e.button===2&&e.target.closest?.('#btBoard')?{x:e.clientX,y:e.clientY}:null},true);
+ document.addEventListener('contextmenu',e=>{if(e.target.closest?.('#btBoard')&&typeof isGmLike==='function'&&isGmLike())e.preventDefault()});
+ document.addEventListener('pointerup',e=>{if(e.button!==2||!dn)return;const d=dn;dn=null;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)>6||!isGmLike())return;
+  const pick=document.elementsFromPoint(e.clientX,e.clientY),tok=pick.map(n=>n.closest?.('.bt-unit')).find(Boolean),cellEl=pick.find(n=>n.classList?.contains('bt-cell'));
+  if(tok){const k=tok.dataset.v,u=unitRaw(k);if(!u)return;const U={...u,k},down=isDown(U),nm=uName(U),inOrd=(BT().order||[]).includes(k);
+   CTX.open(e.clientX,e.clientY,[{h:nm},{t:down?'✚ 살리기 (체력 가득)':'✚ 체력 가득 회복',f(){unitRevive(k);gmLog(`${nm} ${down?'살림':'체력 회복'}`)}},
+    ...(srcOf(U)?[{t:'시트 열기',f(){UI.bt.sel=k;A.btSheet()}}]:[]),...(inOrd?[{t:'이 캐릭터 차례로',f(){UI.bt.sel=k;A.dbgTurn()}}]:[]),
+    ...(!u.char?[{t:'하나 더 (복제)',f(){unitClone(k)}}]:[]),{t:'옮기기 (자유 배치)',f(){UI.bt.sel=k;UI.bt.mode='free';paintBattle();toast('빈 칸을 누르면 그 자리로 옮겨요. 끝나면 마스터 도구에서 「자유 배치」를 꺼 주세요')}},'-',
+    {t:'맵에서 빼기',danger:1,f(){unitRemove(k);paintBattle();toast(`${nm} — 맵에서 뺐어요${u.char?' (시트는 그대로, 다시 배치할 수 있어요)':''}`)}}]);return}
+  if(cellEl){const x=+cellEl.dataset.x,y=+cellEl.dataset.y;if(BT().walls?.[wkey(x,y)])return CTX.open(e.clientX,e.clientY,[{h:`벽 (${x+1}, ${y+1})`},{t:'벽 지우기',f(){setWall(x,y,false)}}]);if(occupied(x,y))return;
+   const placed=new Set(units().map(u=>u.char).filter(Boolean)),free=chars().filter(c=>!c.foe&&!placed.has(c.id)),foes=chars().filter(c=>c.foe),it=[{h:`여기에 배치 (${x+1}, ${y+1})`}];
+   free.slice(0,12).forEach(c=>it.push({t:`아군 · ${c.info.name||'(이름 없음)'}`,f(){btAddUnit({side:'pc',char:c.id},{x,y});paintBattle()}}));if(free.length&&foes.length)it.push('-');
+   foes.slice(0,12).forEach(c=>it.push({t:`적 · ${c.info.name||'(이름 없음)'}`,f(){const n=units().filter(u=>u.tpl===c.id).length+1;btAddUnit({side:'foe',tpl:c.id,name:`${c.info.name||'적'} ${n}`,img:'',hp:fixHp(c.hp).map(t=>t.map(()=>0))},{x,y});paintBattle()}}));
+   it.push('-',{t:'이름만 있는 적',f(){const n=units().filter(u=>!u.char&&u.side==='foe').length+1;btAddUnit({side:'foe',name:'적 '+n,img:'',hp:BLANK_HP()},{x,y});paintBattle()}},{t:'벽 세우기',f(){setWall(x,y,true)}});CTX.open(e.clientX,e.clientY,it)}},true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')CTX.close()})})();
 Object.assign(A,{
+ qAllIn(){const placed=new Set(units().map(u=>u.char).filter(Boolean)),L=chars().filter(c=>!c.foe&&kindOf(c)==='pc'&&!placed.has(c.id));if(!L.length)return toast('배치할 플레이어 캐릭터가 없어요');let n=0;for(const c of L){if(!freeCell('pc'))break;btAddUnit({side:'pc',char:c.id});n++}paintBattle();toast(`아군 ${n}명 배치`)},
+ qHealAll(){const U=units();if(!U.length)return;snapSave('전원 회복 전',true);U.forEach(u=>unitRevive(u.k));gmLog('전원 회복·살리기');paintBattle()},
+ qSweep(){const L=units().filter(u=>u.side==='foe'&&isDown(u));if(!L.length)return;snapSave('쓰러진 적 치우기 전',true);L.forEach(u=>unitRemove(u.k));gmLog(`쓰러진 적 ${L.length} 치움`);paintBattle()},
+ qFoeOut(){const L=units().filter(u=>u.side==='foe');if(!L.length||!confirm(`적 ${L.length}을(를) 모두 맵에서 뺄까요?`))return;snapSave('적 전부 빼기 전',true);L.forEach(u=>unitRemove(u.k));gmLog('적 전부 뺌');paintBattle()},
+ qFresh(){if(!confirm('새 전투를 준비할까요? 라운드·행동 순서·기록·키워드를 지우고, 맵 위 모두의 체력을 가득 채웁니다. 배치는 그대로예요.'))return;const c=window.confirm;window.confirm=()=>true;try{A.btReset()}finally{window.confirm=c}units().forEach(u=>unitRevive(u.k));paintBattle();toast('새 전투 준비 완료')},
  btRound:btStartRound,
  btEnd(){const t=ATK();if(t&&t.phase!=='done')return toast('진행 중인 공격을 먼저 끝내 주세요',1);btNextTurn()},
  btDash(){const c=BT().cur;if(!c||c.main)return;Store.set(`${BTP}/cur`,{...c,main:true,dash:true,mv:+c.mv+c.base});btLog(`${uName({...unitRaw(c.k),k:c.k})} 전력 이동 (이동력 +${c.base})`)}, // 7.3 전체 이동력 두 배
@@ -6204,6 +6239,13 @@ body.b25 .sd-dust.big{animation:sdDust2 1.1s ease-out both}@keyframes sdDust2{fr
 .cs>.tj-cv.tj-lf{filter:drop-shadow(0 0 4px rgba(0,0,0,.5))}
 .cs-fxf{filter:drop-shadow(0 0 3px rgba(0,0,0,.42))}
 .cs.imp2 .tj-cv.tj-lf{filter:brightness(0)}
+
+/* §166 GM 오른쪽 클릭 메뉴 · 빠른 도구 */
+.ctx-menu{position:fixed;z-index:99990;min-width:190px;max-height:70vh;overflow:auto;padding:5px;background:#17110c;border:1px solid #6a5334;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.7);font:13px/1.3 inherit}
+.ctx-menu button{display:block;width:100%;text-align:left;padding:7px 10px;background:none;border:0;border-radius:4px;color:#eadcc0;cursor:pointer;font:inherit}
+.ctx-menu button:hover{background:#3a2a18}.ctx-menu button.danger{color:#ff9a8a}.ctx-menu hr{border:0;border-top:1px solid #3a2d1c;margin:4px 2px}
+.ctx-h{padding:4px 10px 5px;color:#e0a530;font-weight:700;font-size:12px}
+.bt-quick{margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #3a2d1c}.bt-quick>b{display:block;margin-bottom:5px;color:#e0a530;font-size:12px}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -8286,7 +8328,7 @@ const CL_MS={cross:330,lock:720,parry:340,impact:380,flurry:470,graze:300,overhe
 /* §141 궤적 그림: 캐릭터마다 공격·방어 그림 여러 장, 그림마다 합·적중 궤적(선 여러 개, 순서·시간·가감속·사라짐·잔상·끝 연출·2.5D)
    저장: chars/<id>/traj = [{img:'vimg:..',kind:'atk'|'grd',wk:''|'S'|'P'|'B',strokes:{clash:[...],hit:[...]}}] */
 const TJ=(()=>{
- const DEF={snd:'',ss:'',ly:'auto',anc:'me',tx:'blade',mode:'line',ps:1,pd:1,pt:'trail',pdir:'all',cn:12,csz:1,cvar:.4,cang:'twist',cord:'seq',csp:.3,cl:220,ord:1,dl:0,du:120,ez:'out',hd:0,fo:250,fm:'tail',tl:1,rev:false,ec:0,eg:45,w:1,w0:1,w1:1,wob:0,gl:1,col:'',st:0,sk:0,fl:0,spk:0,rx:0,ry:0,rz:0,rl:0,rla:0,dz:0,ol:.3,sf:.5};
+ const DEF={snd:'',ss:'',ly:'auto',anc:'me',tx:'blade',mode:'line',ps:1,pd:1,pt:'trail',pdir:'all',cn:12,csz:1,cvar:.4,cang:'twist',cord:'seq',csp:.3,cl:220,ord:1,dl:0,du:120,ez:'out',hd:0,fo:250,fm:'tail',tl:1,rev:false,ec:0,eg:45,w:1,w0:1,w1:1,wob:0,gl:1,col:'',st:0,sk:0,fl:0,spk:0,rx:0,ry:0,rz:0,rl:0,rla:0,dz:0,ol:.3,sf:.5,sc:1,cap:'pt'};
  const V=(s,k)=>s[k]??DEF[k]??0;
  const EZ={lin:t=>t,in:t=>t*t*t,out:t=>1-(1-t)**3,io:t=>t<.5?4*t*t*t:1-(-2*t+2)**3/2,snap:t=>t>=1?1:1-2**(-10*t),whip:t=>t<=0?0:2**(10*t-10),step:t=>{const k=4,i=Math.min(k-1,Math.floor(t*k)),f=t*k-i;return(i+Math.min(1,f*2.5))/k},
   pull:t=>t<.3?-.05*Math.sin(t/.3*Math.PI):EZ.snap((t-.3)/.7)};
@@ -8303,19 +8345,24 @@ const TJ=(()=>{
  const PTS=s=>s.rev?s.pts.slice().reverse():s.pts,SPS=s=>{const a=s.sp||[];return s.rev?a.slice().reverse():a};
  const toPx=(p,B)=>[B.x+(B.flip?1-p[0]:p[0])*B.w,B.y+p[1]*B.h];
  // §162 납작한 띠: 가운데 줄만이 아니라 띠의 폭 방향(가장자리)까지 함께 3D로 돌려 투영 → 각도에 따라 굵기가 변하고 옆에서 보면 실선. [2] = 원근 × 폭 줄어듦, [4][5] = 화면에서의 폭 방향, [6] = 면이 보는 쪽(+앞 / −뒤)
- function proj(s,B){const P=PTS(s).map(p=>toPx(p,B)),n=P.length;const cx=P.reduce((a,p)=>a+p[0],0)/n,cy=P.reduce((a,p)=>a+p[1],0)/n,fl=B.flip?-1:1;
-  const rx=V(s,'rx')*Math.PI/180,ry=V(s,'ry')*Math.PI/180*fl,rz=V(s,'rz')*Math.PI/180*fl,rl=V(s,'rl')*Math.PI/180*fl,dz=V(s,'dz'),f=B.h*1.6,flat=!(rx||ry||rz||rl||dz);
+ function proj(s,B){let P=PTS(s).map(p=>toPx(p,B));const n=P.length,cx=P.reduce((a,p)=>a+p[0],0)/n,cy=P.reduce((a,p)=>a+p[1],0)/n,fl=B.flip?-1:1,sc=V(s,'sc')||1,ew=EW(s);if(sc!==1)P=P.map(q=>[cx+(q[0]-cx)*sc,cy+(q[1]-cy)*sc]);
+  const rx=V(s,'rx')*Math.PI/180,ry=V(s,'ry')*Math.PI/180*fl,rz=V(s,'rz')*Math.PI/180*fl,rl=V(s,'rl')*Math.PI/180*fl,dz=V(s,'dz'),f=B.h*1.6,flat=!(rx||ry||rz||rl||dz||ew);
   // §164 깊이 휨: 가운데는 앞으로(−z), 양 끝은 뒤로(+z) → 몸 둘레를 도는 휜 띠. z = 0 이 캐릭터가 서 있는 면
   const D=B.h*.5*dz,Z0=i=>dz?D*(.5-Math.sin(Math.PI*(n>1?i/(n-1):.5))):0;
   const cz=Math.cos(rz),sz=Math.sin(rz),cX=Math.cos(rx),sX=Math.sin(rx),cY=Math.cos(ry),sY=Math.sin(ry),rot=(x,y,z)=>{[x,y]=[x*cz-y*sz,x*sz+y*cz];[y,z]=[y*cX-z*sX,y*sX+z*cX];[x,z]=[x*cY+z*sY,-x*sY+z*cY];return[x,y,z]},cr=Math.cos(rl),sr=Math.sin(rl),U=10;
   return P.map(([X,Y],i)=>{const z0=Z0(i),[x,y,z]=rot(X-cx,Y-cy,z0),k=f/(f+z);if(flat)return[cx+x*k,cy+y*k,k,z];
    const ia=Math.max(0,i-1),ib=Math.min(n-1,i+1),a=P[ia],b=P[ib];let tx=b[0]-a[0],ty=b[1]-a[1],tz=Z0(ib)-Z0(ia);const l2=Math.hypot(tx,ty)||1,l3=Math.hypot(tx,ty,tz)||1,h=l2/l3;
-   const wx=-ty/l2,wy=tx/l2,Tx=tx/l3,Ty=ty/l3,Tz=tz/l3,Cx=-Tz*wy,Cy=Tz*wx,Cz=Tx*wy-Ty*wx,Wx=wx*cr+Cx*sr,Wy=wy*cr+Cy*sr,Wz=Cz*sr,Nx=Ty*Wz-Tz*Wy,Ny=Tz*Wx-Tx*Wz,Nz=Tx*Wy-Ty*Wx;
+   let wx=-ty/l2,wy=tx/l2;if(ew&&ew[i]){const ex0=ew[i][0]*B.w*fl,ey0=ew[i][1]*B.h,el0=Math.hypot(ex0,ey0);if(el0>1e-6){wx=ex0/el0;wy=ey0/el0}}const Tx=tx/l3,Ty=ty/l3,Tz=tz/l3,Cx=-Tz*wy,Cy=Tz*wx,Cz=Tx*wy-Ty*wx,Wx=wx*cr+Cx*sr,Wy=wy*cr+Cy*sr,Wz=Cz*sr,Nx=Ty*Wz-Tz*Wy,Ny=Tz*Wx-Tx*Wz,Nz=Tx*Wy-Ty*Wx;
    const[x2,y2,z2]=rot(X-cx+Wx*U,Y-cy+Wy*U,z0+Wz*U),k2=f/(f+z2),ex=(x2*k2-x*k)/U,ey=(y2*k2-y*k)/U,el=Math.hypot(ex,ey),fz=rot(Nx,Ny,Nz)[2];
    return[cx+x*k,cy+y*k,Math.max(el*(.3+.7*h),.07*k),z,el>1e-4?ex/el:wx,el>1e-4?ey/el:wy,fz]})}
  function geom(s,B,t){let P=proj(s,B);const n=P.length,wob=V(s,'wob');
   if(wob)P=P.map((p,i)=>{const a=P[Math.max(0,i-1)],b=P[Math.min(n-1,i+1)];let nx=-(b[1]-a[1]),ny=b[0]-a[0];const l=Math.hypot(nx,ny)||1,d=(Math.sin(i*.9+t*.025)*.6+Math.sin(i*.37-t*.041)*.4)*wob*B.h*.012;return[p[0]+nx/l*d,p[1]+ny/l*d,...p.slice(2)]});return P}
- function widths(s,n){const sp=SPS(s),w0=V(s,'w0'),w1=V(s,'w1');return Array.from({length:n},(_,i)=>{const u=i/(n-1||1),tip=Math.pow(Math.sin(Math.PI*Math.min(.999,Math.max(.001,u))),.55);return tip*V(s,'w')*(sp[i]??1)*(w0+(w1-w0)*u)})}
+ // §167 종이 모양: 끝 모양(cap: 뾰족 pt · 둥글게 round · 네모 sq), 자리마다 폭(wp = 배율, wpu = 선 위 자리 0~1), 전체 크기(sc), 면 모드(ew = 가운데 줄에서 위 가장자리까지의 반쪽 벡터)
+ const ARR=a=>a?(Array.isArray(a)?a:Object.values(a)):null;
+ function wpAt(s,u){const W=ARR(s.wp),U=ARR(s.wpu);if(!W||!U||W.length<2||W.length!==U.length)return 1;if(s.rev)u=1-u;if(u<=U[0])return+W[0];for(let k=1;k<U.length;k++)if(u<=U[k]){const d=U[k]-U[k-1]||1,t=(u-U[k-1])/d,e=t*t*(3-2*t);return W[k-1]+(W[k]-W[k-1])*e}return+W[W.length-1]}
+ function widths(s,n){const sp=SPS(s),w0=V(s,'w0'),w1=V(s,'w1'),cap=V(s,'cap');return Array.from({length:n},(_,i)=>{const u=i/(n-1||1),e=Math.min(u,1-u)/.1,tip=cap==='sq'?1:cap==='round'?(e>=1?1:Math.sqrt(Math.max(.02,1-(1-e)*(1-e)))):Math.pow(Math.sin(Math.PI*Math.min(.999,Math.max(.001,u))),.55);return tip*V(s,'w')*(sp[i]??1)*(w0+(w1-w0)*u)*wpAt(s,u)})}
+ const EW=s=>{const e=ARR(s.ew);return e&&s.pts&&e.length===s.pts.length?(s.rev?e.slice().reverse():e):null};
+ function WD(s,B,n,K){const sc=V(s,'sc')||1,e=EW(s);if(e&&e.length===n)return e.map(v=>Math.hypot(v[0]*B.w,v[1]*B.h)*K*sc);return widths(s,n).map(w=>w*B.h*.024*K*sc)}
  function ribbon(g,P,Wd,k){if(P.length<2)return false;g.beginPath();const L=[],R=[],n=P.length;for(let i=0;i<n;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(n-1,i+1)];let nx=-(b[1]-a[1]),ny=b[0]-a[0];if(P[i].length>5&&(P[i][4]||P[i][5])){nx=P[i][4];ny=P[i][5]}const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l;const w=Wd[i]*P[i][2]*k;L.push([P[i][0]+nx*w,P[i][1]+ny*w]);R.push([P[i][0]-nx*w,P[i][1]-ny*w])}
   L.forEach((p,j)=>j?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));for(let j=R.length-1;j>=0;j--)g.lineTo(R[j][0],R[j][1]);g.closePath();return true}
  function cut(P,Wd,a,b){const n=P.length,at=x=>{const i=Math.min(n-2,Math.max(0,Math.floor(x))),f=x-i;return[P[i].map((v,d)=>v+(P[i+1][d]-v)*f),Wd[i]+(Wd[i+1]-Wd[i])*f]};
@@ -8462,10 +8509,10 @@ const TJ=(()=>{
   g.restore()};
  function rib(g,s,Q,QW,col,A,t,sd,o){const tx=V(s,'tx'),gl=V(s,'gl');(TX[tx]||TX.blade)(g,Q,QW,col,A,t,sd,{...o,gl,ol:V(s,'ol'),sf:V(s,'sf')});
   if(tx!=='blade'&&gl>1.05){g.save();g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,(gl-1)*.35)*A;g.fillStyle=col;g.shadowColor=col;g.shadowBlur=22*gl;ribbon(g,Q,QW,1.4)&&g.fill();g.restore()}}
- function fullGeo(s,B,t){const P=geom(s,B,t||0),n=P.length,Wd=widths(s,n).map(w=>w*B.h*.024);return{Q:P,QW:Wd}}
+ function fullGeo(s,B,t){const P=geom(s,B,t||0),n=P.length,Wd=WD(s,B,n,1);return{Q:P,QW:Wd}}
  function drawSlash(g,s,B,head,tail,col,o={}){let A=Math.min(1,o.a??1),K=o.wk??1;const md=V(s,'mode');if(md==='cuts'||A<=.01||head-tail<.004||!s.pts||s.pts.length<2)return null;if(md==='both'){A*=.35;K*=.5}
   if(V(s,'rla'))s={...s,rl:V(s,'rl')+V(s,'rla')*Math.max(0,Math.min(1,head))};   // §164 휘두르는 동안 면이 돌아감
-  const P=geom(s,B,o.t||0),n=P.length,Wd=widths(s,n).map(w=>w*B.h*.024*K),[Q,QW]=cut(P,Wd,tail*(n-1),head*(n-1));
+  const P=geom(s,B,o.t||0),n=P.length,Wd=WD(s,B,n,K),[Q,QW]=cut(P,Wd,tail*(n-1),head*(n-1));
   const shade=q=>{if(q[0].length<=6)return[col,A];const fz=q.reduce((a,p)=>a+(p[6]||0),0)/q.length,back=fz<0;return[MIX(col,'#000000',back?.5:(1-Math.min(1,Math.abs(fz)))*.32),back?A*.8:A]};   // 뒷면은 어둡게, 비스듬한 면은 조금 어둡게
   // §164 몸 감싸기: 캐릭터 면(z=0)보다 뒤쪽 조각은 캐릭터 뒤 캔버스에, 앞쪽 조각은 캐릭터 앞 캔버스에. 미리보기(pv)에서는 뒤쪽을 옅게
   const sp=o.split,pv=o.pv,eps=B.h*.012;if((sp||pv)&&Q.length>2){let lo=1e9,hi=-1e9;for(const q of Q){const z=q[3]||0;if(z<lo)lo=z;if(z>hi)hi=z}
@@ -8566,7 +8613,7 @@ const TJ=(()=>{
  function pickDef(wk,kind){const A=defList().filter(x=>x.kind===kind);let L=kind==='reso'?A:A.filter(x=>(x.wk||'S')===(wk||'S'));if(!L.length)L=A.filter(x=>(x.wk||'S')==='S');if(!L.length)L=BUILTIN.filter(x=>x.kind===kind&&(kind==='reso'||x.wk===(WKN[wk]?wk:'S')));if(!L.length)return null;
   const key='@'+wk+kind;let c=L.map((it,i)=>({it,i})).filter(x=>x.i!==last[key]);if(!c.length)c=L.map((it,i)=>({it,i}));const x=c[Math.floor(Math.random()*c.length)];last[key]=x.i;return{...x.it,def:1}}
  const list=id=>{if(id==='@def')return defList();const v=Store.get(`chars/${id}/traj`);return Array.isArray(v)?v.filter(Boolean):v&&typeof v==='object'?Object.values(v).filter(Boolean):[]};
- const strokes=(it,tab)=>{const v=it?.strokes?.[tab];return(Array.isArray(v)?v:v?Object.values(v):[]).filter(s=>s&&s.pts&&s.pts.length>1).map(s=>({...s,_d:it.def?1:0,pts:Array.isArray(s.pts)?s.pts:Object.values(s.pts),sp:s.sp?(Array.isArray(s.sp)?s.sp:Object.values(s.sp)):null}))};
+ const strokes=(it,tab)=>{const v=it?.strokes?.[tab];return(Array.isArray(v)?v:v?Object.values(v):[]).filter(s=>s&&s.pts&&s.pts.length>1).map(s=>({...s,_d:it.def?1:0,ew:s.ew?(Array.isArray(s.ew)?s.ew:Object.values(s.ew)):undefined,pts:Array.isArray(s.pts)?s.pts:Object.values(s.pts),sp:s.sp?(Array.isArray(s.sp)?s.sp:Object.values(s.sp)):null}))};
  const last={};
  const skOf=it=>arr(it?.sk).filter(Boolean);
  function pick(id,kind,skn){let L=list(id).map((it,i)=>({it,i})).filter(x=>x.it.kind===kind&&(x.it.img||['clash','hit','lock'].some(t=>strokes(x.it,t).length)));if(!L.length)return null;const skK=skn||'-',B=L.filter(x=>skOf(x.it).includes(skK));L=B.length?B:L.filter(x=>!skOf(x.it).length);if(!L.length)return null;
@@ -8617,7 +8664,7 @@ const TJ=(()=>{
  function framePlay(fig,U,pose,it,tab,o){const F=frs(it);if(!fig||F.length<2||!PL)return null;const tok={};fig._tjTok=tok;const T=ftimes(it,tab,o.lead,o.post);
   F.forEach(ref=>{const s=pImg(ref);if(s){const e=new Image;e.src=s}});
   return timeline({at:o.at,sp:o.sp,tok,cues:F.map((ref,i)=>({t:T[i],f:()=>{if(fig._tjTok!==tok)return;const src=pImg(ref);if(!src)return;U.P[pose]=src;if(fig.dataset.pose===pose){const im=fig.querySelector('img');if(im&&im.getAttribute('src')!==src)im.src=src}}}))})}
- return{skOf,TQ,tuneCtx,frs,hfOf,ftimes,autoLP,framePlay,arr,TXN,CANG,CORD,drawCuts,DEF,V,EZ,EZN,FMN,PRE,MIX,sched,state,drawSlash,player,list,strokes,pick,pickDef,defList,BUILTIN,DEFN,WKN,mount,unmount,playOn,groups,proj,toPx,arOf,
+ return{skOf,TQ,tuneCtx,frs,hfOf,ftimes,autoLP,framePlay,arr,TXN,CANG,CORD,drawCuts,DEF,V,EZ,EZN,FMN,PRE,MIX,sched,state,drawSlash,player,list,strokes,pick,pickDef,defList,BUILTIN,DEFN,WKN,mount,unmount,playOn,groups,proj,toPx,arOf,fullGeo,
   slow(k){if(PL)PL.ts=k},onFront(f){frontCb=f},layers,get cv(){return cvs},get on(){return!!PL}}})();
 </script>
 <script id="tj-gif">
@@ -8690,7 +8737,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   for(let k=0;k<N;k++){const s=T*k/(N-1);let i=L.findIndex(v=>v>=s);if(i<=0)i=1;const f=(s-L[i-1])/((L[i]-L[i-1])||1),a=dense[i-1],b=dense[i];out.push([+(a[0]+(b[0]-a[0])*f).toFixed(4),+(a[1]+(b[1]-a[1])*f).toFixed(4)])}return out}
  const toPx=(p,B)=>TJ.toPx(p,B);const colOf=s=>/^#[0-9a-f]{6}$/i.test(V(s,'col'))?V(s,'col'):COL();
  const hint=()=>{ov.querySelector('#tjHint').textContent=mode==='pt'?(pts?`점 ${pts.length}개 · 계속 찍거나 Enter·더블클릭으로 완성 · 오른쪽 클릭 = 마지막 점 빼기 · Esc 취소`:'그림 위를 눌러 점을 찍어요. 찍은 점들이 부드럽게 이어져요'):
-  `${tab==='clash'?'합: 무기가 "부딪히는 점"으로 들어가게 · 순서 번호 하나 = 챙! 한 번':tab==='lock'?'버팀(동점): "맞물리는 점"에서 칼을 맞대고 버티는 동안 나와요 · 처음부터 순서대로':'적중: 상대의 "맞는 자리"를 지나가게'} 그어요 · 고른 선: 동그란 점을 끌면 모양 고치기, 선 몸통을 끌면(또는 Shift+끌기) 통째로 옮기기`;ov.querySelector('#tjDone').hidden=!(mode==='pt'&&pts)};
+  `${tab==='clash'?'합: 무기가 "부딪히는 점"으로 들어가게 · 순서 번호 하나 = 챙! 한 번':tab==='lock'?'버팀(동점): "맞물리는 점"에서 칼을 맞대고 버티는 동안 나와요 · 처음부터 순서대로':'적중: 상대의 "맞는 자리"를 지나가게'} 그어요 · 고른 선: 동그란 점 = 모양, 하늘색 마름모 = 그 자리 폭, 몸통(또는 Shift+끌기) = 통째로 옮기기 · 면 모드: 네모 = 꼭지점, 하늘색 동그라미 = 휨`;ov.querySelector('#tjDone').hidden=!(mode==='pt'&&pts)};
  let spin=null;
  function draw(now){if(!ov)return;let SP=0;if(spin){const a=(performance.now()-spin.t0)/3200;if(a>=1)spin=null;else SP=Math.max(1e-4,a)}const it=im(),B=box(),S=it?S_():[];g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,W,H);
   if(anim){now=now||performance.now();const dt=Math.min(50,now-anim.last);anim.last=now;PV.step(dt)}
@@ -8701,7 +8748,11 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   else S.forEach((s,i)=>{if(!s.pts||s.pts.length<2)return;const B=boxFor(s);g.save();g.globalAlpha=.4;g.strokeStyle=i===selS?'#e0a530':'#ffffff';g.setLineDash([4,4]);g.lineWidth=1.5;g.beginPath();s.pts.forEach((p,j)=>{const[x,y]=toPx(p,B);j?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();g.restore();
    {const ss=SP?{...s,ry:(+s.ry||0)+Math.sin(SP*Math.PI*2)*75,rx:(+s.rx||0)+Math.sin(SP*Math.PI*4)*22}:s;TJ.drawSlash(g,ss,B,1,V(s,'tl')<1?1-V(s,'tl'):0,i===selS?'#e0a530':colOf(s),{t:0,pv:V(s,'ly')==='auto'?1:0});if(V(s,'mode')!=='line')TJ.drawCuts(g,ss,B,0,i===selS?'#e0a530':colOf(s),{static:true})}
    const p0=s.rev?s.pts[s.pts.length-1]:s.pts[0],Q0=SP?null:scrPts(s)[0],[x,y]=Q0?[Q0[0],Q0[1]]:toPx(p0,B);g.fillStyle='#000';g.fillRect(x-9,y-9,18,18);g.fillStyle='#fff';g.font='12px sans-serif';g.textAlign='center';g.fillText(V(s,'ord'),x,y+4);
-   if(i===selS&&!SP&&!anim)hPos(s).forEach(([px,py])=>{g.fillStyle=s.ctrl?'#e0a530':'#fff3c4';g.strokeStyle='#000';g.lineWidth=2;g.beginPath();g.arc(px,py,7,0,7);g.fill();g.stroke()})});
+   if(i===selS&&!SP&&!anim){g.strokeStyle='#000';g.lineWidth=2;
+    if(s.quad){const Hd=fHandles(s),G=sides(s);if(G){g.save();g.setLineDash([5,4]);g.strokeStyle='rgba(255,243,196,.55)';g.lineWidth=1.2;g.beginPath();G.T.forEach((q,j)=>j?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));for(let j=G.n-1;j>=0;j--)g.lineTo(G.B[j][0],G.B[j][1]);g.closePath();g.stroke();g.restore()}
+     g.strokeStyle='#000';g.lineWidth=2;FK.forEach(k=>{const q=Hd[k];if(!q)return;if(k==='t'||k==='m'){g.fillStyle='#7fd6ff';g.beginPath();g.arc(q[0],q[1],7,0,7);g.fill();g.stroke()}else{g.fillStyle='#e0a530';g.fillRect(q[0]-6,q[1]-6,12,12);g.strokeRect(q[0]-6,q[1]-6,12,12)}})}
+    else{hPos(s).forEach(([px,py])=>{g.fillStyle=s.ctrl?'#e0a530':'#fff3c4';g.beginPath();g.arc(px,py,7,0,7);g.fill();g.stroke()});
+     wHandles(s).forEach(({p,c})=>{g.save();g.strokeStyle='rgba(127,214,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(c[0],c[1]);g.lineTo(p[0],p[1]);g.stroke();g.restore();g.fillStyle='#7fd6ff';g.strokeStyle='#000';g.lineWidth=1.5;g.beginPath();g.moveTo(p[0],p[1]-6);g.lineTo(p[0]+6,p[1]);g.lineTo(p[0],p[1]+6);g.lineTo(p[0]-6,p[1]);g.closePath();g.fill();g.stroke()})}}});
   g.setTransform(1,0,0,1,0,0);
   if(drawing){g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();drawing.pts.forEach((p,j)=>{const[x,y]=toPx(p,B);j?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()}
   if(pts){const sm=smooth(pts,48);g.strokeStyle='#ffd27a';g.lineWidth=2;g.beginPath();sm.forEach((p,j)=>{const[x,y]=toPx(p,B);j?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();pts.forEach((p,j)=>{const[x,y]=toPx(p,B);g.fillStyle='#fff';g.beginPath();g.arc(x,y,5,0,7);g.fill();g.fillStyle='#000';g.font='10px sans-serif';g.textAlign='center';g.fillText(j+1,x,y+3)})}
@@ -8728,7 +8779,22 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
  const autoCtrl=s=>{const P=s.pts,n=P.length,m=Math.min(7,Math.max(3,Math.round(n/5)));return Array.from({length:m},(_,k)=>P[Math.round(k*(n-1)/(m-1))].slice(0,2))};
  const hPos=s=>{const Q=scrPts(s),P=s.rev?s.pts.slice().reverse():s.pts,C=s.ctrl||autoCtrl(s);if(!Q.length)return[];return C.map(c=>{let bi=0,bd=1e9;P.forEach((q,i)=>{const d=(q[0]-c[0])**2+(q[1]-c[1])**2;if(d<bd){bd=d;bi=i}});return[Q[bi][0],Q[bi][1]]})};
  const lineDist=(s,mx,my)=>{const Q=scrPts(s);let m=1e9;for(let i=0;i<Q.length-1;i++){const ax=Q[i][0],ay=Q[i][1],bx=Q[i+1][0],by=Q[i+1][1],dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((mx-ax)*dx+(my-ay)*dy)/l));m=Math.min(m,Math.hypot(mx-ax-dx*t,my-ay-dy*t))}return m};
- const grabAt=(e)=>{const s=S_()[selS];if(!s||!s.pts||s.pts.length<2)return null;const[mx,my,kk]=mxy(e),k=hPos(s).findIndex(h=>Math.hypot(h[0]-mx,h[1]-my)<14*kk);if(k>=0)return{s,k};
+ // §167 종이 모양 편집: 화면에 보이는 양쪽 가장자리(sides), 폭 손잡이(선 모드), 꼭지점 4 + 휨 손잡이 2(면 모드)
+ const sides=s=>{let G;try{G=TJ.fullGeo(s,boxFor(s),0)}catch{return null}const Q=G.Q,W=G.QW,n=Q.length;if(n<2)return null;const T=[],Bm=[];for(let i=0;i<n;i++){const a=Q[Math.max(0,i-1)],b=Q[Math.min(n-1,i+1)];let nx=-(b[1]-a[1]),ny=b[0]-a[0];if(Q[i].length>5&&(Q[i][4]||Q[i][5])){nx=Q[i][4];ny=Q[i][5]}const l=Math.hypot(nx,ny)||1,w=Math.max(4,W[i]*Q[i][2]);T.push([Q[i][0]+nx/l*w,Q[i][1]+ny/l*w]);Bm.push([Q[i][0]-nx/l*w,Q[i][1]-ny/l*w])}return{Q,T,B:Bm,n}};
+ const ctrlIdx=s=>{const P=s.rev?s.pts.slice().reverse():s.pts,C=s.ctrl||autoCtrl(s);return C.map(c=>{let bi=0,bd=1e9;P.forEach((q,i)=>{const d=(q[0]-c[0])**2+(q[1]-c[1])**2;if(d<bd){bd=d;bi=i}});return bi})};
+ const wHandles=s=>{const G=sides(s);if(!G)return[];return ctrlIdx(s).map(i=>{const c=G.Q[i],t=G.T[i],dx=t[0]-c[0],dy=t[1]-c[1],l=Math.hypot(dx,dy)||1,d=Math.max(24,l);return{p:[c[0]+dx/l*d,c[1]+dy/l*d],c}})};   // 폭 손잡이는 동그란 점과 겹치지 않게 최소 24px 떨어뜨림
+ const FK=["a","b","c","d","t","m"];
+ const fHandles=s=>{const G=sides(s);if(!G||!s.quad)return{};const n=G.n,m=n>>1,r=s.rev;return{a:r?G.T[n-1]:G.T[0],b:r?G.T[0]:G.T[n-1],d:r?G.B[n-1]:G.B[0],c:r?G.B[0]:G.B[n-1],t:G.T[m],m:G.B[m]}};
+ const regenFace=s=>{const q=s.quad;if(!q)return;const N=32,bz=(a,h,b,u)=>{const cx=2*h[0]-(a[0]+b[0])/2,cy=2*h[1]-(a[1]+b[1])/2,v=1-u;return[v*v*a[0]+2*v*u*cx+u*u*b[0],v*v*a[1]+2*v*u*cy+u*u*b[1]]};
+  s.pts=[];s.ew=[];for(let i=0;i<N;i++){const u=i/(N-1),T=bz(q.a,q.t,q.b,u),Bm=bz(q.d,q.m,q.c,u);s.pts.push([+((T[0]+Bm[0])/2).toFixed(4),+((T[1]+Bm[1])/2).toFixed(4)]);s.ew.push([+((T[0]-Bm[0])/2).toFixed(4),+((T[1]-Bm[1])/2).toFixed(4)])}
+  s.sp=s.pts.map(()=>1);delete s.ctrl;delete s.wp;delete s.wpu};
+ const toFace=s=>{const Bx=boxFor(s),G=sides({...s,rx:0,ry:0,rz:0,rl:0,rla:0,dz:0,sc:1,rev:false});if(!G)return;const un=q=>{let u=(q[0]-Bx.x)/Bx.w;if(Bx.flip)u=1-u;return[+u.toFixed(4),+((q[1]-Bx.y)/Bx.h).toFixed(4)]},n=G.n,m=n>>1,k=Math.max(1,Math.round(n*.06));
+  s.quad={a:un(G.T[k]),b:un(G.T[n-1-k]),c:un(G.B[n-1-k]),d:un(G.B[k]),t:un(G.T[m]),m:un(G.B[m])};regenFace(s)};
+ const toLine=s=>{delete s.quad;delete s.ew};
+ const wpInit=s=>{if(!s.ctrl)s.ctrl=autoCtrl(s);const n=s.pts.length,P=s.pts;s.wpu=s.ctrl.map(c=>{let bi=0,bd=1e9;P.forEach((q,i)=>{const d=(q[0]-c[0])**2+(q[1]-c[1])**2;if(d<bd){bd=d;bi=i}});return+(bi/(n-1)).toFixed(3)});if(!s.wp||s.wp.length!==s.ctrl.length)s.wp=s.ctrl.map(()=>1)};
+ const grabAt=(e)=>{const s=S_()[selS];if(!s||!s.pts||s.pts.length<2)return null;const[mx,my,kk]=mxy(e),near=q=>q&&Math.hypot(q[0]-mx,q[1]-my)<13*kk;
+  if(s.quad){const H=fHandles(s),fk=FK.find(k=>near(H[k]));if(fk)return{s,fk};return e.shiftKey||(()=>{const G=sides(s);if(!G)return false;for(let i=0;i<G.n;i++){const a=G.T[i],b=G.B[i],dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((mx-a[0])*dx+(my-a[1])*dy)/l));if(Math.hypot(mx-a[0]-dx*t,my-a[1]-dy*t)<8*kk)return true}return false})()?{s,mv:1}:null}
+  {const WH=wHandles(s),wk=WH.findIndex(h=>Math.hypot(h.p[0]-mx,h.p[1]-my)<10*kk);if(wk>=0)return{s,wk,c:WH[wk].c,d0:Math.max(3,Math.hypot(mx-WH[wk].c[0],my-WH[wk].c[1]))}}const k=hPos(s).findIndex(near);if(k>=0)return{s,k};
   const wpx=Math.max(14,TJ.V(s,'w')*boxFor(s).h*.024*1.2);return e.shiftKey||lineDist(s,mx,my)<wpx*kk?{s,mv:1}:null};
  function addStroke(P,sp,ctrl,extra={}){const S=S_();S.push({pts:P,sp,ctrl,...DEF,...extra,ord:(S.length?Math.max(...S.map(s=>V(s,'ord')))+1:1)});selS=S.length-1;save();ui()}
  function finishPts(){if(!pts)return;if(pts.length>=2){const P=smooth(pts);addStroke(P,P.map(()=>1),pts.map(p=>p.slice()))}pts=null;hint();draw()}
@@ -8750,7 +8816,8 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    <details open><summary>🌫 사라짐·꼬리</summary>
     ${rng(s,'fo','사라지는 시간',40,1500,10,'ms')}${sel(s,'fm','사라지는 방식',FMN)}${rng(s,'tl','꼬리 길이',.1,1,.05)}${rng(s,'ec','잔상 개수',0,5,1,'개')}${rng(s,'eg','잔상 간격',15,150,5,'ms')}
     <label><span>방향</span><input type="checkbox" data-tf="rev" ${V(s,'rev')?'checked':''}> 거꾸로 긋기</label></details>
-   <details><summary>✒ 모양·빛</summary>${rng(s,'w','굵기',.3,3,.1)}${rng(s,'w0','시작 굵기',.2,2.5,.1,'배')}${rng(s,'w1','끝 굵기',.2,2.5,.1,'배')}${rng(s,'wob','흔들림',0,4,.1)}${rng(s,'gl','빛 세기',0,2.5,.1)}${rng(s,'ol','윤곽선 진하기 (빛날 질감)',0,1,.05)}${rng(s,'sf','가장자리 번짐 (빛날 질감)',0,1,.05)}
+   <details><summary>✒ 모양·빛</summary><div class="row" style="gap:6px;margin:2px 0 6px">${s.quad?'<button class="btn sm" data-toline>선 모드로 (손잡이 없애기)</button>':'<button class="btn sm" data-toface title="지금 모양 그대로 꼭지점 4개와 위·아래 휨 손잡이로 바꿔요">▭ 면 모드로 바꾸기</button>'}${!s.quad&&s.wp?'<button class="btn sm" data-wpreset>자리별 폭 처음대로</button>':''}</div>
+   ${rng(s,'sc','전체 크기',.3,3,.05,'배')}${s.quad?'':`${rng(s,'w','폭',.3,3,.1)}${rng(s,'w0','시작 폭',.2,2.5,.1,'배')}${rng(s,'w1','끝 폭',.2,2.5,.1,'배')}<label><span>끝 모양</span><select data-cap>${[['pt','뾰족하게'],['round','둥글게'],['sq','네모 (잘린 종이)']].map(([k,n])=>`<option value="${k}" ${V(s,'cap')===k?'selected':''}>${n}</option>`).join('')}</select></label>`}${rng(s,'wob','흔들림',0,4,.1)}${rng(s,'gl','빛 세기',0,2.5,.1)}${rng(s,'ol','윤곽선 진하기 (빛날 질감)',0,1,.05)}${rng(s,'sf','가장자리 번짐 (빛날 질감)',0,1,.05)}
     <label><span>색</span><input type="color" data-tf="col" value="${V(s,'col')||COL()}"><button class="btn sm" data-reset>죄악색 따름</button>${V(s,'col')?'':'<small class="muted">(따르는 중)</small>'}</label></details>
    <details><summary>💥 다 그었을 때</summary>${sel(s,'snd','끝 소리',SNDN)}${rng(s,'st','멈춤(히트스톱)',0,300,10,'ms')}${rng(s,'sk','화면 흔들림',0,30,1)}${rng(s,'fl','번쩍임',0,1,.05)}${rng(s,'spk','불꽃 튐',0,40,1,'개')}</details>
    <details><summary>🧊 입체(2.5D)</summary>${rng(s,'rx','눕히기',-80,80,1,'°')}${rng(s,'ry','기울이기',-80,80,1,'°')}${rng(s,'rz','비틀기',-90,90,1,'°')}${rng(s,'rl','면 돌리기 (0 = 정면 · 90 = 칼날처럼 얇게)',-90,90,1,'°')}${rng(s,'rla','휘두르며 면 돌기 (그어지는 동안 더 도는 각도)',-180,180,5,'°')}${rng(s,'dz','깊이 휨 (+ 가운데가 앞으로 · − 뒤로)',-1,1,.05)}<button class="btn sm" data-spin>↻ 돌려 보기</button><p class="small muted">선은 종이처럼 납작한 띠예요. 눕히거나 기울이면 그 각도만큼 얇아져요.</p></details>
@@ -8774,14 +8841,18 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   bx.querySelectorAll('.tj-s').forEach(e=>{const i=+e.dataset.i,s=S[i];if(i!==selS){e.onclick=()=>{selS=i;ui()};return}
    e.querySelectorAll('[data-tf]').forEach(inp=>inp.oninput=()=>{const f=inp.dataset.tf;s[f]=inp.type==='checkbox'?inp.checked:(inp.type==='range'||inp.type==='number')?+inp.value:inp.value;
     const v=inp.parentNode.querySelector('small.v');if(v)v.textContent=inp.value+v.dataset.u;if((f==='snd'||f==='ss')&&inp.value)SFX.play(inp.value);save();if(!anim)draw()});
-   e.querySelector('[data-pre]').onchange=ev=>{const k=ev.target.value;if(!k)return;if(k==='@drawn')Object.assign(s,{du:Math.max(30,Math.min(1200,s.drawnMs)),ez:'lin'});else{const kp={ord:s.ord,w:s.w,rx:s.rx,ry:s.ry,rz:s.rz,rl:s.rl,rla:s.rla,dz:s.dz,col:s.col};KEEP.forEach(x=>kp[x]=s[x]);Object.assign(s,DEF,kp,PRE[k])};save();ui();start(i)};
+   e.querySelector('[data-pre]').onchange=ev=>{const k=ev.target.value;if(!k)return;if(k==='@drawn')Object.assign(s,{du:Math.max(30,Math.min(1200,s.drawnMs)),ez:'lin'});else{const kp={ord:s.ord,w:s.w,rx:s.rx,ry:s.ry,rz:s.rz,rl:s.rl,rla:s.rla,dz:s.dz,sc:s.sc,cap:s.cap,col:s.col};KEEP.forEach(x=>kp[x]=s[x]);Object.assign(s,DEF,kp,PRE[k])};save();ui();start(i)};
    e.querySelector('[data-reset]').onclick=()=>{s.col='';save();ui()};
    e.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{const k=b.dataset.tx;s.tx=k;if(s.em==null||(!s.em&&k==='fire'))s.em=k==='fire'?1.2:k==='blade'||k==='neon'?0:.6;save();ui();start(i)});
    e.querySelector('[data-txall]').onclick=()=>{S.forEach(x=>KEEP.forEach(k=>{if(s[k]!==undefined)x[k]=s[k]}));save();ui();start(null)};
    e.querySelector('[data-spin]').onclick=()=>{anim=null;spin={t0:performance.now()};draw()};
    e.querySelector('[data-ly]').onchange=ev=>{s.ly=ev.target.value;save()};
+   e.querySelector('[data-cap]')?.addEventListener('change',ev=>{s.cap=ev.target.value;save();draw()});
+   e.querySelector('[data-toface]')?.addEventListener('click',()=>{toFace(s);save();ui()});
+   e.querySelector('[data-toline]')?.addEventListener('click',()=>{toLine(s);save();ui()});
+   e.querySelector('[data-wpreset]')?.addEventListener('click',()=>{delete s.wp;delete s.wpu;save();ui()});
    e.querySelector('[data-anc]').onchange=ev=>{const to=ev.target.value;if(V(s,'anc')===to)return;const A0=boxFor(s);s.anc=to;const B1=boxFor(s);
-    const cv_=p=>{const[x,y]=toPx(p,A0);let u=(x-B1.x)/B1.w;if(B1.flip)u=1-u;return[+u.toFixed(4),+((y-B1.y)/B1.h).toFixed(4)]};s.pts=s.pts.map(cv_);if(s.ctrl)s.ctrl=s.ctrl.map(cv_);save();ui()};
+    const cv_=p=>{const[x,y]=toPx(p,A0);let u=(x-B1.x)/B1.w;if(B1.flip)u=1-u;return[+u.toFixed(4),+((y-B1.y)/B1.h).toFixed(4)]};s.pts=s.pts.map(cv_);if(s.ctrl)s.ctrl=s.ctrl.map(cv_);if(s.quad){FK.forEach(k=>s.quad[k]=cv_(s.quad[k]));regenFace(s)}save();ui()};
    e.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>{s.mode=b.dataset.md;save();ui();start(i)});e.querySelector('[data-play]').onclick=()=>start(i);
    e.querySelector('[data-copy]').onclick=()=>{clip([s]);ui()};
    e.querySelector('[data-dup]').onclick=()=>{S.push(JSON.parse(JSON.stringify(s)));selS=S.length-1;save();ui()};
@@ -8810,7 +8881,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   <div class="tj-l"><b>그림 <small class="muted">합마다 무작위</small></b><div id="tjList"></div><button class="btn sm" data-add="atk">＋ 공격 <span class="tj-xd">그림</span></button><button class="btn sm" data-add="grd">＋ 방어 <span class="tj-xd">그림</span></button><button class="btn sm tj-od" id="tjDefName">이름 바꾸기</button><button class="btn sm danger tj-od" id="tjDefReset">기본 궤적 전부 처음대로</button><button class="btn sm tj-xd" id="tjFromDef" title="기본 궤적의 선을 지금 그림의 이 탭으로 복사해 와서 고쳐 쓰기">기본 궤적 가져오기</button>
    <p class="small muted">공격 그림은 내가 칠 때, 방어 그림은 막을 때 나와요. 같은 종류가 여러 장이면 합마다 무작위(바로 전 그림은 피함). 「쓸 스킬」로 그림을 스킬에 묶으면 그 스킬일 때 그 그림들만 나와요.</p></div>
   <div class="tj-c"><div class="tj-tabs"><button data-tab="clash" class="on" id="tjClashLbl">합 궤적</button><button data-tab="lock" id="tjLockLbl">버팀 궤적</button><button data-tab="hit" id="tjHitLbl">적중 궤적</button>
-    <span class="tj-mode"><button data-m="free" class="on">✎ 자유 그리기</button><button data-m="pt">• 점 찍어 잇기</button></span></div>
+    <span class="tj-mode"><button data-m="free" class="on">✎ 자유 그리기</button><button data-m="pt">• 점 찍어 잇기</button></span><button class="btn sm" id="tjPaper" title="네 꼭지점과 위·아래 휨 손잡이로 모양을 잡는 종이를 하나 놓아요">▭ 종이 놓기</button></div>
    <div id="tjHint" class="small muted"></div><canvas id="tjCv" width="${W}" height="${H}"></canvas>
    <div class="row tj-row"><button class="btn sm pri" id="tjPlay">▶ 전체 미리보기</button><button class="btn sm" id="tjPlay1">▶ 고른 선만</button>
     <label>보기 속도 <select id="tjSlow"><option value="1">1배</option><option value=".5">0.5배</option><option value=".25">0.25배</option><option value=".1">0.1배</option></select></label><label><input type="checkbox" id="tjLoop"> 반복</label>
@@ -8827,13 +8898,19 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   cv.oncontextmenu=e=>{e.preventDefault();if(mode==='pt'&&pts){pts.pop();if(!pts.length)pts=null;hint();draw()}};
   cv.ondblclick=()=>{if(mode==='pt'){if(pts&&pts.length>2)pts.pop();finishPts()}};
   cv.onpointerdown=e=>{if(!im()||e.button===2||anim)return;const p=pos(e);
-   {const G=!(mode==='pt'&&pts)&&grabAt(e);if(G){const s=G.s,Bs=boxFor(s);if(!G.mv&&!s.ctrl)s.ctrl=autoCtrl(s);
-     drag=G.mv?{s,mv:1,p0:pos(e,Bs),pts0:s.pts.map(q=>q.slice()),ctrl0:s.ctrl?s.ctrl.map(q=>q.slice()):null}:{s,k:G.k,p0:pos(e,Bs),c0:s.ctrl[G.k].slice()};cv.setPointerCapture(e.pointerId);cv.style.cursor=G.mv?'move':'grabbing';return}}
+   {const G=!(mode==='pt'&&pts)&&grabAt(e);if(G){const s=G.s,Bs=boxFor(s);
+     if(G.fk)drag={s,fk:G.fk,p0:pos(e,Bs),q0:s.quad[G.fk].slice()};
+     else if(G.wk!=null){wpInit(s);drag={s,wk:G.wk,c:G.c,d0:G.d0,w0:+s.wp[G.wk]||1}}
+     else if(G.mv)drag={s,mv:1,p0:pos(e,Bs),pts0:s.pts.map(q=>q.slice()),ctrl0:s.ctrl?s.ctrl.map(q=>q.slice()):null,quad0:s.quad?JSON.parse(JSON.stringify(s.quad)):null};
+     else{if(!s.ctrl)s.ctrl=autoCtrl(s);drag={s,k:G.k,p0:pos(e,Bs),c0:s.ctrl[G.k].slice()}}
+     cv.setPointerCapture(e.pointerId);cv.style.cursor=G.mv?'move':'grabbing';return}}
    if(mode==='pt'){(pts=pts||[]).push(p);hint();draw();return}
    cv.setPointerCapture(e.pointerId);drawing={pts:[p],ts:[performance.now()]};draw()};
-  cv.onpointermove=e=>{if(drag){const q=pos(e,boxFor(drag.s)),dx=q[0]-drag.p0[0],dy=q[1]-drag.p0[1],mvp=a=>[+(a[0]+dx).toFixed(4),+(a[1]+dy).toFixed(4),...a.slice(2)];
-    if(drag.mv){drag.s.pts=drag.pts0.map(mvp);if(drag.ctrl0)drag.s.ctrl=drag.ctrl0.map(mvp);draw();return}
-    drag.s.ctrl[drag.k]=mvp(drag.c0);const P=smooth(drag.s.ctrl);drag.s.pts=P;if(!drag.s.sp||drag.s.sp.length!==P.length)drag.s.sp=P.map(()=>1);draw();return}
+  cv.onpointermove=e=>{if(drag&&drag.wk!=null){const[mx,my]=mxy(e),d=Math.hypot(mx-drag.c[0],my-drag.c[1]);drag.s.wp[drag.wk]=+Math.max(.05,Math.min(8,drag.w0*d/drag.d0)).toFixed(3);draw();return}
+   if(drag){const q=pos(e,boxFor(drag.s)),dx=q[0]-drag.p0[0],dy=q[1]-drag.p0[1],mvp=a=>[+(a[0]+dx).toFixed(4),+(a[1]+dy).toFixed(4),...a.slice(2)];
+    if(drag.fk){drag.s.quad[drag.fk]=mvp(drag.q0);regenFace(drag.s);draw();return}
+    if(drag.mv){drag.s.pts=drag.pts0.map(mvp);if(drag.ctrl0)drag.s.ctrl=drag.ctrl0.map(mvp);if(drag.quad0)FK.forEach(k=>drag.s.quad[k]=mvp(drag.quad0[k]));draw();return}
+    drag.s.ctrl[drag.k]=mvp(drag.c0);const P=smooth(drag.s.ctrl);drag.s.pts=P;if(!drag.s.sp||drag.s.sp.length!==P.length)drag.s.sp=P.map(()=>1);if(drag.s.wp)wpInit(drag.s);draw();return}
    if(!drawing&&!anim){const G=!(mode==='pt'&&pts)&&grabAt(e);cv.style.cursor=G?(G.mv?'move':'grab'):''}
    if(!drawing)return;const p=pos(e),l=drawing.pts[drawing.pts.length-1];if(pxDist(p,l)<4)return;drawing.pts.push(p);drawing.ts.push(performance.now());draw()};
   cv.onpointerup=()=>{if(drag){drag=null;cv.style.cursor='';save();ui();return}if(!drawing)return;const d=drawing;drawing=null;if(d.pts.length<4){draw();return}
@@ -8850,6 +8927,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   tl.onclick=e=>{const r=tl.getBoundingClientRect(),y=(e.clientY-r.top)*tl.height/r.height-TLm.fy,i=Math.floor((y-4)/16);if(y<0)return;if(i>=0&&i<S_().length){selS=i;ui()}};
   ov.querySelectorAll('.tj-tabs [data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selS=-1;pts=null;anim=null;ui()});
   ov.querySelectorAll('.tj-mode [data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;pts=null;ui()});
+  ov.querySelector('#tjPaper').onclick=()=>{if(!im())return;const S=S_(),op=tab==='hit',o=op?{anc:'op'}:{},x0=op?.05:.4,x1=op?.95:1.1;const st={...o,ord:Math.max(0,...S.map(x=>+x.ord||0))+1,cap:'sq',quad:{a:[x0,.3],b:[x1,.3],c:[x1,.52],d:[x0,.52],t:[(x0+x1)/2,.2],m:[(x0+x1)/2,.44]}};regenFace(st);S.push(st);selS=S.length-1;save();ui();toast('종이를 놓았어요 — 네모 = 꼭지점, 하늘색 동그라미 = 위·아래 휨')};
   ov.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{if(isDef()){const k=b.dataset.add,wk=im()?.wk||'S';D.push({kind:k,wk:k==='reso'?'':wk,name:'새 기본 궤적',def:1,strokes:{clash:[],hit:[],lock:[]}});cur=D.length-1;selS=-1;vf=null;anim=null;save();ui();return}const R=await TJF.load(12);if(!R)return;const it={img:R[0],kind:b.dataset.add,wk:'',strokes:{clash:[],hit:[]}};if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}D.push(it);cur=D.length-1;selS=-1;vf=null;anim=null;save();ui()});
   $o('#tjRe').onclick=async()=>{const it=im();if(!it)return;const R=await TJF.load(12);if(!R)return;if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}else{it.img=R[0];delete it.frames;delete it.hf}it.ft={};vf=null;save();ui()};
   $o('#tjDefName').onclick=()=>{const it=im();if(!it)return;const n=prompt('기본 궤적 이름',it.name||'');if(n!=null){it.name=n.trim().slice(0,20);save();ui()}};
