@@ -2339,9 +2339,9 @@ function passiveTest(eq){
 }
 
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
-const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,vq:o.vq??2,cam:o.cam??1,uiz:o.uiz??1,v112:o.v112}})();
+const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,vq:o.vq??2,cam:o.cam??1,uiz:o.uiz??1,cspd:o.cspd??1,v112:o.v112}})();
 if(!FXSET.v112){if(+FXSET.fl===2)FXSET.fl=1;FXSET.v112=1;try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}}
-const CSK=()=>FXSET.fast?.55:1;   // §116 처음 속도로 복구 (보통 ×1, 연출 빠르게 ×0.55)
+const CSK=()=>FXSET.fast?.55:1;const CSPD=()=>[1.35,1,.68][Math.max(0,Math.min(2,Math.round(+(FXSET.cspd??1))))];   // §116 처음 속도로 복구 (보통 ×1, 연출 빠르게 ×0.55)
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
 document.addEventListener('DOMContentLoaded',applyFxPrefs);setTimeout(applyFxPrefs,0);
 const saveFxSet=()=>{try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}};
@@ -2411,7 +2411,7 @@ function setPose(f,U,pose){if(!f)return;f.dataset.pose=pose;const im=$('img',f);
  if(im){const anyP=Object.values(U.P||{}).find(Boolean),src=U.P[pose]||U.P.idle||anyP||U.base;f.classList.toggle('real',!!U.P[pose]);f.classList.toggle('posed',!!anyP);if(im.getAttribute('src')!==src)im.src=src}
  else $('.cs-body',f).innerHTML=silSvg(pose)}
 // x는 자기 너비 기준 %. 0=제자리, 음수/양수=왼쪽/오른쪽
-function slide(f,x,ms,ease){f.style.transition=`transform ${ms*CSK()}ms ${ease||'cubic-bezier(.2,.8,.2,1)'}`;f.style.transform=`translateX(${x}%)`}
+function slide(f,x,ms,ease){f.style.transition=`transform ${ms*CSK()*CSPD()}ms ${ease||'cubic-bezier(.2,.8,.2,1)'}`;f.style.transform=`translateX(${x}%)`}
 function csBadge(mod){return`<div class="cs-badge">${mod?`<em>${mod>0?'+':''}${mod}</em>`:''}<b>·</b><div class="cs-dice"></div></div>`}
 const setNum=(b,v)=>{b.textContent=v;reAnim(b,'bump')};
 async function rollBadge(bd,dice,mod,cv,crit,fast){if(!bd)return;const b=$('b',bd),box=$('.cs-dice',bd);let mx=0;
@@ -2460,7 +2460,7 @@ function airCut(el,c,ang,amp=12){const st=el&&el.querySelector('.cs-stage');if(!
  cl.animate(K,{duration:220,easing:'cubic-bezier(.2,.8,.3,1)'});st.animate(K.map(f=>f.transform==='none'?f:{...f,transform:`translate(${-nx*amp*.7}px,${-ny*amp*.7}px)`}),{duration:220,easing:'cubic-bezier(.2,.8,.3,1)'});
  setTimeout(()=>{cl.remove();st.style.clipPath=''},235)}
 async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
- const A=csUnit(d.by),B=csUnit(d.to),none=!d.r,clash=d.clash||[],fast=!!d.multi,T=ms=>sleep(fast?ms*.65:ms);
+ const A=csUnit(d.by),B=csUnit(d.to),none=!d.r,clash=d.clash||[],fast=!!d.multi,FK=fast?.85:1,TM=FK*CSK()*CSPD(),T=ms=>sleep(ms*FK*CSPD());
  const sc=sinColor(d.sin)||'#c23b2a',mode=none?'대응 없음':RESP[d.mode]||'대응';
  host.innerHTML=`<div class="cs ${fast?'compact':''} ${none?'none':''}" data-a="csSkip" style="--c:${sc}"><div class="cs-bg"></div><div class="cs-lines"></div>
   <div class="cs-stage">${figHtml(A,'l')}${figHtml(B,'r')}<div class="cs-spark"></div></div>
@@ -2469,7 +2469,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   <div class="cs-clash"></div><div class="cs-res"></div><div class="cs-flash"></div><div class="cs-skip">클릭해서 건너뛰기${CS.q.length?` (남은 연출 ${CS.q.length}개도 함께)`:''}</div></div>`;
  const el=$('.cs',host),q=s=>$(s,el),fl=q('.cs-fig.l'),fr=q('.cs-fig.r'),bdL=q('.cs-head.l .cs-badge'),bdR=q('.cs-head.r .cs-badge');
  // §136 공용 이펙트 엔진으로 합·적중 (공격 유형별 모양·상황별 패턴)
- const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv)}
+ const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').before(cv)}
  // §141 궤적 그림: 공격 그림(나)·방어 그림(상대)을 합마다 무작위로 골라 자세로 쓰고, 그 그림의 궤적을 그린다
  const TX=typeof TJ!=='undefined'&&FXSET.ptc!==0,idA=srcOf(uOf(d.by)),idB=srcOf(uOf(d.to));if(TX)TJ.mount(el);
  let tjA=null,tjB=null;const tjUse=(U,pose,it)=>{if(!it)return;TJ.arOf(it);U.P[pose]=pImg(TJ.frs(it)[TJ.hfOf(it)]||it.img);U.adj={...U.adj,[pose]:{}}};
@@ -2482,7 +2482,9 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
  const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK));
- const hold=async ms=>{if(!SK)return;el.classList.add('stop');if(typeof VFX!=='undefined')VFX.slow(.05);if(TX)TJ.slow(.05);await HS(ms+40);if(typeof VFX!=='undefined')VFX.slow(1);if(TX)TJ.slow(1);el.classList.remove('stop')};
+ const hold=async ms=>{el.classList.add('stop');if(typeof VFX!=='undefined')VFX.slow(.3);if(TX)TJ.slow(.08);await sleep(Math.round((ms+40)*FK*CSPD()));if(typeof VFX!=='undefined')VFX.slow(1);if(TX)TJ.slow(1);el.classList.remove('stop')};
+ const beatEnd=(last,w,ms)=>{if(last&&w==='A'){setPose(fr,B,'hurt');slide(fl,52,ms*.7);slide(fr,6,ms*.8,'cubic-bezier(.15,.85,.3,1)')}else if(last&&w==='B'){setPose(fl,A,'hurt');slide(fl,-6,ms*.8,'cubic-bezier(.15,.85,.3,1)');slide(fr,-52,ms*.7)}else{slide(fl,28,ms*.7);slide(fr,-28,ms*.7)}};
+ const big1=(last,crit)=>{el.classList.toggle('cs-mid',!last);if(last){reAnim($('.cs-flash',el),'go2');reAnim($('.cs-stage',el),'punch');reAnim(el,crit?'shake2':'shake')}else reAnim($('.cs-spark',el),'go')};
  // 코인: 부딪칠 때마다 하나씩. 진 쪽 코인이 깨지고, 동점이면 둘 다 튕긴다
  const nC=none?0:clash.length+1,coinRow=side=>{const h=q(`.cs-head.${side}`);if(!h||!nC)return null;const r=document.createElement('div');r.className='cs-coins';r.innerHTML='<i class="cs-coin"></i>'.repeat(nC);h.append(r);return r};
  const cL=coinRow('l'),cR=coinRow('r');let ci=0;
@@ -2496,22 +2498,22 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  async function exchange(w,crit){
   if(ci>0)tjPick();wa=tjA?.wk||d.wa||'S';wb=tjB?.wk||d.wb||'S';
   const gA=TX?TJ.groups(tjS(tjA,'clash')):[],gB=TX?TJ.groups(tjS(tjB,'clash')):[],gN=Math.min(5,Math.max(gA.length,gB.length)),fA=TX&&TJ.frs(tjA).length>1,fB=TX&&TJ.frs(tjB).length>1,lkA=TX&&w==='T'?tjS(tjA,'lock'):[],lkB=TX&&w==='T'?tjS(tjB,'lock'):[];
-  const tjBeat=(i,at)=>{const sp=(fast?.65:1)*CSK();if(gA[i])TJ.playOn(fl,gA[i],{col:sc,sp,at,ar:tjA,other:fr});if(gB[i])TJ.playOn(fr,gB[i],{col:cB,sp,at,ar:tjB,other:fl});return{noA:!!gA[i],noB:!!gB[i]}};
+  const tjBeat=(i,at)=>{const sp=TM;if(gA[i])TJ.playOn(fl,gA[i],{col:sc,sp,at,ar:tjA,other:fr});if(gB[i])TJ.playOn(fr,gB[i],{col:cB,sp,at,ar:tjB,other:fl});return{noA:!!gA[i],noB:!!gB[i]}};
   // §144 직접 그린 합 궤적: 순서 번호 하나 = 한 타. 궤적이 그어지는 동안 공격 자세, 다 그어지는 순간 쨍, 그 자세로 잠깐 버팀, 붙은 채로 연타, 한 타 길이 = 궤적 시간
-  if(VX&&!ev&&(gN||fA||fB||lkA.length||lkB.length)){const sp=(fast?.65:1)*CSK(),fk=fast?.65:1,tie=w==='T',n=gN||(tie?2:2+(Math.random()<.45?1:0));let P=null;
+  if(VX&&!ev&&(gN||fA||fB||lkA.length||lkB.length)){const sp=TM,fk=FK,tie=w==='T',n=gN||(tie?2:2+(Math.random()<.45?1:0));let P=null;
    const fLA=fA?TJ.autoLP(tjA,'clash',[]):null,fLB=fB?TJ.autoLP(tjB,'clash',[]):null;
    const inf=g=>g?{first:TJ.sched(g).first,hd:Math.max(0,...g.map(s=>TJ.V(s,'hd')))}:{first:0,hd:0};
-   for(let i=0;i<n;i++){const last=i===n-1&&!tie,ia=inf(gA[i]),ib=inf(gB[i]),lead=Math.max(125,ia.first,ib.first,!gA[i]&&fLA?fLA.lead:0,!gB[i]&&fLB?fLB.lead:0),post=Math.max(clamp(Math.max(ia.hd,ib.hd)+150,170,700),!gA[i]&&fLA?Math.min(700,fLA.post):0,!gB[i]&&fLB?Math.min(700,fLB.post):0);
-    setPose(fl,A,gA[i]||fA?'atk':'dash');setPose(fr,B,gB[i]||fB?'guard':'dash');
+   for(let i=0;i<n;i++){const last=i===n-1&&!tie,ia=inf(gA[i]),ib=inf(gB[i]),lead=Math.max(190,ia.first,ib.first,!gA[i]&&fLA?fLA.lead:0,!gB[i]&&fLB?fLB.lead:0),post=Math.max(clamp(Math.max(ia.hd,ib.hd)+220,260,800),!gA[i]&&fLA?Math.min(700,fLA.post):0,!gB[i]&&fLB?Math.min(700,fLB.post):0);
+    setPose(fl,A,i>0||gA[i]||fA?'atk':'dash');setPose(fr,B,i>0||gB[i]||fB?'guard':'dash');
     if(fA)TJ.framePlay(fl,A,'atk',tjA,'clash',{at:lead*sp,sp,lead,post});if(fB)TJ.framePlay(fr,B,'guard',tjB,'clash',{at:lead*sp,sp,lead,post});
-    if(i===0){slide(fl,44,lead*fk,EI);slide(fr,-44,lead*fk,EI)}else{slide(fl,34,lead*fk*.45);slide(fr,-34,lead*fk*.45);setTimeout(()=>{slide(fl,44,lead*fk*.5,EI);slide(fr,-44,lead*fk*.5,EI)},lead*sp*.5)}
+    if(i===0){slide(fl,36,lead*fk,EI);slide(fr,-36,lead*fk,EI)}else{slide(fl,34,lead*fk*.45);slide(fr,-34,lead*fk*.45);setTimeout(()=>{slide(fl,36,lead*fk*.5,EI);slide(fr,-36,lead*fk*.5,EI)},lead*sp*.5)}
     const nb=tjBeat(i,lead*sp);await T(lead-125);if(!P)P=vxP();
     const bt=VFX.beat({...P,...nb,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&last,sp});await T(125);
     setPose(fl,A,'atk');setPose(fr,B,'guard');
     if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,last&&crit?18:12);
-    SFX.play(last&&crit?'crit':'clang');reAnim($('.cs-flash',el),last?'go2':'go');reAnim($('.cs-stage',el),'punch');reAnim(el,last?'shake2':'shake');
-    await hold(last?90:45);slide(fl,40,post*fk*.7);slide(fr,-40,post*fk*.7);await T(post);if(last)coinHit(w)}
-   if(tie){setPose(fl,A,'atk');setPose(fr,B,'guard');slide(fl,44,120);slide(fr,-44,120);SFX.play('clang');
+    SFX.play(last&&crit?'crit':'clang');big1(last,crit);
+    await hold(last?170:130);beatEnd(last,w,post*fk);await T(post);if(last)coinHit(w)}
+   if(tie){setPose(fl,A,'atk');setPose(fr,B,'guard');slide(fl,36,120);slide(fr,-36,120);SFX.play('clang');
     // 버팀: 그림마다 "버틸 때" 궤적·프레임. 버티는 시간 = 가장 긴 쪽(최소 0.38초)
     const LA=TJ.autoLP(tjA,'lock',lkA),LB=TJ.autoLP(tjB,'lock',lkB),dur=Math.min(1500,Math.max(380,lkA.length||fA?LA.post:0,lkB.length||fB?LB.post:0));
     if(lkA.length)TJ.playOn(fl,lkA,{col:sc,sp,at:TJ.sched(lkA).first*sp,ar:tjA,other:fr});if(lkB.length)TJ.playOn(fr,lkB,{col:cB,sp,at:TJ.sched(lkB).first*sp,ar:tjB,other:fl});
@@ -2519,20 +2521,20 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
     VFX.lock({...P,noA:!!lkA.length,noB:!!lkB.length,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:dur,sp});await T(dur);
     SFX.play('clang');reAnim($('.cs-flash',el),'go2');reAnim(el,'shake2');await hold(80);coinHit(w);await T(60)}}
   else{
-  setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,44,170,EI);slide(fr,-44,170,EI);
+  setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,36,170,EI);slide(fr,-36,170,EI);
   // 첫 타 이펙트는 달려드는 도중에 시작 → 닿는 순간(170ms)에 정확히 터지게
-  let pre=null,P0=null,n0=0;if(VX&&!ev){await T(45);P0=vxP();n0=gN||(w==='T'?2:2+(Math.random()<.45?1:0));const sp0=(fast?.65:1)*CSK(),nb=gN?tjBeat(0,125*sp0):{};pre=VFX.beat({...P0,...nb,h:P0.hb,i:ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&n0===1&&w!=='T',sp:sp0});await T(125)}else await T(170);
+  let pre=null,P0=null,n0=0;if(VX&&!ev){await T(45);P0=vxP();n0=gN||(w==='T'?2:2+(Math.random()<.45?1:0));const sp0=TM,nb=gN?tjBeat(0,125*sp0):{};pre=VFX.beat({...P0,...nb,h:P0.hb,i:ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&n0===1&&w!=='T',sp:sp0});await T(125)}else await T(170);
   setPose(fl,A,'atk');
   if(ev){setPose(fr,B,'evade');fr.classList.add('cs-dodge');afterImg(el,fr);slide(fr,-4,140);reAnim($('.cs-flash',el),'go');SFX.play('miss');await hold(70);coinHit(w);await T(150)}
   else{setPose(fr,B,'guard');
-   if(VX){const P=P0||vxP(),tie=w==='T',n=n0||2,sp=(fast?.65:1)*CSK();
+   if(VX){const P=P0||vxP(),tie=w==='T',n=n0||2,sp=TM;
     for(let i=0;i<n;i++){const last=i===n-1&&!tie;
-     if(i>0){setPose(fl,A,'dash');setPose(fr,B,'dash');slide(fl,22,100);slide(fr,-22,100);await T(100)}
+     if(i>0){slide(fl,24,150);slide(fr,-24,150);await T(150)}
      const bt=i===0&&pre?pre:VFX.beat({...P,...(gN?tjBeat(i,125*sp):{}),h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&last,sp});
-     if(i>0){slide(fl,44,110,EI);slide(fr,-44,110,EI);await T(125)}setPose(fl,A,'atk');setPose(fr,B,'guard');
+     if(i>0){slide(fl,36,125,EI);slide(fr,-36,125,EI);await T(125)}setPose(fl,A,'atk');setPose(fr,B,'guard');
      if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,last&&crit?18:12);
-     SFX.play(last&&crit?'crit':'clang');reAnim($('.cs-flash',el),last?'go2':'go');reAnim($('.cs-stage',el),'punch');reAnim(el,last?'shake2':'shake');
-     await hold(last?90:40);if(last)coinHit(w);await T(last?60:50)}
+     SFX.play(last&&crit?'crit':'clang');big1(last,crit);
+     await hold(last?170:120);if(last){beatEnd(true,w,260);coinHit(w);await T(200)}else await T(170)}
     if(tie){setPose(fl,A,'atk');setPose(fr,B,'guard');SFX.play('clang');const ms=VFX.lock({...P,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:380,sp});await T(380);
      SFX.play('clang');reAnim($('.cs-flash',el),'go2');reAnim(el,'shake2');await hold(80);coinHit(w);await T(60)}}
    else{await impact(el,crit?'crit':'clang',crit);await hold(60);coinHit(w);await T(60)}}}
@@ -2548,20 +2550,20 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  if(!none){(win?bdL:bdR).classList.add('win');shatter(win?bdR:bdL);SFX.play('shatter')}
  const res=q('.cs-res');
  // 마무리: 숨 고르기 → 둘 다 달려듦(대응 없음이면 공격자만) → 승부
- await T(120);const fAh=win&&TX&&TJ.frs(tjA).length>1;setPose(fl,A,fAh?'atk':'dash');slide(fl,44,170,EI);if(!none){setPose(fr,B,'dash');slide(fr,-30,170,EI)}
- if(fAh){const sp=(fast?.65:1)*CSK();TJ.framePlay(fl,A,'atk',tjA,'hit',{at:(170+(big?180:0)+100)*sp,sp,...TJ.autoLP(tjA,'hit',tjS(tjA,'hit'))})}
+ await T(120);const fAh=win&&TX&&TJ.frs(tjA).length>1;setPose(fl,A,fAh?'atk':'dash');slide(fl,36,170,EI);if(!none){setPose(fr,B,'dash');slide(fr,-30,170,EI)}
+ if(fAh){const sp=TM;TJ.framePlay(fl,A,'atk',tjA,'hit',{at:(170+(big?180:0)+100)*sp,sp,...TJ.autoLP(tjA,'hit',tjS(tjA,'hit'))})}
  // 막아냄: 부딪히는 이펙트를 달려드는 도중에 시작해 닿는 순간(170ms)에 터지게 → 닿자마자 공격자가 튕겨 나감
- let blk=null;if(!win&&!none&&!ev&&VX){await T(45);const P=vxP(),gS=TX?tjS(tjB,'hit'):[],aS=TX?tjS(tjA,'clash'):[],sp=(fast?.65:1)*CSK();
+ let blk=null;if(!win&&!none&&!ev&&VX){await T(45);const P=vxP(),gS=TX?tjS(tjB,'hit'):[],aS=TX?tjS(tjA,'clash'):[],sp=TM;
   if(gS.length)TJ.playOn(fr,gS,{col:cB,sp,at:125*sp,ar:tjB,other:fl});if(aS.length)TJ.playOn(fl,TJ.groups(aS)[0],{col:sc,sp,at:125*sp,ar:tjA,other:fr});
   if(TX&&TJ.frs(tjA).length>1){setPose(fl,A,'atk');TJ.framePlay(fl,A,'atk',tjA,'clash',{at:125*sp,sp,...TJ.autoLP(tjA,'clash',aS)})}
   if(TX&&TJ.frs(tjB).length>1){setPose(fr,B,'guard');TJ.framePlay(fr,B,'guard',tjB,'hit',{at:125*sp,sp,...TJ.autoLP(tjB,'hit',gS)})}
   blk={P,bt:VFX.beat({...P,noA:!!aS.length,noB:!!gS.length,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true,sp})};await T(125)}else await T(170);setPose(fl,A,'atk');
- if(win){if(big){q('.cs-stage').classList.add('cs-zoom');await hold(140)}
+ if(win){{const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv)}if(big){q('.cs-stage').classList.add('cs-zoom');await hold(180)}
   const hS=TX?tjS(tjA,'hit'):[];let hP=null,hRun=null;
-  if(hS.length){const sp=(fast?.65:1)*CSK();hRun=TJ.playOn(fl,hS,{col:sc,sp,at:100*sp,ar:tjA,other:fr,onFire:f=>{if(!hP)return;if(f.n>0){SFX.play('hit');reAnim($('.cs-flash',el),'go');reAnim(fr,'cs-hit');slide(fr,(none?0:-30)+Math.min(16,5*f.n),70)}VFX.contact({x:hP.t.x+(Math.random()-.5)*20,y:hP.t.y+(Math.random()-.5)*30,ka:wa,k:f.n?.8:big?1.5:1.2,h:hP.h,gy:hP.gy})}})}
+  if(hS.length){const sp=TM;hRun=TJ.playOn(fl,hS,{col:sc,sp,at:100*sp,ar:tjA,other:fr,onFire:f=>{if(!hP)return;if(f.n>0){SFX.play('hit');reAnim($('.cs-flash',el),'go');reAnim(fr,'cs-hit');slide(fr,(none?0:-30)+Math.min(16,5*f.n),70)}VFX.contact({x:hP.t.x+(Math.random()-.5)*20,y:hP.t.y+(Math.random()-.5)*30,ka:wa,k:f.n?.8:big?1.5:1.2,h:hP.h,gy:hP.gy})}})}
   slide(fl,none?62:68,120,EI);await T(100);
   setPose(fr,B,'hurt');fr.classList.add('cs-hit');if(VX){const P=vxP();if(hS.length)hP=P;else VFX.hitFx({k:wa,a:P.a,t:P.t,col:sc,big,h:P.h,gy:P.gy})}else cutFx(el,fr,big);if(!hRun)slide(fr,34,420);
-  await impact(el,big?'heavy':'hit',true);await hold(big?120:60);
+  await impact(el,big?'heavy':'hit',true);await hold(big?200:140);
   if(hRun){const end=Math.max(...hS.map((s,i)=>(hRun.sc.st[i]??0)+TJ.V(s,'du')));for(let k=0;k<200&&hRun.clock<end+40&&!CS.skip;k++)await sleep(16);slide(fr,34,420);await T(120)}q('.cs-stage').classList.remove('cs-zoom');
   dmgFx(el,fr,d.dmgs);res.innerHTML=`<b class="hit">${big?'CRITICAL':'적중'}</b>`}
  else if(none){slide(fl,80,260);await T(200);SFX.play('miss');res.innerHTML='<b class="miss">빗나감</b>'}
@@ -2570,7 +2572,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   res.innerHTML=`<b class="miss">회피!</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  else{setPose(fr,B,'guard');if(blk&&FXSET.ptc!==0)airCut(el,blk.P.c,blk.bt.ang,16);
   // 닿는 순간 소리·번쩍 → 아주 짧게 멈칫 → 공격자 바로 튕겨 나감(빠르게 밀렸다 천천히 멈춤), 방어자는 한 발 밀고 들어감
-  el.classList.add('stop');reAnim($('.cs-flash',el),'go');reAnim($('.cs-spark',el),'go');reAnim($('.cs-stage',el),'punch');SFX.play('block');await hold(45);el.classList.remove('stop');
+  el.classList.add('stop');reAnim($('.cs-flash',el),'go');reAnim($('.cs-spark',el),'go');reAnim($('.cs-stage',el),'punch');SFX.play('block');await hold(120);el.classList.remove('stop');
   setPose(fl,A,'hurt');guardFx(el,fr);reAnim(el,'shake');slide(fl,-22,200,'cubic-bezier(.15,.85,.3,1)');slide(fr,14,180,'cubic-bezier(.15,.85,.3,1)');await T(120);
   res.innerHTML=`<b class="miss">${d.mode==='guard'?'방어!':'막아냄'}</b>${d.resolution==='directResponseWin'?'<small>반격 기회</small>':''}`}
  await T(win?1150:950);
@@ -3069,7 +3071,7 @@ document.addEventListener('keydown',ev=>{if(UI.tab!=='talk'||M.fn||ev.ctrlKey||e
 
 
 function fxPrefsHTML(){const o=(k,L)=>`<select data-c="fxSet" data-k="${k}">${L.map(([v,n])=>`<option value="${v}" ${+FXSET[k]===v?'selected':''}>${n}</option>`).join('')}</select>`;
- return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'강 (부딪히는 곳 + 화면 옅게)'],[1,'약 (부딪히는 곳만)'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">이펙트 품질${o('vq',[[3,'높음'],[2,'보통'],[1,'낮음 (흐림·빛 번짐 끄기)']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
+ return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">합 연출 속도${o('cspd',[[0,'느리게'],[1,'보통'],[2,'빠르게']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'강 (부딪히는 곳 + 화면 옅게)'],[1,'약 (부딪히는 곳만)'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">이펙트 품질${o('vq',[[3,'높음'],[2,'보통'],[1,'낮음 (흐림·빛 번짐 끄기)']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
 function richHelpModal(){const r=[['{떨림}무, 무슨…{/}','떨리는 글자'],['{외침}멈춰!{/}','크고 굵게 떨림'],['{속삭임}비밀이야{/}','작고 흐리게'],['{크게} {작게} {굵게} {기울임} {흐림}','모양'],['{빨강} {파랑} {금색} {회색}','색'],['{물결}두둥실{/}','물결치는 글자'],['{/}','마지막으로 연 모양 닫기 (겹쳐 쓸 수 있어요)'],['{느리게} {빠르게} {보통}','여기부터 타자 속도'],['그래서{쉼 1.5}결국…','잠깐 멈춤 (초, 생략하면 0.6)'],['안 돼!{흔들림 강}','그 글자에 닿으면 흔들림 (약·중·강)'],['{섬광} {붉은 섬광}','그 순간 번쩍'],['{효과음 쾅}','그 순간 효과음'],['괜찮아…{표정 웃음}거짓말이야','말하는 중에 표정 바꾸기'],['{동작 놀람}','말하는 캐릭터 동작 (놀람·떨림·끄덕…)']];
  return`<div class="rh">${r.map(([c,d])=>`<code>${esc(c)}</code><span>${esc(d)}</span>`).join('')}</div><p class="small muted" style="margin-top:10px">대사 기록에는 꾸미기 표시가 빠진 글만 남아요. '…', 마침표 뒤에는 자동으로 살짝 쉬어요. 대본에서도 그대로 쓸 수 있어요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 A.richHelp=()=>openModal('대사 꾸미기',richHelpModal);
@@ -5881,7 +5883,7 @@ body.amb-cold #tkBg,body.amb-cold #btBoard,body.amb-cold .mc-img{filter:grayscal
 .rd-ax{position:relative;display:inline-block;max-width:160px;background:#111;cursor:crosshair}.rd-ax img{display:block;max-width:160px;max-height:200px}.rd-ax i{position:absolute;width:12px;height:12px;margin:-6px;border:2px solid #fff;border-radius:50%;background:#e33;box-shadow:0 0 0 1px #000;pointer-events:none}
 
 /* §136 합 연출 위 이펙트 캔버스 */
-.cs>.vfx-cv{position:absolute}
+.cs>.vfx-cv{position:absolute;z-index:0}
 /* §141 궤적 그림 */
 .tj-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
 #tjOv{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.84);display:flex;align-items:center;justify-content:center}
@@ -5939,7 +5941,10 @@ body.b25 .bt-tgt .sd-i{filter:drop-shadow(0 0 2px #e23a2e) drop-shadow(0 0 10px 
 body.b25 .has-sd>em,body.b25 .has-sd>.bt-hp{display:none}
 body.b25 .has-sd .bt-die{position:absolute;left:4%;top:auto;bottom:50%;transform:scale(.62);transform-origin:0 100%;z-index:2}
 body.b25 .has-sd .bt-stt{z-index:2}
-body.b25 .sd-flip .sd-i{transform:scaleX(-1)}
+body.b25 .sd-flip .sd-i{--fx:-1}
+/* §154 크기 맞춤·바라보는 방향 */
+body.b25 .sd .sd-i{height:var(--nh,100%);width:auto;max-width:none;max-height:none;object-fit:fill;transform-origin:50% 100%;transform:translateY(calc(var(--ng,0) * 100% - var(--py,0%))) scale(calc(var(--fx,1) * var(--ps,1)),var(--ps,1))}
+body.b25 .sd.sd-boss{height:215%;width:150%}
 body.b25 .sd-run .sd{transform:translateX(-50%) skewX(-7deg)}body.b25 .sd-run.sd-flip .sd{transform:translateX(-50%) skewX(7deg)}
 body.b25 .sd-fade .sd-i{opacity:.25;pointer-events:none}
 body.b25 .sd-ghost{pointer-events:none!important;z-index:1;animation:sdGhost .42s ease-out both}body.b25 .sd-ghost .sd-i{filter:brightness(1.8) saturate(.3) blur(.5px);pointer-events:none}body.b25 .sd-ghost .sd-base{display:none}
@@ -6072,6 +6077,20 @@ body.b25 .sd-dust.big{animation:sdDust2 1.1s ease-out both}@keyframes sdDust2{fr
 #cineBlk .cb-big small{display:block;font:700 clamp(16px,1.8vw,28px) var(--fb);color:#f3e7cf;letter-spacing:.1em;margin-top:6px}
 #cineBlk.cb-bigon .cb-big{display:block;animation:cbBig 1.9s cubic-bezier(.2,.9,.3,1) .45s both}
 @keyframes cbBig{0%{opacity:0;transform:scale(2.2)}10%{opacity:1;transform:scale(.96)}16%{transform:scale(1)}85%{opacity:1}100%{opacity:0}}
+
+/* §155 합 연출 가독성: 온몸이 보이게·바닥선·진한 배경·멈춤 순간 캐릭터 강조·이펙트는 캐릭터 뒤 */
+.cs-bg{background:radial-gradient(ellipse 70% 55% at 50% 66%,color-mix(in srgb,var(--c) 20%,#0a0402),rgba(8,3,2,.94) 62%,#030100)!important}
+.cs.in .cs-lines{opacity:.35!important}
+.cs-fig,.cs.compact .cs-fig{bottom:11%!important;height:68%!important;width:34%!important}
+.cs-fig.l{left:8%}.cs-fig.r{right:8%}
+.cs-stage::before{content:"";position:absolute;left:0;right:0;bottom:calc(11% - 2px);height:22%;transform:translateY(100%);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 26%,#2a1a10),transparent 85%);opacity:.75;pointer-events:none}
+.cs-stage::after{content:"";position:absolute;left:4%;right:4%;bottom:11%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,220,170,.55) 20%,rgba(255,220,170,.55) 80%,transparent);pointer-events:none}
+.cs-fig .cs-body img{filter:drop-shadow(0 0 2px rgba(255,235,200,.8)) drop-shadow(0 0 8px var(--fc)) drop-shadow(0 12px 10px rgba(0,0,0,.7))}
+.cs-fig.r .cs-body img{filter:drop-shadow(0 0 2px rgba(255,200,180,.8)) drop-shadow(0 0 8px #ff6a3d) drop-shadow(0 12px 10px rgba(0,0,0,.7))}
+.cs.stop .cs-fig .cs-body img{filter:brightness(1.18) contrast(1.08) drop-shadow(0 0 3px #fff) drop-shadow(0 0 14px var(--fc)) drop-shadow(0 12px 10px rgba(0,0,0,.7))}
+.cs.stop .cs-fig.r .cs-body img{filter:brightness(1.18) contrast(1.08) drop-shadow(0 0 3px #fff) drop-shadow(0 0 14px #ff6a3d) drop-shadow(0 12px 10px rgba(0,0,0,.7))}
+.cs .vfx-cv,.cs .tj-cv{transition:opacity .08s}.cs.stop .vfx-cv{opacity:.55}.cs.stop .tj-cv{opacity:.75}.cs.cs-mid .vfx-cv{opacity:.62}.cs.cs-mid.stop .vfx-cv{opacity:.42}
+.cs-fig.l .cs-body,.cs-fig.r .cs-body{transition:transform .14s,filter .14s}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -8692,7 +8711,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
  const bd=()=>$('#btBoard'),wr=()=>$('.bt-wrap');
  function fitSc(){const b=bd(),w=wr();if(!b||!w)return 1;const bw=b.offsetWidth,bh=b.offsetHeight,cs=bw/W(),ct=Math.cos(C.pitch*Math.PI/180),r=((C.yaw%360)+360)%360,sd=Math.abs(Math.sin(r*Math.PI/180)),cw=Math.abs(Math.cos(r*Math.PI/180));
   const fw=bw*cw+bh*sd,fh=(bh*cw+bw*sd)*ct+cs*2.2;return Math.min(w.clientWidth/fw,w.clientHeight/fh)*.94}
- function put(){const b=bd(),w=wr();if(!b||!w)return;for(const k of['cx','cy','zoom','yaw','pitch','fov','dutch'])if(!Number.isFinite(C[k]))C[k]=k==='cx'?W()/2:k==='cy'?H()/2:k==='zoom'?S.zoom:k==='yaw'?S.rot:k==='pitch'?S.tilt:k==='fov'?1700:0;const cs=b.offsetWidth/W();w.style.setProperty('--cs',cs+'px');w.style.setProperty('--wh',(cs*.85).toFixed(1)+'px');
+ function put(){const b=bd(),w=wr();if(!b||!w)return;if(S.on&&Math.abs(C.yaw-(face.y??1e9))>3){face.y=C.yaw;try{face()}catch{}}for(const k of['cx','cy','zoom','yaw','pitch','fov','dutch'])if(!Number.isFinite(C[k]))C[k]=k==='cx'?W()/2:k==='cy'?H()/2:k==='zoom'?S.zoom:k==='yaw'?S.rot:k==='pitch'?S.tilt:k==='fov'?1700:0;const cs=b.offsetWidth/W();w.style.setProperty('--cs',cs+'px');w.style.setProperty('--wh',(cs*.85).toFixed(1)+'px');
   if(!S.on){b.style.removeProperty('transform');return}
   const zx=Math.max(0,Math.min(W(),C.cx)),zy=Math.max(0,Math.min(H(),C.cy)),idle=0,idl=0;
   b.style.setProperty('--tilt',C.pitch+'deg');b.style.setProperty('--rot',(C.yaw+idl)+'deg');w.style.setProperty('--tilt',C.pitch+'deg');w.style.setProperty('--rot',(C.yaw+idl)+'deg');
@@ -8738,7 +8757,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
  function frame2(a,b){const A=uc(a),B=uc(b);if(!A||!B||!S.on||performance.now()<manualUntil||qOn)return;const d=Math.max(Math.abs(B.x-A.x),Math.abs(B.y-A.y)),z=Math.max(S.zoom,Math.min(S.zoom*NZ(),S.zoom*W()/(d+6)));
   go({cx:(A.x+B.x)/2,cy:(A.y+B.y)/2,zoom:z,yaw:S.rot,pitch:S.tilt,fov:1700,dutch:0},600)}
  // 합 들어갈 때: 확 밀고 들어가며 원근이 넓어짐(돌리 줌) / 나올 때 제자리
- function sClashIn(a,b){if(!S.on||S.cine==='off')return;const A=uc(a),B=uc(b)||A;if(!A)return;T0.back={...C};go({cx:(A.x+B.x)/2,cy:(A.y+B.y)/2,zoom:C.zoom*1.35,fov:S.cine==='rich'?900:1500},380,{ease:t=>t*t})}
+ function sClashIn(a,b){if(qOn){skipF=true;block(false)}if(!S.on||S.cine==='off')return;const A=uc(a),B=uc(b)||A;if(!A)return;T0.back={...C};go({cx:(A.x+B.x)/2,cy:(A.y+B.y)/2,zoom:C.zoom*1.35,fov:S.cine==='rich'?900:1500},380,{ease:t=>t*t})}
  function sClashOut(){if(!S.on)return;C.fov=1700;home(500)}
  function sPunch(k,big){if(!S.on||S.cine==='off'||!big)return;const p=uc(k);if(!p||tw)return;const z0=C.zoom;go({zoom:z0*1.12},110).then(()=>go({zoom:z0},220))}
  // ---------- 바닥 그림자·고리, 등신대 간판
@@ -8750,8 +8769,25 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
    {const hp=tok.querySelector('.bt-hp b');f.innerHTML=`<i class="fs-lt"></i><i class="fs-sh"></i>${hp?`<i class="fs-hp"><b style="width:${hp.style.width}"></b></i>`:''}<span class="fs-nm">${esc(uName(u))}</span>`}
    if(PEND.has(k))tok.classList.add('bt-wait');frag.append(f);
    if(!S.on)continue;const idle=poseSrc(u,'idle')||uImg(u);if(!idle||tok.querySelector('.sd'))continue;const sd=document.createElement('span');sd.className='sd';
-   sd.innerHTML=`<img class="sd-i" src="${esc(idle)}" alt="" draggable="false"><i class="sd-base"></i>`;sd.dataset.idle=idle;tok.classList.add('has-sd');tok.prepend(sd)}b.append(frag)}
- const setPoseImg=(tok,src,ms)=>{const im=tok?.querySelector('.sd-i');if(!im||!src)return;im.src=src;clearTimeout(im._t);if(ms)im._t=setTimeout(()=>{const s=tok.querySelector('.sd');if(s)im.src=s.dataset.idle},ms)};
+   sd.innerHTML=`<img class="sd-i" src="${esc(idle)}" alt="" draggable="false"><i class="sd-base"></i>`;sd.dataset.idle=idle;if(CH(srcOf(u))?.boss?.on)sd.classList.add('sd-boss');adjImg(sd.firstChild,u,'idle');
+   const nv=NORM.get(idle);if(nv&&!nv.then)normSet(sd,nv);else normOf(idle,v=>normSet(sd,v));tok.classList.add('has-sd');tok.prepend(sd)}b.append(frag);face()}
+ // §154 그림 크기 맞춤: 대기 그림의 실제 몸(투명 아닌 부분) 높이를 재서, 모든 캐릭터의 서 있는 키를 같게. 다른 자세는 같은 캔버스 축척 그대로
+ const NORM=new Map();
+ function normOf(src,cb){const o=NORM.get(src);if(o){if(o.then)o.then(cb);else cb(o);return}
+  const pr=new Promise(res=>{const im=new Image(),fin=v=>{NORM.set(src,v);res(v)};im.onload=()=>{let v={f:1,g:0};try{const H=200,Wd=Math.max(1,Math.round(im.naturalWidth/im.naturalHeight*H)),c=document.createElement('canvas');c.width=Wd;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,Wd,H);const d=x.getImageData(0,0,Wd,H).data,row=y=>{for(let i=0;i<Wd;i++)if(d[(y*Wd+i)*4+3]>28)return true;return false};
+    let t=0,bm=H-1;while(t<H&&!row(t))t++;while(bm>t&&!row(bm))bm--;if(bm>t)v={f:Math.max(.25,(bm-t+1)/H),g:(H-1-bm)/H}}catch{}fin(v)};im.onerror=()=>fin({f:1,g:0});im.src=src});
+  NORM.set(src,pr);pr.then(cb)}
+ const normSet=(sd,v)=>{sd.style.setProperty('--nh',(90/v.f).toFixed(1)+'%');sd.style.setProperty('--ng',v.g.toFixed(3))};
+ const poseKey=(u,p)=>{const P=CH(srcOf(u))?.poses||{};return pImg(P[p])?p:p==='move'&&pImg(P.dash)?'dash':''};
+ const adjImg=(im,u,p)=>{const k=poseKey(u,p),j=k?CH(srcOf(u))?.poseAdj?.[k]||{}:{};im.style.setProperty('--ps',(+j.s||100)/100);im.style.setProperty('--py',(+j.y||0)+'%')};
+ // §154 바라보는 방향: 그림은 오른쪽을 보게 그림(규격) → 화면에서 상대가 왼쪽이면 뒤집기. 공격 중이면 공격 상대, 아니면 가장 가까운 적
+ function face(){const b=bd();if(!b||!S.on)return;const r=C.yaw*Math.PI/180,co=Math.cos(r),sn=Math.sin(r),sx=u=>(+u.x)*co-(+u.y)*sn,U=units().filter(u=>Number.isFinite(+u.x)&&Number.isFinite(+u.y)),atk=ATK(),live=atk&&atk.phase!=='done';
+  const down=k=>!!b.querySelector(`.bt-unit.bt-down[data-v="${CSS.escape(k)}"]`),foe=u=>u.side==='foe';
+  for(const tok of b.querySelectorAll('.bt-unit.has-sd')){if(tok.classList.contains('sd-run'))continue;const k=tok.dataset.v,u=U.find(z=>z.k===k);if(!u)continue;let t=null;
+   if(live){const tg=atk.multi?(atk.T||[]).map(e=>e.k):[atk.to];if(atk.by===k)t=U.find(z=>z.k===tg[0]);else if(tg.includes(k))t=U.find(z=>z.k===atk.by)}
+   if(!t){let best=1e9;for(const z of U){if(z.k===k||foe(z)===foe(u)||down(z.k))continue;const d=Math.hypot(z.x-u.x,z.y-u.y);if(d<best){best=d;t=z}}}
+   if(!t)continue;const dx=sx(t)-sx(u);if(Math.abs(dx)>.05)tok.classList.toggle('sd-flip',dx<0)}}
+ const setPoseImg=(tok,src,ms,u,p)=>{const im=tok?.querySelector('.sd-i');if(!im||!src)return;im.src=src;if(u)adjImg(im,u,p);clearTimeout(im._t);if(ms)im._t=setTimeout(()=>{const s=tok.querySelector('.sd');if(s){im.src=s.dataset.idle;if(u)adjImg(im,u,'idle')}},ms)};
  // ---------- 이동: 이동(또는 돌진) 그림으로 바뀌어 미끄러지듯 달려감 + 잔상·먼지, 방향 따라 좌우 뒤집기
  function moves(){const b=bd();if(!b)return;const w=W(),h=H(),now=performance.now(),atk=ATK();
   for(const tok of b.querySelectorAll('.bt-unit')){const k=tok.dataset.v,u=uOf(k);if(!u)continue;const x=+u.x,y=+u.y,p=PP[k];if(!Number.isFinite(x)||!Number.isFinite(y))continue;let a=ANI[k];
@@ -8762,7 +8798,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
    const el=[tok,b.querySelector(`.bt-fs[data-v="${CSS.escape(k)}"]`)].filter(Boolean),f=(now-a.t0)/a.d,cx=a.fx+(a.tx-a.fx)*f,cy=a.fy+(a.ty-a.fy)*f,rem=a.d*(1-f);
    for(const e of el){e.style.transition='none';e.style.left=cx/w*100+'%';e.style.top=cy/h*100+'%';void e.offsetWidth;e.style.transition=`left ${rem}ms cubic-bezier(.3,.1,.3,1),top ${rem}ms cubic-bezier(.3,.1,.3,1),transform .55s`;e.style.left=a.tx/w*100+'%';e.style.top=a.ty/h*100+'%'}
    if(S.on&&tok.querySelector('.sd')){const r=C.yaw*Math.PI/180,sx=(a.tx-a.fx)*Math.cos(r)-(a.ty-a.fy)*Math.sin(r);tok.classList.toggle('sd-flip',sx<-.01);tok.classList.add('sd-run');
-    setPoseImg(tok,poseSrc(u,a.dash?'dash':'move')||poseSrc(u,'dash'),rem+40);setTimeout(()=>tok.classList.remove('sd-run','sd-flip'),rem+60);ghosts(tok,rem)}
+    setPoseImg(tok,poseSrc(u,a.dash?'dash':'move')||poseSrc(u,'dash'),rem+40,u,a.dash?'dash':'move');setTimeout(()=>{tok.classList.remove('sd-run');face()},rem+60);ghosts(tok,rem)}
    else{tok.classList.add('b25-walk');tok.style.setProperty('--wd',rem/Math.max(1,a.n)+'ms');tok.style.setProperty('--wn',a.n)}}
   first=false}
  function ghosts(tok,ms){const b=bd();if(!b)return;const n=Math.min(7,Math.max(2,Math.round(ms/90)));for(let i=1;i<=n;i++)setTimeout(()=>{if(!tok.isConnected)return;const g=tok.cloneNode(true);g.removeAttribute('data-a');g.classList.add('sd-ghost');g.querySelectorAll('em,.bt-hp,.bt-die,.bt-stt,.bt-face').forEach(e=>e.remove());
@@ -8829,7 +8865,7 @@ const B25=(()=>{const KEY='limbus-b25';const D0={on:true,tilt:52,rot:0,zoom:1,vc
    <div class="cc-row"><button data-b="wmr">창 배치 처음대로</button></div><small class="muted">맵 빈 곳·오른쪽 버튼 끌기 = 화면 옮기기 · 휠 = 확대/축소</small></div>`;WM.fix(c)}
  function paint(){document.body.classList.toggle('b25',!!S.on);if(!bd()){first=true;return}ctl();standees();moves();watch();put();clearTimeout(arcT);arcs();arcT=setTimeout(arcs,650);camRecv()}
  // 맞으면 휘청 + 피격 그림 잠깐 + 카메라 펀치
- function hit(k,big){const t=$(`#btBoard .bt-unit[data-v="${CSS.escape(k)}"]`);if(!t)return;t.classList.remove('b25-hit');void t.offsetWidth;t.classList.add('b25-hit');setTimeout(()=>t.classList.remove('b25-hit'),600);const u=uOf(k);if(u)setPoseImg(t,poseSrc(u,'hurt'),650);sPunch(k,big)}
+ function hit(k,big){const t=$(`#btBoard .bt-unit[data-v="${CSS.escape(k)}"]`);if(!t)return;t.classList.remove('b25-hit');void t.offsetWidth;t.classList.add('b25-hit');setTimeout(()=>t.classList.remove('b25-hit'),600);const u=uOf(k);if(u)setPoseImg(t,poseSrc(u,'hurt'),650,u,'hurt');sPunch(k,big)}
  // 대기 중 숨 쉬는 카메라
  addEventListener('resize',()=>{if(bd())put()});
  return{paint,hit,put,sClashIn,sClashOut,home,get S(){return S},get C(){return C},get busy(){return qOn}}})();
