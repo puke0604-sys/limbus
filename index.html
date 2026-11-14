@@ -1891,6 +1891,24 @@ function btAddUnit(u){const c=freeCell(u.side);if(!c)return toast('빈 칸이 �
 /* 화면 */
 UI.bt={kwSel:'화상',kwN:1,pick:false,sel:'',mode:'',gmDmg:false,hov:null,reach:null,paintTo:null,dmgT:1,dmgN:1};
 // 시험용 예시 적
+// §161 예시 캐릭터: 아군 3(참격·관통·타격) + 적 2 + 보스 1. 그림은 비워 둠(사용자가 넣음). 캐릭터마다 질감이 다른 궤적 묶음(그림 없는 궤적)을 넣어 둠
+function sampleParty(){const sk=o=>({...blankSkill(),...o}),D=(t,n)=>({type:'damage',t,n}),K=(kw,n)=>({type:'keyword',kw,n});
+ const traj=(wk,tx,ex={})=>typeof TJ==='undefined'?[]:JSON.parse(JSON.stringify(TJ.BUILTIN.filter(x=>x.wk===wk))).map(it=>{delete it.def;for(const t of['clash','hit','lock'])for(const st of it.strokes[t]||[]){if(st.mode!=='cuts')st.tx=tx;Object.assign(st,ex)}return it});
+ const mk=(o)=>{const c=blankChar();c.sample='ex1';c.kind=o.foe?'foe':'pc';c.foe=!!o.foe;c.wk=o.wk;c.info={...c.info,name:o.name,concept:o.concept,look:o.look,job:o.job||''};c.fight={...c.fight,weapon:o.weapon,range:o.range||'근거리',role:o.role,style:o.style};
+  (o.sins||[]).forEach(n=>{if(c.sins[n])c.sins[n]={on:true,why:'예시'}});if(o.hp)c.hp=o.hp;if(o.boss)c.boss={on:true,phases:[]};c.fin={...(c.fin||{}),line:o.line||''};c.skills=o.skills.map(x=>sk({wk:o.wk,...x}));c.traj=traj(o.wk,o.tx,o.ex);return c};
+ return[
+  mk({name:'서하',concept:'예시 아군 · 참격',look:'긴 외날검을 든 검사',job:'해결사',weapon:'외날검',role:'딜러',style:'빠르게 베고 출혈을 쌓는다',wk:'S',tx:'blade',ex:{ec:2,eg:40},sins:['분노','질투'],line:'한 번이면 충분해.',
+   skills:[{name:'가로 가르기',sin:'분노',kind:'근접',range:1,desc:'크게 가로로 벤다.',fx:[D(1,1),K('출혈',2)]},{name:'연속 베기',sin:'질투',kind:'근접',range:1,desc:'두 번 연달아 벤다.',fx:[D(1,2)]},{name:'받아 흘리기',sin:'나태',kind:'근접',range:1,role:'반격 전용',desc:'공격을 흘리고 되벤다.',fx:[D(1,1)]}]}),
+  mk({name:'도윤',concept:'예시 아군 · 관통',look:'가느다란 창을 든 창잡이',job:'경비',weapon:'창',role:'견제',style:'거리를 두고 찔러 파열을 쌓는다',wk:'P',tx:'bolt',ex:{gl:1.6},sins:['우울','오만'],line:'거기까지야.',
+   skills:[{name:'곧은 찌르기',sin:'우울',kind:'근접',range:2,desc:'곧게 찌른다.',fx:[D(1,1),K('파열',2)]},{name:'삼단 찌르기',sin:'오만',kind:'근접',range:2,desc:'세 번 빠르게 찌른다.',fx:[D(1,2)]},{name:'빗겨 찌르기',sin:'우울',kind:'근접',range:1,role:'반격 전용',desc:'빗겨내고 찌른다.',fx:[D(1,1)]}]}),
+  mk({name:'마루',concept:'예시 아군 · 타격',look:'큰 망치를 멘 덩치',job:'철거공',weapon:'망치',role:'탱커',style:'묵직하게 내려쳐 진동을 쌓는다',wk:'B',tx:'fire',ex:{em:.6},sins:['나태','탐식'],line:'비켜. 무너진다.',
+   skills:[{name:'내려찍기',sin:'나태',kind:'근접',range:1,desc:'머리 위에서 내려찍는다.',fx:[D(2,1),K('진동',2)]},{name:'후려치기',sin:'탐식',kind:'근접',range:1,desc:'옆으로 크게 후려친다.',fx:[D(1,1),{type:'pull',n:1}]},{name:'버텨 치기',sin:'나태',kind:'근접',range:1,role:'반격 전용',desc:'버틴 뒤 되받아친다.',fx:[D(1,1)]}]}),
+  mk({foe:1,name:'녹슨 칼잡이',concept:'예시 적 · 참격',look:'녹슨 칼을 끄는 부랑자',weapon:'녹슨 칼',role:'돌격',style:'달려들어 마구 벤다',wk:'S',tx:'blood',sins:['분노'],hp:[[0,0,0],[0,0],[0],[]],
+   skills:[{name:'마구 베기',sin:'분노',kind:'근접',range:1,desc:'마구잡이로 벤다.',fx:[D(1,1),K('출혈',1)]},{name:'달려 베기',sin:'분노',kind:'근접',range:2,desc:'달려들며 벤다.',fx:[D(1,1)]},{name:'되받아 베기',sin:'질투',kind:'근접',range:1,role:'반격 전용',desc:'막고 되벤다.',fx:[D(1,1)]}]}),
+  mk({foe:1,name:'가시 창병',concept:'예시 적 · 관통',look:'가시 돋친 창을 든 병사',weapon:'가시 창',role:'견제',style:'뒤에서 찔러 댄다',wk:'P',tx:'thorn',sins:['우울'],hp:[[0,0,0],[0,0],[0],[]],
+   skills:[{name:'가시 찌르기',sin:'우울',kind:'근접',range:2,desc:'가시 창으로 찌른다.',fx:[D(1,1),K('파열',1)]},{name:'창 던지기',sin:'오만',kind:'원거리',range:4,desc:'창을 던진다.',fx:[D(1,1)]},{name:'창대 걷어내기',sin:'우울',kind:'근접',range:1,role:'반격 전용',desc:'창대로 걷어낸다.',fx:[D(1,1)]}]}),
+  mk({foe:1,boss:1,name:'무너진 종지기',concept:'예시 보스 · 타격',look:'금 간 종을 끌고 다니는 거인',weapon:'금 간 종',role:'보스',style:'종을 휘둘러 넓게 짓누른다',wk:'B',tx:'smoke',ex:{em:.5,w:2.4},sins:['나태','오만'],hp:[[0,0,0,0,0],[0,0,0,0],[0,0,0],[0,0]],
+   skills:[{name:'종 내려찍기',sin:'나태',kind:'근접',range:1,desc:'종을 내려찍는다.',fx:[D(2,1),K('진동',3)]},{name:'종 휘두르기',sin:'오만',kind:'근접',range:2,desc:'종을 크게 휘두른다.',fx:[D(1,2),{type:'pull',n:1}]},{name:'울림',sin:'나태',kind:'근접',range:1,role:'반격 전용',desc:'종의 울림으로 되받아친다.',fx:[D(1,1),K('진동',2)]}]})]}
 function sampleFoe(){const c=blankChar(),sk=(o)=>({...blankSkill(),...o});c.foe=true;
  c.info={...c.info,name:'녹슨 사슬 집행인',concept:'시험용 예시 적',look:'녹슨 사슬을 몸에 감은 집행인'};c.hp=[[0,0,0,0],[0,0,0],[0,0],[0]];
  c.fight={...c.fight,weapon:'사슬',range:'근거리',role:'견제',style:'끌어당겨 출혈을 쌓는다'};
@@ -2041,7 +2059,7 @@ function masterPanel(B){const placed=new Set(units().map(u=>u.char).filter(Boole
  <p class="small muted bt-hint">${m==='wall'?'칸을 누르거나 끌어서 벽을 칠하고 지웁니다.':m==='free'?'토큰을 고른 뒤 빈 칸을 누르면 이동력 없이 옮깁니다 (GM 수동 이동).':'현재 턴 캐릭터를 고르면 갈 수 있는 칸이 표시됩니다.'}</p>
  <label class="f">아군 배치 (플레이어·NPC)<select data-c="btPc"><option value="">${free.length?'시트 선택':'배치할 시트 없음'}</option>${[['pc','플레이어'],['npc','NPC']].map(([k,n])=>{const L=free.filter(c=>kindOf(c)===k);return L.length?`<optgroup label="${n}">${L.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</optgroup>`:''}).join('')}</select></label>
  <label class="f">적 배치 (적 시트에서 꺼내기, 체력은 개체마다 따로)<select data-c="btFoe"><option value="">${foes.length?'적 시트 선택':'적 시트 없음'}</option>${foes.map(c=>`<option value="${c.id}">${esc(c.info.name||'(이름 없음)')}</option>`).join('')}</select></label>
- <div class="row"><button class="btn sm" data-a="foeNew">적 시트 만들기</button><button class="btn sm" data-a="rosterNew" data-v="npc">NPC 시트 만들기</button><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="foeSample">예시 적 만들기</button></div>
+ <div class="row"><button class="btn sm" data-a="foeNew">적 시트 만들기</button><button class="btn sm" data-a="rosterNew" data-v="npc">NPC 시트 만들기</button><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="foeSample">예시 적 만들기</button><button class="btn sm" data-a="sampleLoad">예시 캐릭터 불러오기</button></div>
  <div class="row"><button class="btn sm" data-a="btAdd" data-v="foe">이름만 있는 적</button><button class="btn sm" data-a="btAdd" data-v="pc">아군 NPC 추가</button></div>
  <div class="row"><button class="btn sm" data-a="battleBg">배경 이미지</button>${B.bg?'<button class="btn sm danger" data-a="battleBgDel">배경 지우기</button>':''}<button class="btn sm danger" data-a="btReset">전투 종료·초기화</button><button class="btn sm danger" data-a="btWallClear">벽 전부 지우기</button></div>${zones().length?`<div class="bt-h">바닥 효과</div>${zones().map(z=>`<div class="row small"><span style="flex:1">${esc(z.name)} · ${(z.cells||[]).length}칸 · ${esc(zoneText(z))}</span><button class="btn sm danger" data-a="zoneDel" data-v="${esc(z.id)}">지우기</button></div>`).join('')}`:''}</div>`}
 
@@ -2062,6 +2080,7 @@ Object.assign(A,{
   if(ATK()&&(ATK().by===k||ATK().to===k))Store.set(`${BTP}/atk`,null,true);Store.set(`${BTP}/units/${k}`,null);UI.bt.sel='';if(B.cur?.k===k){Store.set(`${BTP}/cur`,null,true);btNextTurn()}},
  btDmg(){const k=UI.bt.sel;if(unitRaw(k))damageUnit(k,UI.bt.dmgT,UI.bt.dmgN,'마스터 적용')},
  foeNew(){const c=blankChar();c.foe=true;c.info.name='새 적';Store.set('chars/'+c.id,c);UI.charId=c.id;UI.shTab='skill';UI.shSub=0;UI.shEdit=true;A.openSheet()},
+ sampleLoad(){const had=chars().filter(c=>c.sample==='ex1').length;if(had&&!confirm(`예시 캐릭터가 이미 ${had}명 있어요. 한 벌 더 넣을까요?`))return;const L=sampleParty();for(const c of L)Store.set('chars/'+c.id,c);toast(`예시 캐릭터 ${L.length}명(아군 3 · 적 2 · 보스 1)을 넣었어요. 명단에서 꺼내 배치하고, 그림은 시트에서 넣으세요`)},
  foeSample(){const c=sampleFoe();Store.set('chars/'+c.id,c);toast(`예시 적 "${c.info.name}"을 만들었어요. 적 배치에서 꺼내세요`)},
  btHeal(){const k=UI.bt.sel;if(unitRaw(k))healUnit(k,UI.bt.dmgT,UI.bt.dmgN,'마스터 적용')},
  btKw(e){const k=UI.bt.sel;if(!unitRaw(k))return;addKw(k,UI.bt.kwSel,UI.bt.kwN*+e.dataset.v,'마스터 조정');if(+e.dataset.v>0)settleKw([k],'마스터 조정')},
@@ -2339,7 +2358,7 @@ function passiveTest(eq){
 }
 
 /* ---------- 연출과 효과음 (limbus-fx 신호를 받아 재생) ---------- */
-const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,vq:o.vq??2,cam:o.cam??1,uiz:o.uiz??1,cspd:o.cspd??1,ifr:o.ifr??1,v112:o.v112}})();
+const FXSET=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('limbus-fx'))||{}}catch{}return{jc:o.jc??true,snd:o.snd??true,vol:o.vol??0.6,cs:o.cs??true,fast:o.fast??false,csp:o.csp??(o.fast?2:1),bgm:o.bgm??0.45,shk:o.shk??1,fl:o.fl??2,tsp:o.tsp??26,tvol:o.tvol??1,ptc:o.ptc??2,vq:o.vq??2,cam:o.cam??1,uiz:o.uiz??1,cspd:o.cspd??1,ifr:o.ifr??1,oldfx:o.oldfx??0,v112:o.v112}})();
 if(!FXSET.v112){if(+FXSET.fl===2)FXSET.fl=1;FXSET.v112=1;try{localStorage.setItem('limbus-fx',JSON.stringify(FXSET))}catch{}}
 const CSK=()=>FXSET.fast?.55:1;const CSPD=()=>[1.35,1,.68][Math.max(0,Math.min(2,Math.round(+(FXSET.cspd??1))))];   // §116 처음 속도로 복구 (보통 ×1, 연출 빠르게 ×0.55)
 const applyFxPrefs=()=>{const b=document.body;if(!b)return;b.classList.remove('fx-shake-0','fx-shake-1','fx-flash-0','fx-flash-1');if(FXSET.shk<2)b.classList.add('fx-shake-'+FXSET.shk);if(FXSET.fl<2)b.classList.add('fx-flash-'+FXSET.fl)};
@@ -2463,7 +2482,7 @@ function dmgFx(el,f,dm){if(!dm?.length)return;const p=hitPoint(el,f);
  dm.forEach((x,i)=>fxEl(el,'cs-dmg t'+x.tier,`left:${p.x-60-i*24}px;top:${p.y-40+i*70}px;animation-delay:${.08+i*.12}s`,`<small>${TIERS[x.tier-1]}</small><b>${x.n}</b>`,2600))}
 function guardFx(el,f){const st=$('.cs-stage',el),p=hitPoint(el,f);p.x-=$('.cs-body',f).offsetWidth*.18;
  fxEl(st,'cs-ring guard',`left:${p.x}px;top:${p.y}px`,'',700);burst(st,p,18,{dir:180,spread:50,r:170,cols:['#fff','#ffe08a','#9fd6ff']})}
-function afterImg(el,f){const st=$('.cs-stage',el);[0,70,140].forEach((ms,i)=>setTimeout(()=>{const c=f.cloneNode(true);c.querySelector('.cs-card')?.remove();c.classList.add('cs-after');c.style.setProperty('--o',.5-i*.14);c.style.transition='none';st.insertBefore(c,f);setTimeout(()=>c.remove(),520)},ms))}
+function afterImg(el,f,dash){const st=$('.cs-stage',el);(dash?[0,22,44]:[0,70,140]).forEach((ms,i)=>setTimeout(()=>{if(!f.isConnected)return;const c=f.cloneNode(true);c.querySelector('.cs-card')?.remove();c.classList.add('cs-after');if(dash)c.classList.add('cs-after-d');c.style.setProperty('--o',.5-i*.14);c.style.transition='none';st.insertBefore(c,f);setTimeout(()=>c.remove(),520)},ms))}
 
 // §139 공간이 베인 느낌: 무대를 컷 선으로 둘로 나눠 서로 반대로 잠깐 어긋났다 붙인다 (0.22초)
 function airCut(el,c,ang,amp=12){const st=el&&el.querySelector('.cs-stage');if(!st||!c)return;const z=(typeof UIZ!=='undefined'&&UIZ.z)||1,R=el.getBoundingClientRect(),W_=R.width/z,H_=R.height/z;
@@ -2490,28 +2509,31 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
    const w1=Math.max(1,w>>2),h1=Math.max(1,h>>2),w2=Math.max(1,w>>4),h2=Math.max(1,h>>4);if(b1.width!==w1){b1.width=w1;b1.height=h1;b2.width=w2;b2.height=h2}
    x1.clearRect(0,0,w1,h1);x1.drawImage(fc,0,0,w1,h1);x2.clearRect(0,0,w2,h2);x2.drawImage(b1,0,0,w2,h2);
    fx.globalCompositeOperation='destination-out';for(let i=0;i<cutN;i++)fx.drawImage(b2,0,0,w,h);fx.globalCompositeOperation='source-over'}};
- const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').before(cv);
+ const VX=typeof VFX!=='undefined'&&FXSET.ptc!==0&&!!FXSET.oldfx;if(VX){el.dataset.vfx=1;VFX.clear();VFX.mount(el);const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').before(cv);
   VFX.onFront(mkFront('cs-fxf',.62,3.2,3))}
  // §141 궤적 그림: 공격 그림(나)·방어 그림(상대)을 합마다 무작위로 골라 자세로 쓰고, 그 그림의 궤적을 그린다
- const TX=typeof TJ!=='undefined'&&FXSET.ptc!==0,idA=srcOf(uOf(d.by)),idB=srcOf(uOf(d.to));if(TX){TJ.mount(el);const tc=TJ.cv;if(tc){tc.classList.add('back');q('.cs-stage').before(tc);TJ.onFront(mkFront('cs-tjf',.8,2.4,1))}}
- let tjA=null,tjB=null;const tjUse=(U,pose,it)=>{if(!it)return;TJ.arOf(it);U.P[pose]=pImg(TJ.frs(it)[TJ.hfOf(it)]||it.img);U.adj={...U.adj,[pose]:{}}};
- const tjPick=()=>{if(!TX)return;tjA=TJ.pick(idA,'atk',d.ska);tjB=none?null:TJ.pick(idB,'grd',d.skb);tjUse(A,'atk',tjA);tjUse(B,'guard',tjB)};tjPick();
- const tjS=(it,tab)=>it?TJ.strokes(it,tab):[];
+ const TX=typeof TJ!=='undefined'&&FXSET.ptc!==0,idA=srcOf(uOf(d.by)),idB=srcOf(uOf(d.to));if(TX){TJ.mount(el);const tc=TJ.cv;if(tc){tc.classList.add('back');q('.cs-stage').before(tc);TJ.onFront(mkFront('cs-tjf',.8,2.4,1));const X=TJ.layers();if(X){X.b.classList.add('back');q('.cs-stage').before(X.b);el.append(X.f)}}}
+ let tjA=null,tjB=null;const tjUse=(U,pose,it)=>{if(!it||!TJ.frs(it).length)return;TJ.arOf(it);U.P[pose]=pImg(TJ.frs(it)[TJ.hfOf(it)]||it.img);U.adj={...U.adj,[pose]:{}}};
+ // §159 기본 이펙트 대신 기본 궤적: 그 캐릭터의 궤적 그림이 없으면 공격 유형별 기본 궤적, 그림은 있는데 그 탭(합·적중·버팀)에 선이 없으면 그 탭만 기본 궤적
+ const dfc={};const dfOf=it=>{const a=it===tjA,k=a?'A':'B';return dfc[k]||(dfc[k]=TJ.pickDef(a?(tjA?.wk||d.wa||'S'):(tjB?.wk||d.wb||'S'),a?'atk':'grd'))};
+ const tjPick=()=>{if(!TX)return;dfc.A=dfc.B=null;tjA=TJ.pick(idA,'atk',d.ska)||TJ.pickDef(d.wa||'S','atk');tjB=none?null:TJ.pick(idB,'grd',d.skb)||TJ.pickDef(d.wb||'S','grd');tjUse(A,'atk',tjA);tjUse(B,'guard',tjB)};tjPick();
+ const tjS=(it,tab)=>{if(!it)return[];let S=TJ.strokes(it,tab);if(!S.length&&!it.def&&!VX&&!(tab==='lock'&&TJ.frs(it).length>1))S=TJ.strokes(dfOf(it),tab);return S};
  let wa=tjA?.wk||d.wa||'S',wb=tjB?.wk||d.wb||'S';const cB=(()=>{try{return resoCol(CH(srcOf(uOf(d.to))))}catch{return'#8aa0b8'}})();
- const vxP=()=>{const R=VFX.rect(el),ba=$('.cs-body',fl),bb=$('.cs-body',fr),ra=ba?VFX.rect(ba):{cx:R.w*.3,y:R.h*.3,h:R.h*.5},rb=bb?VFX.rect(bb):{cx:R.w*.7,y:R.h*.3,h:R.h*.5};
+ const RC=e=>{if(VX)return VFX.rect(e);const r=e.getBoundingClientRect(),z=(typeof UIZ!=='undefined'&&UIZ.z)||1,cr=el.getBoundingClientRect();return{x:(r.left-cr.left)/z,y:(r.top-cr.top)/z,w:r.width/z,h:r.height/z,cx:(r.left-cr.left+r.width/2)/z,cy:(r.top-cr.top+r.height/2)/z}};
+ const vxP=()=>{const R=RC(el),ba=$('.cs-body',fl),bb=$('.cs-body',fr),ra=ba?RC(ba):{cx:R.w*.3,y:R.h*.3,h:R.h*.5},rb=bb?RC(bb):{cx:R.w*.7,y:R.h*.3,h:R.h*.5};
   return{c:{x:R.w*.5,y:R.h*.5},d:Math.min(R.w*.32,R.h*.55),hb:Math.max(R.h,R.w*.56)*3,a:{x:ra.cx,y:ra.y+ra.h*.42},t:{x:rb.cx,y:rb.y+rb.h*.42},h:Math.max(R.h,R.w*.56)*2.6,gy:Math.max(ra.y+ra.h,rb.y+rb.h)-6}};
  const rPose=none?'idle':d.mode==='evade'?'evade':d.mode==='guard'?'guard':'idle',ev=d.mode==='evade';
  // §100 림버스식 합: 둘 다 달려들어 정면 충돌 → 히트스톱·흔들림(설정 '화면 흔들림' 따름) → 반동으로 튕겨남, 합마다 코인이 깨진다
  // 규칙: 앞으로 = 돌진 그림, 닿을 때 = 공격·방어·회피 그림, 뒤로 = 대기 그림
  const EI='cubic-bezier(.6,0,1,.6)',SK=[0,.55,1][clamp(+FXSET.shk||0,0,2)]??1,HS=ms=>sleep(Math.round(ms*SK));
- const hold=async ms=>{el.classList.add('stop');if(typeof VFX!=='undefined')VFX.slow(.3);if(TX)TJ.slow(.08);await sleep(Math.round((ms+40)*FK*CSPD()));if(typeof VFX!=='undefined')VFX.slow(1);if(TX)TJ.slow(1);el.classList.remove('stop')};
+ const RA=()=>({ang:(Math.random()-.5)*1.3});const hold=async ms=>{el.classList.add('stop');if(typeof VFX!=='undefined')VFX.slow(.3);if(TX)TJ.slow(.08);await sleep(Math.round((ms+40)*FK*CSPD()));if(typeof VFX!=='undefined')VFX.slow(1);if(TX)TJ.slow(1);el.classList.remove('stop')};
  // §156 타격감: 몸 기울기·늘어남(lean), 뒤로 뺐다가 확 꽂힘(strike), 접점 섬광(pop), 중간 타 약한 흔들림, 발밑 먼지
  const lean=(f,deg=0,sx=1,sy=1)=>{if(!f)return;f.style.setProperty('--lr',(f===fr?-deg:deg)+'deg');f.style.setProperty('--lx',sx);f.style.setProperty('--ly',sy)};
  // 임팩트 프레임: 닿는 순간 배경 검정 + 캐릭터 단색 실루엣 + 이펙트 최대(0.07초). 결정타는 그 앞에 흑백 반전 한 컷(번쩍임 설정 '끔'이면 생략)
  const iframe=(big,fin)=>{const lv=Math.round(+(FXSET.ifr??1));el.classList.remove('imp','imp2');if(!lv)return;const inv=+FXSET.fl!==0&&(lv>=2?big:!!fin),t1=lv>=2?150:120,t0=inv?70:0;
   if(inv){el.classList.add('imp2');setTimeout(()=>{el.classList.remove('imp2');el.classList.add('imp')},t0)}else el.classList.add('imp');setTimeout(()=>el.classList.remove('imp','imp2'),t0+t1)};
  const SNAP=75,strike=(lead,first)=>{const pre=Math.max(60,lead-SNAP),bk=first?22:16;slide(fl,bk,pre*FK);slide(fr,-bk,pre*FK);lean(fl,-6,.97,1.02);lean(fr,-5,.97,1.02);
-  setTimeout(()=>{if(CS.cur!==d)return;slide(fl,41,SNAP*FK,EI);slide(fr,-41,SNAP*FK,EI);lean(fl,9,1.07,.97);lean(fr,5,1.04,.98)},pre*TM)};
+  setTimeout(()=>{if(CS.cur!==d)return;slide(fl,41,SNAP*FK,EI);slide(fr,-41,SNAP*FK,EI);lean(fl,9,1.07,.97);lean(fr,5,1.04,.98);if(FXSET.ptc!==0&&!CS.skip){afterImg(el,fl,1);afterImg(el,fr,1)}},pre*TM)};
  const squash=()=>{lean(fl,4,.94,1.04);lean(fr,-2,.94,1.04)};
  const dust=(f,k=1)=>{const st=q('.cs-stage');if(!st||FXSET.ptc===0)return;const r=f.getBoundingClientRect(),R=st.getBoundingClientRect(),dir=f===fr?1:-1;for(let i=0;i<3;i++){const e=document.createElement('i');e.className='cs-dust';e.style.cssText=`left:${r.left+r.width/2-R.left-dir*r.width*.12}px;top:${r.bottom-R.top}px;--dx:${-dir*(20+i*26)*k}px;--s:${(.7+i*.35)*k};animation-delay:${i*45}ms`;st.append(e);setTimeout(()=>e.remove(),800)}};
  const beatEnd=(last,w,ms)=>{const EO='cubic-bezier(.12,.9,.25,1)';
@@ -2536,7 +2558,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
   const gA=TX?TJ.groups(tjS(tjA,'clash')):[],gB=TX?TJ.groups(tjS(tjB,'clash')):[],gN=Math.min(5,Math.max(gA.length,gB.length)),fA=TX&&TJ.frs(tjA).length>1,fB=TX&&TJ.frs(tjB).length>1,lkA=TX&&w==='T'?tjS(tjA,'lock'):[],lkB=TX&&w==='T'?tjS(tjB,'lock'):[];
   const tjBeat=(i,at)=>{const sp=TM;if(gA[i])TJ.playOn(fl,gA[i],{col:sc,sp,at,ar:tjA,other:fr});if(gB[i])TJ.playOn(fr,gB[i],{col:cB,sp,at,ar:tjB,other:fl});return{noA:!!gA[i],noB:!!gB[i]}};
   // §144 직접 그린 합 궤적: 순서 번호 하나 = 한 타. 궤적이 그어지는 동안 공격 자세, 다 그어지는 순간 쨍, 그 자세로 잠깐 버팀, 붙은 채로 연타, 한 타 길이 = 궤적 시간
-  if(VX&&!ev&&(gN||fA||fB||lkA.length||lkB.length)){const sp=TM,fk=FK,tie=w==='T',n=gN||(tie?2:2+(Math.random()<.45?1:0));let P=null;
+  if((VX||TX)&&!ev&&(gN||fA||fB||lkA.length||lkB.length)){const sp=TM,fk=FK,tie=w==='T',n=gN||(tie?2:2+(Math.random()<.45?1:0));let P=null;
    const fLA=fA?TJ.autoLP(tjA,'clash',[]):null,fLB=fB?TJ.autoLP(tjB,'clash',[]):null;
    const inf=g=>g?{first:TJ.sched(g).first,hd:Math.max(0,...g.map(s=>TJ.V(s,'hd')))}:{first:0,hd:0};
    for(let i=0;i<n;i++){const last=i===n-1&&!tie,ia=inf(gA[i]),ib=inf(gB[i]),lead=Math.max(190,ia.first,ib.first,!gA[i]&&fLA?fLA.lead:0,!gB[i]&&fLB?fLB.lead:0),post=Math.max(clamp(Math.max(ia.hd,ib.hd)+220,260,800),!gA[i]&&fLA?Math.min(700,fLA.post):0,!gB[i]&&fLB?Math.min(700,fLB.post):0);
@@ -2544,7 +2566,7 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
     if(fA)TJ.framePlay(fl,A,'atk',tjA,'clash',{at:lead*sp,sp,lead,post});if(fB)TJ.framePlay(fr,B,'guard',tjB,'clash',{at:lead*sp,sp,lead,post});
     strike(lead,i===0);
     const nb=tjBeat(i,lead*sp);await T(lead-125);if(!P)P=vxP();
-    const bt=VFX.beat({...P,...nb,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&last,sp});await T(125);
+    const bt=VX?VFX.beat({...P,...nb,h:P.hb,i:i+ci*3,ka:wa,kb:wb,cA:sc,cB,big:crit&&last,sp}):RA();await T(125);
     setPose(fl,A,'atk');setPose(fr,B,'guard');
     if(FXSET.ptc!==0)airCut(el,P.c,bt.ang,last&&crit?18:12);
     SFX.play(last&&crit?'crit':'clang');big1(last,crit);
@@ -2554,8 +2576,11 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
     const LA=TJ.autoLP(tjA,'lock',lkA),LB=TJ.autoLP(tjB,'lock',lkB),dur=Math.min(1500,Math.max(380,lkA.length||fA?LA.post:0,lkB.length||fB?LB.post:0));
     if(lkA.length)TJ.playOn(fl,lkA,{col:sc,sp,at:TJ.sched(lkA).first*sp,ar:tjA,other:fr});if(lkB.length)TJ.playOn(fr,lkB,{col:cB,sp,at:TJ.sched(lkB).first*sp,ar:tjB,other:fl});
     if(fA)TJ.framePlay(fl,A,'atk',tjA,'lock',{at:0,sp,lead:0,post:dur});if(fB)TJ.framePlay(fr,B,'guard',tjB,'lock',{at:0,sp,lead:0,post:dur});
-    VFX.lock({...P,noA:!!lkA.length,noB:!!lkB.length,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:dur,sp});await T(dur);
-    SFX.play('clang');reAnim($('.cs-flash',el),'go2');reAnim(el,'shake2');await hold(80);coinHit(w);await T(60)}}
+    if(VX)VFX.lock({...P,noA:!!lkA.length,noB:!!lkB.length,h:P.hb,ka:wa,kb:wb,cA:sc,cB,ms:dur,sp});
+    // 힘겨루기: 붙은 채 부들부들 떨며 조금씩 밀다가 → 쨍 하고 둘 다 크게 튕겨 나감
+    fl.classList.add('cs-strug');fr.classList.add('cs-strug');slide(fl,44,dur*FK,'linear');slide(fr,-38,dur*FK,'linear');setTimeout(()=>{if(CS.cur===d){slide(fl,39,dur*FK*.5,'linear');slide(fr,-43,dur*FK*.5,'linear')}},dur*TM*.5);await T(dur);
+    fl.classList.remove('cs-strug');fr.classList.remove('cs-strug');SFX.play('clang');squash();reAnim($('.cs-pop',el),'go');iframe(false);reAnim($('.cs-flash',el),'go2');reAnim(el,'shake2');await hold(110);coinHit(w);
+    {const EO='cubic-bezier(.12,.9,.25,1)';slide(fl,4,240*FK,EO);slide(fr,-4,240*FK,EO);lean(fl,-9);lean(fr,-9);dust(fl,1.1);dust(fr,1.1)}await T(200)}}
   else{
   setPose(fl,A,'dash');setPose(fr,B,'dash');strike(170,true);
   // 첫 타 이펙트는 달려드는 도중에 시작 → 닿는 순간(170ms)에 정확히 터지게
@@ -2586,19 +2611,19 @@ async function playClash(d){const host=$('#btCs');if(!host)return;CS.cur=d;
  if(!none){(win?bdL:bdR).classList.add('win');shatter(win?bdR:bdL);SFX.play('shatter')}
  const res=q('.cs-res');
  // 마무리: 숨 고르기 → 둘 다 달려듦(대응 없음이면 공격자만) → 승부
- await T(120);const fAh=win&&TX&&TJ.frs(tjA).length>1;setPose(fl,A,fAh?'atk':'dash');slide(fl,20,95*FK);lean(fl,-6,.97,1.02);setTimeout(()=>{if(CS.cur!==d)return;slide(fl,40,75*FK,EI);lean(fl,9,1.07,.97)},95*TM);if(!none){setPose(fr,B,'dash');slide(fr,-30,170,EI)}
+ await T(120);const fAh=win&&TX&&TJ.frs(tjA).length>1;setPose(fl,A,fAh?'atk':'dash');slide(fl,20,95*FK);lean(fl,-6,.97,1.02);setTimeout(()=>{if(CS.cur!==d)return;slide(fl,40,75*FK,EI);lean(fl,9,1.07,.97);if(FXSET.ptc!==0&&!CS.skip)afterImg(el,fl,1)},95*TM);if(!none){setPose(fr,B,'dash');slide(fr,-30,170,EI)}
  if(fAh){const sp=TM;TJ.framePlay(fl,A,'atk',tjA,'hit',{at:(170+(big?180:0)+100)*sp,sp,...TJ.autoLP(tjA,'hit',tjS(tjA,'hit'))})}
  // 막아냄: 부딪히는 이펙트를 달려드는 도중에 시작해 닿는 순간(170ms)에 터지게 → 닿자마자 공격자가 튕겨 나감
- let blk=null;if(!win&&!none&&!ev&&VX){await T(45);const P=vxP(),gS=TX?tjS(tjB,'hit'):[],aS=TX?tjS(tjA,'clash'):[],sp=TM;
+ let blk=null;if(!win&&!none&&!ev&&(VX||TX)){await T(45);const P=vxP(),gS=TX?tjS(tjB,'hit'):[],aS=TX?tjS(tjA,'clash'):[],sp=TM;
   if(gS.length)TJ.playOn(fr,gS,{col:cB,sp,at:125*sp,ar:tjB,other:fl});if(aS.length)TJ.playOn(fl,TJ.groups(aS)[0],{col:sc,sp,at:125*sp,ar:tjA,other:fr});
   if(TX&&TJ.frs(tjA).length>1){setPose(fl,A,'atk');TJ.framePlay(fl,A,'atk',tjA,'clash',{at:125*sp,sp,...TJ.autoLP(tjA,'clash',aS)})}
   if(TX&&TJ.frs(tjB).length>1){setPose(fr,B,'guard');TJ.framePlay(fr,B,'guard',tjB,'hit',{at:125*sp,sp,...TJ.autoLP(tjB,'hit',gS)})}
-  blk={P,bt:VFX.beat({...P,noA:!!aS.length,noB:!!gS.length,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true,sp})};await T(125)}else await T(170);setPose(fl,A,'atk');
- if(win){{const cv=el.querySelector('.vfx-cv');if(cv)q('.cs-stage').after(cv);const tc=TX&&TJ.cv;if(tc){tc.classList.remove('back');el.append(tc)}el.classList.add('fx-top')}if(big){q('.cs-stage').classList.add('cs-zoom');await hold(180)}
+  blk={P,bt:VX?VFX.beat({...P,noA:!!aS.length,noB:!!gS.length,h:P.hb,i:4,ka:wa,kb:wb,cA:sc,cB,big:true,sp}):RA()};await T(125)}else await T(170);setPose(fl,A,'atk');
+ if(win){{const cv=el.querySelector('.vfx-cv');if(cv&&VX)q('.cs-stage').after(cv);const tc=TX&&TJ.cv;if(tc){tc.classList.remove('back');el.append(tc)}el.classList.add('fx-top')}if(big){q('.cs-stage').classList.add('cs-zoom');await hold(180)}
   const hS=TX?tjS(tjA,'hit'):[];let hP=null,hRun=null;
-  if(hS.length){const sp=TM;hRun=TJ.playOn(fl,hS,{col:sc,sp,at:100*sp,ar:tjA,other:fr,onFire:f=>{if(!hP)return;if(f.n>0){SFX.play('hit');reAnim($('.cs-flash',el),'go');reAnim(fr,'cs-hit');slide(fr,(none?0:-30)+Math.min(16,5*f.n),70)}VFX.contact({x:hP.t.x+(Math.random()-.5)*20,y:hP.t.y+(Math.random()-.5)*30,ka:wa,k:f.n?.8:big?1.5:1.2,h:hP.h,gy:hP.gy})}})}
+  if(hS.length){const sp=TM;hRun=TJ.playOn(fl,hS,{col:sc,sp,at:100*sp,ar:tjA,other:fr,onFire:f=>{if(VX&&!hP)return;if(f.n>0){SFX.play('hit');reAnim($('.cs-flash',el),'go');reAnim(fr,'cs-hit');slide(fr,(none?0:-30)+Math.min(16,5*f.n),70);reAnim($('.cs-pop',el),'go')}if(VX)VFX.contact({x:hP.t.x+(Math.random()-.5)*20,y:hP.t.y+(Math.random()-.5)*30,ka:wa,k:f.n?.8:big?1.5:1.2,h:hP.h,gy:hP.gy})}})}
   slide(fl,none?62:68,120,EI);await T(100);
-  setPose(fr,B,'hurt');fr.classList.add('cs-hit');lean(fl,5);lean(fr,-12,.95,1.03);reAnim($('.cs-pop',el),'go');iframe(true,true);dust(fr,1.3);if(VX){const P=vxP();if(hS.length)hP=P;else VFX.hitFx({k:wa,a:P.a,t:P.t,col:sc,big,h:P.h,gy:P.gy})}else cutFx(el,fr,big);if(!hRun)slide(fr,34,420);
+  setPose(fr,B,'hurt');fr.classList.add('cs-hit');lean(fl,5);lean(fr,-12,.95,1.03);reAnim($('.cs-pop',el),'go');iframe(true,true);dust(fr,1.3);if(VX){const P=vxP();if(hS.length)hP=P;else VFX.hitFx({k:wa,a:P.a,t:P.t,col:sc,big,h:P.h,gy:P.gy})}else if(!hS.length)cutFx(el,fr,big);if(!hRun)slide(fr,34,420);
   await impact(el,big?'heavy':'hit',true);await hold(big?200:140);
   if(hRun){const end=Math.max(...hS.map((s,i)=>(hRun.sc.st[i]??0)+TJ.V(s,'du')));for(let k=0;k<200&&hRun.clock<end+40&&!CS.skip;k++)await sleep(16);slide(fr,34,420);await T(120)}q('.cs-stage').classList.remove('cs-zoom');
   dmgFx(el,fr,d.dmgs);res.innerHTML=`<b class="hit">${big?'CRITICAL':'적중'}</b>`}
@@ -2625,7 +2650,7 @@ function poseEditor(id){const c=CH(id)||{},P=c.poses||{},J=c.poseAdj||{},q=`char
  <li>그림은 가로 가운데. 돌진·공격처럼 팔·무기가 뻗어도 <b>같은 축척</b>으로, 캔버스 밖으로 나가지 않게</li>
  <li>여섯 자세 모두 같은 크기의 캔버스, 같은 축척. 웅크린 자세(방어·피격)는 키가 작아져도 축척은 그대로</li></ul>
  <p class="small muted">아래 칸의 점선이 정수리·발끝 기준선이에요. 크기·높이는 <b>자세 맞춤</b>에서 겹쳐 보며 맞춰요.</p></details><div class="row" style="margin:0 0 10px"><button class="btn pri" data-a="pfOpen">자세 맞춤 (크기·높이)</button></div>
- ${(()=>{const L=typeof TJ!=='undefined'?TJ.list(id):[],na=L.filter(x=>x.kind!=='grd').length,ng=L.filter(x=>x.kind==='grd').length;return`<div class="pose-tj"><b>합·적중 궤적 그림</b>${L.slice(0,8).map(x=>`<img src="${esc(pImg(x.img)||'')}" alt="">`).join('')}<span class="small muted">공격 ${na}장 · 방어 ${ng}장 — 그림 위에 합·적중 궤적을 직접 그려요. 있으면 위의 공격·방어 칸 대신 합마다 무작위로 나와요</span><button class="btn pri" data-a="tjOpen">✎ 궤적 그림 편집</button></div>`})()}
+ ${(()=>{const L=typeof TJ!=='undefined'?TJ.list(id):[],na=L.filter(x=>x.kind!=='grd').length,ng=L.filter(x=>x.kind==='grd').length;return`<div class="pose-tj"><b>합·적중 궤적 그림</b>${L.filter(x=>x.img).slice(0,8).map(x=>`<img src="${esc(pImg(x.img)||'')}" alt="">`).join('')}<span class="small muted">공격 ${na}개 · 방어 ${ng}개${L.some(x=>!x.img)?' (그림 없는 궤적 포함 — 편집에서 「그림 바꾸기」로 그림을 넣을 수 있어요)':''} — 그림 위에 합·적중 궤적을 직접 그려요. 있으면 위의 공격·방어 칸 대신 합마다 무작위로 나와요</span><button class="btn pri" data-a="tjOpen">✎ 궤적 그림 편집</button></div>`})()}
  <div class="pose-grid">${POSES.map(([k,n])=>tile(k,n)).join('')}</div>
  ${row?`<h4 class="sh-h" style="margin-top:12px">한 줄로 비교 <small>같은 기준선에서 크기가 맞는지</small></h4><div class="pose-row"><i class="pg-h"></i><i class="pg-f"></i>${row}</div>`:''}
  <div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
@@ -3107,7 +3132,7 @@ document.addEventListener('keydown',ev=>{if(UI.tab!=='talk'||M.fn||ev.ctrlKey||e
 
 
 function fxPrefsHTML(){const o=(k,L)=>`<select data-c="fxSet" data-k="${k}">${L.map(([v,n])=>`<option value="${v}" ${+FXSET[k]===v?'selected':''}>${n}</option>`).join('')}</select>`;
- return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">임팩트 프레임 (닿는 순간 흑백 한 컷)${o('ifr',[[0,'끔'],[1,'약'],[2,'강']])}</label><label class="f">합 연출 속도${o('cspd',[[0,'느리게'],[1,'보통'],[2,'빠르게']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'강 (부딪히는 곳 + 화면 옅게)'],[1,'약 (부딪히는 곳만)'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">이펙트 품질${o('vq',[[3,'높음'],[2,'보통'],[1,'낮음 (흐림·빛 번짐 끄기)']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
+ return`<label class="f">화면 크기${o('uiz',[[1,'창에 맞춤'],[1.15,'맞춤 · 크게'],[0.87,'맞춤 · 작게'],[0,'고정 (예전처럼)']])}</label><label class="f">합 이펙트${o('oldfx',[[0,'궤적 (기본 궤적 포함)'],[1,'예전 기본 이펙트도 함께 (비교용)']])}</label>${isGmLike()?'<button class="btn sm" data-a="tjDefOpen">기본 궤적 고치기 (GM · 모두에게 적용)</button>':''}<label class="f">임팩트 프레임 (닿는 순간 흑백 한 컷)${o('ifr',[[0,'끔'],[1,'약'],[2,'강']])}</label><label class="f">합 연출 속도${o('cspd',[[0,'느리게'],[1,'보통'],[2,'빠르게']])}</label><label class="f">화면 흔들림${o('shk',[[2,'보통'],[1,'약하게'],[0,'끄기']])}</label><label class="f">섬광·번쩍임${o('fl',[[2,'강 (부딪히는 곳 + 화면 옅게)'],[1,'약 (부딪히는 곳만)'],[0,'끄기']])}</label><label class="f">대사 속도${o('tsp',[[42,'느리게'],[26,'보통'],[13,'빠르게'],[0,'즉시']])}</label><label class="f">파티클${o('ptc',[[2,'보통'],[1,'적게'],[0,'끄기']])}</label><label class="f">이펙트 품질${o('vq',[[3,'높음'],[2,'보통'],[1,'낮음 (흐림·빛 번짐 끄기)']])}</label><label class="f">카메라 움직임${o('cam',[[1,'켜기'],[0,'끄기 (멀미 방지)']])}</label><label class="row small"><input type="checkbox" data-c="fxSet" data-k="jc" ${FXSET.jc!==false?'checked':''}> 7죄악 판정 연출 보기</label>`}
 function richHelpModal(){const r=[['{떨림}무, 무슨…{/}','떨리는 글자'],['{외침}멈춰!{/}','크고 굵게 떨림'],['{속삭임}비밀이야{/}','작고 흐리게'],['{크게} {작게} {굵게} {기울임} {흐림}','모양'],['{빨강} {파랑} {금색} {회색}','색'],['{물결}두둥실{/}','물결치는 글자'],['{/}','마지막으로 연 모양 닫기 (겹쳐 쓸 수 있어요)'],['{느리게} {빠르게} {보통}','여기부터 타자 속도'],['그래서{쉼 1.5}결국…','잠깐 멈춤 (초, 생략하면 0.6)'],['안 돼!{흔들림 강}','그 글자에 닿으면 흔들림 (약·중·강)'],['{섬광} {붉은 섬광}','그 순간 번쩍'],['{효과음 쾅}','그 순간 효과음'],['괜찮아…{표정 웃음}거짓말이야','말하는 중에 표정 바꾸기'],['{동작 놀람}','말하는 캐릭터 동작 (놀람·떨림·끄덕…)']];
  return`<div class="rh">${r.map(([c,d])=>`<code>${esc(c)}</code><span>${esc(d)}</span>`).join('')}</div><p class="small muted" style="margin-top:10px">대사 기록에는 꾸미기 표시가 빠진 글만 남아요. '…', 마침표 뒤에는 자동으로 살짝 쉬어요. 대본에서도 그대로 쓸 수 있어요.</p><div class="mfoot"><button class="btn" data-a="closeModal">닫기</button></div>`}
 A.richHelp=()=>openModal('대사 꾸미기',richHelpModal);
@@ -6159,9 +6184,21 @@ body.b25 .sd-dust.big{animation:sdDust2 1.1s ease-out both}@keyframes sdDust2{fr
 .cs-spark::before,.cs-spark::after{width:calc(46vw/var(--uz,1))!important}
 
 /* §158 직접 그린 궤적도 두 층 · 멈출 때 옅게 하지 않음 */
-.cs>.tj-cv.back{z-index:0}.cs-fxf.cs-tjf{z-index:3}
+.cs>.tj-cv.back{z-index:0}#resoFx>.tj-cv{z-index:5}.cs-fxf.cs-tjf{z-index:3}
 .cs.stop .tj-cv{opacity:1!important}
 .cs.fx-top .cs-tjf{display:none}
+
+/* §159 기본 궤적 편집 */
+.tj-noimg{display:grid;place-items:center;width:44px;height:58px;flex:none;border:1px dashed #6a5a40;border-radius:4px;font:700 12px/1 sans-serif;font-style:normal;color:#e0c890;background:#1a140c}
+#tjOv .tj-od{display:none}#tjOv.tj-def .tj-od{display:inline-block}#tjOv.tj-def .tj-xd,#tjOv.tj-def #tjRe{display:none}
+
+/* §160 선마다 층 · 앞층 어두운 테 · 돌진 잔상 · 힘겨루기 */
+.cs>.tj-cv.tj-lb{z-index:0}.cs>.tj-cv.tj-lf{z-index:6;filter:drop-shadow(0 0 1.5px rgba(0,0,0,.9)) drop-shadow(0 0 3px rgba(0,0,0,.55))}
+.cs-fxf{mix-blend-mode:normal;filter:drop-shadow(0 0 1.5px rgba(0,0,0,.85))}
+.cs.imp2 .tj-cv.tj-lf{filter:brightness(0)}
+.cs-fig.cs-after.cs-after-d{filter:brightness(1.9) saturate(.35) drop-shadow(0 0 6px var(--fc));animation:csafter .22s forwards}
+.cs-fig.cs-strug .cs-body{animation:csstrug .1s steps(1) infinite}
+@keyframes csstrug{0%{translate:-2px 1px}25%{translate:2px -1px}50%{translate:-1px -2px}75%{translate:2px 2px}}
 </style>
 <script id="resp-skill">
 /* 수비·회피 스킬 (반응 역할 '수비'): 대응할 때 고르는 스킬. 판정은 기존 대응 2d6(회피 또는 방어)에 보정과 효과를 더한다
@@ -6804,7 +6841,7 @@ function gmcBody(){const B=BT(),t=UI.gmcTab,tabNm={talk:'스탠딩',battle:'전�
   ${su?`<div class="gmc-sec"><h5>고른 유닛 · ${esc(uName(su))}</h5><div class="row">${sc&&['foe','npc'].includes(kindOf(sc))?'<button class="btn sm" data-a="idnOpen">식별 관리</button>':''}${srcOf(su)?'<button class="btn sm" data-a="btSheet">시트</button>':''}</div>${unitPanel(su,true)}</div>`:'<p class="small muted">지도에서 유닛을 누르면 여기서 그 유닛을 바로 고칠 수 있어요.</p>'}
   ${masterPanel(B)}<details class="gmc-sec gmc-dbg" ${UI.gmcDbg?'open':''}><summary data-a="gmcDbgT"><h5>전투 디버그 · 직접 수정</h5><small class="muted">이동력 · 행동 기회 · 키워드 · 위치 · 라운드…</small></summary>${UI.tab==='battle'?dbgPanel():''}</details><div class="gmc-sec"><h5>고치기</h5><label class="row small" style="margin-bottom:6px"><input type="checkbox" data-c="critAdjSet" ${critAdjOn()?'checked':''}> 크리티컬 보정 창 (공격이 크리티컬이면 피해·키워드·회복을 고친 뒤 적용)</label><label class="row small" style="margin-bottom:6px"><input type="checkbox" data-c="sortieSet" ${sortieOn()?'checked':''}> 출격 준비 화면 (첫 라운드 START 때 출격 멤버 고르기 + 개막 연출)</label><div class="row" style="margin-bottom:6px"><button class="btn sm pri" data-a="btFinish">전투 끝내기 · 정산</button><button class="btn sm" data-a="resoOpen" title="쇠사슬 연결 → 황금가지 공명 → 거울 처형 → 피니시">⛓ 공명 연출</button>${Store.get('play/result')?'<button class="btn sm" data-a="resultShow">지난 정산 보기</button>':''}</div><div class="row"><button class="btn sm" data-a="dbgOpen">방 전체 디버그</button><button class="btn sm" data-a="hudDrawer" data-v="log">전투 기록</button></div></div>`}
  return`<div class="gmc-sec"><h5>시트</h5><div class="row"><button class="btn sm" data-a="rosterOpen">☰ 명단</button><button class="btn sm" data-a="openSheet">시트 열기</button></div>
-  <div class="row"><button class="btn sm" data-a="rosterNew" data-v="pc">＋ 플레이어</button><button class="btn sm" data-a="foeNew">＋ 적</button><button class="btn sm" data-a="rosterNew" data-v="npc">＋ NPC</button><button class="btn sm" data-a="foeSample">예시 적</button></div>
+  <div class="row"><button class="btn sm" data-a="rosterNew" data-v="pc">＋ 플레이어</button><button class="btn sm" data-a="foeNew">＋ 적</button><button class="btn sm" data-a="rosterNew" data-v="npc">＋ NPC</button><button class="btn sm" data-a="foeSample">예시 적</button><button class="btn sm" data-a="sampleLoad">예시 캐릭터 6명</button></div>
   <div class="row"><button class="btn sm" data-a="charFileLoad">⇧ 캐릭터 파일 불러오기</button></div></div>`}
 function paintGmc(force){let h=$('#gmcHandle'),el=$('#gmc');const can=isGmLike()&&!!$('#main');
  if(!h){h=document.createElement('button');h.id='gmcHandle';h.dataset.a='gmcToggle';h.title='GM 콘솔 — 마스터 기능 모음';h.innerHTML='<b>GM</b><small>콘솔</small>';document.body.append(h)}
@@ -7580,7 +7617,7 @@ function rsBranches(){const P=[];for(let i=0;i<8;i++){const a=i/8*Math.PI*2+.2,p
   P.push(`M${pt(15)} Q${pt(26,.22)} ${pt(38,-.05)} T${pt(62,.12)}`,`M${pt(30,.06)} L${pt(42,.42)}`,`M${pt(42,0)} L${pt(54,-.34)}`)}
  return`<svg class="rs-br" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">${P.map((d,i)=>`<path d="${d}" pathLength="100" style="--i:${i%3}"/>`).join('')}</svg>`}
 function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#resoFx')?.remove();const el=document.createElement('div');el.id='resoFx';const al=(m.al||[]).slice(0,8),N=Math.max(1,al.length),F=m.fin||{},im=r=>pImg(r)?`<img src="${esc(pImg(r))}" alt="">`:'';
- const TT=[],T=(ms,f)=>TT.push(setTimeout(()=>{try{f()}catch(e){console.error(e)}},ms)),end=()=>{TT.forEach(clearTimeout);el.classList.add('out');setTimeout(()=>{VFX.clear();VFX.mount(document.body);el.remove()},450)};
+ const TT=[],T=(ms,f)=>TT.push(setTimeout(()=>{try{f()}catch(e){console.error(e)}},ms)),end=()=>{TT.forEach(clearTimeout);el.classList.add('out');setTimeout(()=>{VFX.clear();VFX.mount(document.body);if(typeof TJ!=='undefined'&&TJ.cv&&TJ.cv.parentNode===el)TJ.unmount();el.remove()},450)};
  const BANDS=[[-38,22],[31,40],[-9,55],[52,68],[6,84],[-58,50]];
  el.innerHTML=`<div class="rs-s1"><div class="rs-row" style="--n:${N}">${al.map((a,i)=>`<div class="rs-st" style="--c:${a.col};--i:${i}"><div class="rs-in">${pImg(a.img)?`<img src="${esc(pImg(a.img))}" alt="" style="object-position:${a.eye?a.eye.x:50}% ${a.eye?Math.max(0,a.eye.y-4):14}%">`:`<em>${esc((a.n||'?')[0])}</em>`}</div><i class="rs-frm"></i><span class="rs-no">${String(i+1).padStart(2,'0')}</span><div class="rs-bd">${BANDS.map(([r,y],j)=>`<i style="--r:${r}deg;--y:${y}%;--j:${j}"></i>`).join('')}</div><b>${esc(a.n||'')}</b></div>`).join('')}</div><i class="rs-chain"></i></div>
  <div class="rs-s3">${rsS3Parts(m.cfg||{}).br}<div class="rs-dial${m.cfg?.face?.img?' cust':''}" style="${rsS3Parts(m.cfg||{}).dial}">${rsS3Parts(m.cfg||{}).hands}<div class="rs-em" style="${rsS3Parts(m.cfg||{}).em}">${pImg(m.em)?`<img src="${esc(pImg(m.em))}" alt="">`:rsEmblem()}</div></div><div class="rs-nm"><small>RESONANCE</small><b>${[...(m.title||'공 명')].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}</b></div></div>
@@ -7604,14 +7641,18 @@ function resoPlay(m){if(FXSET.ko===false||UI.tab!=='battle'&&!m.any)return;$('#r
  const t4=t3+4100;T(t4,()=>{el.classList.add('p4');rsSnd('whoosh')});const nS=Math.max(10,N*2+2);for(let i=0;i<nS;i++)T(t4+600+i*115,()=>{rsSlash(el,(al[i%N]||{}).col||'#ffffff',i,false,i%2===0||i>=nS-3);rsSnd(i%3?'slash':'hit')});
  const tE=t4+600+nS*115+200;T(tE,()=>{rsSlash(el,F.col||'#e0a530',nS,true,true);rsSnd('slash');rsSnd('heavy')});
  const t5=tE+380;T(t5,()=>{el.classList.add('brk');rsBreak(el,al);rsSnd('glass');rsSnd('boom')});
- T(t5+330,()=>{VFX.slow(.09);el.classList.add('slow');rsSnd('static')});
- T(t5+2300,()=>{VFX.slow(1);el.classList.add('whip');rsSnd('whoosh');const{W,H}=VFX.size();VFX.stroke({style:'A',x0:-W*.1,y0:H*.62,x1:W*1.1,y1:H*.38,bend:.05,w:H*.22,col:F.col||'#e0a530',hi:'#ffffff',dark:VFX.mix(F.col||'#e0a530','#000000',.5),dur:.14,life:.45,glow:1})});
+ T(t5+330,()=>{VFX.slow(.09);if(typeof TJ!=='undefined')TJ.slow(.09);el.classList.add('slow');rsSnd('static')});
+ T(t5+2300,()=>{VFX.slow(1);el.classList.add('whip');rsSnd('whoosh');const{W,H}=VFX.size();if(typeof TJ!=='undefined')TJ.slow(1);if(!rsTJ(el,F.col||'#e0a530',W/2,H/2,Math.atan2(-H*.24,W*1.2),Math.hypot(W*1.2,H*.24),true))VFX.stroke({style:'A',x0:-W*.1,y0:H*.62,x1:W*1.1,y1:H*.38,bend:.05,w:H*.22,col:F.col||'#e0a530',hi:'#ffffff',dark:VFX.mix(F.col||'#e0a530','#000000',.5),dur:.14,life:.45,glow:1})});
  T(t5+2560,()=>{el.classList.add('p5');rsFinish(el,F)});T(t5+2560+3600,end)}
 
 // §129 공명 베기·깨짐·마무리 — 공용 이펙트 엔진(VFX)으로 그린다
+// §159 공명 베기도 기본 궤적(종류 '공명')으로: 화면 위 한 점을 중심으로 각도만 돌려서 긋는다. 금·불꽃·유리 조각은 타격 반응이라 그대로
+function rsTJ(el,col,cx,cy,ang,L,big){if(typeof TJ==='undefined'||FXSET.oldfx||FXSET.ptc===0)return false;const d=TJ.pickDef('','reso');if(!d)return false;const S=TJ.strokes(d,big?'hit':'clash');if(!S.length)return false;
+ if(!TJ.cv||TJ.cv.parentNode!==el)TJ.mount(el);const h=L/2,bx=document.createElement('div');bx.style.cssText=`position:absolute;left:${cx-h*.3335}px;top:${cy-h/2}px;width:${h*.667}px;height:${h}px;pointer-events:none`;el.append(bx);setTimeout(()=>bx.remove(),3000);
+ return!!TJ.playOn(bx,S.map(x=>({...x,rz:(+x.rz||0)+ang*180/Math.PI})),{col})}
 function rsSlash(el,col,i,big,crk=true){const{W,H}=VFX.size(),R_=VFX.rnd,D=Math.hypot(W,H),
   ang=[-24,38,-62,12,71,-8,49,-40][i%8]*Math.PI/180+(big?0:R_(-.12,.12)),cx=W/2+(big?0:R_(-W*.18,W*.18)),cy=H*.47+(big?0:R_(-H*.15,H*.15)),L=D*(big?1.15:.95),dx=Math.cos(ang)*L/2,dy=Math.sin(ang)*L/2;
- VFX.stroke({style:'A',x0:cx-dx,y0:cy-dy,x1:cx+dx,y1:cy+dy,bend:big?.08:(i%2?.14:-.14),w:H*(big?.15:.06),col,hi:VFX.mix(col,'#ffffff',.6),dark:VFX.mix(col,'#000000',.5),dur:big?.16:.1,life:big?.8:.45,glow:1});
+ if(!rsTJ(el,col,cx,cy,ang,L,big))VFX.stroke({style:'A',x0:cx-dx,y0:cy-dy,x1:cx+dx,y1:cy+dy,bend:big?.08:(i%2?.14:-.14),w:H*(big?.15:.06),col,hi:VFX.mix(col,'#ffffff',.6),dark:VFX.mix(col,'#000000',.5),dur:big?.16:.1,life:big?.8:.45,glow:1});
  const u=big?.5:R_(.38,.62),ix=cx-dx+2*dx*u,iy=cy-dy+2*dy*u;
  if(crk)setTimeout(()=>VFX.crack({x:ix,y:iy,r:H*(big?.75:R_(.22,.38)),n:big?13:R_(6,9)|0,w:big?3.4:2.4,col,life:8}),big?60:40);
  VFX.spark({x:ix,y:iy,n:big?22:10,r:H*(big?.5:.28),col:'#ffffff',col2:col,ang,spread:1.3});
@@ -8240,7 +8281,7 @@ const CL_MS={cross:330,lock:720,parry:340,impact:380,flurry:470,graze:300,overhe
 /* §141 궤적 그림: 캐릭터마다 공격·방어 그림 여러 장, 그림마다 합·적중 궤적(선 여러 개, 순서·시간·가감속·사라짐·잔상·끝 연출·2.5D)
    저장: chars/<id>/traj = [{img:'vimg:..',kind:'atk'|'grd',wk:''|'S'|'P'|'B',strokes:{clash:[...],hit:[...]}}] */
 const TJ=(()=>{
- const DEF={snd:'',ss:'',anc:'me',tx:'blade',mode:'line',ps:1,pd:1,pt:'trail',pdir:'all',cn:12,csz:1,cvar:.4,cang:'twist',cord:'seq',csp:.3,cl:220,ord:1,dl:0,du:120,ez:'out',hd:0,fo:250,fm:'tail',tl:1,rev:false,ec:0,eg:45,w:1,w0:1,w1:1,wob:0,gl:1,col:'',st:0,sk:0,fl:0,spk:0,rx:0,ry:0,rz:0};
+ const DEF={snd:'',ss:'',ly:'auto',anc:'me',tx:'blade',mode:'line',ps:1,pd:1,pt:'trail',pdir:'all',cn:12,csz:1,cvar:.4,cang:'twist',cord:'seq',csp:.3,cl:220,ord:1,dl:0,du:120,ez:'out',hd:0,fo:250,fm:'tail',tl:1,rev:false,ec:0,eg:45,w:1,w0:1,w1:1,wob:0,gl:1,col:'',st:0,sk:0,fl:0,spk:0,rx:0,ry:0,rz:0};
  const V=(s,k)=>s[k]??DEF[k]??0;
  const EZ={lin:t=>t,in:t=>t*t*t,out:t=>1-(1-t)**3,io:t=>t<.5?4*t*t*t:1-(-2*t+2)**3/2,snap:t=>t>=1?1:1-2**(-10*t),whip:t=>t<=0?0:2**(10*t-10),step:t=>{const k=4,i=Math.min(k-1,Math.floor(t*k)),f=t*k-i;return(i+Math.min(1,f*2.5))/k},
   pull:t=>t<.3?-.05*Math.sin(t/.3*Math.PI):EZ.snap((t-.3)/.7)};
@@ -8441,8 +8482,8 @@ const TJ=(()=>{
   step(dt){const F=this.fx,k=this.ts;dt*=k;this.dt=dt;F.sh*=Math.pow(.9,dt/16);if(F.sh<.3)F.sh=0;F.fl*=Math.pow(.86,dt/16);if(F.fl<.02)F.fl=0;stepPart(F,dt);
    for(const r of this.runs){const d=dt*r.spd;if(r.pause>0)r.pause-=d;else r.clock+=d;if(r.cues)while(r.ci<r.cues.length&&r.clock>=r.cues[r.ci].t){try{r.cues[r.ci].f()}catch(e){}r.ci++}}
    this.runs=this.runs.filter(r=>r.clock<r.sc.end+80||r.pause>0)},
-  render(){const F=this.fx,DT=this.dt||16;g.save();
-   for(const r of this.runs){r.S.forEach((s,i)=>{const st=r.sc.st[i];if(st==null)return;const Bl=r.B(s);const tau=r.clock-st,col=hexOk(V(s,'col'))?V(s,'col'):r.col,cust=hexOk(V(s,'col'));
+  render(){const F=this.fx,DT=this.dt||16,g0=g,gF=this.gF,gB=this.gB;g0.save();
+   for(const r of this.runs){r.S.forEach((s,i)=>{const ly=V(s,'ly'),g=ly==='front'&&gF?gF:ly==='back'&&gB?gB:g0;const st=r.sc.st[i];if(st==null)return;const Bl=r.B(s);const tau=r.clock-st,col=hexOk(V(s,'col'))?V(s,'col'):r.col,cust=hexOk(V(s,'col'));
      const du=V(s,'du'),hd=V(s,'hd'),md=V(s,'mode'),pt=V(s,'pt'),em=V(s,'em'),sc=1,brk=pt==='break'&&tau>=du+hd;
      if(tau>=0&&!r.sst.has(i)){r.sst.add(i);if(V(s,'ss')&&typeof SFX!=='undefined')SFX.play(V(s,'ss'))}
      if(tau>=du&&!r.frz[i])r.frz[i]=Bl;const B=r.frz[i]||Bl,S2=B.h/500;
@@ -8455,16 +8496,44 @@ const TJ=(()=>{
        if(e.age>=0&&!r.cb.has(key)){r.cb.add(key);if(em>0&&(pt==='trail'||pt==='head'))emit(F,s,col,Math.max(1,Math.round(em*3)),S2,ptSamp(e.x,e.y,e.ang,B.h*.01))}
        if(e.age>=e.cl&&!r.cd.has(key)){r.cd.add(key);if(pt==='break'&&em>0)emit(F,s,col,Math.max(1,Math.round(em*4)),S2,ptSamp(e.x,e.y,e.ang,B.h*.02))}}}
      if(tau>=du&&!r.fired.has(i)){r.fired.add(i);this.fire(r,s,i,B)}})}
-   F.sp.forEach(p=>drawPart(g,p));
-   if(F.fl){g.save();g.globalCompositeOperation='lighter';g.globalAlpha=F.fl*.7;g.fillStyle=F.fc;g.fillRect(0,0,W(),H());g.globalAlpha=F.fl*.5;g.fillStyle='#fff';g.fillRect(0,0,W(),H());g.restore()}
-   g.restore()},
+   F.sp.forEach(p=>drawPart(g0,p));
+   if(F.fl){g0.save();g0.globalCompositeOperation='lighter';g0.globalAlpha=F.fl*.7;g0.fillStyle=F.fc;g0.fillRect(0,0,W(),H());g0.globalAlpha=F.fl*.5;g0.fillStyle='#fff';g0.fillRect(0,0,W(),H());g0.restore()}
+   g0.restore()},
   get busy(){return this.runs.length||this.fx.sp.length||this.fx.fl}}}
  // ---- 데이터
- const list=id=>{const v=Store.get(`chars/${id}/traj`);return Array.isArray(v)?v.filter(Boolean):v&&typeof v==='object'?Object.values(v).filter(Boolean):[]};
- const strokes=(it,tab)=>{const v=it?.strokes?.[tab];return(Array.isArray(v)?v:v?Object.values(v):[]).filter(s=>s&&s.pts&&s.pts.length>1).map(s=>({...s,pts:Array.isArray(s.pts)?s.pts:Object.values(s.pts),sp:s.sp?(Array.isArray(s.sp)?s.sp:Object.values(s.sp)):null}))};
+ // §159 기본 궤적: 그림 없이 캐릭터 칸(가로:세로 = 0.667:1) 기준으로 그린 선 묶음. 공격 유형(S 참격·P 관통·B 타격) × 종류(공격·방어) + 공명. GM이 고치면 play/tjdef 에 저장되어 모두에게 적용
+ const DEFN={atk:'공격',grd:'방어',reso:'공명'},WKN={S:'참격',P:'관통',B:'타격'};
+ const BUILTIN=(()=>{const sm=P=>{if(P.length<3)return P;const o=[],g=(i)=>P[Math.max(0,Math.min(P.length-1,i))];for(let i=0;i<P.length-1;i++){const a=g(i-1),b=g(i),c=g(i+1),d=g(i+2);for(let k=0;k<5;k++){const t=k/5,t2=t*t,t3=t2*t,f=j=>+(.5*((2*b[j])+(-a[j]+c[j])*t+(2*a[j]-5*b[j]+4*c[j]-d[j])*t2+(-a[j]+3*b[j]-3*c[j]+d[j])*t3)).toFixed(3);o.push([f(0),f(1)])}}o.push(P[P.length-1]);return o};
+  const L=(pts,o={})=>({pts:sm(pts),...o}),it=(kind,wk,name,clash,hit,lock)=>({kind,wk,name,def:1,strokes:{clash,hit,lock:lock||[]}});
+  const s={tx:'blade',du:110,ez:'out',fo:230,w:1.1,gl:1.25,spk:6},sH={anc:'op',ly:'front',tx:'blade',w:1.9,du:90,ez:'snap',fo:340,gl:1.5,spk:12},lk={wob:2.2,du:380,fo:200,w:.8,gl:1.2},
+   p={tx:'blade',du:70,ez:'snap',fo:170,w:.7,w0:.3,w1:1.25,gl:1.45,spk:5},pH={anc:'op',ly:'front',tx:'blade',w:1.3,w0:.3,w1:1.4,du:60,ez:'snap',fo:300,gl:1.6,spk:12},
+   b={tx:'oil',du:170,ez:'whip',hd:50,fo:320,fm:'thin',w:2,gl:1.1,spk:8},bH={anc:'op',tx:'oil',w:2.6,du:140,ez:'whip',hd:80,fo:420,fm:'thin',gl:1.2,spk:14},cut={anc:'op',mode:'cuts',cn:7,dl:40};
+  const LK=[L([[.95,.3],[1.08,.45],[.98,.62]],lk)];
+  return[
+   it('atk','S','내려베기',[L([[.3,.02],[.75,.08],[1.08,.3],[1.15,.55],[1,.8]],s)],[L([[-.35,.05],[.2,.3],[.6,.58],[1.25,.95]],sH),L([[.15,.2],[.85,.75]],cut)],LK),
+   it('atk','S','올려베기 2연',[L([[.45,.95],[.9,.82],[1.15,.55],[1.08,.25]],{...s,ord:1}),L([[.35,.1],[.85,.15],[1.15,.4],[1.05,.7]],{...s,ord:2})],[L([[-.3,.9],[.3,.62],[.75,.35],[1.2,.05]],sH)],LK),
+   it('atk','S','가로베기',[L([[.1,.42],[.55,.33],[1,.36],[1.35,.5]],{...s,w:1.3})],[L([[-.5,.42],[.5,.48],[1.5,.4]],sH)],LK),
+   it('grd','S','받아넘기기',[L([[.95,.12],[1.12,.38],[1,.68]],{...s,w:.9,du:90})],[L([[.8,.05],[1.15,.3],[1.2,.6],[.9,.9]],{...s,w:1.6,du:100,spk:12,gl:1.5})],LK),
+   it('grd','S','쳐내기',[L([[.7,.7],[1.05,.5],[1.2,.2]],{...s,w:.9,du:90})],[L([[.6,.85],[1.1,.55],[1.3,.1]],{...s,w:1.6,du:100,spk:12,gl:1.5})],LK),
+   it('atk','P','찌르기',[L([[.2,.45],[1.25,.45]],p)],[L([[-.8,.45],[1.6,.45]],pH),L([[.2,.32],[.8,.6]],{...cut,cn:5})],LK),
+   it('atk','P','3연 찌르기',[L([[.25,.35],[1.22,.38]],{...p,ord:1}),L([[.25,.55],[1.22,.5]],{...p,ord:2}),L([[.2,.44],[1.28,.44]],{...p,ord:3,w:.9})],[L([[-.8,.42],[1.6,.48]],pH)],LK),
+   it('atk','P','올려 찌르기',[L([[.3,.75],[1.2,.3]],p)],[L([[-.6,.8],[1.4,.15]],pH)],LK),
+   it('grd','P','빗겨내기',[L([[.85,.55],[1.2,.3]],{...p,w:.6})],[L([[.7,.6],[1.35,.2]],{...p,w:1.1,spk:12})],LK),
+   it('grd','P','걷어내기',[L([[.9,.3],[1.15,.6]],{...p,w:.6})],[L([[.75,.2],[1.3,.65]],{...p,w:1.1,spk:12})],LK),
+   it('atk','B','내려찍기',[L([[.5,0],[.95,.1],[1.1,.4],[1.05,.6]],b)],[L([[.2,-.15],[.5,.2],[.55,.6]],bH),L([[-.1,.95],[.5,.88],[1.1,.95]],{anc:'op',tx:'chalk',w:1.2,dl:120,du:120,fo:380})],LK),
+   it('atk','B','후려치기',[L([[.15,.5],[.6,.4],[1.05,.45],[1.25,.6]],b)],[L([[-.5,.5],[.3,.42],[1.3,.55]],bH)],LK),
+   it('atk','B','올려치기',[L([[.6,.9],[1,.7],[1.12,.35]],b)],[L([[.1,.95],[.5,.5],[.7,0]],bH)],LK),
+   it('grd','B','막기',[L([[1.02,.12],[1.06,.45],[1.02,.8]],{...b,w:1.8,du:120,hd:0})],[L([[1,.05],[1.12,.45],[1,.9]],{...b,w:2.6,du:130,spk:14})],LK),
+   it('grd','B','받아치기',[L([[.8,.65],[1.1,.45],[1.15,.2]],{...b,w:1.8,du:120,hd:0})],[L([[.7,.8],[1.1,.5],[1.25,.1]],{...b,w:2.4,du:130,spk:14})],LK),
+   it('reso','','공명 베기',[L([[-1,.5],[.5,.44],[2,.5]],{tx:'ink',w:1.6,du:100,ez:'snap',fo:350,gl:1.6})],[L([[-1.2,.5],[.5,.4],[2.2,.5]],{tx:'ink',w:3.4,du:160,ez:'snap',fo:650,gl:2})])]})();
+ const defList=()=>{const v=typeof Store!=='undefined'?Store.get('play/tjdef'):null,a=Array.isArray(v)?v.filter(Boolean):v&&typeof v==='object'?Object.values(v).filter(Boolean):[];return a.length?a:JSON.parse(JSON.stringify(BUILTIN))};
+ function pickDef(wk,kind){const A=defList().filter(x=>x.kind===kind);let L=kind==='reso'?A:A.filter(x=>(x.wk||'S')===(wk||'S'));if(!L.length)L=A.filter(x=>(x.wk||'S')==='S');if(!L.length)L=BUILTIN.filter(x=>x.kind===kind&&(kind==='reso'||x.wk===(WKN[wk]?wk:'S')));if(!L.length)return null;
+  const key='@'+wk+kind;let c=L.map((it,i)=>({it,i})).filter(x=>x.i!==last[key]);if(!c.length)c=L.map((it,i)=>({it,i}));const x=c[Math.floor(Math.random()*c.length)];last[key]=x.i;return{...x.it,def:1}}
+ const list=id=>{if(id==='@def')return defList();const v=Store.get(`chars/${id}/traj`);return Array.isArray(v)?v.filter(Boolean):v&&typeof v==='object'?Object.values(v).filter(Boolean):[]};
+ const strokes=(it,tab)=>{const v=it?.strokes?.[tab];return(Array.isArray(v)?v:v?Object.values(v):[]).filter(s=>s&&s.pts&&s.pts.length>1).map(s=>({...s,_d:it.def?1:0,pts:Array.isArray(s.pts)?s.pts:Object.values(s.pts),sp:s.sp?(Array.isArray(s.sp)?s.sp:Object.values(s.sp)):null}))};
  const last={};
  const skOf=it=>arr(it?.sk).filter(Boolean);
- function pick(id,kind,skn){let L=list(id).map((it,i)=>({it,i})).filter(x=>x.it.kind===kind&&x.it.img);if(!L.length)return null;const skK=skn||'-',B=L.filter(x=>skOf(x.it).includes(skK));L=B.length?B:L.filter(x=>!skOf(x.it).length);if(!L.length)return null;
+ function pick(id,kind,skn){let L=list(id).map((it,i)=>({it,i})).filter(x=>x.it.kind===kind&&(x.it.img||['clash','hit','lock'].some(t=>strokes(x.it,t).length)));if(!L.length)return null;const skK=skn||'-',B=L.filter(x=>skOf(x.it).includes(skK));L=B.length?B:L.filter(x=>!skOf(x.it).length);if(!L.length)return null;
   const key=id+kind;let c=L.filter(x=>x.i!==last[key]);if(!c.length)c=L;const x=c[Math.floor(Math.random()*c.length)];last[key]=x.i;return x.it}
 
  // ---- 합 연출 안에서 재생: .cs 위에 캔버스 하나
@@ -8477,16 +8546,19 @@ const TJ=(()=>{
  const Z=()=>(typeof UIZ!=='undefined'&&UIZ.z)||1;
  function fit(){if(!host||!cvs)return;const R=host.getBoundingClientRect(),z=Z(),w=R.width/z,h=R.height/z,d=DPR();if(cvs.width!==Math.round(w*d)||cvs.height!==Math.round(h*d)){cvs.width=Math.round(w*d);cvs.height=Math.round(h*d)}}
  function loop(now){if(!cvs)return;if(!cvs.isConnected){unmount();return}const dt=Math.min(50,now-lt);lt=now;fit();const d=DPR();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cvs.width,cvs.height);
+  for(const x of XL){if(x.c.width!==cvs.width||x.c.height!==cvs.height){x.c.width=cvs.width;x.c.height=cvs.height}x.x.setTransform(1,0,0,1,0,0);x.x.clearRect(0,0,cvs.width,cvs.height);x.x.setTransform(d,0,0,d,0,0)}
   PL.step(dt);const F=PL.fx;ctx.setTransform(d,0,0,d,0,0);if(F.sh&&host){const st=host.querySelector('.cs-stage');if(st)st.style.translate=`${((Math.random()-.5)*F.sh*2).toFixed(1)}px ${((Math.random()-.5)*F.sh*2).toFixed(1)}px`;shEl=st}else if(shEl){shEl.style.translate='';shEl=null}
   PL.render();if(frontCb)try{frontCb(cvs)}catch{}raf=requestAnimationFrame(loop)}
- let frontCb=null;
- function unmount(){frontCb=null;cancelAnimationFrame(raf);if(cvs)cvs.remove();if(shEl)shEl.style.translate='';cvs=ctx=PL=host=shEl=null}
+ let frontCb=null,XL=[];
+ // §160 선마다 층: 앞(캐릭터 위) / 뒤(캐릭터 뒤, 앞에 안 겹침) / 자동(뒤 + 밝은 심지만 앞). 앞·뒤 전용 캔버스 2장
+ function layers(){if(!cvs||!PL)return null;XL.forEach(x=>x.c.remove());const mk=k=>{const c=document.createElement('canvas');c.className='tj-cv tj-l'+k;const x=c.getContext('2d');tuneCtx(x);return{c,x}};const b=mk('b'),f=mk('f');XL=[b,f];PL.gB=b.x;PL.gF=f.x;return{b:b.c,f:f.c}}
+ function unmount(){frontCb=null;XL.forEach(x=>x.c.remove());XL=[];cancelAnimationFrame(raf);if(cvs)cvs.remove();if(shEl)shEl.style.translate='';cvs=ctx=PL=host=shEl=null}
  // 그림 칸: .cs-body 칸 + 궤적 그림 비율 (자세 그림 높이 = 칸 높이, 가로 가운데, 바닥 맞춤) → 지금 보이는 자세와 상관없이 그 그림 자리
  const AR={};function arOf(it){const src=it&&pImg(frs(it)[hfOf(it)]||it.img);if(!src)return .667;if(AR[src])return AR[src];const e=new Image();e.onload=()=>{if(e.naturalHeight)AR[src]=e.naturalWidth/e.naturalHeight};e.src=src;if(e.complete&&e.naturalHeight)AR[src]=e.naturalWidth/e.naturalHeight;return AR[src]||.667}
  function boxOf(fig,ar,fo){if(!host||!fig)return null;const body=fig.querySelector('.cs-body')||fig,R=host.getBoundingClientRect(),r=body.getBoundingClientRect(),z=Z();if(!r.width)return null;
   const h=r.height/z,w=h*ar,cx=(r.left-R.left+r.width/2)/z;return{x:cx-w/2,y:(r.top-R.top)/z,w,h,flip:fo??fig.classList.contains('r')}}
  // fig = .cs-fig, S = 선들, o.at = 지금부터 몇 ms 뒤에 첫 선이 다 그어지게(닿는 순간), o.sp = 배속(작을수록 빠름)
- function playOn(fig,S,o={}){if(!PL||!S||!S.length)return null;const ar=arOf(o.ar),isR=fig.classList.contains('r'),Z0={x:0,y:0,w:1,h:1,flip:false},B=s=>(s&&V(s,'anc')==='op'&&o.other?boxOf(o.other,.667,isR):boxOf(fig,ar))||Z0,sp=o.sp||1;let n=0;
+ function playOn(fig,S,o={}){if(!PL||!S||!S.length)return null;const ar=arOf(o.ar),isR=fig.classList.contains('r'),Z0={x:0,y:0,w:1,h:1,flip:false},B=s=>(s&&V(s,'anc')==='op'&&o.other?boxOf(o.other,.667,isR):boxOf(fig,s&&s._d?.667:ar))||Z0,sp=o.sp||1;let n=0;
   const r=PL.add(S,B,{col:o.col,spd:1/sp,onFire:o.onFire?f=>o.onFire({...f,n:n++}):null});
   if(o.at!=null)r.clock=Math.min(r.sc.first*.5,r.sc.first-o.at/sp);return r}
  const groups=S=>[...new Set(S.map(s=>V(s,'ord')))].sort((a,b)=>a-b).map(o=>S.filter(s=>V(s,'ord')===o));
@@ -8509,8 +8581,8 @@ const TJ=(()=>{
  function framePlay(fig,U,pose,it,tab,o){const F=frs(it);if(!fig||F.length<2||!PL)return null;const tok={};fig._tjTok=tok;const T=ftimes(it,tab,o.lead,o.post);
   F.forEach(ref=>{const s=pImg(ref);if(s){const e=new Image;e.src=s}});
   return timeline({at:o.at,sp:o.sp,tok,cues:F.map((ref,i)=>({t:T[i],f:()=>{if(fig._tjTok!==tok)return;const src=pImg(ref);if(!src)return;U.P[pose]=src;if(fig.dataset.pose===pose){const im=fig.querySelector('img');if(im&&im.getAttribute('src')!==src)im.src=src}}}))})}
- return{skOf,TQ,tuneCtx,frs,hfOf,ftimes,autoLP,framePlay,arr,TXN,CANG,CORD,drawCuts,DEF,V,EZ,EZN,FMN,PRE,MIX,sched,state,drawSlash,player,list,strokes,pick,mount,unmount,playOn,groups,proj,toPx,arOf,
-  slow(k){if(PL)PL.ts=k},onFront(f){frontCb=f},get cv(){return cvs},get on(){return!!PL}}})();
+ return{skOf,TQ,tuneCtx,frs,hfOf,ftimes,autoLP,framePlay,arr,TXN,CANG,CORD,drawCuts,DEF,V,EZ,EZN,FMN,PRE,MIX,sched,state,drawSlash,player,list,strokes,pick,pickDef,defList,BUILTIN,DEFN,WKN,mount,unmount,playOn,groups,proj,toPx,arOf,
+  slow(k){if(PL)PL.ts=k},onFront(f){frontCb=f},layers,get cv(){return cvs},get on(){return!!PL}}})();
 </script>
 <script id="tj-gif">
 /* §146 GIF → 프레임 (브라우저 ImageDecoder가 있으면 그것, 없으면 직접 해석) + 여러 장 불러오기 */
@@ -8559,11 +8631,11 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
  const SNDN={'':'없음',clang:'쨍',crit:'강한 쨍',hit:'베임',heavy:'묵직',block:'막힘',miss:'휙',dash:'돌진',burn:'불붙음'};
  const KEEP=['tx','em','ps','pd','pt','pdir','mode','cn','csz','cvar','cang','cord','csp','cl'];
  const im=()=>D[cur];const S_=()=>{const it=im();if(!it)return[];it.strokes=it.strokes||{};if(!Array.isArray(it.strokes[tab]))it.strokes[tab]=it.strokes[tab]?Object.values(it.strokes[tab]):[];return it.strokes[tab]};
- const save=()=>{clearTimeout(svT);svT=setTimeout(()=>Store.set(`chars/${id}/traj`,JSON.parse(JSON.stringify(D))),450)};
+ const isDef=()=>id==='@def';let dirty=false;const save=()=>{dirty=true;clearTimeout(svT);svT=setTimeout(()=>Store.set(isDef()?'play/tjdef':`chars/${id}/traj`,JSON.parse(JSON.stringify(D))),450)};
  const imgEl=ref=>{const src=pImg(ref);if(!src)return null;if(IM[src])return IM[src];const e=new Image();e.onload=()=>draw();e.src=src;return IM[src]=e};
  const flip=()=>ov.querySelector('#tjFlip').checked;
  const COL=()=>{try{return resoCol(CH(id))}catch{return'#e0a530'}};
- const box=()=>{const it=im(),e=it&&imgEl(TJ.frs(it)[TJ.hfOf(it)]||it.img),h=H*.8,ar=e&&e.naturalWidth?e.naturalWidth/e.naturalHeight:.62,w=h*ar,me=flip()?1-LAY[tab].me:LAY[tab].me;return{x:W*me-w/2,y:H-h,w,h,flip:flip()}};
+ const box=()=>{const it=im(),e=it&&imgEl(TJ.frs(it)[TJ.hfOf(it)]||it.img),h=H*.8,ar=e&&e.naturalWidth?e.naturalWidth/e.naturalHeight:.667,w=h*ar,me=flip()?1-LAY[tab].me:LAY[tab].me;return{x:W*me-w/2,y:H-h,w,h,flip:flip()}};
  const FR=()=>TJ.frs(im()),HF=()=>TJ.hfOf(im());
  const LP=()=>TJ.autoLP(im(),tab,S_());
  const contact=()=>{if(tab==='lock')return 0;const S=S_();if(!S.length)return LP().lead;const G=tab==='clash'?(TJ.groups(S)[0]||S):S;return Math.max(tab==='clash'?125:100,TJ.sched(G).first)};
@@ -8626,6 +8698,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    <details open><summary>✨ 파티클</summary>${rng(s,'em','양',0,4,.1)}${rng(s,'ps','크기',.3,3,.1,'배')}${rng(s,'pd','퍼지는 거리',.3,3,.1,'배')}${sel(s,'pt','나오는 때',PTN)}${sel(s,'pdir','방향',PDN)}</details>
    <div class="row" style="gap:6px"><button class="btn sm" data-txall>질감·방식·파티클을 이 탭 모든 선에</button></div>
    <label><span>기준</span><select data-anc><option value="me" ${V(s,'anc')!=='op'?'selected':''}>때리는 사람 (내 그림)</option><option value="op" ${V(s,'anc')==='op'?'selected':''}>맞는 사람 (상대에 붙음)</option></select></label>
+   <label><span>층</span><select data-ly>${[['auto','자동 (뒤 + 밝은 심지만 앞)'],['front','앞 (캐릭터 위에 전부)'],['back','뒤 (캐릭터 뒤에만)']].map(([k,n])=>`<option value="${k}" ${V(s,'ly')===k?'selected':''}>${n}</option>`).join('')}</select></label>
    <details open><summary>⏱ 시간·속도</summary>
     <label><span>순서</span><input type="number" min="1" max="9" value="${V(s,'ord')}" data-tf="ord" style="width:52px"> <small class="muted">같은 번호=동시${tab==='clash'?' · 번호 하나=챙 한 번':''}</small></label>
     ${rng(s,'dl','시작 지연',-300,800,10,'ms')}${rng(s,'du','긋는 시간',30,1200,10,'ms')}${sel(s,'ez','가감속',EZN)}${rng(s,'hd','머무름',0,1000,10,'ms')}${sel(s,'ss','시작 소리',SNDN)}</details>
@@ -8646,7 +8719,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    b.onclick=()=>{const S=S_();if(a==='all'){clip(S);ui();return}
     if(a==='paste'){const mo=Math.min(...C.map(x=>V(x,'ord'))),base=S.length?Math.max(...S.map(x=>V(x,'ord'))):0;C.forEach(x=>S.push({...JSON.parse(JSON.stringify(x)),ord:base+V(x,'ord')-mo+1}));selS=S.length-1;save();ui();start(null);return}
     if(a==='style'&&selS>=0){const t=S[selS];for(const[k,v]of Object.entries(C[0]))if(!POSK.has(k))t[k]=JSON.parse(JSON.stringify(v));save();ui();start(selS)}}})}
-  L.innerHTML=D.map((it,i)=>`<div class="tj-it ${i===cur?'on':''}" data-i="${i}"><img src="${esc(pImg(it.img)||'')}" alt=""><div>${it.kind==='grd'?'방어':'공격'} ${D.slice(0,i+1).filter(x=>x.kind===it.kind).length}<br><small class="muted">${TJ.skOf(it).length?'⚔'+TJ.skOf(it).length+' · ':''}${TJ.frs(it).length>1?'🎞'+TJ.frs(it).length+' · ':''}합 ${(it.strokes?.clash||[]).length}${(it.strokes?.lock||[]).length?' · 버팀 '+it.strokes.lock.length:''} · 적중 ${(it.strokes?.hit||[]).length}</small></div></div>`).join('')||'<small class="muted">아직 그림이 없어요</small>';
+  L.innerHTML=D.map((it,i)=>`<div class="tj-it ${i===cur?'on':''}" data-i="${i}">${it.img?`<img src="${esc(pImg(it.img)||'')}" alt="">`:`<i class="tj-noimg">${TJ.WKN[it.wk]||'공명'}</i>`}<div>${it.def||!it.img?esc(it.name||TJ.DEFN[it.kind]||'기본'):(it.kind==='grd'?'방어':'공격')+' '+D.slice(0,i+1).filter(x=>x.kind===it.kind).length}<br><small class="muted">${TJ.skOf(it).length?'⚔'+TJ.skOf(it).length+' · ':''}${TJ.frs(it).length>1?'🎞'+TJ.frs(it).length+' · ':''}합 ${(it.strokes?.clash||[]).length}${(it.strokes?.lock||[]).length?' · 버팀 '+it.strokes.lock.length:''} · 적중 ${(it.strokes?.hit||[]).length}</small></div></div>`).join('')||'<small class="muted">아직 그림이 없어요</small>';
   L.querySelectorAll('.tj-it').forEach(e=>e.onclick=()=>{cur=+e.dataset.i;selS=-1;pts=null;anim=null;vf=null;ui()});
   const it=im();ov.querySelector('#tjKind').value=it?.kind||'atk';ov.querySelector('#tjWk').value=it?.wk||'';ov.querySelector('.tj-r .it-on').hidden=!it;
   ov.querySelector('#tjHitLbl').textContent=it?.kind==='grd'?'막아낼 때 궤적':'적중 궤적';ov.querySelector('#tjClashLbl').textContent=it?.kind==='grd'?'합(받아칠 때) 궤적':'합 궤적';
@@ -8660,6 +8733,7 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
    e.querySelector('[data-reset]').onclick=()=>{s.col='';save();ui()};
    e.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{const k=b.dataset.tx;s.tx=k;if(s.em==null||(!s.em&&k==='fire'))s.em=k==='fire'?1.2:k==='blade'||k==='neon'?0:.6;save();ui();start(i)});
    e.querySelector('[data-txall]').onclick=()=>{S.forEach(x=>KEEP.forEach(k=>{if(s[k]!==undefined)x[k]=s[k]}));save();ui();start(null)};
+   e.querySelector('[data-ly]').onchange=ev=>{s.ly=ev.target.value;save()};
    e.querySelector('[data-anc]').onchange=ev=>{const to=ev.target.value;if(V(s,'anc')===to)return;const A0=boxFor(s);s.anc=to;const B1=boxFor(s);
     const cv_=p=>{const[x,y]=toPx(p,A0);let u=(x-B1.x)/B1.w;if(B1.flip)u=1-u;return[+u.toFixed(4),+((y-B1.y)/B1.h).toFixed(4)]};s.pts=s.pts.map(cv_);if(s.ctrl)s.ctrl=s.ctrl.map(cv_);save();ui()};
    e.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>{s.mode=b.dataset.md;save();ui();start(i)});e.querySelector('[data-play]').onclick=()=>start(i);
@@ -8685,9 +8759,9 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
     else if(a==='del'){if(it.frames.length<=1)return;it.frames.splice(i,1);if(it.hf>i||it.hf>=it.frames.length)it.hf=Math.max(0,it.hf-1);if(it.frames.length===1){it.img=it.frames[0];delete it.frames;delete it.hf}vf=null;it.ft={}}
     if(it.frames)sync();save();ui()})}}
   ov.querySelectorAll('.tj-tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));ov.querySelectorAll('.tj-mode [data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));hint();if(!anim)draw()}
- function open(cid){id=cid;const src=TJ.list(id);D=JSON.parse(JSON.stringify(src)).map(it=>{const o={kind:'atk',wk:'',...it,strokes:{clash:TJ.strokes(it,'clash'),hit:TJ.strokes(it,'hit'),lock:TJ.strokes(it,'lock')}};const F=TJ.arr(it.frames);if(F.length>1)o.frames=F;else delete o.frames;const K=TJ.arr(it.sk).filter(Boolean);if(K.length)o.sk=K;else delete o.sk;if(it.ft){o.ft={};for(const k of['clash','hit','lock']){const a=TJ.arr(it.ft[k]);if(a.length)o.ft[k]=a.map(Number)}}return o});vf=null;cur=0;selS=-1;tab='clash';mode='free';pts=null;anim=null;
+ function open(cid){id=cid;dirty=false;const src=TJ.list(id);setTimeout(()=>{if(ov){ov.classList.toggle('tj-def',cid==='@def');const k=ov.querySelector('#tjKind');if(k&&cid==='@def'&&!k.querySelector('[value=reso]'))k.insertAdjacentHTML('beforeend','<option value="reso">공명 (합 탭 = 보통 베기 · 적중 탭 = 마무리)</option>')}},0);D=JSON.parse(JSON.stringify(src)).map(it=>{const o={kind:'atk',wk:'',...it,strokes:{clash:TJ.strokes(it,'clash'),hit:TJ.strokes(it,'hit'),lock:TJ.strokes(it,'lock')}};const F=TJ.arr(it.frames);if(F.length>1)o.frames=F;else delete o.frames;const K=TJ.arr(it.sk).filter(Boolean);if(K.length)o.sk=K;else delete o.sk;if(it.ft){o.ft={};for(const k of['clash','hit','lock']){const a=TJ.arr(it.ft[k]);if(a.length)o.ft[k]=a.map(Number)}}return o});vf=null;cur=0;selS=-1;tab='clash';mode='free';pts=null;anim=null;
   ov=document.createElement('div');ov.id='tjOv';ov.innerHTML=`<div class="tj-box">
-  <div class="tj-l"><b>그림 <small class="muted">합마다 무작위</small></b><div id="tjList"></div><button class="btn sm" data-add="atk">＋ 공격 그림</button><button class="btn sm" data-add="grd">＋ 방어 그림</button>
+  <div class="tj-l"><b>그림 <small class="muted">합마다 무작위</small></b><div id="tjList"></div><button class="btn sm" data-add="atk">＋ 공격 <span class="tj-xd">그림</span></button><button class="btn sm" data-add="grd">＋ 방어 <span class="tj-xd">그림</span></button><button class="btn sm tj-od" id="tjDefName">이름 바꾸기</button><button class="btn sm danger tj-od" id="tjDefReset">기본 궤적 전부 처음대로</button><button class="btn sm tj-xd" id="tjFromDef" title="기본 궤적의 선을 지금 그림의 이 탭으로 복사해 와서 고쳐 쓰기">기본 궤적 가져오기</button>
    <p class="small muted">공격 그림은 내가 칠 때, 방어 그림은 막을 때 나와요. 같은 종류가 여러 장이면 합마다 무작위(바로 전 그림은 피함). 「쓸 스킬」로 그림을 스킬에 묶으면 그 스킬일 때 그 그림들만 나와요.</p></div>
   <div class="tj-c"><div class="tj-tabs"><button data-tab="clash" class="on" id="tjClashLbl">합 궤적</button><button data-tab="lock" id="tjLockLbl">버팀 궤적</button><button data-tab="hit" id="tjHitLbl">적중 궤적</button>
     <span class="tj-mode"><button data-m="free" class="on">✎ 자유 그리기</button><button data-m="pt">• 점 찍어 잇기</button></span></div>
@@ -8726,18 +8800,21 @@ const TJE=(()=>{let vf=null,frDrag=null,id=null,D=null,cur=0,tab='clash',mode='f
   tl.onclick=e=>{const r=tl.getBoundingClientRect(),y=(e.clientY-r.top)*tl.height/r.height-TLm.fy,i=Math.floor((y-4)/16);if(y<0)return;if(i>=0&&i<S_().length){selS=i;ui()}};
   ov.querySelectorAll('.tj-tabs [data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selS=-1;pts=null;anim=null;ui()});
   ov.querySelectorAll('.tj-mode [data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;pts=null;ui()});
-  ov.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{const R=await TJF.load(12);if(!R)return;const it={img:R[0],kind:b.dataset.add,wk:'',strokes:{clash:[],hit:[]}};if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}D.push(it);cur=D.length-1;selS=-1;vf=null;anim=null;save();ui()});
+  ov.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{if(isDef()){const k=b.dataset.add,wk=im()?.wk||'S';D.push({kind:k,wk:k==='reso'?'':wk,name:'새 기본 궤적',def:1,strokes:{clash:[],hit:[],lock:[]}});cur=D.length-1;selS=-1;vf=null;anim=null;save();ui();return}const R=await TJF.load(12);if(!R)return;const it={img:R[0],kind:b.dataset.add,wk:'',strokes:{clash:[],hit:[]}};if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}D.push(it);cur=D.length-1;selS=-1;vf=null;anim=null;save();ui()});
   $o('#tjRe').onclick=async()=>{const it=im();if(!it)return;const R=await TJF.load(12);if(!R)return;if(R.length>1){it.frames=R;it.hf=Math.round((R.length-1)*.5);it.img=R[it.hf]}else{it.img=R[0];delete it.frames;delete it.hf}it.ft={};vf=null;save();ui()};
+  $o('#tjDefName').onclick=()=>{const it=im();if(!it)return;const n=prompt('기본 궤적 이름',it.name||'');if(n!=null){it.name=n.trim().slice(0,20);save();ui()}};
+  $o('#tjDefReset').onclick=()=>{if(!confirm('기본 궤적을 전부 처음 상태로 되돌릴까요? 고친 내용이 사라집니다.'))return;clearTimeout(svT);Store.set('play/tjdef',null);anim=null;ov.remove();ov=null;setTimeout(()=>open('@def'),80)};
+  $o('#tjFromDef').onclick=()=>{const it=im();if(!it)return;const d=TJ.pickDef(it.wk||CH(id)?.wk||'S',it.kind||'atk');if(!d)return;const S=TJ.strokes(d,tab).map(({_d,...x})=>x);if(!S.length)return toast('이 탭에는 기본 궤적이 없어요');it.strokes[tab]=[...(it.strokes[tab]||[]),...JSON.parse(JSON.stringify(S))];selS=-1;save();ui();toast(`기본 궤적 「${d.name||''}」 가져옴 — 그림에 맞게 고쳐 쓰세요`)};
   $o('#tjKind').onchange=e=>{if(im()){im().kind=e.target.value;save();ui()}};$o('#tjWk').onchange=e=>{if(im()){im().wk=e.target.value;save()}};
   $o('#tjDel').onclick=()=>{if(!im()||!confirm('이 그림과 궤적을 지울까요?'))return;D.splice(cur,1);cur=Math.max(0,cur-1);selS=-1;anim=null;save();ui()};
   $o('#tjUndo').onclick=()=>{const S=S_();if(S.length){S.pop();selS=-1;save();ui()}};
   $o('#tjClear').onclick=()=>{if(im()&&confirm('이 탭의 선을 모두 지울까요?')){im().strokes[tab]=[];selS=-1;save();ui()}};
   $o('#tjDone').onclick=finishPts;$o('#tjFlip').onchange=()=>{if(!anim)draw()};$o('#tjPlay').onclick=()=>start(null);$o('#tjPlay1').onclick=()=>{if(selS>=0)start(selS)};
   $o('#tjClose').onclick=close;ui()}
- function close(){if(!ov)return;clearTimeout(svT);Store.set(`chars/${id}/traj`,JSON.parse(JSON.stringify(D)));anim=null;ov.remove();ov=null;toast('궤적 그림을 저장했어요')}
+ function close(){if(!ov)return;clearTimeout(svT);if(!isDef()||dirty)Store.set(isDef()?'play/tjdef':`chars/${id}/traj`,JSON.parse(JSON.stringify(D)));anim=null;ov.remove();ov=null;toast('궤적 그림을 저장했어요')}
  addEventListener('keydown',e=>{if(!ov||/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName))return;if(e.key==='Enter'){finishPts();e.preventDefault()}if(e.key==='Escape'){if(pts){pts=null;hint();draw()}e.stopPropagation()}},true);
  return{open,close,__patch(o){S_().forEach(t=>Object.assign(t,o));anim=null;ui()},get on(){return!!ov}}})();
-Object.assign(A,{tjOpen(){TJE.open(UI.charId)}});
+Object.assign(A,{tjOpen(){TJE.open(UI.charId)},tjDefOpen(){if(!isGmLike())return toast('기본 궤적은 GM만 고칠 수 있어요');TJE.open('@def')}});
 </script>
 
 <script id="wm-js">
